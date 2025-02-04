@@ -1,0 +1,80 @@
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Hind+Mysuru:wght@300;400;500;600;700&family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Oswald:wght@200..700&family=Outfit:wght@100..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  font-family:'Oswald', Courier, monospace;
+}
+
+body {
+  background-color: #f0bb78;
+  /* color: #662a07; */
+  /* color: #391a06; */
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+a.active hr {
+  display: block;
+}
+
+.hind-mysuru-light {
+  font-family: "Hind Mysuru", sans-serif;
+  font-weight: 300;
+  font-style: normal;
+}
+
+.hind-mysuru-regular {
+  font-family: "Hind Mysuru", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.hind-mysuru-medium {
+  font-family: "Hind Mysuru", sans-serif;
+  font-weight: 500;
+  font-style: normal;
+}
+
+.hind-mysuru-semibold {
+  font-family: "Hind Mysuru", sans-serif;
+  font-weight: 600;
+  font-style: normal;
+}
+
+.hind-mysuru-bold {
+  font-family: "Hind Mysuru", sans-serif;
+  font-weight: 700;
+  font-style: normal;
+}
+
+.dancing-script {
+  font-family: "Dancing Script", serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+img:hover {
+  transform: scale(1.05);
+  transition: transform 0.3s ease;
+}
+
+.sticky {
+  position: sticky;
+  top: 0;
+}
+
+@media (max-width:640px) {
+  a.active {
+    background-color: #000;
+    color: #fff;
+  }
+}
