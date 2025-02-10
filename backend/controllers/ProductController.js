@@ -23,8 +23,8 @@ const addProduct = async (req, res) => {
         );
 
         // Parse the sizes and bestseller values
-        const parsedSizes = JSON.parse(sizes); // Parse sizes JSON
-        const isBestseller = bestseller === "true"; // Convert to boolean
+        const parsedSizes = JSON.parse(sizes);
+        const isBestseller = bestseller === "true"; 
 
         // Prepare the product data
         const productData = {

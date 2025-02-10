@@ -7,7 +7,7 @@ const List = ({ token }) => {
   const [list, setList] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [editedProduct, setEditedProduct] = useState(null);
+  const [editedProduct, setEditedProduct] = useState();
 
   // Fetch the list of products
   const fetchList = async () => {
@@ -63,7 +63,7 @@ const List = ({ token }) => {
       if (response.data.success) {
         toast.success('Product updated successfully.');
         await fetchList();
-        setIsEditing(false); // Close the edit form
+        setIsEditing(false);
       } else {
         toast.error(`Error: ${response.data.message}`);
       }

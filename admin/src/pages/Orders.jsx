@@ -46,7 +46,7 @@ const Orders = ({ token }) => {
       // await axios.delete(`${backendURl}/api/order/delete/${orderId}`, { headers: { token } });
 
       const updatedOrders = [...orders];
-      updatedOrders.splice(index, 1); // Remove from state
+      updatedOrders.splice(index, 1);
       setOrders(updatedOrders);
       toast.success('Order deleted successfully');
     } catch (error) {
