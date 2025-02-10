@@ -15,31 +15,42 @@ const Verify = () => {
     const verifyPayment = async () => {
         if (!token) return;
 
+        if (!orderId) {
+            toast.error("Invalid Order ID. Redirecting...");
+            setTimeout(() => navigate('/cart'), 2000);
+            return;
+        }        
+    
         try {
             const response = await axios.post(
                 `${backendUrl}/api/order/verifystripe`,
                 { orderId, success },
                 { headers: { token } }
             );
-
-            if (response.data.success) {
+    
+            console.log("API Response:", response.data); // 🔹 Debugging log
+    
+            if (response.data && response.data.success) {
                 setCartItems({});
                 setTimeout(() => navigate('/orders'), 2000);
             } else {
+                toast.error("Payment verification failed. Redirecting to cart...");
                 setTimeout(() => navigate('/cart'), 2000);
             }
         } catch (error) {
             console.error("Payment Verification Error:", error);
-            toast.error("Payment verification failed.");
+            toast.error("Payment verification failed. Redirecting to cart...");
             setTimeout(() => navigate('/cart'), 2000);
         } finally {
             setLoading(false);
         }
     };
-
+    
     useEffect(() => {
-        verifyPayment();
-    }, [token]);
+        if (token && orderId) {
+            verifyPayment();
+        }
+    }, [token, orderId]); 
 
     return (
         <div className='m-20 text-center'>
