@@ -49,6 +49,74 @@ const addProduct = async (req, res) => {
         res.status(500).json({ success: false, message: error.message });
     }
 };
+
+// Function for editing a product
+const editProduct = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { name, description, price, category, subCategory, bestseller, sizes } = req.body;
+        
+        // Get the existing product
+        const existingProduct = await productModel.findById(id);
+        if (!existingProduct) {
+            return res.status(404).json({ success: false, message: "Product not found" });
+        }
+
+        // Handle image uploads
+        const imageFiles = [
+            req.files?.image1?.[0],
+            req.files?.image2?.[0],
+            req.files?.image3?.[0],
+            req.files?.image4?.[0],
+            req.files?.image5?.[0],
+            req.files?.image6?.[0]
+        ].filter(item => item !== undefined);
+
+        // Upload new images to cloudinary if provided
+        let newImageUrls = [];
+        if (imageFiles.length > 0) {
+            newImageUrls = await Promise.all(
+                imageFiles.map(async (item) => {
+                    const result = await cloudinary.uploader.upload(item.path, { resource_type: 'image' });
+                    return result.secure_url;
+                })
+            );
+        }
+
+        // Combine existing and new images
+        const updatedImages = newImageUrls.length > 0 ? newImageUrls : existingProduct.images;
+
+        // Parse the sizes and bestseller values
+        const parsedSizes = JSON.parse(sizes);
+        const isBestseller = bestseller === "true" || bestseller === true;
+
+        // Update the product data
+        const updatedProduct = await productModel.findByIdAndUpdate(
+            id,
+            {
+                name,
+                description,
+                price: Number(price),
+                category,
+                subCategory,
+                bestseller: isBestseller,
+                sizes: parsedSizes,
+                images: updatedImages,
+            },
+            { new: true }
+        );
+
+        if (!updatedProduct) {
+            return res.status(404).json({ success: false, message: "Product not found" });
+        }
+
+        res.json({ success: true, message: "Product updated successfully", product: updatedProduct });
+    } catch (error) {
+        console.error("Error in editing product:", error);
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
 // Function for listing products
 const listProducts = async (req, res) => {
     try {
@@ -99,4 +167,4 @@ const singleProduct = async (req, res) => {
     }
 };
 
-export { listProducts, addProduct, removeProduct, singleProduct };
+export { listProducts, addProduct, editProduct, removeProduct, singleProduct };

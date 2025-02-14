@@ -1,97 +1,181 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect, useRef } from "react";
+import { Send, Image, X } from "lucide-react";
 
 const ChatBot = () => {
-  const [question, setQuestion] = useState('');
-  const [chatLog, setChatLog] = useState([
-    { sender: 'bot', text: 'Hi! I’m your fashion advisor. Ask me anything about fashion!' }
-  ]);
+  const [question, setQuestion] = useState("");
+  const [chatLog, setChatLog] = useState([]);
+  const [image, setImage] = useState(null);
+  const [showChat, setShowChat] = useState(false);
+  const fileInputRef = useRef(null);
+  const chatContainerRef = useRef(null);
+
+  const API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyCzIdhyHN32U-_wISUuBogESfAJCHNOa00";
 
   const generateAnswer = async () => {
-    if (!question.trim()) return;
+    if (!question.trim() && !image) return;
 
-    // Add user question to the chat log
-    setChatLog((prevLog) => [...prevLog, { sender: 'user', text: question }]);
-
-    // Show typing status
-    setChatLog((prevLog) => [...prevLog, { sender: 'bot', text: 'Generating answer...' }]);
+    setShowChat(true);
+    const newUserMessage = { sender: "user", text: question, image };
+    setChatLog((prevLog) => [...prevLog, newUserMessage]);
+    setChatLog((prevLog) => [...prevLog, { sender: "bot", text: "Typing..." }]);
 
     try {
-      const response = await axios({
-        url: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyCzIdhyHN32U-_wISUuBogESfAJCHNOa00',
-        method: 'post',
-        data: {
-          "contents": [
-            {
-              "parts": [{ "text": question }]
-            }
-          ]
+      const imageData = image ? {
+        inline_data: {
+          mime_type: image.type,
+          data: image.base64
         }
+      } : null;
+
+      const formData = {
+        contents: [{
+          parts: [
+            { text: question },
+            ...(imageData ? [imageData] : [])
+          ]
+        }]
+      };
+
+      const response = await fetch(API_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
       });
 
-      const aiResponse =
-        response['data']['candidates'][0]['content']['parts'][0]['text'] ||
-        'Sorry, I could not generate an answer. Please try again.';
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
 
-      setChatLog((prevLog) => [...prevLog.slice(0, -1), { sender: 'bot', text: aiResponse }]);
+      const data = await response.json();
+      const aiResponse = data.candidates?.[0]?.content?.parts?.[0]?.text?.replace(/\*\*(.*?)\*\*/g, "$1").trim() ||
+        "Sorry, I couldn't generate an answer. Try again.";
+
+      setChatLog((prevLog) => [...prevLog.slice(0, -1), { sender: "bot", text: aiResponse }]);
     } catch (error) {
+      console.error(error);
       setChatLog((prevLog) => [
         ...prevLog.slice(0, -1),
-        { sender: 'bot', text: 'An error occurred. Please try again later.' }
+        { sender: "bot", text: "An error occurred. Please try again later." }
       ]);
     }
 
-    setQuestion(''); // Clear input field
+    setQuestion("");
+    setImage(null);
+  };
+
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault();
+      generateAnswer();
+    }
+  };
+
+  const handleImageUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const base64string = reader.result.split(",")[1];
+        setImage({
+          preview: reader.result,
+          type: file.type,
+          base64: base64string
+        });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const removeImage = () => {
+    setImage(null);
   };
 
   useEffect(() => {
-    // Scroll to the latest chat message
-    const chatContainer = document.getElementById('chat-container');
-    chatContainer.scrollTop = chatContainer.scrollHeight;
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    }
   }, [chatLog]);
 
   return (
-    <div className="max-w-lg m-20 mx-auto p-6 bg-background text-text">
-      <h1 className="text-center text-3xl font-semibold text-secondary mb-4">FashionBot</h1>
+    <div className="flex flex-col min-h-screen">
+      {showChat ? (
+        <div className="flex-1 flex flex-col p-6 m-20 max-w-3xl mx-auto w-full">
+          <div ref={chatContainerRef} className="flex-1 bg-primary p-4 overflow-y-auto rounded-lg shadow-inner mb-4 space-y-4">
+            {chatLog.map((entry, index) => (
+              <div key={index} className={`flex ${entry.sender === "user" ? "justify-end" : "justify-start"}`}>
+                <div className={`p-3 rounded-xl max-w-sm ${entry.sender === "user" ? "bg-background text-secondary" : "bg-white text-secondary border border-gray-200"}`}>
+                  {entry.image && (
+                    <img src={entry.image.preview} alt="Uploaded" className="w-full max-w-xs mb-2 rounded-lg" zzzzz />
+                  )}
+                  <p className="whitespace-pre-wrap">{entry.text}</p>
+                </div>
+              </div>
+            ))}
+          </div>
 
-      {/* Chat History */}
-      <div
-        id="chat-container"
-        className="bg-primary text-text p-4 h-96 overflow-y-auto rounded-lg shadow-inner mb-4"
-      >
-        {chatLog.map((entry, index) => (
-          <div
-            key={index}
-            className={`flex ${entry.sender === 'user' ? 'justify-end' : 'justify-start'} mb-4`}
-          >
-            <div
-              className={`p-4 rounded-lg max-w-xs ${
-                entry.sender === 'user' ? 'bg-secondary text-primary' : 'bg-white text-text'
-              }`}
-            >
-              {/* <strong>{entry.sender === 'user' ? 'You' : 'Bot'}:</strong> */}
-              <p>{entry.text}</p>
+          <div className="relative">
+            {image && (
+              <div className="absolute -top-16 left-0">
+                <div className="relative">
+                  <img src={image.preview} alt="Selected" className="w-24 h-24 rounded-lg object-cover border-2 border-background" />
+                  <button onClick={removeImage} className="absolute -top-2 -right-2 bg-red-500 text-white p-1 rounded-full hover:bg-red-600">
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            )}
+
+            <div className="relative flex items-center">
+              <input type="text" value={question} onChange={(e) => setQuestion(e.target.value)} onKeyDown={handleKeyDown} placeholder="Ask me about fashion..." className={`w-full px-6 py-4 pr-24 bg-white rounded-full shadow-lg focus:outline-none focus:ring-2 focus:ring-[#f4b06e] transition-all ${image ? 'pl-20' : 'pl-6'}`} />
+              <div className="absolute right-2 flex items-center space-x-2">
+                <button onClick={() => fileInputRef.current.click()} className="p-2 hover:bg-gray-100 rounded-full transition">
+                  <Image className="w-6 h-6 text-secondary" />
+                </button>
+                <input type="file" accept="image/*" ref={fileInputRef} onChange={handleImageUpload} className="hidden" />
+                <button onClick={generateAnswer} className="p-2 hover:bg-gray-100 rounded-full transition">
+                  <Send className="w-6 h-6 text-secondary" />
+                </button>
+              </div>
             </div>
           </div>
-        ))}
-      </div>
+        </div>
+      ) : (
+        <div className="min-h-screen bg-background p-4 flex items-center justify-center">
+          <div className="w-full max-w-3xl mt-8 relative">
+            <div className="text-2xl text-center font-bold mb-6 text-secondary">
+              I'm your fashion advisor. Ask me anything about fashion!
+            </div>
 
-      {/* User Input */}
-      <div className="flex flex-row gap-1">
-        <textarea
-          value={question}
-          onChange={(e) => setQuestion(e.target.value)}
-          placeholder="Ask me anything about fashion!"
-          rows="1"
-          className="w-full p-4 border-2 border-secondary rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-secondary"
-        />
-        <button
-          onClick={generateAnswer}
-          className="bg-secondary text-primary font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-primary hover:text-secondary transition duration-300"
-        >
-          Send
-        </button>
-      </div>
+            <div className="relative flex items-center w-full">
+              {image && (
+                <div className="absolute -left-2 -top-2 z-10">
+                  <div className="relative">
+                    <img src={image.preview} alt="Selected" className="w-16 h-16 rounded-lg object-cover border-2 border-white" />
+                    <button onClick={removeImage} className="absolute -top-2 -right-2 bg-red-500 text-white p-1 rounded-full hover:bg-red-600">
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              <div className="relative flex-1">
+                <input type="text" value={question} onChange={(e) => setQuestion(e.target.value)} onKeyDown={handleKeyDown} placeholder="Ask me about fashion..." className={`w-full px-6 py-4 pr-24 bg-white rounded-full shadow-lg focus:outline-none focus:ring-2 focus:ring-[#4a3526] transition-all ${image ? 'pl-20' : 'pl-6'}`} />
+                <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center space-x-2">
+                  <button onClick={() => fileInputRef.current.click()} className="p-2 hover:bg-gray-100 rounded-full transition">
+                    <Image className="w-6 h-6 text-[#4a3526]" />
+                  </button>
+                  <input type="file" accept="image/*" ref={fileInputRef} onChange={handleImageUpload} className="hidden" />
+                  <button onClick={generateAnswer} className="p-2 hover:bg-gray-100 rounded-full transition">
+                    <Send className="w-6 h-6 text-[#4a3526]" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -10,7 +10,7 @@ import Title from "../components/Title";
 
 const MyProfile = () => {
   const [userData] = useState({
-    name: "Darlene Robertson",
+    name: "Aswanth",
     status: "Active",
   });
 
