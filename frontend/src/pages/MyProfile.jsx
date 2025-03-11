@@ -53,7 +53,7 @@ const MyProfile = () => {
               {menuItems.map((item, index) => (
                 <button key={index} className="border border-secondary bg-background text-text p-3 sm:p-4 flex items-center justify-between rounded-lg shadow-md hover:scale-[1.02] transition-transform">
                   <div className="flex items-center gap-2 sm:gap-3">{item.icon} <span className="text-sm sm:text-base font-medium">{item.text}</span></div>
-                  <ChevronRight size={16} className="text-gray-400" />
+                  <ChevronRight size={16} className="text-gray-700" />
                 </button>
               ))}
             </div>

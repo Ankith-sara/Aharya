@@ -3,21 +3,21 @@ import { ShopContext } from '../context/ShopContext';
 import Title from './Title';
 import ProductItem from './ProductItem';
 
-const RelatedProducts = ({ category, subCategory }) => {
+const RelatedProducts = ({ category, subCategory, currentProductId }) => {
   const { products } = useContext(ShopContext);
   const [related, setRelated] = useState([]);
 
   useEffect(() => {
     if (products.length > 0 && category && subCategory) {
-      let productsCopy = products.slice();
-      productsCopy = productsCopy.filter((item) => category === item.category);
-      productsCopy = productsCopy.filter((item) => subCategory === item.subCategory);
-      setRelated(productsCopy.slice(0, 5));
+      let filteredProducts = products
+        .filter((item) => item.category === category && item.subCategory === subCategory)
+        .filter((item) => item._id !== currentProductId);
+      setRelated(filteredProducts.slice(0, 5));
     }
-  }, [products, category, subCategory]);
+  }, [products, category, subCategory, currentProductId]);
 
   return (
-    <div className="mt-24">
+    <div className="mt-20 bg-primary p-6 rounded-lg shadow-lg">
       <div className="text-center text-3xl py-2">
         <Title text1="Related" text2="Products" />
       </div>

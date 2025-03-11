@@ -18,7 +18,7 @@ const Contact = () => {
             Pin: 500064
           </p>
           <p className="text-text leading-6">
-            Tel: +91 1234567890 <br />
+            Tel: +91 9063284008 <br />
             Email: aharya@gmail.com
           </p>
           <p className="font-semibold text-xl text-secondary">Careers at Aharya</p>

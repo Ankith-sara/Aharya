@@ -4,8 +4,6 @@ import p_img2_2 from './p_img2_2.png'
 import p_img2_3 from './p_img2_3.png'
 import p_img2_4 from './p_img2_4.png'
 import p_img3 from './p_img3.png'
-import p_img4 from './p_img4.png'
-import p_img5 from './p_img5.jpg'
 
 
 import logo from './logo.png'
@@ -27,8 +25,8 @@ import star_dull_icon from './star_dull_icon.png'
 import star_icon from './star_icon.png'
 import support_img from './support_img.png'
 import menu_icon from './menu_icon.png'
-import about_img from './about_img.png'
-import contact_img from './contact_img.png'
+import about_img from './about_img.jpg'
+import contact_img from './contact_img.jpg'
 import razorpay_logo from './razorpay_logo.png'
 import stripe_logo from './stripe_logo.png'
 import cross_icon from './cross_icon.png'
@@ -109,29 +107,4 @@ export const products = [
         date: 1716234545448,
         bestseller: true
     },
-    {
-        _id: "aaaad",
-        name: "Men Round Neck Pure Cotton T-shirt",
-        description: "A lightweight, usually knitted, pullover shirt, close-fitting and with a round neckline and short sleeves, worn as an undershirt or outer garment.",
-        price: 1799,
-        image: [p_img4],
-        category: "Men",
-        subCategory: "Topwear",
-        sizes: ["S", "M", "XXL"],
-        date: 1716621345448,
-        bestseller: true
-    },
-    {
-        _id: "aaaae",
-        name: "Women Deep Neck Cotton Top",
-        description: "A lightweight, usually knitted, pullover shirt, close-fitting and with a round neckline and short sleeves, worn as an undershirt or outer garment.",
-        price: 2199,
-        image: [p_img5],
-        category: "Women",
-        subCategory: "Topwear",
-        sizes: ["M", "L", "XL"],
-        date: 1716622345448,
-        bestseller: true
-    }
-
 ]

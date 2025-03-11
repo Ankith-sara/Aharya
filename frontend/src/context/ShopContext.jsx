@@ -133,6 +133,17 @@ const ShopContextProvider = (props) => {
     }
 
     useEffect(() => {
+        const storedSubCategory = localStorage.getItem("selectedSubCategory");
+        if (storedSubCategory) {
+            setSelectedSubCategory(storedSubCategory);
+        }
+    }, []);
+
+    useEffect(() => {
+        localStorage.setItem("selectedSubCategory", selectedSubCategory);
+    }, [selectedSubCategory]);
+
+    useEffect(() => {
         getProductsData();
     }, []);
 
@@ -145,8 +156,8 @@ const ShopContextProvider = (props) => {
 
     const value = {
         products, currency, delivery_fee, search, setSearch, showSearch, setShowSearch, cartItems, addToCart, setCartItems, getCartCount, updateQuantity, getCartAmount, navigate, backendUrl, setToken, token
-   ,        selectedSubCategory,
-   setSelectedSubCategory, };
+        , selectedSubCategory, setSelectedSubCategory
+    };
 
     return (
         <ShopContext.Provider value={value}>

@@ -10,7 +10,7 @@ export default {
         primary: "#fff0dc",
         secondary: "#543a14",
         text: "#131010",
-        background: "#f0bb78",
+        background: "#fedbac",
       },
     },
   },

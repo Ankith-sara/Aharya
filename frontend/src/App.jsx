@@ -19,6 +19,7 @@ import ProductPage from './pages/ProductPage';
 import ChatBot from './pages/ChatBot';
 import MyProfile from './pages/MyProfile';
 import Verify from './pages/Verify';
+import VirtualTryOn from './pages/VirtualTryon';
 
 const App = () => {
   return (
@@ -38,9 +39,10 @@ const App = () => {
         <Route path='/place-order' element={<PlaceOrder />} />
         <Route path='/orders' element={<Orders />} />
         <Route path='/verify' element={<Verify />} />
-        <Route path='/myprofile' element={<MyProfile />} />
+        <Route path='/profile' element={<MyProfile />} />
         <Route path='/sell' element={<Sell />} />
         <Route path='/aa-chatbot' element={<ChatBot />} />
+        <Route path='/try-on' element={<VirtualTryOn />} />
       </Routes>
       <Footer />
     </div>

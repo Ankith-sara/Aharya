@@ -4,10 +4,17 @@ import Title from '../components/Title';
 import ProductItem from '../components/ProductItem';
 
 const ProductPage = () => {
-  const { products = [], search, showSearch, selectedCategory, selectedSubCategory, setSelectedSubCategory } = useContext(ShopContext); // Get from context
+  const {
+    products = [],
+    search,
+    showSearch,
+    selectedCategory,
+    selectedSubCategory,
+    setSelectedSubCategory
+  } = useContext(ShopContext);
+
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [sortOption, setSortOption] = useState('relevant');
-
 
   // Handle subcategory selection from the navbar dropdown menu
   const handleSubCategorySelection = (subCategory) => {
@@ -17,7 +24,7 @@ const ProductPage = () => {
   // Filter and sort products
   useEffect(() => {
     let updatedProducts = [...products];
-    console.log("Selected Subcategory:", selectedSubCategory);
+
     // Apply search filtering
     if (showSearch && search) {
       updatedProducts = updatedProducts.filter((product) =>
@@ -43,7 +50,7 @@ const ProductPage = () => {
     updatedProducts.sort((a, b) => {
       if (sortOption === 'low-high') return a.price - b.price;
       if (sortOption === 'high-low') return b.price - a.price;
-      return 0; // Default (relevant) sorting
+      return 0;
     });
 
     setFilteredProducts(updatedProducts);
@@ -54,11 +61,7 @@ const ProductPage = () => {
       {/* Product List Section */}
       <div className="flex justify-between items-center mb-6">
         <Title text1="Our" text2="Products" />
-        <select
-          value={sortOption}
-          onChange={(e) => setSortOption(e.target.value)}
-          className="border px-2 py-1"
-        >
+        <select value={sortOption} onChange={(e) => setSortOption(e.target.value)} className="border px-2 py-1">
           <option value="relevant">Sort by: Relevant</option>
           <option value="low-high">Sort by: Price (Low to High)</option>
           <option value="high-low">Sort by: Price (High to Low)</option>
@@ -67,16 +70,10 @@ const ProductPage = () => {
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {filteredProducts.length === 0 ? (
-          <p className="col-span-4 text-center text-gray-500">No products found.</p>
+          <p className="col-span-4 text-center py-10 text-xl text-text-light">No products found.</p>
         ) : (
           filteredProducts.map((product, index) => (
-            <ProductItem
-              key={index}
-              name={product.name}
-              id={product._id}
-              price={product.price}
-              image={product.images}
-            />
+            <ProductItem key={index} name={product.name} id={product._id} price={product.price} image={product.images} />
           ))
         )}
       </div>

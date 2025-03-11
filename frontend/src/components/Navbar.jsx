@@ -142,7 +142,7 @@ const Navbar = () => {
           <div className="group-hover:block hidden absolute dropdown-menu right-0 pt-4">
             {token && (
               <div className="flex flex-col gap-2 w-36 py-3 px-5 bg-primary text-text rounded">
-                <p className="cursor-pointer hover:text-secondary" onClick={() => navigate('/myprofile')}>My Profile</p>
+                <p className="cursor-pointer hover:text-secondary" onClick={() => navigate('/profile')}>My Profile</p>
                 <p className="cursor-pointer hover:text-secondary" onClick={() => navigate('/orders')}>Orders</p>
                 <p className="cursor-pointer hover:text-secondary" onClick={() => { if (window.confirm("Are you sure you want to log out?")) logout(); }}>
                   Logout
