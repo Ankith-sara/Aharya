@@ -6,6 +6,10 @@ const Sidebar = () => {
     return (
         <div className="w-[18%] min-h-screen bg-[#e5e5cb] text-primary shadow-md">
             <div className="flex flex-col gap-4 pt-8 pl-[20%] text-[15px]">
+            <NavLink className={({ isActive }) => `flex items-center gap-3 px-4 py-3 rounded-l-full transition-all duration-300 border-2  ${isActive ? 'bg-secondary text-background border-[#3c2a21]' : 'hover:bg-text hover:text-primary border-text'}`} to="/" >
+                    <img className="w-6 h-6" src={assets.dashboard_icon} alt="Add Icon" />
+                    <p className="hidden md:block font-semibold">Admin Dashboard</p>
+                </NavLink>
                 <NavLink className={({ isActive }) => `flex items-center gap-3 px-4 py-3 rounded-l-full transition-all duration-300 border-2  ${isActive ? 'bg-secondary text-background border-[#3c2a21]' : 'hover:bg-text hover:text-primary border-text'}`} to="/add" >
                     <img className="w-6 h-6" src={assets.add_icon} alt="Add Icon" />
                     <p className="hidden md:block font-semibold">Add Items</p>
