@@ -19,7 +19,7 @@ import ProductPage from './pages/ProductPage';
 import ChatBot from './pages/ChatBot';
 import MyProfile from './pages/MyProfile';
 import Verify from './pages/Verify';
-import VirtualTryOn from './pages/VirtualTryon';
+import VirtualTryOn from './pages/VirtualTryOn';
 
 const App = () => {
   return (

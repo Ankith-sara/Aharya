@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { ShopContext } from '../context/ShopContext';
 import { Camera } from 'lucide-react';
 import RelatedProducts from '../components/RelatedProducts';
-import VirtualTryOn from './VirtualTryon';
+import VirtualTryOn from './VirtualTryOn';
 
 const Product = () => {
   const { productId } = useParams();
