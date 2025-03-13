@@ -89,28 +89,50 @@ const Product = () => {
   }
 
   return (
-    <div className="bg-background text-text m-20 min-h-screen p-6">
+    <div className="bg-background text-text p-4 mt-20 sm:p-6 lg:p-20 min-h-screen">
       <div className="flex flex-col lg:flex-row gap-10">
         {/* Image Section */}
         <div className="flex-1">
-          <div className="relative rounded-lg shadow-md overflow-hidden">
-            <img src={productData.images[currentIndex]} alt={productData.name} onClick={() => openModal(productData.images[currentIndex])} className="w-full h-[75vh] object-contain cursor-pointer hover:opacity-90" />
-            <button className="absolute top-1/2 left-2 -translate-y-1/2 bg-secondary text-white p-3 rounded-full" onClick={handlePrev}>◀</button>
-            <button className="absolute top-1/2 right-2 -translate-y-1/2 bg-secondary text-white p-3 rounded-full" onClick={handleNext}>▶</button>
+          <div className="relative bg-primary shadow-md overflow-hidden">
+            <img
+              src={productData.images[currentIndex]}
+              alt={productData.name}
+              onClick={() => openModal(productData.images[currentIndex])}
+              className="w-full h-auto max-h-[75vh] object-contain cursor-pointer hover:opacity-90"
+            />
+            {/* Navigation Buttons */}
+            <button
+              className="absolute top-1/2 left-2 transform -translate-y-1/2 bg-secondary text-white p-3 rounded-full"
+              onClick={handlePrev}
+            >
+              ◀
+            </button>
+            <button
+              className="absolute top-1/2 right-2 transform -translate-y-1/2 bg-secondary text-white p-3 rounded-full"
+              onClick={handleNext}
+            >
+              ▶
+            </button>
           </div>
-
           {/* Thumbnails */}
-          <div className="flex gap-4 mt-5 bg-primary p-2 rounded-md justify-center overflow-x-auto">
+          <div className="flex gap-2 mt-5 bg-primary p-2 justify-center overflow-x-auto">
             {productData.images.map((img, index) => (
-              <img key={index} src={img} alt={`${productData.name} thumbnail`} onClick={() => setCurrentIndex(index)} className={`w-20 h-20 object-cover rounded-lg cursor-pointer ${currentIndex === index ? 'border-2 border-secondary' : ''} hover:opacity-80`} />
+              <img
+                key={index}
+                src={img}
+                alt={`${productData.name} thumbnail`}
+                onClick={() => setCurrentIndex(index)}
+                className={`w-16 h-16 object-cover rounded-lg cursor-pointer ${currentIndex === index ? 'border-2 border-secondary' : ''
+                  } hover:opacity-80`}
+              />
             ))}
           </div>
         </div>
 
         {/* Product Details */}
-        <div className="flex-1 p-6 bg-primary rounded-lg shadow-lg">
-          <h1 className="text-3xl font-bold text-secondary mb-4">{productData.name}</h1>
-          <p className="text-xl font-semibold mb-2">
+        <div className="w-full lg:w-1/2 p-4 sm:p-6 bg-primary shadow-lg">
+          <h1 className="text-2xl sm:text-3xl font-bold text-secondary mb-4">{productData.name}</h1>
+          <p className="text-lg sm:text-xl font-semibold mb-2">
             {currency}
             {productData.price}
           </p>
@@ -119,9 +141,14 @@ const Product = () => {
 
           <div className="mb-6">
             <p className="font-semibold mb-2">Select Size</p>
-            <div className="flex gap-3">
+            <div className="flex gap-3 flex-wrap">
               {productData.sizes.map((s, index) => (
-                <button key={index} onClick={() => setSize(s)} className={`py-2 px-4 border rounded-lg ${size === s ? 'bg-secondary text-white' : 'bg-gray-100'} hover:bg-secondary hover:text-white`} >
+                <button
+                  key={index}
+                  onClick={() => setSize(s)}
+                  className={`py-2 px-4 border rounded-lg ${size === s ? 'bg-secondary text-white' : 'bg-gray-100'
+                    } hover:bg-secondary hover:text-white`}
+                >
                   {s}
                 </button>
               ))}
@@ -129,16 +156,25 @@ const Product = () => {
           </div>
 
           <div className="flex gap-4 flex-wrap">
-            <button className="py-3 px-6 bg-gray-500 text-white rounded-lg hover:bg-gray-600">
+            <button className="py-2 px-4 bg-gray-500 text-white rounded-lg hover:bg-gray-600">
               Customize
             </button>
-            <button onClick={() => navigate('/try-on', { state: { image: productData.images[currentIndex] } })} className="py-3 px-6 bg-gray-500 text-white rounded-lg hover:bg-gray-600 flex items-center gap-2">
+            <button
+              onClick={() => navigate('/try-on', { state: { image: productData.images[currentIndex] } })}
+              className="py-2 px-4 bg-gray-500 text-white rounded-lg hover:bg-gray-600 flex items-center gap-2"
+            >
               <Camera size={20} /> Virtual Try-On
             </button>
-            <button onClick={() => navigate('/aa-chatbot')} className="py-3 px-6 bg-gray-500 text-white rounded-lg hover:bg-gray-600">
+            <button
+              onClick={() => navigate('/aa-chatbot')}
+              className="py-2 px-4 bg-gray-500 text-white rounded-lg hover:bg-gray-600"
+            >
               Ask Aa
             </button>
-            <button onClick={() => addToCart(productData._id, size)} className="py-3 px-6 bg-secondary text-white rounded-lg hover:bg-[#432a12]">
+            <button
+              onClick={() => addToCart(productData._id, size)}
+              className="py-2 px-4 bg-secondary text-white rounded-lg hover:bg-[#432a12]"
+            >
               Add to Cart
             </button>
           </div>
@@ -166,7 +202,7 @@ const Product = () => {
       )}
 
       {/* Description Section */}
-      <div className="mt-20 bg-primary p-6 rounded-lg shadow-lg">
+      <div className="mt-20 bg-primary p-6 shadow-lg">
         <div className="flex justify-start space-x-4 mb-6">
           <b className="px-5 py-3 text-sm text-secondary bg-background rounded-md hover:shadow-md hover:bg-secondary hover:text-background">
             Description

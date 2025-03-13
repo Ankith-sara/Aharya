@@ -7,7 +7,7 @@ const Navbar = () => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [visible, setVisible] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const { setShowSearch, getCartCount, navigate, token, setToken, setCartItems, setSelectedSubCategory,SelectedSubCategory } = useContext(ShopContext)
+  const { setShowSearch, getCartCount, navigate, token, setToken, setCartItems, setSelectedSubCategory, SelectedSubCategory } = useContext(ShopContext)
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -69,7 +69,10 @@ const Navbar = () => {
           <button onClick={toggleDropdown} className="flex flex-col items-center gap-1">
             <p className="flex flex-row gap-1 items-center">Shop Now <span className={`flex items-center transition-transform ${isOpen ? "rotate-180" : "rotate-0"}`}> &#x2B9F; </span> </p>
           </button>
-          <div className={`${isOpen ? 'flex' : 'hidden'} fixed bg-primary shadow-md mt-3  p-10 left-60 right-60 transition-all duration-300 ease-in-out`} >
+          <div
+            className={`${isOpen ? 'flex' : 'hidden'
+              } fixed bg-primary shadow-md mt-3 py-10 px-8 left-0 right-0 md:left-0 md:right-0 lg:left-20 lg:right-20 xl:left-60 xl:right-60 transition-all duration-300 ease-in-out`}
+          >
             <div className="flex flex-row gap-10 justify-between items-start">
               <div className="flex flex-row gap-8 text-sm text-text">
                 <div>
@@ -79,15 +82,18 @@ const Navbar = () => {
                     <li> <NavLink to="/shop/Tops" onClick={() => handleCategoryClick('Tops')} className="hover:text-secondary" > Tops </NavLink> </li>
                     <li> <NavLink to="/shop/blazers" onClick={() => handleCategoryClick('Blazers')} className="hover:text-secondary" > Blazers </NavLink> </li>
                     <li> <NavLink to="/shop/Dresses" onClick={() => handleCategoryClick('Dresses')} className="hover:text-secondary" > Dresses </NavLink> </li>
+                    <li> <NavLink to="/shop/Corset-tops" onClick={() => handleCategoryClick('Corset-tops')} className="hover:text-secondary" > Corset tops </NavLink> </li>
                   </ul>
                 </div>
                 <div>
                   <h4 className="mb-2 text-lg">Men:</h4>
                   <ul className="flex flex-col gap-2 text-gray-600">
                     <li> <NavLink to="/shop/shirts" onClick={() => handleCategoryClick('Shirts')} className="hover:text-secondary" > Shirts </NavLink> </li>
-                    <li> <NavLink to="/shop/Half-Hand Shirts"onClick={() => handleCategoryClick('Half-hand Shirts')} className="hover:text-secondary" > Half-Hand Shirts </NavLink> </li>
-                    <li> <NavLink to="/shop/Vests"onClick={() => handleCategoryClick('Vests')} className="hover:text-secondary" > Vests </NavLink> </li>
-                    <li> <NavLink to="/shop/Trousers" onClick={() => handleCategoryClick('Trousers')}  className="hover:text-secondary" > Trousers </NavLink> </li>
+                    <li> <NavLink to="/shop/Half-Hand Shirts" onClick={() => handleCategoryClick('Half-hand Shirts')} className="hover:text-secondary" > Half-Hand Shirts </NavLink> </li>
+                    <li> <NavLink to="/shop/Vests" onClick={() => handleCategoryClick('Vests')} className="hover:text-secondary" > Vests </NavLink> </li>
+                    <li> <NavLink to="/shop/Trousers" onClick={() => handleCategoryClick('Trousers')} className="hover:text-secondary" > Trousers </NavLink> </li>
+                    <li> <NavLink to="/shop/Jackets" onClick={() => handleCategoryClick('Jackets')} className="hover:text-secondary" > Jackets </NavLink> </li>
+                    <li> <NavLink to="/shop/men-blazers" onClick={() => handleCategoryClick('Men-Blazers')} className="hover:text-secondary" > Blazers </NavLink> </li>
                   </ul>
                 </div>
                 <div>

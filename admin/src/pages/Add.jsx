@@ -26,8 +26,8 @@ const Add = ({ token }) => {
   const [sizes, setSizes] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const menSubCategories = ["", "Shirts", "Half-hand Shirts", "Vests", "Trousers"];
-  const womenSubCategories = ["", "Kurtis", "Tops", "Blazers", "Dresses"];
+  const menSubCategories = ["", "Shirts", "Half-hand Shirts", "Vests", "Trousers", "Jackets", "Men-Blazers"];
+  const womenSubCategories = ["", "Kurtis", "Tops", "Blazers", "Dresses", "Corset-tops"];
   const homeFurnishingSubCategories = ["", "Home Décor", "Handmade Toys", "Baskets", "Bags and Pouches", "Stationery"];
   const kitchenwareSubCategories = ["", "Brass Bowls", "Wooden Spoons"];
 

@@ -116,7 +116,7 @@ const PlaceOrder = () => {
   };
 
   return (
-    <form onSubmit={onSubmitHandler} className="flex flex-col sm:flex-row bg-primary border-2 rounded-lg border-secondary justify-between gap-4 p-10 sm:pt-14 min-h-[80vh] border-t m-20" >
+    <form onSubmit={onSubmitHandler} className="flex flex-col lg:flex-row bg-primary border-2 border-secondary justify-between gap-4 p-10 lg:pt-14 min-h-[80vh] border-t mx-4 mt-20 sm:mx-8 md:mx-20" >
       <div className="flex flex-col gap-4 w-full sm:max-w-[480px]">
         <div className="text-xl sm:text-2xl text-secondary my-3" >
           <Title text1="Delivery" text2="Information" />
@@ -141,8 +141,8 @@ const PlaceOrder = () => {
       <div className="bg-background p-10 rounded-md b mt-8">
         <CartTotal />
         <div className="mt-12">
-          <Title text1="Payment" text2="Method" style={{ color: "#543a14" }} />
-          <div className="flex gap-3 flex-col lg:flex-row">
+          <Title text1="Payment" text2="Method" />
+          <div className="flex gap-2 flex-col lg:flex-row">
             <PaymentOption method={method} setMethod={setMethod} type="stripe" logo={assets.stripe_logo} />
             <PaymentOption method={method} setMethod={setMethod} type="razorpay" logo={assets.razorpay_logo} />
             <PaymentOption method={method} setMethod={setMethod} type="cod" />

@@ -20,6 +20,7 @@ import ChatBot from './pages/ChatBot';
 import MyProfile from './pages/MyProfile';
 import Verify from './pages/Verify';
 import VirtualTryOn from './pages/VirtualTryOn';
+import BlogPage from './pages/BlogPage';
 
 const App = () => {
   return (
@@ -41,6 +42,7 @@ const App = () => {
         <Route path='/verify' element={<Verify />} />
         <Route path='/profile' element={<MyProfile />} />
         <Route path='/sell' element={<Sell />} />
+        <Route path='/blog' element={<BlogPage />} />
         <Route path='/aa-chatbot' element={<ChatBot />} />
         <Route path='/try-on' element={<VirtualTryOn />} />
       </Routes>

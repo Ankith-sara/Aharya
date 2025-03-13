@@ -16,15 +16,15 @@ function LatestCollection() {
   }, [products]);
 
   return (
-    <div className="my-10 mx-20 bg-primary py-5 px-10 rounded-lg shadow-lg">
+    <div className="my-10 bg-primary py-5 px-4 sm:px-6 md:px-10 lg:px-20 shadow-lg">
       <div className="text-center py-8 text-3xl text-text">
         <Title text1="Latest" text2="Collection" />
-        <p className="w-3/4 m-auto text-sm md:text-base text-text-light">
+        <p className="w-full sm:w-3/4 m-auto text-sm md:text-base text-text-light">
           Discover our newest arrivals, carefully selected to bring you the best in style, comfort, and innovation.
         </p>
       </div>
       {latestProducts.length > 0 ? (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-6">
           {latestProducts.map((item, index) => (
             <ProductItem key={index} id={item._id} image={item.images} name={item.name} price={item.price} />
           ))}

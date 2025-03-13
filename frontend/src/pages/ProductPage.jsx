@@ -57,23 +57,35 @@ const ProductPage = () => {
   }, [products, search, showSearch, selectedSubCategory, selectedCategory, sortOption]);
 
   return (
-    <div className="container m-20 px-4 py-10">
+    <div className="container bg-primary mt-20 mb-10 px-4 py-10">
       {/* Product List Section */}
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex flex-col md:flex-row justify-between items-center mb-6">
         <Title text1="Our" text2="Products" />
-        <select value={sortOption} onChange={(e) => setSortOption(e.target.value)} className="border px-2 py-1">
+        <select
+          value={sortOption}
+          onChange={(e) => setSortOption(e.target.value)}
+          className="border px-2 py-1 mt-4 md:mt-0"
+        >
           <option value="relevant">Sort by: Relevant</option>
           <option value="low-high">Sort by: Price (Low to High)</option>
           <option value="high-low">Sort by: Price (High to Low)</option>
         </select>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {filteredProducts.length === 0 ? (
-          <p className="col-span-4 text-center py-10 text-xl text-text-light">No products found.</p>
+          <p className="col-span-full text-center py-10 text-xl text-text-light">
+            No products found.
+          </p>
         ) : (
           filteredProducts.map((product, index) => (
-            <ProductItem key={index} name={product.name} id={product._id} price={product.price} image={product.images} />
+            <ProductItem
+              key={index}
+              name={product.name}
+              id={product._id}
+              price={product.price}
+              image={product.images}
+            />
           ))
         )}
       </div>

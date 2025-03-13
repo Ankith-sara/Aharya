@@ -6,16 +6,16 @@ const Footer = () => {
     const currentYear = new Date().getFullYear();
 
     return (
-        <div className="bg-secondary text-grey-800 py-10 px-5">
-            <div className="flex bg-primary rounded-lg p-5 flex-col sm:grid grid-cols-[3fr_1fr_1fr_1fr] gap-1 mb-5">
+        <div className="bg-secondary text-grey-800 py-5 pt-5">
+            <div className="flex bg-primary p-5 flex-col sm:grid grid-cols-[3fr_1fr_1fr_1fr] gap-1 mx-5 mb-5">
                 <div className="flex flex-col">
-                    <img className="mb-5 w-32" src={assets.logo} alt="Logo" />
+                    <img className="mb-2 w-32" src={assets.logo} alt="Logo" />
                     <p className="w-full md:w-2/3">
                         Bringing the best products to your doorstep with trust and quality.
                     </p>
                 </div>
                 <div>
-                    <p className="text-xl text-text font-medium mb-5">Quick Links</p>
+                    <p className="text-xl text-text font-medium mb-2 mt-3">Quick Links</p>
                     <ul className="flex flex-col gap-1">
                         <li className="hover:text-secondary cursor-pointer"><NavLink to='/about'>About Us</NavLink></li>
                         <li className="hover:text-secondary cursor-pointer"><NavLink to='/shop/collection'>Shop Now</NavLink></li>
@@ -24,7 +24,7 @@ const Footer = () => {
                     </ul>
                 </div>
                 <div>
-                    <p className="text-xl text-text font-medium mb-5">Policies</p>
+                    <p className="text-xl text-text font-medium mb-2 mt-3">Policies</p>
                     <ul className="flex flex-col gap-1">
                         <li className="hover:text-secondary cursor-pointer">Return Policy</li>
                         <li className="hover:text-secondary cursor-pointer">Privacy Policy</li>
@@ -32,7 +32,7 @@ const Footer = () => {
                     </ul>
                 </div>
                 <div>
-                    <p className="text-xl text-text font-medium mb-5">Get in Touch</p>
+                    <p className="text-xl text-text font-medium mb-2 mt-3">Get in Touch</p>
                     <ul className="flex flex-col gap-1">
                         <li className="hover:text-secondary cursor-pointer"><NavLink to='/contact'>Contact Us</NavLink></li>
                         <li className="hover:text-secondary">+91 9063284008</li>

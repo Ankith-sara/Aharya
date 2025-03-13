@@ -76,7 +76,7 @@ const Collection = () => {
   }, [sortType, filterProducts]);
 
   return (
-    <div className="flex flex-col sm:flex-row gap-1 sm:gap-10 border-t pt-10 m-20">
+    <div className="flex flex-col bg-primary px-4 sm:flex-row gap-1 sm:gap-10 border-t pt-10 m-20">
       <div className="min-w-60">
         <p onClick={() => setShowFilter(!showFilter)} className="my-2 text-xl flex items-center cursor-pointer gap-2">
           Filters

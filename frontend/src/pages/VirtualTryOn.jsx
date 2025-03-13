@@ -143,18 +143,14 @@ const VirtualTryOn = () => {
   };
 
   return (
-    <div className="min-h-screen m-20 px-6 py-10 bg-primary">
+    <div className="min-h-screen mt-20 mb-10 mx-4 sm:mx-8 md:mx-20 px-6 py-10 bg-primary">
       <div className="text-3xl text-text text-center mb-10">
         <Title text1="Virtual" text2="Try-On" />
       </div>
-
-      <div className="w-full max-w-4xl mx-auto bg-white shadow-lg rounded-lg p-8">
+      <div className="w-full max-w-4xl bg-white shadow-lg p-6 sm:p-8">
         <div className="flex justify-between items-center border-b pb-4">
-          <h2 className="text-2xl font-semibold text-secondary">Virtual Try-On Experience</h2>
-          <button
-            onClick={isWebcamActive ? stopWebcam : startWebcam}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
-          >
+          <h2 className="text-xl sm:text-2xl font-semibold text-secondary">Virtual Try-On Experience</h2>
+          <button onClick={isWebcamActive ? stopWebcam : startWebcam} className="bg-secondary text-primary font-medium flex gap-2 text-sm px-6 py-3 rounded-md transition-all duration-300">
             {isWebcamActive ? <CameraOff size={20} /> : <Camera size={20} />}
             {isWebcamActive ? "Stop Camera" : "Start Camera"}
           </button>
@@ -166,14 +162,12 @@ const VirtualTryOn = () => {
         <div className="relative mt-6 aspect-video bg-gray-100 rounded-lg overflow-hidden">
           <video ref={videoRef} autoPlay playsInline className={`absolute inset-0 w-full h-full object-cover ${!isWebcamActive && "hidden"}`} />
           <canvas ref={canvasRef} width={640} height={480} className={`absolute inset-0 w-full h-full object-cover ${!isWebcamActive && "hidden"}`} />
-
           {!isWebcamActive && <div className="absolute inset-0 flex items-center justify-center text-gray-500">Camera is turned off</div>}
         </div>
 
         <div className="text-center text-text text-3xl mt-16 mb-4">
           <Title text1="Try" text2="These Looks" />
         </div>
-
         <div className="flex justify-center gap-6 mt-6">
           {exampleVideos.map((item, index) => (
             <div key={index} className="relative w-[200px] h-[300px] rounded-lg shadow-lg hover:scale-105 transition cursor-pointer" onClick={() => setSelectedVideo(item.video)}>

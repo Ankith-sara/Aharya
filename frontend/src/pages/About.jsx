@@ -38,12 +38,12 @@ const About = () => {
 
 
   return (
-    <div className="min-h-screen m-20 px-6 py-10 bg-primary">
+    <div className="min-h-screen mt-20 mb-10 mx-4 sm:mx-8 md:mx-20 px-6 py-10 bg-primary">
       <div className="text-3xl text-text text-center">
         <Title text1="About" text2="Us" />
       </div>
 
-      <div className="my-4 flex flex-col md:flex-row gap-12 items-center">
+      <div className="my-4 flex flex-col md:flex-col lg:flex-row gap-12 items-center">
         <img className="w-full max-w-[400px] rounded-lg shadow-lg" src={assets.about_img} alt="About Us" />
         <div className="flex flex-col gap-6 text-text md:max-w-[600px]">
           <p>
@@ -87,8 +87,7 @@ const About = () => {
 
       <div className="relative flex items-center justify-center">
         {/* Left Scroll Button */}
-        <button
-          className={`absolute left-0 bg-secondary text-white p-3 rounded-full shadow-md transition-opacity ${scrollIndex === 0 ? 'opacity-30 cursor-not-allowed' : 'hover:bg-opacity-80'
+        <button className={`absolute left-0 bg-secondary text-white p-3 rounded-full shadow-md transition-opacity ${scrollIndex === 0 ? 'opacity-30 cursor-not-allowed' : 'hover:bg-opacity-80'
             }`}
           onClick={() => scroll('left')}
           disabled={scrollIndex === 0}
@@ -101,19 +100,9 @@ const About = () => {
           {videos.slice(scrollIndex * videosPerPage, (scrollIndex + 1) * videosPerPage).map((item, index) => (
             <div key={index} className="relative w-[320px] h-[420px] rounded-lg shadow-lg hover:scale-105 transition-transform">
               {!playingVideo[index] ? (
-                <img
-                  src={item.image}
-                  alt={`Preview ${index + 1}`}
-                  className="w-full h-full object-cover rounded-lg cursor-pointer"
-                  onClick={() => playVideo(index)}
-                />
+                <img src={item.image} alt={`Preview ${index + 1}`} className="w-full h-full object-cover cursor-pointer" onClick={() => playVideo(index)}/>
               ) : (
-                <video
-                  src={item.video}
-                  controls
-                  autoPlay
-                  className="w-full h-full rounded-lg"
-                ></video>
+                <video src={item.video} controls autoPlay className="w-full h-full"></video>
               )}
             </div>
           ))}
