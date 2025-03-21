@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import Title from '../components/Title';
 import { assets } from '../assets/frontend_assets/assets';
 import NewsletterBox from '../components/NewsletterBox';
+import { CheckCircle, ShoppingCart, Headset } from "lucide-react";
 
 const About = () => {
   return (
@@ -45,7 +46,6 @@ const About = () => {
         <div className="text-3xl text-text text-center mb-4">
           <Title text1="Our" text2="Story" />
         </div>
-
         <div className="flex flex-col md:flex-row gap-12 items-center">
           <div className="flex flex-col gap-6 text-text md:max-w-[600px] order-2 md:order-1">
             <p> Aharya began in 2023 when our founder, Avani Reddy, traveled through rural India and was captivated by the incredible craftsmanship she witnessed in small villages and communities. Driven by a desire to share these treasures with the world while supporting the artisans behind them, Aharya was born. </p>
@@ -64,7 +64,7 @@ const About = () => {
       {/* Mission and Vision Section */}
       <div className="my-16">
         <div className="grid md:grid-cols-2 gap-12">
-          <div className="bg-background p-8 rounded-lg shadow-lg">
+          <div className="bg-background p-8 shadow-lg">
             <h3 className="text-xl text-secondary font-bold mb-4">Our Mission</h3>
             <ul className="list-disc pl-5 space-y-3 text-text">
               <li>Empowering Artisans: Connecting master craftspeople with a global audience, providing them with fair opportunities and recognition.</li>
@@ -74,7 +74,7 @@ const About = () => {
             </ul>
           </div>
 
-          <div className="bg-background p-8 rounded-lg shadow-lg">
+          <div className="bg-background p-8 shadow-lg">
             <h3 className="text-xl text-secondary font-bold mb-4">Our Vision</h3>
             <p className="text-text">
               To establish Aharya as a global destination for Indian heritage, creating a world where
@@ -83,11 +83,7 @@ const About = () => {
               a difference. Step into a world where heritage meets innovation, and together, let's
               craft a better tomorrow.
             </p>
-            <img
-              className="w-full rounded-lg shadow-lg mt-6 max-h-48 object-cover"
-              src={assets.vision_img || "https://via.placeholder.com/600x300"}
-              alt="Vision"
-            />
+            <img className="w-full shadow-lg mt-6 max-h-48 object-cover" src={assets.vision_img || "https://via.placeholder.com/600x300"} alt="Vision" />
           </div>
         </div>
       </div>
@@ -97,13 +93,11 @@ const About = () => {
         <div className="text-3xl text-text text-center mb-4">
           <Title text1="Our" text2="Artisans" />
         </div>
-
         <div className="mb-8 text-center max-w-2xl mx-auto">
           <p className="text-text">
             Meet the skilled hands behind our collections. Our artisans represent diverse traditions from across India, each bringing generations of expertise to every piece they create.
           </p>
         </div>
-
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {[
             {
@@ -126,11 +120,7 @@ const About = () => {
             }
           ].map((artisan, index) => (
             <div key={index} className="bg-background rounded-lg overflow-hidden shadow-lg transition-transform hover:scale-105">
-              <img
-                className="w-full h-64 object-cover"
-                src={artisan.image}
-                alt={artisan.name}
-              />
+              <img className="w-full h-64 object-cover" src={artisan.image} alt={artisan.name} />
               <div className="p-6">
                 <h3 className="text-lg font-bold text-secondary">{artisan.name}</h3>
                 <p className="text-text">{artisan.craft} | {artisan.region}</p>
@@ -147,27 +137,31 @@ const About = () => {
       <div className="flex flex-col md:flex-row gap-8 text-sm">
         {[
           {
-            title: 'Quality Assurance',
-            content: 'Our products are crafted with care, ensuring the finest quality and durability. Each item undergoes rigorous quality checks before reaching you.',
-            icon: assets.quality_ico
+            title: "Quality Assurance",
+            content:
+              "Our products are crafted with care, ensuring the finest quality and durability. Each item undergoes rigorous quality checks before reaching you.",
+            icon: <CheckCircle className="w-12 h-12 text-secondary" />,
           },
           {
-            title: 'Convenience',
-            content: "We provide a seamless shopping experience with curated collections and easy navigation. Our website is designed to help you find exactly what you're looking for.",
-            icon: assets.convenience_icon
+            title: "Convenience",
+            content:
+              "We provide a seamless shopping experience with curated collections and easy navigation. Our website is designed to help you find exactly what you're looking for.",
+            icon: <ShoppingCart className="w-12 h-12 text-secondary" />,
           },
           {
-            title: 'Exceptional Customer Service',
-            content: "Our team is dedicated to providing you with the best support and assistance at all times. We're available to answer questions and address concerns promptly.",
-            icon: assets.service_icon
+            title: "Exceptional Customer Service",
+            content:
+              "Our team is dedicated to providing you with the best support and assistance at all times. We're available to answer questions and address concerns promptly.",
+            icon: <Headset className="w-12 h-12 text-secondary" />,
           },
         ].map((item, index) => (
-          <div key={index} className="border p-6 bg-background text-text border-secondary rounded-lg shadow-lg flex-1 hover:scale-105 transition-transform">
+          <div key={index} className="border p-6 bg-background text-text border-secondary shadow-lg flex-1 hover:scale-105 transition-transform" >
             <div className="text-center mb-4">
-              <span className="text-4xl">{item.icon}</span>
+              <h3 className="text-lg text-secondary flex flex-row gap-4 items-center justify-center font-bold">
+                {item.icon} {item.title}
+              </h3>
+              <p className="text-text mt-4">{item.content}</p>
             </div>
-            <h3 className="text-lg text-secondary font-bold text-center">{item.title}</h3>
-            <p className="text-text mt-4">{item.content}</p>
           </div>
         ))}
       </div>
@@ -177,41 +171,33 @@ const About = () => {
         <div className="text-3xl text-text text-center mb-8">
           <Title text1="Our" text2="Process" />
         </div>
-
         <div className="relative">
-          {/* Timeline line */}
           <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-1 bg-secondary transform -translate-x-1/2"></div>
-
-          {/* Process steps */}
           {[
             {
               title: "Sourcing",
               description: "We travel to remote villages to find authentic crafts and connect with skilled artisans.",
-              image: assets.sourcing_img || "https://via.placeholder.com/400x250"
+              image: assets.sourcing_img
             },
             {
               title: "Collaboration",
               description: "We work closely with artisans to develop products that honor tradition while appealing to modern tastes.",
-              image: assets.collaboration_img || "https://via.placeholder.com/400x250"
+              image: assets.collaboration_img
             },
             {
               title: "Creation",
               description: "Each piece is handcrafted using traditional techniques, often taking days or weeks to complete.",
-              image: assets.creation_img || "https://via.placeholder.com/400x250"
+              image: assets.creation_img
             },
             {
               title: "Quality Control",
               description: "We carefully inspect each item to ensure it meets our high standards of craftsmanship.",
-              image: assets.quality_img || "https://via.placeholder.com/400x250"
+              image: assets.quality_img
             }
           ].map((step, index) => (
             <div key={index} className={`flex flex-col md:flex-row items-center mb-12 ${index % 2 === 1 ? 'md:flex-row-reverse' : ''}`}>
               <div className="md:w-1/2 p-4">
-                <img
-                  src={step.image}
-                  alt={step.title}
-                  className="rounded-lg shadow-lg w-full h-64 object-cover"
-                />
+                <img src={step.image} alt={step.title} className="rounded-lg shadow-lg w-full h-64 object-cover" />
               </div>
               <div className={`md:w-1/2 p-6 bg-background rounded-lg shadow-lg mt-4 md:mt-0 ${index % 2 === 0 ? 'md:text-right' : 'md:text-left'}`}>
                 <h3 className="text-xl text-secondary font-bold mb-2">{step.title}</h3>
@@ -221,8 +207,6 @@ const About = () => {
           ))}
         </div>
       </div>
-
-      {/* Newsletter Section */}
       <div className="mt-16">
         <NewsletterBox />
       </div>

@@ -37,6 +37,10 @@ import story_img2 from './story_img2.jpeg'
 import story_img3 from './story_img3.jpeg'
 import story_img4 from './story_img4.jpeg'
 import vision_img from './vision_img.webp'
+import quality_img from './quality_img.webp'
+import creation_img from './creation_img.webp'
+import collaboration_img from './collaboration_img.webp'
+import sourcing_img from './sourcing_img.webp'
 import instagram_icon from './instagram_icon.png'
 import pinterest_icon from './pinterest_icon.png'
 import linkedin_icon from './linkedin_icon.png'
@@ -74,6 +78,10 @@ export const assets = {
     story_img3,
     story_img4,
     vision_img,
+    quality_img,
+    creation_img,
+    collaboration_img,
+    sourcing_img,
     instagram_icon,
     pinterest_icon,
     linkedin_icon,
