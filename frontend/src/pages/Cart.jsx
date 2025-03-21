@@ -58,35 +58,20 @@ const Cart = () => {
                       <img className="w-20 sm:w-28 flex-shrink-0" src={productData.images[0]} alt={productData.name} />
                       <div className="pt-5">
                         <p className="text-lg font-medium">{productData.name}</p>
-                        <div className="flex flex-col gap-4 mt-2">
-                          <p>
-                            Price: {currency} {productData.price}
-                          </p>
-                          <div className='flex gap-1 items-center'>
-                            <div className='flex gap-4 flex-col sm:flex-row md:flex-row items-center'>
-                              <div className='flex gap-1 items-center'>
-                                <p>Size: </p>
-                                <p className="px-3 py-1 w-[35px] border border-secondary bg-primary text-text text-center">
-                                  {item.size}
-                                </p>
-                              </div>
-                              <p>Quantity: </p>
-                              <div className="flex items-center border border-secondary bg-primary text-text">
-                                <button onClick={() => updateQuantity(item._id, item.size, item.quantity - 1)} className="px-1 py-1" disabled={item.quantity <= 1}>
-                                  <MinusIcon size={12} />
-                                </button>
-                                <input
-                                  onChange={(e) => {
-                                    const value = e.target.value;
-                                    if (value !== "" && value !== "0") {
-                                      updateQuantity(item._id, item.size, Number(value));
-                                    }
-                                  }} className="w-16 px-1 py-1 text-center bg-primary text-text" type="number" min={1} value={item.quantity}
-                                />
-                                <button onClick={() => updateQuantity(item._id, item.size, item.quantity + 1)} className="px-1 py-1">
-                                  <PlusIcon size={12} />
-                                </button>
-                              </div>
+                        <div className="flex flex-col gap-2 mt-2">
+                          <p> Price: {currency} {productData.price} </p>
+                          <p> Size: {item.size} </p>
+                          <div className='flex gap-4 flex-col sm:flex-row md:flex-row items-center'>
+                            <p>Quantity: </p>
+                            <div className="flex items-center border border-secondary bg-primary text-text">
+                              <input
+                                onChange={(e) => {
+                                  const value = e.target.value;
+                                  if (value !== "" && value !== "0") {
+                                    updateQuantity(item._id, item.size, Number(value));
+                                  }
+                                }} className="w-16 px-1 py-1 text-center bg-primary text-text" type="number" min={1} value={item.quantity}
+                              />
                             </div>
                           </div>
                         </div>

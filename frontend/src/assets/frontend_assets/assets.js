@@ -5,14 +5,13 @@ import p_img2_3 from './p_img2_3.png'
 import p_img2_4 from './p_img2_4.png'
 import p_img3 from './p_img3.png'
 
-
 import logo from './logo.png'
 import logo_white from './logo_white.png'
 import down_arrow from './down_arrow.png'
 import hero_img from './hero_img.png'
 import cart_icon from './cart_icon.png'
 import bin_icon from './bin_icon.png'
-import login_bg from './login_bg.webp'
+import login_bg from './login_bg.jpg'
 import dropdown_icon from './dropdown_icon.png'
 import exchange_icon from './exchange_icon.png'
 import profile_icon from './profile_icon.png'
@@ -24,6 +23,7 @@ import nav_2 from './nav_2.webp'
 import star_dull_icon from './star_dull_icon.png'
 import star_icon from './star_icon.png'
 import support_img from './support_img.png'
+import security_icon from './security_icon.png'
 import menu_icon from './menu_icon.png'
 import about_img from './about_img.jpg'
 import contact_img from './contact_img.jpg'
@@ -32,8 +32,12 @@ import stripe_logo from './stripe_logo.png'
 import cross_icon from './cross_icon.png'
 import seller_1 from './seller_1.jpg'
 import seller_2 from './seller_2.jpg'
+import story_img1 from './story_img1.jpeg'
+import story_img2 from './story_img2.jpeg'
+import story_img3 from './story_img3.jpeg'
+import story_img4 from './story_img4.jpeg'
+import vision_img from './vision_img.webp'
 import instagram_icon from './instagram_icon.png'
-import facebook_icon from './facebook_icon.png'
 import pinterest_icon from './pinterest_icon.png'
 import linkedin_icon from './linkedin_icon.png'
 
@@ -56,6 +60,7 @@ export const assets = {
     star_icon,
     bin_icon,
     support_img,
+    security_icon,
     menu_icon,
     about_img,
     contact_img,
@@ -64,8 +69,12 @@ export const assets = {
     cross_icon,
     seller_1,
     seller_2,
+    story_img1,
+    story_img2,
+    story_img3,
+    story_img4,
+    vision_img,
     instagram_icon,
-    facebook_icon,
     pinterest_icon,
     linkedin_icon,
 }

@@ -66,4 +66,21 @@ const adminLogin = async (req, res) => {
     }
 };
 
-export { loginUser, registerUser, adminLogin };
+const getUserDetails = async (req, res) => {
+    try {
+        const { id } = req.params;
+        if (!id) {
+            return res.status(400).json({ success: false, message: "User ID is required" });
+        }
+        const user = await userModel.findById(id)
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found" });
+        }
+        res.json({ success: true, user });
+    } catch (error) {
+        console.error("Error in Fetching User Details:", error);
+        res.status(500).json({ success: false, message: "Internal server error" });
+    }
+};
+
+export { loginUser, registerUser, adminLogin, getUserDetails };

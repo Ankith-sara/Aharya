@@ -1,27 +1,24 @@
 import React, { useContext, useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { ShopContext } from '../context/ShopContext';
 import Title from '../components/Title';
 import ProductItem from '../components/ProductItem';
 
 const ProductPage = () => {
+  const location = useLocation();
+  const { category } = location.state || {};
+
   const {
     products = [],
     search,
     showSearch,
-    selectedCategory,
     selectedSubCategory,
-    setSelectedSubCategory
+    setSelectedSubCategory,
   } = useContext(ShopContext);
 
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [sortOption, setSortOption] = useState('relevant');
 
-  // Handle subcategory selection from the navbar dropdown menu
-  const handleSubCategorySelection = (subCategory) => {
-    setSelectedSubCategory(subCategory);
-  };
-
-  // Filter and sort products
   useEffect(() => {
     let updatedProducts = [...products];
 
@@ -40,9 +37,9 @@ const ProductPage = () => {
     }
 
     // Apply category filtering
-    if (selectedCategory) {
+    if (category) {
       updatedProducts = updatedProducts.filter(
-        (product) => product.category === selectedCategory
+        (product) => product.category.toLowerCase() === category
       );
     }
 
@@ -54,10 +51,10 @@ const ProductPage = () => {
     });
 
     setFilteredProducts(updatedProducts);
-  }, [products, search, showSearch, selectedSubCategory, selectedCategory, sortOption]);
+  }, [products, search, showSearch, selectedSubCategory, category, sortOption]);
 
   return (
-    <div className="container bg-primary mt-20 mb-10 px-4 py-10">
+    <div className="bg-primary mt-20 mb-10 py-5 px-4 sm:px-6 md:px-10 lg:px-20">
       {/* Product List Section */}
       <div className="flex flex-col md:flex-row justify-between items-center mb-6">
         <Title text1="Our" text2="Products" />

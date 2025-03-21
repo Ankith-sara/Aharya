@@ -16,7 +16,7 @@ function LatestCollection() {
   }, [products]);
 
   return (
-    <div className="my-10 bg-primary py-5 px-4 sm:px-6 md:px-10 lg:px-20 shadow-lg">
+    <div className="bg-primary py-5 px-4 md:px-10 shadow-lg my-10">
       <div className="text-center py-8 text-3xl text-text">
         <Title text1="Latest" text2="Collection" />
         <p className="w-full sm:w-3/4 m-auto text-sm md:text-base text-text-light">

@@ -11,10 +11,10 @@ const Contact = () => {
       </div>
       <div className="my-10 flex flex-col justify-center md:flex-row gap-10 mb-28">
         <img className="w-full md:max-w-[480px] rounded-lg shadow-md" src={assets.contact_img} alt="" />
-        <div className="flex flex-col justify-center items-start gap-6">
-          <p className="font-semibold text-xl text-secondary">Our Store</p>
+        <div className="flex flex-col justify-center items-start gap-4">
+          <p className="font-semibold text-xl text-secondary">Address:</p>
           <p className="text-text leading-6">
-            37-72/7/4 JJ Nagar Sanikipuri, Malkajgiri, Hyderabad<br />
+            Sanikipuri, Malkajgiri, Hyderabad<br />
             Pin: 500064
           </p>
           <p className="text-text leading-6">

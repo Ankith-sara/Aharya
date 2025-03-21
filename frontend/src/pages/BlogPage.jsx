@@ -17,7 +17,6 @@ const BlogPage = () => {
       imageUrl: 'https://okhai.org/cdn/shop/files/The_art_the_artisans.jpg?v=1712295959&width=1070',
       link: 'https://okhai.org/pages/about-us',
     },
-    // Add more posts as needed
   ];
 
   return (

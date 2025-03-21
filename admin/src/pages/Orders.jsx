@@ -39,21 +39,6 @@ const Orders = ({ token }) => {
     }
   }
 
-  // Delete Order
-  const handleDeleteOrder = async (index, orderId) => {
-    try {
-      // Optionally, call backend API to delete the order
-      // await axios.delete(`${backendURl}/api/order/delete/${orderId}`, { headers: { token } });
-
-      const updatedOrders = [...orders];
-      updatedOrders.splice(index, 1);
-      setOrders(updatedOrders);
-      toast.success('Order deleted successfully');
-    } catch (error) {
-      toast.error('Failed to delete order');
-    }
-  };
-
   useEffect(() => {
     fetchAllOrders();
   }, [token]);
@@ -82,7 +67,8 @@ const Orders = ({ token }) => {
                   <td className="p-3 border border-gray-900">
                     {order.items.map((item, idx) => (
                       <div key={idx} className="text-sm text-gray-700">
-                        {item.name} x {item.quantity}
+                        <p>Order Id: {item._id}</p>
+                        <p>Products: {item.name} x {item.quantity}</p>
                         {item.size && <span> ({item.size})</span>}
                       </div>
                     ))}
@@ -105,7 +91,6 @@ const Orders = ({ token }) => {
                     <p className={`text-sm ${order.payment ? 'text-green-600' : 'text-red-600'}`} > {order.payment ? 'Paid' : 'Pending'} </p>
                   </td>
                   <td className="p-2 border border-gray-900">
-                    <div className="flex items-center gap-2">
                       <select onChange={(event) => statusHandler(event, order._id)} value={order.status} className="border border-gray-300 rounded-md py-1 px-5 bg-gray-50 focus:ring focus:ring-secondary text-sm">
                         <option value="Order Placed">Order Placed</option>
                         <option value="Packing">Packing</option>
@@ -113,10 +98,6 @@ const Orders = ({ token }) => {
                         <option value="Out of delivery">Out of delivery</option>
                         <option value="Delivered">Delivered</option>
                       </select>
-                      <button onClick={() => handleDeleteOrder(index, order._id)} className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm">
-                        Delete
-                      </button>
-                    </div>
                   </td>
                 </tr>
               ))}

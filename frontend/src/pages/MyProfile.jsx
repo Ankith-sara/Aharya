@@ -22,14 +22,14 @@ const MyProfile = () => {
   ];
 
   return (
-    <div className="min-h-screen m-20 px-4 sm:px-6 md:px-10 lg:px-20 py-10 bg-primary">
+    <div className="min-h-screen mt-20 mb-10 mx-4 sm:mx-8 md:mx-20 px-4 sm:px-6 md:px-10 lg:px-20 py-10 bg-primary">
       {/* Profile Title */}
       <div className="text-2xl sm:text-3xl text-text text-center">
         <Title text1="My" text2="Profile" />
       </div>
 
       {/* Profile Section */}
-      <div className="my-8 flex flex-col lg:flex-row gap-8 lg:gap-12 items-center lg:items-start">
+      <div className="my-8 flex flex-col md:flex-row gap-8 lg:gap-12 items-center lg:items-start">
         <div className="bg-background p-6 sm:p-8 rounded-xl shadow-lg flex flex-col items-center w-full sm:w-3/4 md:w-2/3 lg:w-1/3">
           <div className="w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 rounded-full overflow-hidden mb-4 border-4 border-secondary">
             <img src="/api/placeholder/128/128" alt="Profile" className="w-full h-full object-cover" />
@@ -51,9 +51,9 @@ const MyProfile = () => {
             </h3>
             <div className="grid gap-4 sm:gap-5">
               {menuItems.map((item, index) => (
-                <button key={index} className="border border-secondary bg-background text-text p-3 sm:p-4 flex items-center justify-between rounded-lg shadow-md hover:scale-[1.02] transition-transform">
+                <button key={index} className="border border-secondary bg-primary text-text p-3 sm:p-4 flex items-center justify-between rounded-lg shadow-md hover:scale-[1.02] transition-transform">
                   <div className="flex items-center gap-2 sm:gap-3">{item.icon} <span className="text-sm sm:text-base font-medium">{item.text}</span></div>
-                  <ChevronRight size={16} className="text-gray-700" />
+                  <ChevronRight size={16} className="text-secondary" />
                 </button>
               ))}
             </div>
@@ -64,7 +64,7 @@ const MyProfile = () => {
       {/* Recent Activity */}
       <div className="bg-background p-5 sm:p-6 rounded-lg shadow-lg mt-6 sm:mt-8 text-center">
         <h3 className="text-lg font-semibold text-text mb-3">Recent Activity</h3>
-        <p className="text-gray-400 text-sm sm:text-base">No recent activity to display.</p>
+        <p className="text-sm sm:text-base">No recent activity to display.</p>
       </div>
     </div>
   );

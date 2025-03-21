@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import Home from './pages/Home';
 import Collection from './pages/Collection';
 import About from './pages/About';
@@ -12,7 +12,7 @@ import Orders from './pages/Orders';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import SearchBar from './components/SearchBar';
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Sell from './pages/Sell';
 import ProductPage from './pages/ProductPage';
@@ -21,20 +21,25 @@ import MyProfile from './pages/MyProfile';
 import Verify from './pages/Verify';
 import VirtualTryOn from './pages/VirtualTryOn';
 import BlogPage from './pages/BlogPage';
+import ScrollToTop from './components/ScrollToTop';
 
 const App = () => {
+  const location = useLocation();
+  const hideNavAndFooter = location.pathname === '/login';
+
   return (
     <div>
       <ToastContainer />
-      <Navbar />
+      {!hideNavAndFooter && <Navbar />}
       <SearchBar />
+      <ScrollToTop />
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/shop/collection' element={<Collection />} />
         <Route path='/about' element={<About />} />
         <Route path='/contact' element={<Contact />} />
         <Route path='/product/:productId' element={<Product />} />
-        <Route path="/shop/:subcategory" element={<ProductPage />} />
+        <Route path='/shop/:subcategory' element={<ProductPage />} />
         <Route path='/cart' element={<Cart />} />
         <Route path='/login' element={<Login />} />
         <Route path='/place-order' element={<PlaceOrder />} />
@@ -46,7 +51,7 @@ const App = () => {
         <Route path='/aa-chatbot' element={<ChatBot />} />
         <Route path='/try-on' element={<VirtualTryOn />} />
       </Routes>
-      <Footer />
+      {!hideNavAndFooter && <Footer />}
     </div>
   );
 };

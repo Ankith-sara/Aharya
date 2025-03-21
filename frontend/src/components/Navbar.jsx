@@ -11,6 +11,19 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
 
+  // Mobile menu state
+  const [mobileDropdownVisible, setMobileDropdownVisible] = useState(false);
+  const [expandedCategory, setExpandedCategory] = useState(null);
+
+  // Toggle mobile category expansion
+  const toggleCategoryExpansion = (category) => {
+    if (expandedCategory === category) {
+      setExpandedCategory(null);
+    } else {
+      setExpandedCategory(category);
+    }
+  };
+
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
@@ -53,6 +66,7 @@ const Navbar = () => {
 
   const handleCategoryClick = (subCategory) => {
     setSelectedSubCategory(subCategory);
+    setVisible(false)
     closeDropdown();
   };
   return (
@@ -69,10 +83,7 @@ const Navbar = () => {
           <button onClick={toggleDropdown} className="flex flex-col items-center gap-1">
             <p className="flex flex-row gap-1 items-center">Shop Now <span className={`flex items-center transition-transform ${isOpen ? "rotate-180" : "rotate-0"}`}> &#x2B9F; </span> </p>
           </button>
-          <div
-            className={`${isOpen ? 'flex' : 'hidden'
-              } fixed bg-primary shadow-md mt-3 py-10 px-8 left-0 right-0 md:left-0 md:right-0 lg:left-20 lg:right-20 xl:left-60 xl:right-60 transition-all duration-300 ease-in-out`}
-          >
+          <div className={`${isOpen ? 'flex' : 'hidden'} fixed bg-primary shadow-md mt-3 py-10 px-8 left-0 right-0 md:left-0 md:right-0 lg:left-20 lg:right-20 xl:left-60 xl:right-60 transition-all duration-500 ease-in-out`}>
             <div className="flex flex-row gap-10 justify-between items-start">
               <div className="flex flex-row gap-8 text-sm text-text">
                 <div>
@@ -148,11 +159,9 @@ const Navbar = () => {
           <div className="group-hover:block hidden absolute dropdown-menu right-0 pt-4">
             {token && (
               <div className="flex flex-col gap-2 w-36 py-3 px-5 bg-primary text-text rounded">
-                <p className="cursor-pointer hover:text-secondary" onClick={() => navigate('/profile')}>My Profile</p>
-                <p className="cursor-pointer hover:text-secondary" onClick={() => navigate('/orders')}>Orders</p>
-                <p className="cursor-pointer hover:text-secondary" onClick={() => { if (window.confirm("Are you sure you want to log out?")) logout(); }}>
-                  Logout
-                </p>
+                <p className="cursor-pointer hover:text-secondary" onClick={() => navigate('/profile')}> My Profile </p>
+                <p className="cursor-pointer hover:text-secondary" onClick={() => navigate('/orders')}> Orders </p>
+                <p className="cursor-pointer hover:text-secondary" onClick={() => { if (window.confirm("Are you sure you want to log out?")) logout(); }}> Logout </p>
               </div>
             )}
           </div>
@@ -165,47 +174,102 @@ const Navbar = () => {
       </div>
 
       {/* Menu Slide (for mobile) */}
-      <div className={`fixed top-0 right-0 bottom-0 h-full overflow-hidden bg-white shadow-lg transition-all duration-300 ${visible ? 'w-full md:w-1/3' : 'w-0'}`}>
+      <div className={`fixed top-0 right-0 bottom-0 h-full overflow-y-auto bg-primary shadow-lg transition-all duration-300 z-30 ${visible ? 'w-full md:w-4/5' : 'w-0'}`}>
         <div className="flex flex-col h-full text-gray-800">
-          {/* Back Button */}
-          <div onClick={() => setVisible(false)} className="flex items-center gap-4 p-4 bg-gray-100 cursor-pointer hover:bg-gray-200">
+          <div onClick={() => setVisible(false)} className="flex items-center gap-4 p-4 bg-secondary cursor-pointer hover:bg-secondary">
             <img src={assets.dropdown_icon} className="h-4 rotate-180" alt="Back" />
             <p className="text-lg font-medium">Back</p>
           </div>
-
-          {/* Dropdown Links */}
+          {/* Menu Links */}
           <div className="flex flex-col flex-grow">
-            {/* Home Link */}
-            <NavLink onClick={() => setVisible(false)} className="py-4 px-6 border-b text-lg font-semibold hover:bg-gray-100 transition" to='/'>
-              Home
-            </NavLink>
-
-            {/* Shop Now Button with Dropdown */}
+            <NavLink onClick={() => setVisible(false)} className="py-4 px-6 border-b text-lg font-semibold hover:bg-secondary transition" to='/'> Home </NavLink>
             <div className="relative">
-              <button className="w-full py-4 px-6 text-lg font-semibold border-b text-left hover:bg-gray-100 transition" onClick={() => setDropdownVisible(!dropdownVisible)}>
-                Shop Now <img src={assets.down_arrow} alt="Arrow" className="w-3 ml-2 inline transition-transform transform {dropdownVisible ? 'rotate-180' : ''}" />
+              <button className="w-full py-4 px-6 text-lg font-semibold border-b text-left hover:bg-secondary transition flex justify-between items-center" onClick={() => setMobileDropdownVisible(!mobileDropdownVisible)}>
+                Shop Now
+                <span className={`transition-transform ${mobileDropdownVisible ? "rotate-180" : "rotate-0"}`}>
+                  <img src={assets.down_arrow} alt="Arrow" className="w-3" />
+                </span>
               </button>
-              {dropdownVisible && (
-                <div className="pl-6 mt-2 flex flex-col">
-                  <NavLink to="/shop/clothes" className="py-2 hover:bg-gray-100">Clothes</NavLink>
-                  <NavLink to="/shop/baskets" className="py-2 hover:bg-gray-100">Baskets</NavLink>
-                  <NavLink to="/shop/handmade-toys" className="py-2 hover:bg-gray-100">Handmade Toys</NavLink>
-                  <NavLink to="/shop/home-decor" className="py-2 hover:bg-gray-100">Home Decor</NavLink>
-                  <NavLink to="/shop/bags" className="py-2 hover:bg-gray-100">Bags</NavLink>
-                  <NavLink to="/shop/stationery" className="py-2 hover:bg-gray-100">Stationery</NavLink>
-                  <NavLink to="/shop/kitchenware" className="py-2 hover:bg-gray-100">Kitchenware</NavLink>
-                  <NavLink to="/shop/seasonal-specials" className="py-2 hover:bg-gray-100">Seasonal Specials</NavLink>
+
+              {mobileDropdownVisible && (
+                <div className="border-b bg-primary">
+                  {/* Women Category */}
+                  <div className="border-b">
+                    <button className="w-full py-3 px-8 text-base font-medium text-left hover:bg-secondary transition flex justify-between items-center" onClick={() => toggleCategoryExpansion('women')}>
+                      Women
+                      <span className={`transition-transform ${expandedCategory === 'women' ? "rotate-180" : "rotate-0"}`}>
+                        <img src={assets.down_arrow} alt="Arrow" className="w-3" />
+                      </span>
+                    </button>
+
+                    {expandedCategory === 'women' && (
+                      <div className="py-2 bg-primary">
+                        <NavLink to="/shop/Kurtis" onClick={() => { handleCategoryClick('Kurtis') }} className="w-full py-2 px-12 text-base font-small text-left hover:bg-secondary transition flex justify-between items-center"> Kurtis </NavLink>
+                        <NavLink to="/shop/Tops" onClick={() => { handleCategoryClick('Tops') }} className="w-full py-2 px-12 text-base font-small text-left hover:bg-secondary transition flex justify-between items-center"> Tops </NavLink>
+                        <NavLink to="/shop/blazers" onClick={() => { handleCategoryClick('Blazers') }} className="w-full py-2 px-12 text-base font-small text-left hover:bg-secondary transition flex justify-between items-center"> Blazers </NavLink>
+                        <NavLink to="/shop/Dresses" onClick={() => { handleCategoryClick('Dresses') }} className="w-full py-2 px-12 text-base font-small text-left hover:bg-secondary transition flex justify-between items-center"> Dresses </NavLink>
+                        <NavLink to="/shop/Corset-tops" onClick={() => { handleCategoryClick('Corset-tops') }} className="w-full py-2 px-12 text-base font-small text-left hover:bg-secondary transition flex justify-between items-center"> Corset tops </NavLink>
+                      </div>
+                    )}
+                  </div>
+                  {/* Men Category */}
+                  <div className="border-b">
+                    <button className="w-full py-3 px-8 text-base font-medium text-left hover:bg-gray-100 transition flex justify-between items-center" onClick={() => toggleCategoryExpansion('men')}>
+                      Men
+                      <span className={`transition-transform ${expandedCategory === 'men' ? "rotate-180" : "rotate-0"}`}>
+                        <img src={assets.down_arrow} alt="Arrow" className="w-3" />
+                      </span>
+                    </button>
+                    {expandedCategory === 'men' && (
+                      <div className="py-2 bg-primary">
+                        <NavLink to="/shop/shirts" onClick={() => { handleCategoryClick('Shirts') }} className="w-full py-2 px-12 text-base font-small text-left hover:bg-secondary transition flex justify-between items-center"> Shirts</NavLink>
+                        <NavLink to="/shop/Half-Hand Shirts" onClick={() => { handleCategoryClick('Half-hand Shirts') }} className="w-full py-2 px-12 text-base font-small text-left hover:bg-secondary transition flex justify-between items-center"> Half-Hand Shirts</NavLink>
+                        <NavLink to="/shop/Vests" onClick={() => { handleCategoryClick('Vests') }} className="w-full py-2 px-12 text-base font-small text-left hover:bg-secondary transition flex justify-between items-center"> Vests</NavLink>
+                        <NavLink to="/shop/Trousers" onClick={() => { handleCategoryClick('Trousers') }} className="w-full py-2 px-12 text-base font-small text-left hover:bg-secondary transition flex justify-between items-center"> Trousers</NavLink>
+                        <NavLink to="/shop/Jackets" onClick={() => { handleCategoryClick('Jackets') }} className="w-full py-2 px-12 text-base font-small text-left hover:bg-secondary transition flex justify-between items-center"> Jackets</NavLink>
+                        <NavLink to="/shop/men-blazers" onClick={() => { handleCategoryClick('Men-Blazers') }} className="w-full py-2 px-12 text-base font-small text-left hover:bg-secondary transition flex justify-between items-center"> Blazers</NavLink>
+                      </div>
+                    )}
+                  </div>
+                  {/* Home Furnishing Category */}
+                  <div className="border-b">
+                    <button className="w-full py-3 px-8 text-base font-medium text-left hover:bg-gray-100 transition flex justify-between items-center" onClick={() => toggleCategoryExpansion('home')}>
+                      Home Furnishing
+                      <span className={`transition-transform ${expandedCategory === 'home' ? "rotate-180" : "rotate-0"}`}>
+                        <img src={assets.down_arrow} alt="Arrow" className="w-3" />
+                      </span>
+                    </button>
+                    {expandedCategory === 'home' && (
+                      <div className="py-2 bg-primary">
+                        <NavLink to="/shop/home-decor" onClick={() => { handleCategoryClick('Home Décor') }} className="w-full py-2 px-12 text-base font-small text-left hover:bg-secondary transition flex justify-between items-center"> Home Décor</NavLink>
+                        <NavLink to="/shop/handmade-toys" onClick={() => { handleCategoryClick('Handmade Toys') }} className="w-full py-2 px-12 text-base font-small text-left hover:bg-secondary transition flex justify-between items-center"> Handmade Toys</NavLink>
+                        <NavLink to="/shop/baskets" onClick={() => { handleCategoryClick('baskets') }} className="w-full py-2 px-12 text-base font-small text-left hover:bg-secondary transition flex justify-between items-center"> Baskets</NavLink>
+                        <NavLink to="/shop/bags&pouches" onClick={() => { handleCategoryClick('Bags and Pouches') }} className="w-full py-2 px-12 text-base font-small text-left hover:bg-secondary transition flex justify-between items-center"> Bags and Pouches</NavLink>
+                        <NavLink to="/shop/stationery" onClick={() => { handleCategoryClick('Stationery') }} className="w-full py-2 px-12 text-base font-small text-left hover:bg-secondary transition flex justify-between items-center"> Stationery</NavLink>
+                      </div>
+                    )}
+                  </div>
+                  {/* Kitchenware Category */}
+                  <div className="border-b">
+                    <button className="w-full py-3 px-8 text-base font-medium text-left hover:bg-gray-100 transition flex justify-between items-center" onClick={() => toggleCategoryExpansion('kitchen')} >
+                      Kitchenware
+                      <span className={`transition-transform ${expandedCategory === 'kitchen' ? "rotate-180" : "rotate-0"}`}>
+                        <img src={assets.down_arrow} alt="Arrow" className="w-3" />
+                      </span>
+                    </button>
+                    {expandedCategory === 'kitchen' && (
+                      <div className="py-2 bg-primary">
+                        <NavLink to="/shop/brass" onClick={() => { handleCategoryClick('Brass'); setVisible(false); }} className="w-full py-2 px-12 text-base font-small text-left hover:bg-secondary transition flex justify-between items-center"> Brass Bowls</NavLink>
+                        <NavLink to="/shop/wooden-spoons" onClick={() => { handleCategoryClick('Wooden Spoons'); setVisible(false); }} className="w-full py-2 px-12 text-base font-small text-left hover:bg-secondary transition flex justify-between items-center"> Wooden Spoons</NavLink>
+                      </div>
+                    )}
+                  </div>
                 </div>
               )}
             </div>
-
-            {/* About and Contact Links */}
-            <NavLink onClick={() => setVisible(false)} className="py-4 px-6 border-b text-lg font-semibold hover:bg-gray-100 transition" to='/about'>
-              About
-            </NavLink>
-            <NavLink onClick={() => setVisible(false)} className="py-4 px-6 border-b text-lg font-semibold hover:bg-gray-100 transition" to='/contact'>
-              Contact
-            </NavLink>
+            <NavLink onClick={() => setVisible(false)} className="py-4 px-6 border-b text-lg font-semibold hover:bg-gray-100 transition" to='/about'> About</NavLink>
+            <NavLink onClick={() => setVisible(false)} className="py-4 px-6 border-b text-lg font-semibold hover:bg-gray-100 transition" to='/sell'> Sell</NavLink>
+            <NavLink onClick={() => setVisible(false)} className="py-4 px-6 border-b text-lg font-semibold hover:bg-gray-100 transition" to='/contact'> Contact</NavLink>
           </div>
         </div>
       </div>

@@ -3,7 +3,6 @@ import { useParams } from 'react-router-dom';
 import { ShopContext } from '../context/ShopContext';
 import { Camera } from 'lucide-react';
 import RelatedProducts from '../components/RelatedProducts';
-import VirtualTryOn from './VirtualTryOn';
 
 const Product = () => {
   const { productId } = useParams();
@@ -89,39 +88,24 @@ const Product = () => {
   }
 
   return (
-    <div className="bg-background text-text p-4 mt-20 sm:p-6 lg:p-20 min-h-screen">
+    <div className="bg-background text-text p-4 mt-16 sm:p-6 lg:p-20 min-h-screen">
       <div className="flex flex-col lg:flex-row gap-10">
         {/* Image Section */}
         <div className="flex-1">
           <div className="relative bg-primary shadow-md overflow-hidden">
-            <img
-              src={productData.images[currentIndex]}
-              alt={productData.name}
-              onClick={() => openModal(productData.images[currentIndex])}
-              className="w-full h-auto max-h-[75vh] object-contain cursor-pointer hover:opacity-90"
-            />
+            <img src={productData.images[currentIndex]} alt={productData.name} onClick={() => openModal(productData.images[currentIndex])} className="w-full h-auto max-h-[75vh] object-contain cursor-pointer hover:opacity-90"/>
             {/* Navigation Buttons */}
-            <button
-              className="absolute top-1/2 left-2 transform -translate-y-1/2 bg-secondary text-white p-3 rounded-full"
-              onClick={handlePrev}
-            >
+            <button className="absolute top-1/2 left-2 transform -translate-y-1/2 bg-secondary text-white p-3 rounded-full" onClick={handlePrev}>
               ◀
             </button>
-            <button
-              className="absolute top-1/2 right-2 transform -translate-y-1/2 bg-secondary text-white p-3 rounded-full"
-              onClick={handleNext}
-            >
+            <button className="absolute top-1/2 right-2 transform -translate-y-1/2 bg-secondary text-white p-3 rounded-full" onClick={handleNext}>
               ▶
             </button>
           </div>
           {/* Thumbnails */}
           <div className="flex gap-2 mt-5 bg-primary p-2 justify-center overflow-x-auto">
             {productData.images.map((img, index) => (
-              <img
-                key={index}
-                src={img}
-                alt={`${productData.name} thumbnail`}
-                onClick={() => setCurrentIndex(index)}
+              <img key={index} src={img} alt={`${productData.name} thumbnail`} onClick={() => setCurrentIndex(index)}
                 className={`w-16 h-16 object-cover rounded-lg cursor-pointer ${currentIndex === index ? 'border-2 border-secondary' : ''
                   } hover:opacity-80`}
               />
@@ -143,12 +127,7 @@ const Product = () => {
             <p className="font-semibold mb-2">Select Size</p>
             <div className="flex gap-3 flex-wrap">
               {productData.sizes.map((s, index) => (
-                <button
-                  key={index}
-                  onClick={() => setSize(s)}
-                  className={`py-2 px-4 border rounded-lg ${size === s ? 'bg-secondary text-white' : 'bg-gray-100'
-                    } hover:bg-secondary hover:text-white`}
-                >
+                <button key={index} onClick={() => setSize(s)} className={`py-2 px-4 border rounded-lg ${size === s ? 'bg-secondary text-white' : 'bg-gray-100'} hover:bg-secondary hover:text-white`}>
                   {s}
                 </button>
               ))}
@@ -159,22 +138,13 @@ const Product = () => {
             <button className="py-2 px-4 bg-gray-500 text-white rounded-lg hover:bg-gray-600">
               Customize
             </button>
-            <button
-              onClick={() => navigate('/try-on', { state: { image: productData.images[currentIndex] } })}
-              className="py-2 px-4 bg-gray-500 text-white rounded-lg hover:bg-gray-600 flex items-center gap-2"
-            >
+            <button onClick={() => navigate('/try-on', { state: { image: productData.images[currentIndex] } })} className="py-2 px-4 bg-gray-500 text-white rounded-lg hover:bg-gray-600 flex items-center gap-2">
               <Camera size={20} /> Virtual Try-On
             </button>
-            <button
-              onClick={() => navigate('/aa-chatbot')}
-              className="py-2 px-4 bg-gray-500 text-white rounded-lg hover:bg-gray-600"
-            >
+            <button onClick={() => navigate('/aa-chatbot')} className="py-2 px-4 bg-gray-500 text-white rounded-lg hover:bg-gray-600">
               Ask Aa
             </button>
-            <button
-              onClick={() => addToCart(productData._id, size)}
-              className="py-2 px-4 bg-secondary text-white rounded-lg hover:bg-[#432a12]"
-            >
+            <button onClick={() => addToCart(productData._id, size)} className="py-2 px-4 bg-secondary text-white rounded-lg hover:bg-secondary">
               Add to Cart
             </button>
           </div>
@@ -224,9 +194,7 @@ const Product = () => {
           </p>
         </div>
       </div>
-
       <RelatedProducts category={productData.category} subCategory={productData.subCategory} currentProductId={productId} />
-
     </div>
   );
 };
