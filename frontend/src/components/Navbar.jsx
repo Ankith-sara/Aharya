@@ -83,7 +83,7 @@ const Navbar = () => {
           <button onClick={toggleDropdown} className="flex flex-col items-center gap-1">
             <p className="flex flex-row gap-1 items-center">Shop Now <span className={`flex items-center transition-transform ${isOpen ? "rotate-180" : "rotate-0"}`}> &#x2B9F; </span> </p>
           </button>
-          <div className={`${isOpen ? 'flex' : 'hidden'} fixed bg-primary shadow-md mt-3 py-10 px-8 left-0 right-0 md:left-0 md:right-0 lg:left-20 lg:right-20 xl:left-60 xl:right-60 transition-all duration-500 ease-in-out`}>
+          <div className={`${isOpen ? 'flex' : 'hidden'} fixed bg-primary shadow-md mt-3 py-10 px-8 left-0 right-0 md:left-0 md:right-0 lg:left-20 lg:right-20 xl:left-40 xl:right-40 transition-all duration-500 ease-in-out`}>
             <div className="flex flex-row gap-10 justify-between items-start">
               <div className="flex flex-row gap-8 text-sm text-text">
                 <div>
