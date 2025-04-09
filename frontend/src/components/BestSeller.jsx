@@ -13,7 +13,7 @@ const BestSeller = () => {
   }, [products]);
 
   return (
-    <div className=" bg-primary py-5 px-4 md:px-10 shadow-lg">
+    <div className=" bg-primary py-5 px-4 md:px-10">
       <div className="text-center py-8 text-3xl text-text">
         <Title text1="Best" text2="Sellers" />
         <p className="w-full md:w-3/4 m-auto text-sm md:text-base text-text-light">

@@ -88,7 +88,7 @@ const Product = () => {
   }
 
   return (
-    <div className="bg-background text-text p-4 mt-16 sm:p-6 lg:p-20 min-h-screen">
+    <div className="bg-background text-text p-4 sm:p-6 lg:p-20 min-h-screen">
       <div className="flex flex-col lg:flex-row gap-10">
         {/* Image Section */}
         <div className="flex-1">
@@ -172,7 +172,7 @@ const Product = () => {
       )}
 
       {/* Description Section */}
-      <div className="mt-20 bg-primary p-6 shadow-lg">
+      <div className="mt-10 bg-primary p-6 shadow-lg">
         <div className="flex justify-start space-x-4 mb-6">
           <b className="px-5 py-3 text-sm text-secondary bg-background rounded-md hover:shadow-md hover:bg-secondary hover:text-background">
             Description

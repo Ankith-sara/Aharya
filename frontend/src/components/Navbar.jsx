@@ -124,6 +124,12 @@ const Navbar = () => {
                     <li> <NavLink to="/shop/wooden-spoons" onClick={() => handleCategoryClick('Wooden Spoons')} className="hover:text-secondary" > Wooden Spoons </NavLink> </li>
                   </ul>
                 </div>
+                <div>
+                  <h4 className="mb-2 text-lg">Special Product:</h4>
+                  <ul className="flex flex-col gap-2 text-gray-600">
+                    <li> <NavLink to="/shop/bags" onClick={() => handleCategoryClick('Bags')} className="hover:text-secondary" > Bags </NavLink> </li>
+                  </ul>
+                </div>
               </div>
               <div className="flex flex-row gap-4">
                 <div className="w-40 h-60 bg-cover bg-center cursor-pointer" >
@@ -153,7 +159,7 @@ const Navbar = () => {
       </ul>
 
       <div className="flex items-center gap-6">
-        <img onClick={() => setShowSearch(true)} src={assets.search_icon} className="w-5 cursor-pointer" alt="" />
+        <img onClick={() => {setShowSearch(true); navigate('/shop/collection')}} src={assets.search_icon} className="w-5 cursor-pointer" alt="" />
         <div className="group relative">
           <img onClick={() => token ? null : navigate('/login')} className="w-5 cursor-pointer" src={assets.profile_icon} alt="" />
           <div className="group-hover:block hidden absolute dropdown-menu right-0 pt-4">

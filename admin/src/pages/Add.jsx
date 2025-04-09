@@ -30,6 +30,7 @@ const Add = ({ token }) => {
   const womenSubCategories = ["", "Kurtis", "Tops", "Blazers", "Dresses", "Corset-tops"];
   const homeFurnishingSubCategories = ["", "Home Décor", "Handmade Toys", "Baskets", "Bags and Pouches", "Stationery"];
   const kitchenwareSubCategories = ["", "Brass Bowls", "Wooden Spoons"];
+  const specialSubCategories = ["", "Bags"];
 
   const availableSubCategories = category === "Men" ? menSubCategories : category === "Women" ? womenSubCategories : [];
 
@@ -130,6 +131,7 @@ const Add = ({ token }) => {
             <option value="Women">Women</option>
             <option value="Home Furnishing">Home Furnishing</option>
             <option value="Kitchenware">Kitchenware</option>
+            <option value="Special Product">Special Product</option>
           </select>
         </div>
         <div>
@@ -147,6 +149,11 @@ const Add = ({ token }) => {
             }
             {
               category === "Kitchenware" && kitchenwareSubCategories.map((subCat, index) => (
+                <option key={index} value={subCat}> {subCat} </option>
+              ))
+            }
+            {
+              category === "Special Product" && specialSubCategories.map((subCat, index) => (
                 <option key={index} value={subCat}> {subCat} </option>
               ))
             }

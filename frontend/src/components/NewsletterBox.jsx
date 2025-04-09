@@ -7,7 +7,7 @@ const NewsletterBox = () => {
   };
 
   return (
-    <div className="bg-primary border-2 border-secondary p-4 sm:p-8 md:p-10  shadow-lg text-center my-10">
+    <div className="bg-primary border-2 border-secondary p-4 sm:p-8 md:p-10 my-10 text-center">
       <p className="text-2xl sm:text-3xl font-semibold text-gray-800 mb-4">
         Join the Aharya Community
       </p>

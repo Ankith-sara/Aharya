@@ -53,7 +53,7 @@ function WhatWeDo() {
     };
 
     return (
-        <div className="bg-primary py-5 px-4 md:px-10 shadow-lg">
+        <div className="bg-primary py-5 px-4 md:px-10">
             <div className="text-center text-text text-3xl mt-16 mb-4">
                 <Title text1="What" text2="We Do?" />
                 <p className="w-full sm:w-3/4 m-auto text-sm md:text-base text-text-light">

@@ -6,6 +6,7 @@ import OurPolicy from '../components/OurPolicy';
 import NewsletterBox from '../components/NewsletterBox';
 import Collections from '../components/Collections';
 import WhatWeDo from '../components/WhatWeDo';
+import LuxuryProducts from '../components/LuxuryProducts';
 
 const Home = () => {
     return (
@@ -14,6 +15,7 @@ const Home = () => {
             <Collections />
             <LastestCollection />
             <BestSeller />
+            <LuxuryProducts />
             <OurPolicy />
             <WhatWeDo />
             <NewsletterBox />
