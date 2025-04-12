@@ -69,6 +69,7 @@ const Navbar = () => {
     setVisible(false)
     closeDropdown();
   };
+  
   return (
     <div className={`fixed top-0 left-0 right-0 z-20 flex items-center justify-around text-white py-5 font-medium transition-colors duration-300 ${isScrolled ? 'bg-secondary shadow-md' : 'bg-transparent'}`}>
       <Link to='/'>

@@ -6,8 +6,14 @@ import { NavLink } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react'; // You can use any icon library you prefer
 
 const LuxuryProducts = () => {
-  const { products = [] } = useContext(ShopContext);
+  const { products = [], setSelectedSubCategory } = useContext(ShopContext);
   const [luxuryProducts, setLuxuryProducts] = useState([]);
+
+  const handleCategoryClick = (subCategory) => {
+    setSelectedSubCategory(subCategory);
+    setVisible(false)
+    closeDropdown();
+  };
 
   useEffect(() => {
     const specialProducts = products.filter(
@@ -26,10 +32,7 @@ const LuxuryProducts = () => {
             Discover our exquisite collection of premium handcrafted luxury items. Each piece is
             meticulously designed with the finest materials and exceptional attention to detail.
           </p>
-          <NavLink
-            to="/shop/bags"
-            className="inline-flex items-center gap-2 bg-secondary text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-opacity-90 transition-all duration-300"
-          >
+          <NavLink to="/shop/bags" onClick={() => handleCategoryClick('Bags')} className="inline-flex items-center gap-2 bg-secondary text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-opacity-90 transition-all duration-300">
             Shop Now <ArrowRight size={16} />
           </NavLink>
         </div>
