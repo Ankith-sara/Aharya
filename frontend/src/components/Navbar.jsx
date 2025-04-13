@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import { assets, products } from '../assets/frontend_assets/assets';
 import { Link, NavLink } from 'react-router-dom';
+import { ChevronDown } from 'lucide-react'
 import { ShopContext } from '../context/ShopContext';
 
 const Navbar = () => {
@@ -82,7 +83,7 @@ const Navbar = () => {
         </NavLink>
         <div className="relative group" ref={dropdownRef}>
           <button onClick={toggleDropdown} className="flex flex-col items-center gap-1">
-            <p className="flex flex-row gap-1 items-center">Shop Now <span className={`flex items-center transition-transform ${isOpen ? "rotate-180" : "rotate-0"}`}> &#x2B9F; </span> </p>
+            <p className="flex flex-row gap-1 items-center">Shop Now <span className={`flex items-center transition-transform ${isOpen ? "rotate-180" : "rotate-0"}`}> <ChevronDown className="w-5 h-5" /> </span> </p>
           </button>
           <div className={`${isOpen ? 'flex' : 'hidden'} fixed bg-primary shadow-md mt-3 py-10 px-8 left-0 right-0 md:left-0 md:right-0 lg:left-20 lg:right-20 xl:left-40 xl:right-40 transition-all duration-500 ease-in-out`}>
             <div className="flex flex-row gap-10 justify-between items-start">
