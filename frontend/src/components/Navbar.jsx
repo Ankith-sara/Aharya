@@ -69,7 +69,7 @@ const Navbar = () => {
     setVisible(false)
     closeDropdown();
   };
-  
+
   return (
     <div className={`fixed top-0 left-0 right-0 z-20 flex items-center justify-around text-white py-5 font-medium transition-colors duration-300 ${isScrolled ? 'bg-secondary shadow-md' : 'bg-transparent'}`}>
       <Link to='/'>
@@ -116,6 +116,7 @@ const Navbar = () => {
                     <li> <NavLink to="/shop/baskets" onClick={() => handleCategoryClick('baskets')} className="hover:text-secondary" > Baskets </NavLink> </li>
                     <li> <NavLink to="/shop/bags&pouches" onClick={() => handleCategoryClick('Bags and Pouches')} className="hover:text-secondary" > Bags and Pouches </NavLink> </li>
                     <li> <NavLink to="/shop/stationery" onClick={() => handleCategoryClick('Stationery')} className="hover:text-secondary" > Stationery </NavLink> </li>
+                    <li> <NavLink to="/shop/wall-decor" onClick={() => handleCategoryClick('Wall Decor')} className="hover:text-secondary" > Wall Decor</NavLink> </li>
                   </ul>
                 </div>
                 <div>
@@ -126,7 +127,7 @@ const Navbar = () => {
                   </ul>
                 </div>
                 <div>
-                  <h4 className="mb-2 text-lg">Special Product:</h4>
+                  <h4 className="mb-2 text-lg">Special Products:</h4>
                   <ul className="flex flex-col gap-2 text-gray-600">
                     <li> <NavLink to="/shop/bags" onClick={() => handleCategoryClick('Bags')} className="hover:text-secondary" > Bags </NavLink> </li>
                   </ul>
@@ -136,10 +137,6 @@ const Navbar = () => {
                 <div className="w-40 h-60 bg-cover bg-center cursor-pointer" >
                   <NavLink to="/shop/collection" onClick={closeDropdown}><img src={assets.nav_1} alt="New Arrivals" className="object-cover w-full h-full" /></NavLink>
                   <p className="text-text mt-2"> New Arrivals </p>
-                </div>
-                <div className="w-40 h-60 bg-cover bg-center cursor-pointer" >
-                  <NavLink to="/shop/wall-decor" onClick={() => handleCategoryClick('Wall Decor')}><img src={assets.nav_2} alt="Wall Décor" className="object-cover w-full h-full" /></NavLink>
-                  <p className="text-text mt-2"> Wall Décor </p>
                 </div>
               </div>
             </div>
@@ -160,7 +157,7 @@ const Navbar = () => {
       </ul>
 
       <div className="flex items-center gap-6">
-        <img onClick={() => {setShowSearch(true); navigate('/shop/collection')}} src={assets.search_icon} className="w-5 cursor-pointer" alt="" />
+        <img onClick={() => { setShowSearch(true); navigate('/shop/collection') }} src={assets.search_icon} className="w-5 cursor-pointer" alt="" />
         <div className="group relative">
           <img onClick={() => token ? null : navigate('/login')} className="w-5 cursor-pointer" src={assets.profile_icon} alt="" />
           <div className="group-hover:block hidden absolute dropdown-menu right-0 pt-4">

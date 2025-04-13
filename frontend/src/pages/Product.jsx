@@ -88,7 +88,7 @@ const Product = () => {
   }
 
   return (
-    <div className="bg-background text-text p-4 sm:p-6 lg:p-20 min-h-screen">
+    <div className="bg-background text-text p-4 sm:p-6 lg:p-20 mt-16 lg:mt-0 min-h-screen">
       <div className="flex flex-col lg:flex-row gap-10">
         {/* Image Section */}
         <div className="flex-1">

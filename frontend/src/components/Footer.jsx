@@ -9,7 +9,7 @@ const Footer = () => {
         <div className="bg-secondary text-grey-800 py-5 pt-5">
             <div className="flex bg-primary p-5 flex-col sm:grid grid-cols-[3fr_1fr_1fr_1fr] gap-1 mx-5 mb-5">
                 <div className="flex flex-col">
-                    <img className="mb-2 w-32" src={assets.logo} alt="Logo" />
+                    <img className="mb-2 w-52" src={assets.logo} alt="Logo" />
                     <p className="w-full md:w-2/3">
                         Bringing the best products to your doorstep with trust and quality.
                     </p>
