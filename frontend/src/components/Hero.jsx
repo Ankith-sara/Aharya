@@ -19,10 +19,10 @@ const Hero = () => {
             {/* Overlay Content */}
             <div className="absolute inset-0 flex flex-col justify-center items-center text-gray-200 z-10">
                 {/* Responsive text size */}
-                <h1 className="dancing-script text-[6rem] sm:text-[6rem] md:text-[9rem] lg:text-[12rem] text-white">
+                <h1 className="text-[6rem] sm:text-[6rem] md:text-[9rem] lg:text-[12rem] text-white">
                     Aharyas
                 </h1>
-                <p className="dancing-script text-[1.2rem] sm:text-[1.2rem] md:text-[1.5rem] lg:text-[2rem] text-white mt-[-20px]">
+                <p className="text-[1.2rem] sm:text-[1.2rem] md:text-[1.5rem] lg:text-[2rem] text-white mt-[-20px]">
                     "A Global Market Place for Artisans"
                 </p>
                 <p className="absolute bottom-10 text-xs sm:text-sm text-gray-300 animate-bounce">
