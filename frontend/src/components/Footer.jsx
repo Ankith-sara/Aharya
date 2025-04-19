@@ -39,9 +39,9 @@ const Footer = () => {
                         <li className="hover:text-secondary">contact@aharya.in</li>
                     </ul>
                     <div className="flex gap-3 mt-4">
-                        <NavLink to="https://www.instagram.com/aharya.in/" target='_blank' rel="noopener noreferrer"><img src={assets.instagram_icon} className="w-6 h-6 cursor-pointer hover:opacity-80" alt="Instagram" /></NavLink>
-                        <NavLink to="https://www.instagram.com/aharya.in/" target='_blank' rel="noopener noreferrer"><img src={assets.linkedin_icon} className="w-6 h-6 cursor-pointer hover:opacity-80" alt="Linkedin" /></NavLink>
-                        <NavLink to="https://www.instagram.com/aharya.in/" target='_blank' rel="noopener noreferrer"><img src={assets.pinterest_icon} className="w-6 h-6 cursor-pointer hover:opacity-80" alt="Pinterest" /></NavLink>
+                        <NavLink to="https://www.instagram.com/aharyas.in/" target='_blank' rel="noopener noreferrer"><img src={assets.instagram_icon} className="w-6 h-6 cursor-pointer hover:opacity-80" alt="Instagram" /></NavLink>
+                        <NavLink to="https://in.linkedin.com/" target='_blank' rel="noopener noreferrer"><img src={assets.linkedin_icon} className="w-6 h-6 cursor-pointer hover:opacity-80" alt="Linkedin" /></NavLink>
+                        <NavLink to="https://www.pinterest.com/" target='_blank' rel="noopener noreferrer"><img src={assets.pinterest_icon} className="w-6 h-6 cursor-pointer hover:opacity-80" alt="Pinterest" /></NavLink>
                     </div>
                 </div>
             </div>

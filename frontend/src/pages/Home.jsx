@@ -16,9 +16,7 @@ const Home = () => {
             <LastestCollection />
             <BestSeller />
             <LuxuryProducts />
-            <OurPolicy />
             <WhatWeDo />
-            <NewsletterBox />
         </div>
     )
 }

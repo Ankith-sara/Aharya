@@ -156,19 +156,19 @@ const Collection = () => {
           <img className={`h-3 sm:hidden transition-transform duration-300 ${showFilter ? 'rotate-180' : ''}`} src={assets.dropdown_icon} alt="" />
         </div>
 
-        <div className={`border-2 border-secondary rounded-lg px-5 py-4 mb-4 transition-all duration-300 ${showFilter ? 'opacity-100' : 'opacity-0 h-0 overflow-hidden sm:opacity-100 sm:h-auto'}`}>
+        <div className={`border-2 border-secondary px-5 py-4 mb-4 transition-all duration-300 ${showFilter ? 'opacity-100' : 'opacity-0 h-0 overflow-hidden sm:opacity-100 sm:h-auto'}`}>
           <p className="mb-3 font-medium text-secondary">Categories</p>
           <div className="flex flex-col gap-3 text-text">
             {['Men', 'Women', 'Home Furnishing', 'Kitchenware'].map((item) => (
               <label key={item} className="flex items-center gap-3 cursor-pointer hover:text-secondary transition-colors">
-                <input className="w-4 h-4 accent-secondary" type="checkbox" value={item} checked={category.includes(item)} onChange={toggleCategory}/>
+                <input className="w-4 h-4 accent-secondary" type="checkbox" value={item} checked={category.includes(item)} onChange={toggleCategory} />
                 {item}
               </label>
             ))}
           </div>
         </div>
 
-        <div className={`border-2 border-secondary rounded-lg px-5 py-4 transition-all duration-300 ${showFilter ? 'opacity-100' : 'opacity-0 h-0 overflow-hidden sm:opacity-100 sm:h-auto'}`}>
+        <div className={`border-2 border-secondary px-5 py-4 transition-all duration-300 ${showFilter ? 'opacity-100' : 'opacity-0 h-0 overflow-hidden sm:opacity-100 sm:h-auto'}`}>
           <p className="mb-3 font-medium text-secondary">Type</p>
           <div className="flex flex-col gap-3 text-text">
             {['Kurtis', 'Tops', 'Blazers'].map((item) => (

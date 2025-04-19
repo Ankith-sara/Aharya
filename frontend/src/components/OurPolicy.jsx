@@ -37,7 +37,7 @@ const OurPolicy = () => {
 
       <div className="grid gap-4 px-4 sm:px-10 grid-cols-1 md:grid-cols-2 lg:grid-cols-4 text-center">
         {policies.map((policy, index) => (
-          <div key={index} className="flex flex-col gap-4 p-8 bg-primary text-text border-secondary border-2 shadow-lg hover:scale-105 transition-transform duration-300 hover:shadow-2xl hover:border-accent">
+          <div key={index} className="flex flex-col gap-4 p-8 bg-primary text-text transition-transform duration-300 hover:shadow-2xl hover:border-accent">
             <img className="w-16 h-16 mx-auto mb-2 object-contain" src={policy.img} alt={policy.title} />
             <b className="text-xl font-semibold text-secondary">{policy.title}</b>
             <p className="text-sm text-text opacity-80">{policy.description}</p>

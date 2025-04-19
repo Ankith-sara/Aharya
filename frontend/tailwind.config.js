@@ -7,6 +7,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
+        Bodoni: ['Bodoni Moda', 'sans-serif'],
         oswald: ['Oswald', 'sans-serif'],
         montserrat: ['Montserrat', 'sans-serif'],
         dancing: ['Dancing Script', 'cursive'],

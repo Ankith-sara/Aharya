@@ -3,6 +3,7 @@ import Title from '../components/Title';
 import { assets } from '../assets/frontend_assets/assets';
 import NewsletterBox from '../components/NewsletterBox';
 import { CheckCircle, ShoppingCart, Headset } from "lucide-react";
+import OurPolicy from '../components/OurPolicy';
 
 const About = () => {
   return (
@@ -131,39 +132,8 @@ const About = () => {
       </div>
 
       {/* Why Choose Us Section */}
-      <div className="text-center text-text text-3xl mt-16 mb-4">
-        <Title text1="Why" text2="Choose Us" />
-      </div>
-      <div className="flex flex-col md:flex-row gap-8 text-sm">
-        {[
-          {
-            title: "Quality Assurance",
-            content:
-              "Our products are crafted with care, ensuring the finest quality and durability. Each item undergoes rigorous quality checks before reaching you.",
-            icon: <CheckCircle className="w-12 h-12 text-secondary" />,
-          },
-          {
-            title: "Convenience",
-            content:
-              "We provide a seamless shopping experience with curated collections and easy navigation. Our website is designed to help you find exactly what you're looking for.",
-            icon: <ShoppingCart className="w-12 h-12 text-secondary" />,
-          },
-          {
-            title: "Exceptional Customer Service",
-            content:
-              "Our team is dedicated to providing you with the best support and assistance at all times. We're available to answer questions and address concerns promptly.",
-            icon: <Headset className="w-12 h-12 text-secondary" />,
-          },
-        ].map((item, index) => (
-          <div key={index} className="border p-6 bg-background text-text border-secondary shadow-lg flex-1 hover:scale-105 transition-transform" >
-            <div className="text-center mb-4">
-              <h3 className="text-lg text-secondary flex flex-row gap-4 items-center justify-center font-bold">
-                {item.icon} {item.title}
-              </h3>
-              <p className="text-text mt-4">{item.content}</p>
-            </div>
-          </div>
-        ))}
+      <div className="flex flex-col md:flex-row text-sm">
+        <OurPolicy />
       </div>
 
       {/* Our Process Section with Image Timeline */}
