@@ -71,7 +71,7 @@ function WhatWeDo() {
                     {videos.slice(scrollIndex * videosPerPage, (scrollIndex + 1) * videosPerPage).map((item, index) => {
                         const actualIndex = scrollIndex * videosPerPage + index;
                         return (
-                            <div key={actualIndex} className="relative w-[320px] h-[420px] rounded-lg shadow-lg hover:scale-105 transition-transform">
+                            <div key={actualIndex} className="relative w-[320px] h-[420px] rounded-lg shadow-lg">
                                 {!playingVideo[actualIndex] ? (
                                     <img src={item.image} alt={`Preview ${actualIndex + 1}`} className="w-full h-full object-cover cursor-pointer" onClick={() => playVideo(actualIndex)} />
                                 ) : (
