@@ -42,7 +42,7 @@ const Hero = () => {
               <span
                 key={index}
                 ref={(el) => (lettersRef.current[index] = el)}
-                className="text-[3rem] sm:text-[3rem] md:text-[5rem] lg:text-[7rem] text-white noto-serif-thai relative inline-block transform translate-y-full opacity-0 letter-animation"
+                className="text-[4rem] sm:text-[4rem] md:text-[7rem] lg:text-[9rem] text-white noto-serif-thai relative inline-block transform translate-y-full opacity-0 letter-animation"
               >
                 {letter}
               </span>
