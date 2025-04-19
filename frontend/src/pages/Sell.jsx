@@ -64,7 +64,7 @@ const Sell = () => {
             <div className="p-6 sm:p-10 bg-secondary text-primary rounded-lg text-center">
                 <h2 className="text-2xl sm:text-3xl font-semibold mb-5">Ready to Become a Seller?</h2>
                 <Link to="/login">
-                    <button className="py-2 px-4 sm:py-3 sm:px-6 bg-background text-secondary rounded-lg text-base sm:text-lg hover:bg-opacity-90">
+                    <button className="py-2 px-4 sm:py-3 sm:px-6 bg-background text-text font-medium rounded-lg text-base sm:text-lg hover:bg-opacity-90">
                         Start Selling Now
                     </button>
                 </Link>
