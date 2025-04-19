@@ -1,17 +1,21 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import { assets, products } from '../assets/frontend_assets/assets';
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useLocation } from 'react-router-dom';
 import { ShopContext } from '../context/ShopContext';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
-  const { setShowSearch, getCartCount, navigate, token, setToken, setCartItems, setSelectedSubCategory } = useContext(ShopContext)
+  const { setShowSearch, getCartCount, navigate, token, setToken, setCartItems, setSelectedSubCategory } = useContext(ShopContext);
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
   const menuRef = useRef(null);
   const [visible, setVisible] = useState(false);
   const [mobileDropdownVisible, setMobileDropdownVisible] = useState(false);
   const [expandedCategory, setExpandedCategory] = useState(null);
+  const location = useLocation();
+
+  // Check if we're on the home page
+  const isHomePage = location.pathname === '/';
 
   // Toggle category expansion
   const toggleCategoryExpansion = (category) => {
@@ -27,11 +31,11 @@ const Navbar = () => {
   };
 
   const logout = () => {
-    navigate('/login')
-    localStorage.removeItem('token')
-    setToken('')
-    setCartItems({})
-  }
+    navigate('/login');
+    localStorage.removeItem('token');
+    setToken('');
+    setCartItems({});
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -90,14 +94,23 @@ const Navbar = () => {
 
   const handleCategoryClick = (subCategory) => {
     setSelectedSubCategory(subCategory);
-    setVisible(false)
+    setVisible(false);
     closeDropdown();
+  };
+
+  // Determine background color based on home page and scroll position
+  const getNavbarBackground = () => {
+    if (isHomePage && !isScrolled) {
+      return 'bg-transparent';
+    } else {
+      return 'bg-secondary shadow-md';
+    }
   };
 
   return (
     <>
       <div className={`fixed inset-0 bg-text bg-opacity-75 backdrop-blur-sm transition-opacity duration-300 z-10 ${visible ? 'opacity-100' : 'opacity-0 pointer-events-none'}`} onClick={() => setVisible(false)}></div>
-      <div className={`fixed top-0 left-0 right-0 px-4 sm:px-8 md:px-16 lg:px-24 z-20 flex items-center justify-between text-white py-5 font-medium transition-colors duration-300 ${isScrolled ? 'bg-secondary shadow-md' : 'bg-transparent'}`}>
+      <div className={`fixed top-0 left-0 right-0 px-4 sm:px-8 md:px-16 lg:px-24 z-20 flex items-center justify-between text-white py-5 font-medium transition-colors duration-300 ${getNavbarBackground()}`}>
         <Link to='/'>
           <img src={assets.logo_white} className="w-36" alt="Logo" />
         </Link>

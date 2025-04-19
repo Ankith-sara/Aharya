@@ -93,7 +93,7 @@ const Product = () => {
         {/* Image Section */}
         <div className="flex-1">
           <div className="relative bg-primary shadow-md overflow-hidden">
-            <img src={productData.images[currentIndex]} alt={productData.name} onClick={() => openModal(productData.images[currentIndex])} className="w-full h-auto max-h-[75vh] object-contain cursor-pointer hover:opacity-90"/>
+            <img src={productData.images[currentIndex]} alt={productData.name} onClick={() => openModal(productData.images[currentIndex])} className="w-full h-auto max-h-[75vh] object-contain cursor-pointer hover:opacity-90" />
             {/* Navigation Buttons */}
             <button className="absolute top-1/2 left-2 transform -translate-y-1/2 bg-secondary text-white p-3 rounded-full" onClick={handlePrev}>
               ◀
