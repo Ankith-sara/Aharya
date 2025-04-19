@@ -49,13 +49,13 @@ const Hero = () => {
             ))}
           </div>
           {/* Animated line underneath */}
-          <div className="h-1 bg-white w-0 mx-auto mt-1 line-animation"></div>
+          <div className="h-1 bg-white w-0 mx-auto line-animation"></div>
         </div>
 
         <p className="text-[1rem] sm:text-[1rem] md:text-[1.1rem] lg:text-[1.5rem] text-white mt-6 noto-serif-thai opacity-0 tagline-animation">
           "A Global Market Place for Artisans"
         </p>
-        <p className="absolute bottom-10 text-xs sm:text-sm text-gray-300 animate-bounce">
+        <p className="absolute bottom-10 text-sm sm:text-md text-gray-200 animate-bounce">
           Scroll down to discover more ▼
         </p>
       </div>
