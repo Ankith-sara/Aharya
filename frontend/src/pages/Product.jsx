@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { ShopContext } from '../context/ShopContext';
-import { Camera } from 'lucide-react';
+import { Camera, ChevronDown, ChevronUp, MessageCircle, MessageCircleCodeIcon, Sliders } from 'lucide-react';
 import RelatedProducts from '../components/RelatedProducts';
 
 const Product = () => {
@@ -17,6 +17,17 @@ const Product = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [startY, setStartY] = useState(0);
   const [scrollTop, setScrollTop] = useState(0);
+
+  // Dropdown state management
+  const [expandedSection, setExpandedSection] = useState('description');
+
+  const toggleSection = (section) => {
+    if (expandedSection === section) {
+      setExpandedSection(null);
+    } else {
+      setExpandedSection(section);
+    }
+  };
 
   // Modal drag handling
   const handleMouseDown = (e) => {
@@ -92,86 +103,213 @@ const Product = () => {
       <div className="flex flex-col lg:flex-row gap-10">
         {/* Image Section */}
         <div className="flex-1">
-          <div className="relative bg-primary shadow-md overflow-hidden">
-            <img src={productData.images[currentIndex]} alt={productData.name} onClick={() => openModal(productData.images[currentIndex])} className="w-full h-auto max-h-[75vh] object-contain cursor-pointer hover:opacity-90" />
+          <div className="relative">
+            <img
+              src={productData.images[currentIndex]}
+              alt={productData.name}
+              onClick={() => openModal(productData.images[currentIndex])}
+              className="w-full h-auto max-h-[85vh] object-contain cursor-pointer hover:opacity-90 p-2"
+            />
             {/* Navigation Buttons */}
-            <button className="absolute top-1/2 left-2 transform -translate-y-1/2 bg-secondary text-white p-3 rounded-full" onClick={handlePrev}>
+            <button className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-secondary text-white p-2 rounded-full shadow-md opacity-80 hover:opacity-100 transition-opacity" onClick={handlePrev}>
               ◀
             </button>
-            <button className="absolute top-1/2 right-2 transform -translate-y-1/2 bg-secondary text-white p-3 rounded-full" onClick={handleNext}>
+            <button className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-secondary text-white p-2 rounded-full shadow-md opacity-80 hover:opacity-100 transition-opacity" onClick={handleNext}>
               ▶
             </button>
           </div>
           {/* Thumbnails */}
-          <div className="flex gap-2 mt-5 bg-primary p-2 justify-center overflow-x-auto">
+          <div className="flex gap-2 mt-5 bg-primary p-3 justify-center overflow-x-auto shadow-md">
             {productData.images.map((img, index) => (
-              <img key={index} src={img} alt={`${productData.name} thumbnail`} onClick={() => setCurrentIndex(index)}
-                className={`w-16 h-16 object-cover rounded-lg cursor-pointer ${currentIndex === index ? 'border-2 border-secondary' : ''
-                  } hover:opacity-80`}
+              <img
+                key={index}
+                src={img}
+                alt={`${productData.name} thumbnail`}
+                onClick={() => setCurrentIndex(index)}
+                className={`w-16 h-16 object-cover rounded-lg cursor-pointer transition-all duration-300 ${currentIndex === index
+                  ? 'border-2 border-secondary shadow-md scale-105'
+                  : 'opacity-80'
+                  } hover:opacity-100`}
               />
             ))}
           </div>
         </div>
 
         {/* Product Details */}
-        <div className="w-full lg:w-1/2 p-4 sm:p-6 bg-primary shadow-lg">
-          <h1 className="text-2xl sm:text-3xl font-bold text-secondary mb-4">{productData.name}</h1>
-          <p className="text-lg sm:text-xl font-semibold mb-2">
-            {currency}
-            {productData.price}
-          </p>
-          <p className="text-sm text-gray-700 mb-4">Prices include GST</p>
-          <p className="mb-6">{productData.description}</p>
+        <div className="w-full lg:w-1/2 p-6 bg-primary shadow-lg">
+          {/* Product Title and Price */}
+          <div className="border-b border-gray-200 pb-4 mb-6">
+            <h1 className="text-2xl sm:text-3xl font-bold text-secondary mb-2">{productData.name}</h1>
+            <div className="flex justify-between items-center">
+              <p className="text-xl sm:text-2xl text-text font-medium">
+                {currency}
+                {productData.price}
+              </p>
+              <p className="text-sm text-gray-700">Prices include GST</p>
+            </div>
+          </div>
 
+          {/* Size Selection */}
           <div className="mb-6">
             <p className="font-semibold mb-2">Select Size</p>
             <div className="flex gap-3 flex-wrap">
               {productData.sizes.map((s, index) => (
-                <button key={index} onClick={() => setSize(s)} className={`py-2 px-4 border rounded-lg ${size === s ? 'bg-secondary text-white' : 'bg-gray-100'} hover:bg-secondary hover:text-white`}>
+                <button
+                  key={index}
+                  onClick={() => setSize(s)}
+                  className={`py-2 px-4 border rounded-lg transition-all duration-300 ${size === s
+                    ? 'bg-secondary text-white border-secondary'
+                    : 'bg-gray-100 text-text border-gray-300'
+                    } hover:bg-secondary hover:text-white hover:border-secondary`}
+                >
                   {s}
                 </button>
               ))}
             </div>
           </div>
 
-          <div className="flex gap-4 flex-wrap">
-            <button className="py-2 px-4 bg-gray-500 text-white rounded-lg hover:bg-gray-600">
-              Customize
+          {/* Button Group */}
+          <div className="flex gap-4 flex-wrap mb-8">
+            <button onClick={() => addToCart(productData._id, size)} className="w-full py-3 px-8 bg-secondary text-white rounded-lg hover:bg-opacity-90 transition-all duration-300 flex items-center justify-center font-medium shadow-sm">
+              Add to Cart
             </button>
-            <button onClick={() => navigate('/try-on', { state: { image: productData.images[currentIndex] } })} className="py-2 px-4 bg-gray-500 text-white rounded-lg hover:bg-gray-600 flex items-center gap-2">
+            <button className="py-3 px-6 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-all duration-300 flex items-center justify-center gap-2 shadow-sm">
+              <Sliders size={20} /> Customize
+            </button>
+            <button onClick={() => navigate('/try-on', { state: { image: productData.images[currentIndex] } })} className="py-3 px-6 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-all duration-300 flex items-center justify-center gap-2 shadow-sm">
               <Camera size={20} /> Virtual Try-On
             </button>
-            <button onClick={() => navigate('/aa-chatbot')} className="py-2 px-4 bg-gray-500 text-white rounded-lg hover:bg-gray-600">
-              Ask Aa
-            </button>
-            <button onClick={() => addToCart(productData._id, size)} className="py-2 px-4 bg-secondary text-white rounded-lg hover:bg-secondary">
-              Add to Cart
+            <button onClick={() => navigate('/aa-chatbot')} className="py-3 px-6 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-all duration-300 flex items-center justify-center gap-2 shadow-sm">
+              <MessageCircle size={20} /> Ask Aa
             </button>
           </div>
 
-          <div className="text-md mt-5 flex flex-col gap-1">
-            <p>100% Original product</p>
-            <p>Cash on delivery is available on this product</p>
-            <p>Easy return and exchange policy within 7 days</p>
+          {/* Product Information Dropdowns */}
+          <div className="border-t border-gray-200 pt-4">
+            {/* Description Dropdown */}
+            <div className="border-b border-gray-200">
+              <button onClick={() => toggleSection('description')} className="w-full py-3 flex justify-between items-center text-left font-medium text-secondary">
+                Description
+                {expandedSection === 'description' ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+              </button>
+              {expandedSection === 'description' && (
+                <div className="pb-4 pt-2 text-text">
+                  <p>
+                    {productData.description}
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {/* Wash Care Dropdown */}
+            <div className="border-b border-gray-200">
+              <button onClick={() => toggleSection('washcare')} className="w-full py-3 flex justify-between items-center text-left font-medium text-secondary">
+                Wash Care
+                {expandedSection === 'washcare' ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+              </button>
+              {expandedSection === 'washcare' && (
+                <div className="pb-4 pt-2 text-text">
+                  <ul className="list-disc pl-5">
+                    <li>Hand wash with mild detergent</li>
+                    <li>Do not bleach</li>
+                    <li>Dry in shade</li>
+                    <li>Warm iron</li>
+                    <li>Do not dry clean</li>
+                  </ul>
+                </div>
+              )}
+            </div>
+
+            {/* Delivery Timeline Dropdown */}
+            <div className="border-b border-gray-200">
+              <button onClick={() => toggleSection('delivery')} className="w-full py-3 flex justify-between items-center text-left font-medium text-secondary">
+                Delivery Timeline
+                {expandedSection === 'delivery' ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+              </button>
+              {expandedSection === 'delivery' && (
+                <div className="pb-4 pt-2 text-text">
+                  <p>Standard delivery: 3-5 business days</p>
+                  <p>Express delivery: 1-2 business days (additional charges apply)</p>
+                </div>
+              )}
+            </div>
+
+            {/* Manufacturing Details Dropdown */}
+            <div className="border-b border-gray-200">
+              <button onClick={() => toggleSection('manufacturing')} className="w-full py-3 flex justify-between items-center text-left font-medium text-secondary">
+                Manufacturing Details
+                {expandedSection === 'manufacturing' ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+              </button>
+              {expandedSection === 'manufacturing' && (
+                <div className="pb-4 pt-2 text-text">
+                  <p>Handcrafted by skilled artisans</p>
+                  <p>Made in certified workshops</p>
+                  <p>Ethically sourced materials</p>
+                  <p>Quality checked at multiple stages</p>
+                </div>
+              )}
+            </div>
+
+            {/* Returns & Exchanges Dropdown */}
+            <div className="border-b border-gray-200">
+              <button onClick={() => toggleSection('returns')} className="w-full py-3 flex justify-between items-center text-left font-medium text-secondary">
+                Returns & Exchanges
+                {expandedSection === 'returns' ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+              </button>
+              {expandedSection === 'returns' && (
+                <div className="pb-4 pt-2 text-text">
+                  <p className="mb-2">Easy return and exchange policy within 7 days of delivery</p>
+                  <p className="mb-2">Items must be unused, unwashed and in original packaging</p>
+                  <p>Refunds will be processed within 5-7 business days after receiving the returned item</p>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
 
       {/* Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-background bg-opacity-95 flex items-center justify-center z-50" onMouseDown={handleMouseDown} onMouseMove={handleMouseMove} onMouseUp={handleMouseUp} onMouseLeave={handleMouseUp} >
-          <div ref={modalRef} className="relative max-h-[90vh] overflow-y-auto scrollbar-hide" style={{ cursor: isDragging ? 'grabbing' : 'grab' }}>
-            <img src={modalImage} alt="Modal View" className="max-w-[90vw] max-h-[90vh] object-contain transition-transform duration-200" style={{ transform: `scale(${zoomLevel})` }} />
+        <div
+          className="fixed inset-0 bg-background bg-opacity-95 flex items-center justify-center z-50"
+          onMouseDown={handleMouseDown}
+          onMouseMove={handleMouseMove}
+          onMouseUp={handleMouseUp}
+          onMouseLeave={handleMouseUp}
+        >
+          <div
+            ref={modalRef}
+            className="relative max-h-[90vh] overflow-y-auto scrollbar-hide"
+            style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
+          >
+            <img
+              src={modalImage}
+              alt="Modal View"
+              className="max-w-[90vw] max-h-[90vh] object-contain transition-transform duration-200"
+              style={{ transform: `scale(${zoomLevel})` }}
+            />
           </div>
-          <button className="absolute top-4 right-4 bg-white text-black p-2 rounded-full" onClick={closeModal}>✖</button>
-          <button className="absolute top-1/2 left-2 -translate-y-1/2 bg-secondary text-white p-3 rounded-full" onClick={handlePrev}>◀</button>
-          <button className="absolute top-1/2 right-2 -translate-y-1/2 bg-secondary text-white p-3 rounded-full" onClick={handleNext}>▶</button>
-          <button className="absolute bottom-10 right-16 bg-white text-black p-2 rounded-full" onClick={zoomIn}>+</button>
-          <button className="absolute bottom-10 right-4 bg-white text-black p-2 rounded-full" onClick={zoomOut}>-</button>
+          <button className="absolute top-4 right-4 bg-white text-black p-2 rounded-full" onClick={closeModal}>
+            ✖
+          </button>
+          <button className="absolute top-1/2 left-2 -translate-y-1/2 bg-secondary text-white p-3 rounded-full" onClick={handlePrev}>
+            ◀
+          </button>
+          <button className="absolute top-1/2 right-2 -translate-y-1/2 bg-secondary text-white p-3 rounded-full" onClick={handleNext}>
+            ▶
+          </button>
+          <div className="absolute bottom-10 right-10 flex gap-2">
+            <button className="bg-white text-black p-2 rounded-full w-10 h-10 flex items-center justify-center" onClick={zoomIn}>
+              +
+            </button>
+            <button className="bg-white text-black p-2 rounded-full w-10 h-10 flex items-center justify-center" onClick={zoomOut}>
+              -
+            </button>
+          </div>
         </div>
       )}
 
-      {/* Description Section */}
+      {/* Reviews Section */}
       <div className="mt-10 bg-primary p-6 shadow-lg">
         <div className="flex justify-start space-x-4 mb-6">
           <b className="px-5 py-3 text-sm text-secondary bg-background rounded-md hover:shadow-md hover:bg-secondary hover:text-background">
@@ -194,6 +332,8 @@ const Product = () => {
           </p>
         </div>
       </div>
+
+      {/* Related Products Section */}
       <RelatedProducts category={productData.category} subCategory={productData.subCategory} currentProductId={productId} />
     </div>
   );
