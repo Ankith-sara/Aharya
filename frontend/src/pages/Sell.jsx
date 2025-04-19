@@ -38,9 +38,9 @@ const Sell = () => {
                     Unlock your business potential with Aharya, India's most visited shopping platform.
                 </p>
                 <ul className="text-base sm:text-lg space-y-4">
-                    <li>🌟 <b>Reach Millions:</b> Access a vast audience across India.</li>
-                    <li>🌟 <b>Proven Success:</b> Join a community of thriving sellers.</li>
-                    <li>🌟 <b>Seamless Delivery:</b> Deliver anywhere with Aharya's logistics support.</li>
+                    <li><b>Reach Millions:</b> Access a vast audience across India.</li>
+                    <li><b>Proven Success:</b> Join a community of thriving sellers.</li>
+                    <li><b>Seamless Delivery:</b> Deliver anywhere with Aharya's logistics support.</li>
                 </ul>
             </div>
 
