@@ -13,8 +13,8 @@ const Collections = () => {
   const categories = [
     { name: 'Kurtis', imageUrl: 'https://res.cloudinary.com/dfzhqsfp7/image/upload/v1734960230/xwz3navthgy7tlzkiqma.webp' },
     { name: 'Tops', imageUrl: 'https://res.cloudinary.com/dfzhqsfp7/image/upload/v1734961885/xmrbsna2rywkv2j801ky.webp' },
-    { name: 'Shirts', imageUrl: 'https://res.cloudinary.com/dfzhqsfp7/image/upload/v1734967987/whht2yjmwpd9e8knhmvz.jpg' },
-    { name: 'Trousers', imageUrl: 'https://res.cloudinary.com/dfzhqsfp7/image/upload/v1734969084/r7ep2jregib2dxl1xve4.webp' },
+    { name: 'Wall Decor', imageUrl: 'https://okhai.org/cdn/shop/files/7_e28f8fae-bd02-4f11-9917-a8fc4a4fd462.jpg?v=1716982545' },
+    { name: 'Bags', imageUrl: 'https://res.cloudinary.com/dfzhqsfp7/image/upload/v1744127544/igwttafu4fgj6pwb54yw.webp' },
   ];
 
   return (

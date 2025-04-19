@@ -42,7 +42,7 @@ const Hero = () => {
               <span
                 key={index}
                 ref={(el) => (lettersRef.current[index] = el)}
-                className="text-[4rem] sm:text-[4rem] md:text-[7rem] lg:text-[9rem] text-white noto-serif-thai relative inline-block transform translate-y-full opacity-0 letter-animation"
+                className="text-[4rem] sm:text-[4rem] md:text-[7rem] lg:text-[9rem] noto-serif-thai relative inline-block transform translate-y-full opacity-0 letter-animation"
               >
                 {letter}
               </span>
@@ -52,7 +52,7 @@ const Hero = () => {
           <div className="h-1 bg-white w-0 mx-auto line-animation"></div>
         </div>
 
-        <p className="text-[1rem] sm:text-[1rem] md:text-[1.1rem] lg:text-[1.5rem] text-white mt-6 noto-serif-thai opacity-0 tagline-animation">
+        <p className="text-[1rem] sm:text-[1rem] md:text-[1.1rem] lg:text-[1.5rem] mt-6 noto-serif-thai opacity-0 tagline-animation">
           "A Global Market Place for Artisans"
         </p>
         <p className="absolute bottom-10 text-sm sm:text-md text-gray-200 animate-bounce">

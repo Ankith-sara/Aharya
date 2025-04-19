@@ -28,7 +28,7 @@ const Add = ({ token }) => {
 
   const menSubCategories = ["", "Shirts", "Half-hand Shirts", "Vests", "Trousers", "Jackets", "Men-Blazers"];
   const womenSubCategories = ["", "Kurtis", "Tops", "Blazers", "Dresses", "Corset-tops"];
-  const homeFurnishingSubCategories = ["", "Home Décor", "Handmade Toys", "Baskets", "Bags and Pouches", "Stationery"];
+  const homeFurnishingSubCategories = ["", "Home Décor", "Handmade Toys", "Baskets", "Bags and Pouches", "Stationery", "Wall Decor"];
   const kitchenwareSubCategories = ["", "Brass Bowls", "Wooden Spoons"];
   const specialSubCategories = ["", "Bags"];
 
