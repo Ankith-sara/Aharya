@@ -22,9 +22,8 @@ const addProduct = async (req, res) => {
             })
         );
 
-        // Parse the sizes and bestseller values
         const parsedSizes = JSON.parse(sizes);
-        const isBestseller = bestseller === "true"; 
+        const isBestseller = bestseller === "true";
 
         // Prepare the product data
         const productData = {
@@ -55,14 +54,12 @@ const editProduct = async (req, res) => {
     try {
         const { id } = req.params;
         const { name, description, price, category, subCategory, bestseller, sizes } = req.body;
-        
-        // Get the existing product
+
         const existingProduct = await productModel.findById(id);
         if (!existingProduct) {
             return res.status(404).json({ success: false, message: "Product not found" });
         }
 
-        // Handle image uploads
         const imageFiles = [
             req.files?.image1?.[0],
             req.files?.image2?.[0],
@@ -86,7 +83,6 @@ const editProduct = async (req, res) => {
         // Combine existing and new images
         const updatedImages = newImageUrls.length > 0 ? newImageUrls : existingProduct.images;
 
-        // Parse the sizes and bestseller values
         const parsedSizes = JSON.parse(sizes);
         const isBestseller = bestseller === "true" || bestseller === true;
 

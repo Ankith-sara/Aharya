@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import Title from "./Title";
+import { ChevronLeft, ChevronRight, Play } from "lucide-react";
 
 function WhatWeDo() {
     const scrollRef = useRef(null);
@@ -27,7 +28,7 @@ function WhatWeDo() {
             } else if (window.innerWidth < 1024) {
                 setVideosPerPage(2);
             } else {
-                setVideosPerPage(4);
+                setVideosPerPage(3);
             }
         };
         handleResize();
@@ -53,39 +54,62 @@ function WhatWeDo() {
     };
 
     return (
-        <div className="bg-primary py-5 px-4 md:px-10">
-            <div className="text-center text-text text-3xl mb-4">
-                <Title text1="What" text2="We Do?" />
-                <p className="w-full sm:w-3/4 m-auto text-sm md:text-base text-text-light">
-                    Empowering communities with creativity, craftsmanship, and innovation.
-                </p>
-            </div>
-
-            {/* Video Section */}
-            <div className="relative flex items-center justify-center">
-                <button className={`absolute left-0 bg-secondary text-white p-3 rounded-full shadow-md transition-opacity ${scrollIndex === 0 ? "opacity-30 cursor-not-allowed" : "hover:bg-opacity-80"}`} onClick={() => scroll("left")} disabled={scrollIndex === 0}
-                >
-                    ❮
-                </button>
-                <div ref={scrollRef} className="flex space-x-6 overflow-hidden w-[90%]">
-                    {videos.slice(scrollIndex * videosPerPage, (scrollIndex + 1) * videosPerPage).map((item, index) => {
-                        const actualIndex = scrollIndex * videosPerPage + index;
-                        return (
-                            <div key={actualIndex} className="relative w-[320px] h-[420px] rounded-lg shadow-lg">
-                                {!playingVideo[actualIndex] ? (
-                                    <img src={item.image} alt={`Preview ${actualIndex + 1}`} className="w-full h-full object-cover cursor-pointer" onClick={() => playVideo(actualIndex)} />
-                                ) : (
-                                    <video src={item.video} controls autoPlay className="w-full h-full"></video>
-                                )}
-                            </div>
-                        );
-                    })}
+        <section className="py-10 px-4 sm:px-6 md:px-10 lg:px-20">
+            <div className="max-w-6xl mx-auto">
+                <div className="text-center mb-12">
+                    <Title text1="WHAT" text2="WE DO" />
+                    <p className="mt-2 max-w-2xl mx-auto text-gray-600 text-sm md:text-base">
+                        Empowering communities with creativity, craftsmanship, and innovation.
+                    </p>
                 </div>
-                <button className={`absolute right-0 bg-secondary text-white p-3 rounded-full shadow-md transition-opacity ${scrollIndex === totalPages - 1 ? "opacity-30 cursor-not-allowed" : "hover:bg-opacity-80"}`} onClick={() => scroll("right")} disabled={scrollIndex === totalPages - 1}>
-                    ❯
-                </button>
+
+                {/* Video Carousel */}
+                <div className="relative mt-5">
+                    <div className="flex justify-between items-center mb-6">
+                        <h3 className="text-lg font-medium">Featured Stories</h3>
+                        <div className="flex gap-2">
+                            <button className={`w-10 h-10 flex items-center justify-center rounded-md border border-black transition-all ${scrollIndex === 0 ? "opacity-30 cursor-not-allowed" : "hover:bg-black hover:text-white"}`} onClick={() => scroll("left")} disabled={scrollIndex === 0} aria-label="Previous">
+                                <ChevronLeft size={18} />
+                            </button>
+                            <button className={`w-10 h-10 flex items-center justify-center rounded-md border border-black transition-all ${scrollIndex === totalPages - 1 ? "opacity-30 cursor-not-allowed" : "hover:bg-black hover:text-white"}`} onClick={() => scroll("right")} disabled={scrollIndex === totalPages - 1} aria-label="Next">
+                                <ChevronRight size={18} />
+                            </button>
+                        </div>
+                    </div>
+
+                    <div className="relative overflow-hidden">
+                        <div ref={scrollRef} className="flex gap-6 transition-transform duration-500" style={{ transform: `translateX(-${scrollIndex * 100 / totalPages}%)` }}>
+                            {videos.map((item, index) => (
+                                <div key={index} className="flex-shrink-0 w-full sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)]">
+                                    <div className="relative aspect-[3/4] overflow-hidden shadow-md group">
+                                        {!playingVideo[index] ? (
+                                            <>
+                                                <img src={item.image} alt={`Story ${index + 1}`} className="w-full h-full object-cover" />
+                                                <div className="absolute inset-0 bg-black bg-opacity-30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center cursor-pointer" onClick={() => playVideo(index)}>
+                                                    <div className="w-16 h-16 rounded-full bg-white bg-opacity-90 flex items-center justify-center">
+                                                        <Play size={24} fill="black" className="ml-1" />
+                                                    </div>
+                                                </div>
+                                            </>
+                                        ) : (
+                                            <video src={item.video} controls autoPlay className="w-full h-full object-cover"></video>
+                                        )}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Pagination dots */}
+                    <div className="flex justify-center mt-8 gap-2">
+                        {Array.from({ length: totalPages }).map((_, index) => (
+                            <button key={index} className={`w-2 h-2 rounded-full transition-all ${scrollIndex === index ? "w-6 bg-black" : "bg-gray-300"}`} onClick={() => setScrollIndex(index)} aria-label={`Go to page ${index + 1}`}
+                            ></button>
+                        ))}
+                    </div>
+                </div>
             </div>
-        </div>
+        </section>
     );
 }
 

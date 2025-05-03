@@ -1,70 +1,156 @@
-import React, { useState } from "react";
-import {
-  ChevronRight,
-  MapPin,
-  Heart,
-  Clock,
-  User,
-} from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { ChevronRight, MapPin, Heart, Clock, User, ShoppingBag, Settings, LogOut, Shield } from "lucide-react";
 import Title from "../components/Title";
+import ProductItem from "../components/ProductItem";
 
 const MyProfile = () => {
   const [userData] = useState({
     name: "Aswanth",
+    email: "aswanth@example.com",
+    memberSince: "January 2023",
     status: "Active",
   });
 
+  const [recentlyViewed, setRecentlyViewed] = useState([]);
+
+  const logout = () => {
+    navigate('/login');
+    localStorage.removeItem('token');
+    setToken('');
+  };
+
+  useEffect(() => {
+    const storedProducts = JSON.parse(localStorage.getItem('recentlyViewed')) || [];
+    setRecentlyViewed(storedProducts);
+  }, []);
+
   const menuItems = [
-    { icon: <User size={18} />, text: "Edit Profile" },
-    { icon: <MapPin size={18} />, text: "Shopping Address" },
-    { icon: <Heart size={18} />, text: "Wishlist" },
-    { icon: <Clock size={18} />, text: "Order History" },
+    { icon: <User size={18} />, text: "Edit Profile", description: "Update your personal information" },
+    { icon: <MapPin size={18} />, text: "Addresses", description: "Manage your shipping addresses" },
+    { icon: <ShoppingBag size={18} />, text: "Order History", description: "View your past orders" },
+    { icon: <Heart size={18} />, text: "Wishlist", description: "Items you've saved" },
+    { icon: <Settings size={18} />, text: "Account Settings", description: "Notifications, password, privacy" },
+    { icon: <Shield size={18} />, text: "Security", description: "Two-factor authentication, sessions" },
   ];
 
   return (
-    <div className="min-h-screen mt-20 mb-10 mx-4 sm:mx-8 md:mx-20 px-4 sm:px-6 md:px-10 lg:px-20 py-10 bg-primary">
+    <div className="min-h-screen text-black mt-20 px-4 sm:px-6 md:px-10 lg:px-20 py-10">
       {/* Profile Title */}
-      <div className="text-2xl sm:text-3xl text-text text-center">
-        <Title text1="My" text2="Profile" />
+      <div className="text-3xl text-center mb-6">
+        <Title text1="MY" text2="PROFILE" />
       </div>
 
       {/* Profile Section */}
-      <div className="my-8 flex flex-col md:flex-row gap-8 lg:gap-12 items-center lg:items-start">
-        <div className="bg-background p-6 sm:p-8 rounded-xl shadow-lg flex flex-col items-center w-full sm:w-3/4 md:w-2/3 lg:w-1/3">
-          <div className="w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 rounded-full overflow-hidden mb-4 border-4 border-secondary">
-            <img src="/api/placeholder/128/128" alt="Profile" className="w-full h-full object-cover" />
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Left Column - Profile Card */}
+        <div className="lg:col-span-1">
+          <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+            {/* Profile Banner */}
+            <div className="h-32 bg-gray-100"></div>
+
+            {/* Profile Info */}
+            <div className="px-6 pb-6 flex flex-col items-center relative">
+              <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-full border-4 border-white overflow-hidden -mt-16 mb-4 shadow-md">
+                <img
+                  src="/api/placeholder/128/128"
+                  alt="Profile"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+
+              <h2 className="text-xl font-medium text-black mb-1">{userData.name}</h2>
+
+              <div className="flex items-center mb-4">
+                <div className="w-2 h-2 rounded-full bg-black mr-2"></div>
+                <span className="text-sm text-gray-600">{userData.status}</span>
+              </div>
+
+              <div className="w-full border-t border-gray-200 mt-2 pt-4">
+                <div className="grid grid-cols-1 gap-3 text-center">
+                  <div>
+                    <p className="text-xs uppercase tracking-wider text-gray-500 mb-1">Email</p>
+                    <p className="text-sm">{userData.email}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs uppercase tracking-wider text-gray-500 mb-1">Member Since</p>
+                    <p className="text-sm">{userData.memberSince}</p>
+                  </div>
+                </div>
+              </div>
+
+              <button className="mt-6 w-full py-2 px-4 border border-black text-black font-medium hover:bg-black hover:text-white transition-colors">
+                EDIT PROFILE
+              </button>
+            </div>
           </div>
-          <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-text mb-1">
-            {userData.name}
-          </h2>
-          <div className="flex items-center">
-            <div className="w-2.5 h-2.5 rounded-full bg-green-500 mr-2"></div>
-            <span className="text-sm text-gray-500">{userData.status} status</span>
+
+          {/* Logout Card */}
+          <div className="mt-6 bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm p-2">
+            <button className="w-full flex items-center justify-center gap-2 py-2 text-gray-600 hover:text-black transition-colors">
+              <LogOut size={18} />
+              <span className="font-medium" onClick={() => { if (window.confirm("Are you sure you want to log out?")) logout(); }}>Sign Out</span>
+            </button>
           </div>
         </div>
 
-        {/* Menu Items Section */}
-        <div className="w-full sm:w-3/4 md:w-2/3 lg:flex-1">
-          <div className="bg-background p-5 sm:p-6 rounded-lg shadow-lg">
-            <h3 className="text-lg sm:text-xl font-semibold mb-4 text-text text-center">
-              Account Settings
-            </h3>
-            <div className="grid gap-4 sm:gap-5">
+        {/* Right Column - Account Settings */}
+        <div className="lg:col-span-2">
+          {/* Account Settings Section */}
+          <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+            <div className="px-6 py-4 border-b border-gray-200">
+              <h3 className="text-lg font-medium">Account Management</h3>
+            </div>
+
+            <div className="divide-y divide-gray-200">
               {menuItems.map((item, index) => (
-                <button key={index} className="border border-secondary bg-primary text-text p-3 sm:p-4 flex items-center justify-between rounded-lg shadow-md hover:scale-[1.02] transition-transform">
-                  <div className="flex items-center gap-2 sm:gap-3">{item.icon} <span className="text-sm sm:text-base font-medium">{item.text}</span></div>
-                  <ChevronRight size={16} className="text-secondary" />
+                <button key={index} className="w-full flex items-center justify-between p-5 hover:bg-gray-50 transition-colors">
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100">
+                      {item.icon}
+                    </div>
+                    <div className="text-left">
+                      <p className="font-medium">{item.text}</p>
+                      <p className="text-sm text-gray-500">{item.description}</p>
+                    </div>
+                  </div>
+                  <ChevronRight size={18} className="text-gray-400" />
                 </button>
               ))}
             </div>
           </div>
-        </div>
-      </div>
 
-      {/* Recent Activity */}
-      <div className="bg-background p-5 sm:p-6 rounded-lg shadow-lg mt-6 sm:mt-8 text-center">
-        <h3 className="text-lg font-semibold text-text mb-3">Recent Activity</h3>
-        <p className="text-sm sm:text-base">No recent activity to display.</p>
+          {/* Recent Activity Section */}
+          <div className="mt-8 bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+            <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+              <h3 className="text-lg font-medium">Recently Viewed</h3>
+              <button className="text-sm font-medium hover:underline">View All</button>
+            </div>
+
+            {recentlyViewed.length === 0 ? (
+              <div className="p-8 text-center">
+                <Clock size={32} className="mx-auto text-gray-300 mb-3" />
+                <p className="text-gray-500">No items viewed recently</p>
+                <button className="mt-4 px-4 py-2 border border-black text-sm font-medium hover:bg-black hover:text-white transition-colors">
+                  DISCOVER PRODUCTS
+                </button>
+              </div>
+            ) : (
+              <div className="p-6">
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2">
+                  {recentlyViewed.map((item) => (
+                    <ProductItem
+                      key={item._id}
+                      id={item._id}
+                      name={item.name}
+                      price={item.price}
+                      image={item.images}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );

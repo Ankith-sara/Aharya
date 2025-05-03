@@ -5,22 +5,28 @@
 @tailwind utilities;
 
 * {
-  font-family: 'Montserrat', 'Oswald', Courier, monospace;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
 }
 
 body {
-  background-color: #b6a593;
+  font-family: 'Montserrat', 'Oswald', Courier, monospace, sans-serif;
   overflow-x: hidden;
-  /* color: #662a07; */
-  /* color: #391a06; */
+  color: var(--color-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 html {
   scroll-behavior: smooth;
 }
 
-a.active hr {
-  display: block;
+/* Hide scrollbar for all browsers but maintain functionality */
+::-webkit-scrollbar {
+  display: none;
 }
 
 .hind-mysuru-light {
@@ -75,23 +81,21 @@ a.active hr {
     "wdth" 100;
 }
 
-::-webkit-scrollbar {
-  display: none;
-}
-
-img:hover {
-  transform: scale(1.05);
-  transition: transform 0.3s ease;
-}
-
 .sticky {
   position: sticky;
   top: 0;
+  backdrop-filter: blur(8px);
+  transition: var(--transition-standard);
 }
 
-@media (max-width:640px) {
+a.active hr {
+  display: block;
+}
+
+@media (max-width: 640px) {
   a.active {
     background-color: #000;
     color: #fff;
+    transition: var(--transition-standard);
   }
 }

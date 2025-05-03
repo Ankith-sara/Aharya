@@ -2,73 +2,147 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { assets } from '../assets/frontend_assets/assets';
 import Title from '../components/Title';
+import { ArrowRight, TrendingUp, Package, Truck, CreditCard } from 'lucide-react';
 
 const Sell = () => {
     return (
-        <div className="mt-20 mb-10 mx-4 sm:mx-8 md:mx-20 px-4 py-8 sm:px-6 lg:px-8 bg-primary text-text min-h-screen">
-            <div className="my-10 text-center">
-                <Title text1="Start" text2="Selling on Aharya" />
-                <p className="text-lg sm:text-xl font-medium mt-4">
-                    Empower your business and reach millions of customers with ease.
-                </p>
-            </div>
-
-            <div className="grid gap-8 mb-16 sm:grid-cols-2 lg:grid-cols-4">
-                {[
-                    { title: 'Register Your Account', description: 'Sign up with your GST/PAN details and link an active bank account.', step: 1 },
-                    { title: 'Choose Storage & Shipping', description: 'Select storage, packaging, and delivery options tailored for your needs.', step: 2 },
-                    { title: 'List Your Products', description: 'Add product and brand details to attract the right buyers.', step: 3 },
-                    { title: 'Complete Orders & Get Paid', description: 'Deliver on time and receive payments within 7 days of delivery.', step: 4 },
-                ].map((item, index) => (
-                    <div key={index} className="p-6 bg-primary border-secondary rounded-lg shadow-lg hover:shadow-xl transform transition-transform duration-300 hover:scale-105" style={{ borderWidth: 2 }}>
-                        <div className="flex items-center justify-between mb-3">
-                            <span className="px-4 py-2 bg-secondary text-primary rounded-full text-lg font-semibold">
-                                STEP {item.step}
-                            </span>
-                        </div>
-                        <h2 className="text-xl sm:text-2xl font-semibold mb-3">{item.title}</h2>
-                        <p className="text-sm sm:text-base">{item.description}</p>
+        <div className="min-h-screen bg-white text-black">
+            {/* Hero Section with Diagonal Split */}
+            <div className="relative h-screen">
+                <div className="absolute inset-0 bg-black clip-diagonal"></div>
+                <div className="absolute inset-0 flex items-center justify-center px-6 md:px-20">
+                    <div className="max-w-4xl w-full text-center">
+                        <h1 className="text-white text-4xl md:text-6xl font-light tracking-tight mb-6">
+                            BECOME A <span className="font-bold">SELLER</span>
+                        </h1>
+                        <p className="text-white text-lg md:text-xl mb-10 max-w-2xl mx-auto font-light">
+                            Join thousands of entrepreneurs and artisans who are transforming their business on Aharya's marketplace.
+                        </p>
+                        <Link to="/login">
+                            <button className="px-8 py-4 bg-white text-black font-medium hover:bg-gray-100 transition-colors transform hover:scale-105 duration-300 text-lg">
+                                START SELLING NOW
+                            </button>
+                        </Link>
                     </div>
-                ))}
+                </div>
+                <div className="absolute bottom-10 left-0 right-0 flex justify-center">
+                    <div className="animate-bounce bg-white rounded-full p-3 shadow-lg">
+                        <ArrowRight className="h-6 w-6 text-black transform rotate-90" />
+                    </div>
+                </div>
             </div>
 
-            <div className="p-6 sm:p-10 rounded-lg bg-background shadow-lg mb-16 text-center">
-                <Title text1="Why Sell" text2="on Aharya?" />
-                <p className="text-base sm:text-lg mb-6 mt-4">
-                    Unlock your business potential with Aharya, India's most visited shopping platform.
-                </p>
-                <ul className="text-base sm:text-lg space-y-4">
-                    <li><b>Reach Millions:</b> Access a vast audience across India.</li>
-                    <li><b>Proven Success:</b> Join a community of thriving sellers.</li>
-                    <li><b>Seamless Delivery:</b> Deliver anywhere with Aharya's logistics support.</li>
-                </ul>
-            </div>
+            {/* Steps Section with Large Numbers */}
+            <div className="py-20 px-4 sm:px-6 md:px-10 lg:px-20">
+                <div className="text-center mb-10">
+                    <h2 className="text-3xl md:text-4xl font-light mb-6">YOUR <span className="font-bold">JOURNEY</span></h2>
+                    <p className="text-gray-700 text-lg max-w-2xl mx-auto">
+                        Four simple steps to transform your business and reach millions of customers nationwide.
+                    </p>
+                </div>
 
-            <div className="p-6 sm:p-10 rounded-lg shadow-lg mb-16">
-                <Title text1="What Our" text2="Sellers Say" />
-                <div className="grid gap-10 sm:grid-cols-1 md:grid-cols-2">
+                <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
                     {[
-                        { name: 'Sunehra Koshi', role: 'Founder, Crack of Dawn Crafts', quote: '"From five members to fifteen, a little trust can go a long way."', image: assets.seller_1 },
-                        { name: 'Dheepakh Rajaram', role: 'Founder, Goodness Pet Food', quote: '"We went from sales of ₹10,000 to ₹5 lakh in just two and a half years."', image: assets.seller_2 },
-                    ].map((testimonial, index) => (
-                        <div key={index} className="flex flex-col items-center p-6 sm:p-8 rounded-lg shadow-md hover:shadow-xl bg-background border-secondary border-2 transform transition-transform duration-300 hover:scale-105">
-                            <img src={testimonial.image} alt={testimonial.name} className="w-24 h-24 sm:w-32 sm:h-32 rounded-full mb-5 border-secondary border-4" />
-                            <p className="font-semibold text-lg sm:text-xl">{testimonial.name}</p>
-                            <p className="italic text-sm sm:text-base">{testimonial.role}</p>
-                            <p className="mt-4 text-center text-sm sm:text-base">{testimonial.quote}</p>
+                        { title: 'Register Your Account', description: 'Sign up with your GST/PAN details and link an active bank account.', step: 1, icon: <TrendingUp size={32} /> },
+                        { title: 'Choose Storage & Shipping', description: 'Select storage, packaging, and delivery options tailored for your needs.', step: 2, icon: <Package size={32} /> },
+                        { title: 'List Your Products', description: 'Add product and brand details to attract the right buyers.', step: 3, icon: <Truck size={32} /> },
+                        { title: 'Complete Orders & Get Paid', description: 'Deliver on time and receive payments within 7 days of delivery.', step: 4, icon: <CreditCard size={32} /> },
+                    ].map((item, index) => (
+                        <div key={index} className="relative p-8 border border-gray-200 bg-white rounded-md hover:shadow-2xl transition-all duration-500 group overflow-hidden">
+                            <div className="absolute -right-1 -top-2 text-9xl font-bold text-gray-100 opacity-80 z-0 transition-transform duration-500 group-hover:scale-105">
+                                {item.step}
+                            </div>
+                            <div className="relative z-10">
+                                <div className="text-black mb-6">{item.icon}</div>
+                                <h2 className="text-xl font-bold mb-4">{item.title}</h2>
+                                <p className="text-gray-600">{item.description}</p>
+                            </div>
                         </div>
                     ))}
                 </div>
             </div>
 
-            <div className="p-6 sm:p-10 bg-secondary text-primary rounded-lg text-center">
-                <h2 className="text-2xl sm:text-3xl font-semibold mb-5">Ready to Become a Seller?</h2>
-                <Link to="/login">
-                    <button className="py-2 px-4 sm:py-3 sm:px-6 bg-background text-text font-medium rounded-lg text-base sm:text-lg hover:bg-opacity-90">
-                        Start Selling Now
-                    </button>
-                </Link>
+            {/* Why Sell Section with Bold Typography */}
+            <div className="py-20 px-4 sm:px-6 md:px-10 lg:px-20 bg-black text-white">
+                <div className="text-center mb-16">
+                    <h2 className="text-4xl md:text-5xl font-bold mb-6">WHY <span className="font-light">SELL</span></h2>
+                </div>
+                
+                <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                    <div className="border-l-4 border-white p-6 transform transition-transform hover:translate-y-[-10px] duration-300">
+                        <span className="text-4xl font-bold block mb-4">01</span>
+                        <h3 className="font-bold text-2xl mb-4">Reach Millions</h3>
+                        <p className="text-gray-300">Access a vast audience across India with our established customer base eager to discover new products.</p>
+                    </div>
+                    <div className="border-l-4 border-white p-6 transform transition-transform hover:translate-y-[-10px] duration-300">
+                        <span className="text-4xl font-bold block mb-4">02</span>
+                        <h3 className="font-bold text-2xl mb-4">Proven Success</h3>
+                        <p className="text-gray-300">Join a community of thriving sellers who have scaled their businesses beyond expectations.</p>
+                    </div>
+                    <div className="border-l-4 border-white p-6 transform transition-transform hover:translate-y-[-10px] duration-300">
+                        <span className="text-4xl font-bold block mb-4">03</span>
+                        <h3 className="font-bold text-2xl mb-4">Seamless Delivery</h3>
+                        <p className="text-gray-300">Deliver anywhere with Aharya's extensive logistics network and dedicated support system.</p>
+                    </div>
+                </div>
             </div>
+
+            {/* Success Stories with Dynamic Layout */}
+            <div className="py-20 px-4 sm:px-6 md:px-10 lg:px-20">
+                <div className="text-center mb-10">
+                    <h2 className="text-3xl md:text-4xl font-light mb-6">SUCCESS <span className="font-bold">STORIES</span></h2>
+                </div>
+                
+                <div className="grid gap-10 md:grid-cols-2">
+                    {[
+                        { name: 'Sunehra Koshi', role: 'Founder, Crack of Dawn Crafts', quote: '"From five members to fifteen, a little trust can go a long way."', image: assets.seller_1 },
+                        { name: 'Dheepakh Rajaram', role: 'Founder, Goodness Pet Food', quote: '"We went from sales of ₹10,000 to ₹5 lakh in just two and a half years."', image: assets.seller_2 },
+                    ].map((testimonial, index) => (
+                        <div key={index} className="group">
+                            <div className="relative overflow-hidden">
+                                <div className="aspect-w-16 aspect-h-9 overflow-hidden">
+                                    <img 
+                                        src={testimonial.image} 
+                                        alt={testimonial.name} 
+                                        className="w-full h-screen object-cover object-center filter grayscale group-hover:grayscale-0"
+                                    />
+                                </div>
+                                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-70"></div>
+                                <div className="absolute bottom-0 left-0 right-0 p-6 md:p-10">
+                                    <p className="text-white text-xl md:text-2xl italic mb-4">{testimonial.quote}</p>
+                                    <div>
+                                        <h3 className="text-white font-bold text-lg">{testimonial.name}</h3>
+                                        <p className="text-gray-300">{testimonial.role}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            {/* Bold CTA Section */}
+            <div className="px-4 sm:px-6 md:px-10 lg:px-20 py-20 bg-gradient-to-r from-gray-900 to-black text-white">
+                <div className="max-w-4xl mx-auto text-center">
+                    <h2 className="text-3xl md:text-5xl font-bold mb-10">READY TO TRANSFORM YOUR BUSINESS?</h2>
+                    <p className="text-xl mb-10 text-gray-300 max-w-2xl mx-auto">
+                        Join the thousands of sellers who have found success on Aharya.
+                        Your journey starts now.
+                    </p>
+                    <Link to="/login">
+                        <button className="px-10 py-5 bg-white text-black font-bold text-lg hover:bg-gray-200">
+                            BECOME A SELLER
+                        </button>
+                    </Link>
+                </div>
+            </div>
+
+            {/* Add custom CSS for diagonal clip */}
+            <style>{`
+                .clip-diagonal {
+                    clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+                }
+            `}</style>
         </div>
     );
 };

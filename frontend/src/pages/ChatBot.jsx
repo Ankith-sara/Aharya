@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Send, Image, X } from "lucide-react";
+import { Send, Image, X, ShoppingBag, MessageCircle } from "lucide-react";
 
 const ChatBot = () => {
   const [question, setQuestion] = useState("");
@@ -100,158 +100,113 @@ const ChatBot = () => {
   }, [chatLog]);
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen bg-white">
       {showChat ? (
-        <div className="flex-1 flex flex-col p-6 m-20 max-w-3xl mx-auto w-full">
+        <div className="flex-1 flex flex-col max-w-4xl mx-auto w-full px-4 sm:px-6 md:px-10 lg:px-20 py-10 mt-20">
+          <div className="text-3xl text-center mb-8 flex items-center justify-center gap-2">
+            <MessageCircle className="w-8 h-8" />
+            <div className="font-light tracking-wide">FASHION <span className="font-semibold">ADVISOR</span></div>
+          </div>
+
           {/* Chat Log Container */}
-          <div 
-            ref={chatContainerRef} 
-            className="flex-1 bg-primary p-4 overflow-y-auto rounded-lg shadow-inner mb-4 space-y-4"
-          >
+          <div ref={chatContainerRef} className="flex-1 overflow-y-auto rounded-lg shadow-sm border border-gray-200 mb-6 space-y-4 p-6" style={{ minHeight: '400px', maxHeight: '60vh' }}>
             {chatLog.map((entry, index) => (
-              <div 
-                key={index} 
-                className={`flex ${entry.sender === "user" ? "justify-end" : "justify-start"}`}
-              >
-                <div 
-                  className={`p-3 rounded-xl max-w-sm ${
-                    entry.sender === "user" 
-                      ? "bg-background text-secondary" 
-                      : "bg-white text-secondary border border-gray-200"
-                  }`}
-                >
+              <div key={index} className={`flex ${entry.sender === "user" ? "justify-end" : "justify-start"}`}>
+                <div className={`p-4 rounded-lg max-w-md shadow-sm ${entry.sender === "user" ? "bg-black text-white" : "bg-white text-gray-900 border border-gray-200"}`}>
                   {entry.image && (
-                    <img 
-                      src={entry.image.preview} 
-                      alt="Uploaded" 
-                      className="w-full max-w-xs mb-2 rounded-lg object-cover" 
-                    />
+                    <div className="mb-3">
+                      <img src={entry.image.preview} alt="Uploaded" className="w-full rounded-md object-cover" />
+                    </div>
                   )}
-                  <p className="whitespace-pre-wrap">{entry.text}</p>
+                  <p className="whitespace-pre-wrap text-sm">{entry.text}</p>
                 </div>
               </div>
             ))}
+            {chatLog.length === 0 && (
+              <div className="flex flex-col items-center justify-center h-full text-gray-400 py-12">
+                <MessageCircle className="w-12 h-12 mb-4 opacity-50" />
+                <p className="text-center text-sm">Start a conversation about fashion or upload an image for style advice</p>
+              </div>
+            )}
           </div>
 
           {/* Input Section */}
-          <div className="relative">
+          <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-4">
             {/* Image Upload Section */}
             {image && (
-              <div className="mb-4 flex items-center space-x-4">
-                <div className="relative w-32 h-32">
-                  <img 
-                    src={image.preview} 
-                    alt="Selected" 
-                    className="w-full h-full rounded-lg object-cover border-2 border-gray-300 shadow-md" 
-                  />
-                  <button 
-                    onClick={removeImage} 
-                    className="absolute -top-2 -right-2 bg-red-500 text-white p-1.5 rounded-full hover:bg-red-600 shadow-md"
-                  >
+              <div className="mb-4 flex items-center gap-4">
+                <div className="relative w-20 h-20">
+                  <img src={image.preview} alt="Selected" className="w-full h-full rounded-md object-cover border border-gray-300" />
+                  <button onClick={removeImage} className="absolute -top-2 -right-2 bg-black text-white p-1 rounded-full hover:bg-gray-800 shadow-sm">
                     <X className="w-4 h-4" />
                   </button>
                 </div>
                 <div className="flex-1 truncate">
-                  <p className="text-sm text-secondary font-medium truncate">{image.name}</p>
+                  <p className="text-xs text-gray-600 font-medium truncate">{image.name}</p>
                 </div>
               </div>
             )}
 
             {/* Search Input Section */}
             <div className="relative flex items-center">
-              <input 
-                type="text" 
-                value={question} 
-                onChange={(e) => setQuestion(e.target.value)} 
-                onKeyDown={handleKeyDown} 
-                placeholder="Ask me about fashion, style, or upload an image..." 
-                className={`w-full px-6 py-4 pr-24 bg-white rounded-full shadow-lg focus:outline-none focus:ring-2 focus:ring-[#f4b06e] transition-all ${image ? 'pl-20' : 'pl-6'}`} 
-              />
+              <input type="text" value={question} onChange={(e) => setQuestion(e.target.value)} onKeyDown={handleKeyDown} placeholder="Ask me about fashion or style..." className="w-full px-4 py-3 pr-24 rounded-md border border-gray-300 focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition-all" />
               <div className="absolute right-2 flex items-center space-x-2">
-                <button 
-                  onClick={() => fileInputRef.current.click()} 
-                  className="p-2 hover:bg-gray-100 rounded-full transition"
-                >
-                  <Image className="w-6 h-6 text-secondary" />
+                <button onClick={() => fileInputRef.current.click()} className="p-2 hover:bg-gray-100 rounded-full transition">
+                  <Image className="w-5 h-5 text-gray-600" />
                 </button>
-                <input 
-                  type="file" 
-                  accept="image/*" 
-                  ref={fileInputRef} 
-                  onChange={handleImageUpload} 
-                  className="hidden" 
-                />
-                <button 
-                  onClick={generateAnswer} 
-                  className="p-2 hover:bg-gray-100 rounded-full transition"
-                >
-                  <Send className="w-6 h-6 text-secondary" />
+                <input type="file" accept="image/*" ref={fileInputRef} onChange={handleImageUpload} className="hidden" />
+                <button onClick={generateAnswer} className="p-2 bg-black text-white rounded-full hover:bg-gray-800 transition">
+                  <Send className="w-5 h-5" />
                 </button>
               </div>
             </div>
           </div>
         </div>
       ) : (
-        <div className="min-h-screen bg-background p-4 flex items-center justify-center">
-          <div className="w-full max-w-3xl mt-8 relative">
-            <div className="text-2xl text-center font-bold mb-6 text-secondary">
-              I'm your fashion advisor. Ask me anything about fashion!
+        <div className="min-h-screen flex items-center justify-center px-4 sm:px-6 md:px-10 lg:px-20 py-20">
+          <div className="w-full max-w-2xl">
+            <div className="text-center mb-12">
+              <div className="inline-flex items-center justify-center w-16 h-16 border-2 border-black rounded-full mb-6">
+                <MessageCircle className="w-8 h-8" />
+              </div>
+              <h1 className="text-3xl font-light mb-3 tracking-wide">FASHION <span className="font-semibold">ADVISOR</span></h1>
+              <p className="text-gray-600 max-w-md mx-auto">Upload images or ask questions about fashion, style, trends, and outfit recommendations.</p>
             </div>
 
-            <div className="relative flex flex-col items-center w-full">
+            <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-6">
               {/* Image Upload Section */}
               {image && (
-                <div className="mb-4 flex items-center space-x-4 w-full max-w-md">
-                  <div className="relative w-32 h-32">
-                    <img 
-                      src={image.preview} 
-                      alt="Selected" 
-                      className="w-full h-full rounded-lg object-cover border-2 border-gray-300 shadow-md" 
-                    />
-                    <button 
-                      onClick={removeImage} 
-                      className="absolute -top-2 -right-2 bg-red-500 text-white p-1.5 rounded-full hover:bg-red-600 shadow-md"
-                    >
+                <div className="mb-6 flex items-center gap-4">
+                  <div className="relative w-24 h-24">
+                    <img src={image.preview} alt="Selected" className="w-full h-full rounded-md object-cover border border-gray-300" />
+                    <button onClick={removeImage} className="absolute -top-2 -right-2 bg-black text-white p-1 rounded-full hover:bg-gray-800 shadow-sm">
                       <X className="w-4 h-4" />
                     </button>
                   </div>
                   <div className="flex-1 truncate">
-                    <p className="text-sm text-secondary font-medium truncate">{image.name}</p>
+                    <p className="text-sm text-gray-600 font-medium truncate">{image.name}</p>
                   </div>
                 </div>
               )}
 
               {/* Search Input Section */}
-              <div className="relative flex-1 w-full">
-                <input 
-                  type="text" 
-                  value={question} 
-                  onChange={(e) => setQuestion(e.target.value)} 
-                  onKeyDown={handleKeyDown} 
-                  placeholder="Ask me about fashion..." 
-                  className={`w-full px-6 py-4 pr-24 bg-white rounded-full shadow-lg focus:outline-none focus:ring-2 focus:ring-[#4a3526] transition-all ${image ? 'pl-20' : 'pl-6'}`} 
-                />
+              <div className="relative">
+                <input type="text" value={question} onChange={(e) => setQuestion(e.target.value)} onKeyDown={handleKeyDown} placeholder="Ask me about fashion or upload an image..." className="w-full px-4 py-4 pr-24 rounded-md border border-gray-300 focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition-all" />
                 <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center space-x-2">
-                  <button 
-                    onClick={() => fileInputRef.current.click()} 
-                    className="p-2 hover:bg-gray-100 rounded-full transition"
-                  >
-                    <Image className="w-6 h-6 text-[#4a3526]" />
+                  <button onClick={() => fileInputRef.current.click()} className="p-2 hover:bg-gray-100 rounded-full transition">
+                    <Image className="w-5 h-5 text-gray-600" />
                   </button>
-                  <input 
-                    type="file" 
-                    accept="image/*" 
-                    ref={fileInputRef} 
-                    onChange={handleImageUpload} 
-                    className="hidden" 
-                  />
-                  <button 
-                    onClick={generateAnswer} 
-                    className="p-2 hover:bg-gray-100 rounded-full transition"
-                  >
-                    <Send className="w-6 h-6 text-[#4a3526]" />
+                  <input type="file" accept="image/*" ref={fileInputRef} onChange={handleImageUpload} className="hidden" />
+                  <button onClick={generateAnswer} className="p-2 bg-black text-white rounded-full hover:bg-gray-800 transition">
+                    <Send className="w-5 h-5" />
                   </button>
                 </div>
+              </div>
+
+              <div className="mt-6 text-center">
+                <button onClick={generateAnswer} disabled={!question.trim() && !image} className={`px-6 py-3 bg-black text-white font-medium hover:bg-gray-800 transition-colors w-full sm:w-auto rounded-md ${(!question.trim() && !image) ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                  START CONVERSATION
+                </button>
               </div>
             </div>
           </div>

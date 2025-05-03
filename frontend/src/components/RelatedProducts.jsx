@@ -17,9 +17,9 @@ const RelatedProducts = ({ category, subCategory, currentProductId }) => {
   }, [products, category, subCategory, currentProductId]);
 
   return (
-    <div className="mt-10 bg-primary p-6 rounded-lg shadow-lg">
+    <div className="mt-10 p-6">
       <div className="text-center text-3xl py-2">
-        <Title text1="Related" text2="Products" />
+        <Title text1="RELATED" text2="PRODUCTS" />
       </div>
       <div className="grid grid-cols-2 pt-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 gap-y-6">
         {related.length === 0 ? (

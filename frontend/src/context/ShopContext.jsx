@@ -132,6 +132,43 @@ const ShopContextProvider = (props) => {
         }
     }
 
+    const addProductToRecentlyViewed = (product) => {
+        let viewedProducts = JSON.parse(localStorage.getItem('recentlyViewed')) || [];
+
+        // If the latest viewed product (index 0) is the same as current, do nothing
+        if (viewedProducts.length > 0 && viewedProducts[0]._id === product._id) {
+            return;
+        }
+
+        // Remove if already exists elsewhere
+        viewedProducts = viewedProducts.filter(p => p._id !== product._id);
+
+        // Add to the start
+        viewedProducts.unshift({
+            _id: product._id,
+            name: product.name,
+            price: product.price,
+            images: product.images,
+        });
+
+        // Keep only 5
+        if (viewedProducts.length > 5) {
+            viewedProducts = viewedProducts.slice(1, 6);
+        }
+
+        localStorage.setItem('recentlyViewed', JSON.stringify(viewedProducts));
+    };
+
+    const getRecentlyViewed = () => {
+        try {
+            const viewedProducts = JSON.parse(localStorage.getItem('recentlyViewed')) || [];
+            return viewedProducts;
+        } catch (error) {
+            console.error('Failed to parse recently viewed products:', error);
+            return [];
+        }
+    };    
+
     useEffect(() => {
         const storedSubCategory = localStorage.getItem("selectedSubCategory");
         if (storedSubCategory) {
@@ -155,9 +192,11 @@ const ShopContextProvider = (props) => {
     }, [])
 
     const value = {
-        products, currency, delivery_fee, search, setSearch, showSearch, setShowSearch, cartItems, addToCart, setCartItems, getCartCount, updateQuantity, getCartAmount, navigate, backendUrl, setToken, token
-        , selectedSubCategory, setSelectedSubCategory
-    };
+        products, currency, delivery_fee, search, setSearch, showSearch, setShowSearch,
+        cartItems, addToCart, setCartItems, getCartCount, updateQuantity, getCartAmount,
+        navigate, backendUrl, setToken, token, selectedSubCategory, setSelectedSubCategory,
+        addProductToRecentlyViewed, getRecentlyViewed
+    };    
 
     return (
         <ShopContext.Provider value={value}>

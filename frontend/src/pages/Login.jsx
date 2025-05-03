@@ -3,7 +3,6 @@ import { ShopContext } from '../context/ShopContext';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { assets } from '../assets/frontend_assets/assets';
-import Title from '../components/Title';
 import { Eye, EyeOff, Mail, User, Lock } from 'lucide-react';
 
 const Login = () => {
@@ -67,79 +66,104 @@ const Login = () => {
   }, [token, navigate]);
 
   return (
-    <div className="min-h-screen px-6 py-10 bg-primary">
-      <div className="my-8 flex flex-col md:flex-col lg:flex-row gap-12 items-center">
-        {/* Left Panel - Image */}
-        <div className="w-full md:w-1/2 hidden md:block bg-secondary">
+    <div className="min-h-screen text-white flex items-center justify-center">
+      <div className="w-full max-w-6xl flex flex-col md:flex-row">
+        {/* Left Panel - Image with overlay */}
+        <div className="w-full md:w-1/2 relative hidden md:block">
+          <div className="absolute inset-0 bg-black/30 z-10"></div>
           <div className="h-full flex items-center justify-center overflow-hidden">
-            <img src={assets.login_bg} alt="Aharya Craftsmanship" className="object-cover h-full w-full opacity-90" />
+            <img src={assets.login_bg} alt="Premium craftsmanship" className="object-cover h-full w-full grayscale"  />
+          </div>
+          <div className="absolute inset-0 z-20 flex items-center justify-center p-10">
+            <div className="border border-white/20 p-6 bg-black/40 backdrop-blur-sm">
+              <h2 className="text-3xl font-light tracking-wider mb-2">ELEVATE YOUR</h2>
+              <h1 className="text-5xl font-bold tracking-tight">EXPERIENCE</h1>
+            </div>
           </div>
         </div>
 
         {/* Right Panel - Form */}
-        <div className="w-full md:w-1/2 flex items-center justify-center p-6 md:p-12">
-          <div className="w-full max-w-md">
-            <div className="text-center mb-8">
-              <Title text1={currentState === 'Login' ? 'Welcome' : 'Join'} text2={currentState === 'Login' ? 'Back' : 'Us'} />
-              <p className="text-text mt-2">
-                {currentState === 'Login' ? 'Sign in to access your account' : 'Create an account to start your journey'}
+        <div className="w-full md:w-1/2 bg-white text-black p-6 md:p-10">
+          <div className="max-w-md mx-auto">
+            <div className="mb-5">
+              <h1 className="text-3xl font-bold tracking-tight mb-2">
+                {currentState === 'Login' ? 'WELCOME BACK' : 'JOIN US'}
+              </h1>
+              <div className="h-1 w-16 bg-black mb-6"></div>
+              <p className="text-gray-600">
+                {currentState === 'Login' ? 'Sign in to access your exclusive experience' : 'Create an account to begin your premium journey'}
               </p>
             </div>
 
-            <form onSubmit={onSubmitHandler} className="space-y-5">
+            <form onSubmit={onSubmitHandler} className="space-y-3">
               {currentState === 'Sign Up' && (
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <User size={18} className="text-gray-400" />
+                <div className="space-y-1">
+                  <label htmlFor="name" className="text-xs uppercase tracking-wider font-medium text-gray-600">Full Name</label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center">
+                      <User size={18} className="text-gray-400" />
+                    </div>
+                    <input id="name" type="text" value={name} onChange={(e) => setName(e.target.value)} className={`w-full pl-12 pr-4 py-3 border-b focus:outline-none transition-all ${errors.name ? 'border-red-500' : 'border-gray-300 focus:border-black'}`} />
+                    {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
                   </div>
-                  <input type="text" placeholder="Full Name" value={name} onChange={(e) => setName(e.target.value)} className={`w-full pl-10 pr-3 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-all ${errors.name ? 'border-red-500 focus:ring-red-200' : 'border-gray-300 focus:ring-secondary/25 focus:border-secondary'}`} />
-                  {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
                 </div>
               )}
 
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Mail size={18} className="text-gray-400" />
+              <div className="space-y-1">
+                <label htmlFor="email" className="text-xs uppercase tracking-wider font-medium text-gray-600">Email Address</label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center">
+                    <Mail size={18} className="text-gray-400" />
+                  </div>
+                  <input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} className={`w-full pl-12 pr-4 py-3 border-b focus:outline-none transition-all ${errors.email ? 'border-red-500' : 'border-gray-300 focus:border-black'}`} />
+                  {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
                 </div>
-                <input type="email" placeholder="Email Address" value={email} onChange={(e) => setEmail(e.target.value)} className={`w-full pl-10 pr-3 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-all ${errors.email ? 'border-red-500 focus:ring-red-200' : 'border-gray-300 focus:ring-secondary/25 focus:border-secondary'}`} />
-                {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
               </div>
 
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Lock size={18} className="text-gray-400" />
+              <div className="space-y-1">
+                <label htmlFor="password" className="text-xs uppercase tracking-wider font-medium text-gray-600">Password</label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center">
+                    <Lock size={18} className="text-gray-400" />
+                  </div>
+                  <input id="password" type={showPassword ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)} className={`w-full pl-12 pr-12 py-3 border-b focus:outline-none transition-all ${errors.password ? 'border-red-500' : 'border-gray-300 focus:border-black'}`} />
+                  <button type="button" className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-black" onClick={() => setShowPassword(!showPassword)} aria-label={showPassword ? "Hide password" : "Show password"}>
+                    {showPassword ? <Eye size={18} /> : <EyeOff size={18} />}
+                  </button>
+                  {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>}
                 </div>
-                <input type={showPassword ? 'text' : 'password'} placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} className={`w-full pl-10 pr-10 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-all ${errors.password ? 'border-red-500 focus:ring-red-200' : 'border-gray-300 focus:ring-secondary/25 focus:border-secondary'}`} />
-                <button type="button" className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600" onClick={() => setShowPassword(!showPassword)}>
-                  {showPassword ? <Eye size={18} /> : <EyeOff size={18} />}
-                </button>
-                {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
               </div>
 
               {currentState === 'Login' && (
                 <div className="flex justify-end">
-                  <button type="button" className="text-sm text-secondary hover:text-secondary/80 hover:underline transition-colors">
+                  <button type="button" className="text-xs uppercase tracking-wider text-gray-600 hover:text-black hover:underline transition-colors">
                     Forgot your password?
                   </button>
                 </div>
               )}
 
-              <button type="submit" disabled={isLoading} className="w-full py-3 bg-secondary text-white rounded-lg hover:bg-secondary/90 transition-colors focus:outline-none focus:ring-2 focus:ring-secondary focus:ring-offset-2 disabled:opacity-70 disabled:cursor-not-allowed">
+              <button type="submit" disabled={isLoading} className="w-full py-4 bg-black text-white text-sm uppercase tracking-wider font-medium hover:bg-gray-900 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black disabled:opacity-70 disabled:cursor-not-allowed">
                 {isLoading ? 'Processing...' : currentState === 'Login' ? 'Sign In' : 'Create Account'}
               </button>
 
-              <div className="mt-6 text-center">
-                {currentState === 'Login' ? (
-                  <p className="text-text">
-                    Don't have an account?{' '}
-                    <button type="button" onClick={() => setCurrentState('Sign Up')} className="text-secondary font-medium hover:underline"> Sign up </button>
-                  </p>
-                ) : (
-                  <p className="text-text">
-                    Already have an account?{' '}
-                    <button type="button" onClick={() => setCurrentState('Login')} className="text-secondary font-medium hover:underline"> Sign in </button>
-                  </p>
-                )}
+              <div className="pt-6 border-t border-gray-200">
+                <div className="flex justify-center">
+                  {currentState === 'Login' ? (
+                    <p className="text-gray-600 text-sm">
+                      Don't have an account?{' '}
+                      <button type="button" onClick={() => setCurrentState('Sign Up')} className="text-black font-medium hover:underline"> 
+                        Sign up 
+                      </button>
+                    </p>
+                  ) : (
+                    <p className="text-gray-600 text-sm">
+                      Already have an account?{' '}
+                      <button type="button" onClick={() => setCurrentState('Login')} className="text-black font-medium hover:underline"> 
+                        Sign in 
+                      </button>
+                    </p>
+                  )}
+                </div>
               </div>
             </form>
           </div>

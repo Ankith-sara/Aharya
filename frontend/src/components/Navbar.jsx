@@ -1,33 +1,23 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
-import { assets, products } from '../assets/frontend_assets/assets';
+import { assets } from '../assets/frontend_assets/assets';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { ShopContext } from '../context/ShopContext';
+import { ChevronDown, ChevronRight, X } from 'lucide-react';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const { setShowSearch, getCartCount, navigate, token, setToken, setCartItems, setSelectedSubCategory } = useContext(ShopContext);
-  const [isOpen, setIsOpen] = useState(false);
-  const dropdownRef = useRef(null);
-  const menuRef = useRef(null);
-  const [visible, setVisible] = useState(false);
-  const [mobileDropdownVisible, setMobileDropdownVisible] = useState(false);
+  const [menuVisible, setMenuVisible] = useState(false);
   const [expandedCategory, setExpandedCategory] = useState(null);
   const location = useLocation();
+  const menuRef = useRef(null);
 
   // Check if we're on the home page
   const isHomePage = location.pathname === '/';
 
   // Toggle category expansion
   const toggleCategoryExpansion = (category) => {
-    if (expandedCategory === category) {
-      setExpandedCategory(null);
-    } else {
-      setExpandedCategory(category);
-    }
-  };
-
-  const closeDropdown = () => {
-    setIsOpen(false);
+    setExpandedCategory(expandedCategory === category ? null : category);
   };
 
   const logout = () => {
@@ -48,196 +38,208 @@ const Navbar = () => {
     };
   }, []);
 
-  // Handle click outside dropdown
+  // Handle click outside menu
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setIsOpen(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
-
-  // Handle click outside menu slide
-  useEffect(() => {
-    const handleClickOutsideMenu = (event) => {
-      if (visible && menuRef.current && !menuRef.current.contains(event.target)) {
+      if (menuVisible && menuRef.current && !menuRef.current.contains(event.target)) {
         const menuButton = document.getElementById('menu-toggle-button');
         if (!menuButton || !menuButton.contains(event.target)) {
-          setVisible(false);
+          setMenuVisible(false);
         }
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutsideMenu);
-
+    document.addEventListener('mousedown', handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutsideMenu);
+      document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [visible]);
+  }, [menuVisible]);
 
+  // Control body scroll when menu is open
   useEffect(() => {
-    if (visible) {
-      document.body.classList.add('menu-open');
+    if (menuVisible) {
+      document.body.style.overflow = 'hidden';
     } else {
-      document.body.classList.remove('menu-open');
+      document.body.style.overflow = '';
     }
     return () => {
-      document.body.classList.remove('menu-open');
+      document.body.style.overflow = '';
     };
-  }, [visible]);
+  }, [menuVisible]);
 
   const handleCategoryClick = (subCategory) => {
     setSelectedSubCategory(subCategory);
-    setVisible(false);
-    closeDropdown();
+    setMenuVisible(false);
   };
 
-  // Determine background color based on home page and scroll position
+  // Determine navbar background based on home page and scroll position
   const getNavbarBackground = () => {
     if (isHomePage && !isScrolled) {
       return 'bg-transparent';
     } else {
-      return 'bg-secondary shadow-md';
+      return 'bg-black shadow-md';
     }
   };
 
+  const categories = [
+    {
+      name: 'Women',
+      id: 'women',
+      subcategories: [
+        { name: 'Kurtis', path: '/shop/Kurtis' },
+        { name: 'Tops', path: '/shop/Tops' },
+        { name: 'Blazers', path: '/shop/blazers' },
+        { name: 'Dresses', path: '/shop/Dresses' },
+        { name: 'Corset tops', path: '/shop/Corset-tops' }
+      ]
+    },
+    {
+      name: 'Home Furnishing',
+      id: 'home',
+      subcategories: [
+        { name: 'Home Décor', path: '/shop/home-decor' },
+        { name: 'Handmade Toys', path: '/shop/handmade-toys' },
+        { name: 'Baskets', path: '/shop/baskets' },
+        { name: 'Bags and Pouches', path: '/shop/bags&pouches' },
+        { name: 'Stationery', path: '/shop/stationery' },
+        { name: 'Wall Decor', path: '/shop/wall-decor' }
+      ]
+    },
+    {
+      name: 'Kitchenware',
+      id: 'kitchen',
+      subcategories: [
+        { name: 'Brass Bowls', path: '/shop/brass' },
+        { name: 'Wooden Spoons', path: '/shop/wooden-spoons' }
+      ]
+    },
+    {
+      name: 'Special Products',
+      id: 'special',
+      subcategories: [
+        { name: 'Bags', path: '/shop/bags' }
+      ]
+    }
+  ];
+
   return (
     <>
-      <div className={`fixed inset-0 bg-text bg-opacity-75 backdrop-blur-sm transition-opacity duration-300 z-10 ${visible ? 'opacity-100' : 'opacity-0 pointer-events-none'}`} onClick={() => setVisible(false)}></div>
-      <div className={`fixed top-0 left-0 right-0 px-4 sm:px-8 md:px-16 lg:px-24 z-20 flex items-center justify-between text-white py-5 font-medium transition-colors duration-300 ${getNavbarBackground()}`}>
-        <Link to='/'>
+      {/* Overlay for when menu is open */}
+      <div className={`fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm transition-opacity duration-300 z-40 ${menuVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'}`} onClick={() => setMenuVisible(false)} />
+
+      {/* Navbar */}
+      <div className={`fixed top-0 left-0 right-0 px-4 sm:px-6 md:px-10 lg:px-20 z-50 flex items-center justify-between text-white py-5 transition-all duration-300 ${getNavbarBackground()}`}>
+        <Link to='/' className="flex-shrink-0">
           <img src={assets.logo_white} className="w-36" alt="Logo" />
         </Link>
-
-        {/* Desktop navigation */}
-        <div className="flex items-center gap-3 sm:gap-3 md:gap-4 lg:gap-6">
-          <img onClick={() => { setShowSearch(true); navigate('/shop/collection') }} src={assets.search_icon} className="w-5 cursor-pointer" alt="" />
-          <div className="group relative">
-            <img onClick={() => token ? null : navigate('/login')} className="w-5 cursor-pointer" src={assets.profile_icon} alt="" />
-            <div className="group-hover:block hidden absolute dropdown-menu right-0 pt-4">
-              {token && (
-                <div className="flex flex-col gap-2 sm:gap-3 md:gap-4 w-28 sm:w-36 md:w-44 py-2 sm:py-3 md:py-4 px-3 sm:px-5 md:px-6 bg-primary text-text rounded">
-                  <p className="cursor-pointer hover:text-secondary" onClick={() => navigate('/profile')}> My Profile </p>
-                  <p className="cursor-pointer hover:text-secondary" onClick={() => navigate('/orders')}> Orders </p>
-                  <p className="cursor-pointer hover:text-secondary" onClick={() => { if (window.confirm("Are you sure you want to log out?")) logout(); }}> Logout </p>
-                </div>
-              )}
-            </div>
+        <div className="flex items-center gap-5">
+          <div onClick={() => { setShowSearch(true); navigate('/shop/collection') }} className="cursor-pointer hover:opacity-80 transition-opacity">
+            <img src={assets.search_icon} className="w-5 h-5" alt="Search" />
           </div>
-          <Link to='/cart' className='relative'>
-            <img src={assets.cart_icon} className='w-5 min-w-5' alt='' />
-            <p className='absolute right-[-5px] bottom-[-5px] w-4 text-center leading-4 bg-black text-white aspect-square rounded-full text-[8px]'>{getCartCount()}</p>
-          </Link>
-          <img id="menu-toggle-button" onClick={() => setVisible(true)} src={assets.menu_icon} className="w-5 cursor-pointer" alt="Menu" />
-        </div>
 
-        {/* Menu Slide */}
-        <div ref={menuRef} className={`fixed top-0 right-0 bottom-0 h-full overflow-y-auto bg-primary shadow-lg transition-all duration-300 z-30 ${visible ? 'w-full sm:w-96 md:w-96 lg:w-[32rem]' : 'w-0'}`}>
-          <div className="flex flex-col h-full text-text">
-            <div onClick={() => setVisible(false)} className="flex items-center gap-4 p-4 bg-secondary cursor-pointer">
-              <img src={assets.dropdown_icon} className="h-4 rotate-180" alt="Back" />
-              <p className="text-lg font-medium">Back</p>
+          <div className="relative group">
+            <div onClick={() => token ? null : navigate('/login')} className="cursor-pointer hover:opacity-80 transition-opacity">
+              <img className="w-5 h-5" src={assets.profile_icon} alt="Profile" />
             </div>
-            {/* Menu Links */}
-            <div className="flex flex-col flex-grow">
-              <NavLink onClick={() => setVisible(false)} className="py-4 px-6 border-b text-lg font-semibold" to='/'> Home </NavLink>
-              <div className="relative">
-                <button className="w-full py-4 px-6 text-lg font-semibold border-b text-left flex justify-between items-center" onClick={() => setMobileDropdownVisible(!mobileDropdownVisible)}>
-                  Shop Now
-                  <span className={`transition-transform ${mobileDropdownVisible ? "rotate-180" : "rotate-0"}`}>
-                    <img src={assets.down_arrow} alt="Arrow" className="w-3" />
-                  </span>
+            {token && (
+              <div className="hidden group-hover:block absolute right-0 pt-4 z-10">
+                <div className="w-44 py-3 px-4 bg-white text-gray-800 rounded-md">
+                  <div className="flex flex-col gap-3">
+                    <NavLink to="/profile" className="hover:text-black font-medium transition-colors">
+                      My Profile
+                    </NavLink>
+                    <NavLink to="/orders" className="hover:text-black font-medium transition-colors">
+                      My Orders
+                    </NavLink>
+                    <button onClick={() => { if (window.confirm("Are you sure you want to log out?")) logout(); }} className="text-left hover:text-black font-medium transition-colors">
+                      Logout
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+          <Link to='/cart' className='relative hover:opacity-80 transition-opacity'>
+            <img src={assets.cart_icon} className='w-5 h-5' alt='Cart' />
+            {getCartCount() > 0 && (
+              <div className={`absolute -right-1.5 -bottom-1.5 w-4 h-4 flex items-center justify-center rounded-full text-xs ${isHomePage && !isScrolled ? 'bg-black text-white' : 'bg-white text-black'}`} >
+                {getCartCount()}
+              </div>
+            )}
+          </Link>
+          <button id="menu-toggle-button" onClick={() => setMenuVisible(true)} className="cursor-pointer hover:opacity-80 transition-opacity" aria-label="Menu">
+            <img src={assets.menu_icon} className="w-5 h-5" alt="Menu" />
+          </button>
+        </div>
+      </div>
+
+      {/* Sidebar Menu */}
+      <div ref={menuRef} className={`fixed top-0 right-0 bottom-0 h-full w-full sm:w-96 md:w-96 lg:w-96 bg-white shadow-lg overflow-y-auto transition-transform duration-300 z-50 ${menuVisible ? 'translate-x-0' : 'translate-x-full'}`}>
+        <div className="bg-black text-white p-6 flex items-center justify-between">
+          <h2 className="text-xl font-medium">Menu</h2>
+          <button onClick={() => setMenuVisible(false)} className="text-white hover:text-gray-300 transition-colors" aria-label="Close menu">
+            <X size={24} />
+          </button>
+        </div>
+        <div className="divide-y divide-gray-200">
+          <NavLink to="/" onClick={() => setMenuVisible(false)} className={({ isActive }) => `block p-4 hover:bg-gray-50 transition-colors ${isActive ? 'text-secondary font-medium' : 'text-gray-800'}`}>
+            Home
+          </NavLink>
+          {/* Shop Categories */}
+          <div className="py-2">
+            <div className="px-4 py-3 text-gray-500 uppercase text-sm font-medium tracking-wider">
+              Shop Categories
+            </div>
+
+            {categories.map((category) => (
+              <div key={category.id} className="border-t border-gray-100">
+                <button className="w-full flex items-center justify-between p-4 text-gray-800 hover:bg-gray-50 transition-colors" onClick={() => toggleCategoryExpansion(category.id)}>
+                  <span className="font-medium">{category.name}</span>
+                  {expandedCategory === category.id ?
+                    <ChevronDown size={18} className="text-gray-500" /> :
+                    <ChevronRight size={18} className="text-gray-500" />
+                  }
                 </button>
 
-                {mobileDropdownVisible && (
-                  <div className="border-b bg-primary">
-                    {/* Women Category */}
-                    <div className="border-b">
-                      <button className="w-full py-3 px-8 text-base font-medium text-left flex justify-between items-center" onClick={() => toggleCategoryExpansion('women')}>
-                        Women
-                        <span className={`transition-transform ${expandedCategory === 'women' ? "rotate-180" : "rotate-0"}`}>
-                          <img src={assets.down_arrow} alt="Arrow" className="w-3" />
-                        </span>
-                      </button>
-
-                      {expandedCategory === 'women' && (
-                        <div className="py-2 bg-primary">
-                          <NavLink to="/shop/Kurtis" onClick={() => { handleCategoryClick('Kurtis') }} className="block w-full py-2 px-12 text-base"> Kurtis </NavLink>
-                          <NavLink to="/shop/Tops" onClick={() => { handleCategoryClick('Tops') }} className="block w-full py-2 px-12 text-base"> Tops </NavLink>
-                          <NavLink to="/shop/blazers" onClick={() => { handleCategoryClick('Blazers') }} className="block w-full py-2 px-12 text-base"> Blazers </NavLink>
-                          <NavLink to="/shop/Dresses" onClick={() => { handleCategoryClick('Dresses') }} className="block w-full py-2 px-12 text-base"> Dresses </NavLink>
-                          <NavLink to="/shop/Corset-tops" onClick={() => { handleCategoryClick('Corset-tops') }} className="block w-full py-2 px-12 text-base"> Corset tops </NavLink>
-                        </div>
-                      )}
-                    </div>
-                    {/* Home Furnishing Category */}
-                    <div className="border-b">
-                      <button className="w-full py-3 px-8 text-base font-medium text-left flex justify-between items-center" onClick={() => toggleCategoryExpansion('home')}>
-                        Home Furnishing
-                        <span className={`transition-transform ${expandedCategory === 'home' ? "rotate-180" : "rotate-0"}`}>
-                          <img src={assets.down_arrow} alt="Arrow" className="w-3" />
-                        </span>
-                      </button>
-                      {expandedCategory === 'home' && (
-                        <div className="py-2 bg-primary">
-                          <NavLink to="/shop/home-decor" onClick={() => { handleCategoryClick('Home Décor') }} className="block w-full py-2 px-12 text-base"> Home Décor</NavLink>
-                          <NavLink to="/shop/handmade-toys" onClick={() => { handleCategoryClick('Handmade Toys') }} className="block w-full py-2 px-12 text-base"> Handmade Toys</NavLink>
-                          <NavLink to="/shop/baskets" onClick={() => { handleCategoryClick('baskets') }} className="block w-full py-2 px-12 text-base"> Baskets</NavLink>
-                          <NavLink to="/shop/bags&pouches" onClick={() => { handleCategoryClick('Bags and Pouches') }} className="block w-full py-2 px-12 text-base"> Bags and Pouches</NavLink>
-                          <NavLink to="/shop/stationery" onClick={() => { handleCategoryClick('Stationery') }} className="block w-full py-2 px-12 text-base"> Stationery</NavLink>
-                          <NavLink to="/shop/wall-decor" onClick={() => { handleCategoryClick('Wall Decor') }} className="block w-full py-2 px-12 text-base"> Wall Decor</NavLink>
-                        </div>
-                      )}
-                    </div>
-                    {/* Kitchenware Category */}
-                    <div className="border-b">
-                      <button className="w-full py-3 px-8 text-base font-medium text-left flex justify-between items-center" onClick={() => toggleCategoryExpansion('kitchen')} >
-                        Kitchenware
-                        <span className={`transition-transform ${expandedCategory === 'kitchen' ? "rotate-180" : "rotate-0"}`}>
-                          <img src={assets.down_arrow} alt="Arrow" className="w-3" />
-                        </span>
-                      </button>
-                      {expandedCategory === 'kitchen' && (
-                        <div className="py-2 bg-primary">
-                          <NavLink to="/shop/brass" onClick={() => { handleCategoryClick('Brass'); setVisible(false); }} className="block w-full py-2 px-12 text-base"> Brass Bowls</NavLink>
-                          <NavLink to="/shop/wooden-spoons" onClick={() => { handleCategoryClick('Wooden Spoons'); setVisible(false); }} className="block w-full py-2 px-12 text-base"> Wooden Spoons</NavLink>
-                        </div>
-                      )}
-                    </div>
-                    {/* Special Products Category */}
-                    <div className="border-b">
-                      <button className="w-full py-3 px-8 text-base font-medium text-left flex justify-between items-center" onClick={() => toggleCategoryExpansion('special')} >
-                        Special Products
-                        <span className={`transition-transform ${expandedCategory === 'special' ? "rotate-180" : "rotate-0"}`}>
-                          <img src={assets.down_arrow} alt="Arrow" className="w-3" />
-                        </span>
-                      </button>
-                      {expandedCategory === 'special' && (
-                        <div className="py-2 bg-primary">
-                          <NavLink to="/shop/bags" onClick={() => { handleCategoryClick('Bags'); setVisible(false); }} className="block w-full py-2 px-12 text-base"> Bags</NavLink>
-                        </div>
-                      )}
-                    </div>
+                {expandedCategory === category.id && (
+                  <div className="bg-gray-50 pl-4">
+                    {category.subcategories.map((subcategory) => (
+                      <NavLink key={subcategory.path} to={subcategory.path} onClick={() => handleCategoryClick(subcategory.name)} className={({ isActive }) => `block p-3 pl-6 hover:bg-gray-100 text-sm transition-colors ${isActive ? 'text-secondary font-medium' : 'text-gray-600'}`}>
+                        {subcategory.name}
+                      </NavLink>
+                    ))}
                   </div>
                 )}
               </div>
-              {/* Additional links */}
-              {token ? (
-                <>
-                  <NavLink onClick={() => setVisible(false)} className="py-4 px-6 border-b text-lg font-semibold" to='/profile'> My Profile </NavLink>
-                  <NavLink onClick={() => setVisible(false)} className="py-4 px-6 border-b text-lg font-semibold" to='/orders'> My Orders </NavLink>
-                  <button onClick={() => { if (window.confirm("Are you sure you want to log out?")) { logout(); setVisible(false); } }} className="py-4 px-6 border-b text-lg font-semibold text-left">Logout</button>
-                </>
-              ) : (
-                <NavLink onClick={() => setVisible(false)} className="py-4 px-6 border-b text-lg font-semibold" to='/login'> Login / Sign Up </NavLink>
-              )}
+            ))}
+          </div>
+          <div className="py-2">
+            <div className="px-4 py-3 text-gray-500 uppercase text-sm font-medium tracking-wider">
+              My Account
             </div>
+
+            {token ? (
+              <>
+                <NavLink to="/profile" onClick={() => setMenuVisible(false)} className={({ isActive }) => `block p-4 hover:bg-gray-50 transition-colors ${isActive ? 'text-secondary font-medium' : 'text-gray-800'}`}>
+                  My Profile
+                </NavLink>
+                <NavLink to="/orders" onClick={() => setMenuVisible(false)} className={({ isActive }) => `block p-4 hover:bg-gray-50 transition-colors ${isActive ? 'text-secondary font-medium' : 'text-gray-800'}`}>
+                  My Orders
+                </NavLink>
+                <button onClick={() => {
+                  if (window.confirm("Are you sure you want to log out?")) {
+                    logout();
+                    setMenuVisible(false);
+                  }
+                }} className="w-full p-4 text-left text-gray-800 font-medium hover:bg-gray-50 transition-colors">
+                  Logout
+                </button>
+              </>
+            ) : (
+              <NavLink to="/login" onClick={() => setMenuVisible(false)} className="block p-4 text-gray-800 hover:bg-gray-50 transition-colors">
+                Login / Sign Up
+              </NavLink>
+            )}
           </div>
         </div>
       </div>

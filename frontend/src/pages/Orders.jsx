@@ -1,19 +1,18 @@
 import React, { useContext, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ShopContext } from '../context/ShopContext';
 import Title from '../components/Title';
 import axios from 'axios';
+import { ChevronRight, Truck, Clock } from 'lucide-react';
 
 const Orders = () => {
   const { backendUrl, token, currency } = useContext(ShopContext);
   const [orderData, setOrderData] = useState([]);
-  const [loading, setLoading] = useState(true); // Loading state
+  const navigate = useNavigate();
 
   const loadOrderData = async () => {
     try {
-      if (!token) {
-        setLoading(false);
-        return;
-      }
+      if (!token) return;
 
       const response = await axios.post(
         `${backendUrl}/api/order/userorders`,
@@ -29,6 +28,7 @@ const Orders = () => {
             item['payment'] = order.payment;
             item['paymentMethod'] = order.paymentMethod;
             item['date'] = order.date;
+            item['orderId'] = order._id || `ORD-${Math.floor(Math.random() * 10000)}`;
             allOrdersItem.push(item);
           });
         });
@@ -36,8 +36,6 @@ const Orders = () => {
       }
     } catch (error) {
       console.error('Error loading orders:', error);
-    } finally {
-      setLoading(false); // Stop loading once data is fetched
     }
   };
 
@@ -45,48 +43,113 @@ const Orders = () => {
     loadOrderData();
   }, [token]);
 
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
+  };
+
   return (
-    <div className="min-h-screen mt-20 mb-10 mx-4 sm:mx-8 md:mx-20 px-4 sm:px-6 md:px-10 lg:px-20 py-10 bg-primary">
-      <div className="text-3xl text-text text-center mb-12">
-        <Title text1="My" text2="Orders" />
+    <div className="min-h-screen text-black mt-20 px-4 sm:px-6 md:px-10 lg:px-20 py-10">
+      <div className="text-3xl text-center mb-12">
+        <Title text1="ORDER" text2="HISTORY" />
       </div>
 
-      {loading ? (
-        <div className="flex justify-center items-center h-40">
-          <div className="w-10 h-10 border-4 border-secondary border-t-transparent rounded-full animate-spin"></div>
-        </div>
-      ) : orderData.length === 0 ? (
-        <div className="text-center py-10 text-xl text-text-light">
-          No orders available. Start shopping now!
+      {orderData.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-16 gap-6">
+          <div className="w-16 h-16 border-2 border-black rounded-full flex items-center justify-center">
+            <Clock size={32} className="text-black" />
+          </div>
+          <div className="text-center">
+            <h3 className="text-xl font-medium mb-2">No Orders Yet</h3>
+            <p className="text-gray-600 max-w-md">Your order history is empty. Explore our collection and start shopping.</p>
+          </div>
+          <button onClick={() => navigate('/')} className="mt-4 px-6 py-3 bg-black text-white font-medium hover:bg-gray-800 transition-colors">
+            BROWSE PRODUCTS
+          </button>
         </div>
       ) : (
-        <div className="space-y-8">
+        <div className="space-y-6">
           {orderData.map((item, index) => (
-            <div key={index} className="p-4 bg-background border border-secondary rounded-lg shadow-lg text-text">
-              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                <div className="flex items-start gap-4">
-                  <img className="w-20 shadow-md" src={item.images[0]} alt={item.name} />
-                  <div>
-                    <p className="font-medium text-base md:text-lg">{item.name}</p>
-                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 mt-2 text-sm">
-                      <p><span className="font-semibold">Price:</span> {currency}{item.price}</p>
-                      <p><span className="font-semibold">Quantity:</span> {item.quantity}</p>
-                      <p><span className="font-semibold">Size:</span> {item.size}</p>
-                    </div>
-                    <p className="mt-2 text-sm"><span className="font-semibold">Order Placed:</span> {new Date(item.date).toDateString()}</p>
-                    <p className="text-sm"><span className="font-semibold">Payment Method:</span> {item.paymentMethod}</p>
-                  </div>
+            <div key={index} className="border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+              <div className="bg-gray-50 px-6 py-3 border-b border-gray-200 flex justify-between items-center">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs uppercase font-bold tracking-wider text-gray-500">Order ID:</span>
+                  <span className="font-medium">{item.orderId}</span>
                 </div>
-                <div className="flex flex-col md:flex-row md:items-center md:justify-between w-full md:w-auto gap-4">
-                  <div className="flex items-center gap-2">
-                    <div className={`w-3 h-3 rounded-full ${item.status === 'Delivered' ? 'bg-green-400' : 'bg-yellow-400'}`}></div>
-                    <p className="text-sm md:text-base">{item.status}</p>
-                  </div>
-                  <button onClick={() => {/* Implement tracking functionality */ }} className="px-4 py-2 bg-secondary text-primary text-sm font-medium rounded-lg shadow-md hover:bg-secondary-dark transition">
-                    Track Order
-                  </button>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs uppercase font-medium">{formatDate(item.date)}</span>
                 </div>
               </div>
+
+              <div className="p-6">
+                <div className="flex flex-col md:flex-row gap-6">
+                  {/* Product Image */}
+                  <div className="flex-shrink-0">
+                    <div className="w-24 h-24 md:w-32 md:h-32 overflow-hidden flex items-center justify-center">
+                      <img
+                        className="w-full h-full object-contain object-center"
+                        src={item.images[0]}
+                        alt={item.name}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Order Details */}
+                  <div className="flex-grow flex flex-col md:flex-row md:justify-between gap-4 w-full">
+                    <div className="flex-grow">
+                      <h3 className="font-medium text-lg mb-2">{item.name}</h3>
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-2 text-sm text-gray-600">
+                        <div>
+                          <span className="block text-xs uppercase tracking-wider text-gray-500">Price</span>
+                          <span className="font-medium text-black">{currency}{item.price}</span>
+                        </div>
+                        <div>
+                          <span className="block text-xs uppercase tracking-wider text-gray-500">Quantity</span>
+                          <span>{item.quantity}</span>
+                        </div>
+                        <div>
+                          <span className="block text-xs uppercase tracking-wider text-gray-500">Size</span>
+                          <span>{item.size}</span>
+                        </div>
+                        <div>
+                          <span className="block text-xs uppercase tracking-wider text-gray-500">Payment</span>
+                          <span>{item.paymentMethod}</span>
+                        </div>
+                        <div>
+                          <span className="block text-xs uppercase tracking-wider text-gray-500">Total</span>
+                          <span className="font-medium text-black">{currency}{(item.price * item.quantity).toFixed(2)}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col items-start md:items-end justify-between pt-4 md:pt-0 border-t md:border-t-0 mt-4 md:mt-0">
+                      <div className="flex items-center gap-2 mb-4">
+                        <div className={`w-2 h-2 rounded-full ${item.status === 'Delivered' ? 'bg-black' : 'bg-gray-400'}`}></div>
+                        <span className={`text-sm font-medium ${item.status === 'Delivered' ? 'text-black' : 'text-gray-600'}`}>
+                          {item.status}
+                        </span>
+                      </div>
+
+                      <div className="flex flex-col gap-2 w-full md:w-auto">
+                        <button className="flex items-center justify-center gap-1 px-6 py-2 border border-black text-black text-sm font-medium hover:bg-black hover:text-white transition-colors" onClick={() => navigate('/trackorder')}>
+                          <Truck size={16} />
+                          <span>Track Order</span>
+                        </button>
+                        <button className="flex items-center justify-center gap-1 px-6 py-2 bg-black text-white text-sm font-medium hover:bg-gray-800 transition-colors" onClick={() => navigate(`/product/${item._id}`)}>
+                          <span>Reorder</span>
+                          <ChevronRight size={16} />
+                        </button>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+
             </div>
           ))}
         </div>

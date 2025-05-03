@@ -16,7 +16,6 @@ const Hero = () => {
     }
   }, []);
 
-  // Split the brand name into individual letters for animation
   const brandName = "AHARYAS";
   
   return (
@@ -33,7 +32,6 @@ const Hero = () => {
         Your browser does not support the video tag.
       </video>
 
-      {/* Overlay Content */}
       <div className="absolute inset-0 flex flex-col justify-center items-center text-gray-200 z-10">
         {/* Animated brand name */}
         <div className="relative overflow-hidden">
@@ -48,7 +46,6 @@ const Hero = () => {
               </span>
             ))}
           </div>
-          {/* Animated line underneath */}
           <div className="h-1 bg-white w-0 mx-auto line-animation"></div>
         </div>
 
@@ -61,7 +58,7 @@ const Hero = () => {
       </div>
 
       {/* CSS for animations */}
-      <style jsx>{`
+      <style>{`
         .letter-animation {
           transition: transform 0.8s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.6s ease;
         }

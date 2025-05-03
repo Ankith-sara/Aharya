@@ -22,6 +22,7 @@ import Verify from './pages/Verify';
 import VirtualTryOn from './pages/VirtualTryOn';
 import BlogPage from './pages/BlogPage';
 import ScrollToTop from './components/ScrollToTop';
+import TrackOrder from './pages/TrackOrder';
 
 const App = () => {
   const location = useLocation();
@@ -44,6 +45,7 @@ const App = () => {
         <Route path='/login' element={<Login />} />
         <Route path='/place-order' element={<PlaceOrder />} />
         <Route path='/orders' element={<Orders />} />
+        <Route path='/trackorder' element={<TrackOrder />} />
         <Route path='/verify' element={<Verify />} />
         <Route path='/profile' element={<MyProfile />} />
         <Route path='/sell' element={<Sell />} />

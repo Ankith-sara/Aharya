@@ -53,14 +53,14 @@ const Verify = () => {
     }, [token, orderId]); 
 
     return (
-        <div className='m-20 text-center'>
+        <div className='min-h-screen text-center'>
             {loading ? ( 
                 <div className="flex justify-center items-center">
-                    <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-500"></div>
+                    <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-gray-600"></div>
                     <p className="ml-2 text-gray-600">Verifying payment...</p>
                 </div>
             ) : (
-                <p className="text-secondary font-semibold">Redirecting...</p>
+                <p className="text-black font-semibold">Redirecting...</p>
             )}
         </div>
     );

@@ -5,6 +5,7 @@ import { assets } from '../assets/frontend_assets/assets';
 import { ShopContext } from '../context/ShopContext';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { CreditCard, Truck, Home } from 'lucide-react';
 
 const PlaceOrder = () => {
   const [method, setMethod] = useState('cod');
@@ -116,53 +117,115 @@ const PlaceOrder = () => {
   };
 
   return (
-    <form onSubmit={onSubmitHandler} className="flex flex-col lg:flex-row bg-primary border-2 border-secondary justify-between gap-4 p-10 lg:pt-14 min-h-[80vh] border-t mx-4 mt-20 sm:mx-8 md:mx-20" >
-      <div className="flex flex-col gap-4 w-full sm:max-w-[480px]">
-        <div className="text-xl sm:text-2xl text-secondary my-3" >
-          <Title text1="Delivery" text2="Information" />
-        </div>
-        <div className="flex gap-3">
-          <input onChange={onChangeHandler} name="firstName" value={formData.firstName} className="border bg-primary text-text border-secondary rounded py-1.5 px-3.5 w-full" type="text" placeholder="First name" required />
-          <input onChange={onChangeHandler} name="lastName" value={formData.lastName} className="border bg-primary text-text border-secondary rounded py-1.5 px-3.5 w-full" type="text" placeholder="Last name" required />
-        </div>
-        <input onChange={onChangeHandler} name="email" value={formData.email} className="border bg-primary text-text border-secondary rounded py-1.5 px-3.5 w-full" type="email" placeholder="Email address" required />
-        <input onChange={onChangeHandler} name="street" value={formData.street} className="border bg-primary text-text border-secondary rounded py-1.5 px-3.5 w-full" type="text" placeholder="Street" required />
-        <div className="flex gap-3">
-          <input onChange={onChangeHandler} name="city" value={formData.city} className="border bg-primary text-text border-secondary rounded py-1.5 px-3.5 w-full" type="text" placeholder="City" required />
-          <input onChange={onChangeHandler} name="state" value={formData.state} className="border bg-primary text-text border-secondary rounded py-1.5 px-3.5 w-full" type="text" placeholder="State" required />
-        </div>
-        <div className="flex gap-3">
-          <input onChange={onChangeHandler} name="pincode" value={formData.pincode} className="border bg-primary text-text border-secondary rounded py-1.5 px-3.5 w-full" type="number" placeholder="Pincode" required />
-          <input onChange={onChangeHandler} name="country" value={formData.country} className="border bg-primary text-text border-secondary rounded py-1.5 px-3.5 w-full" type="text" placeholder="Country" required />
-        </div>
-        <input onChange={onChangeHandler} name="phone" value={formData.phone} className="border bg-primary text-text border-secondary rounded py-1.5 px-3.5 w-full" type="number" placeholder="Phone number" required />
+    <div className="min-h-screen bg-white text-black mt-20 px-4 sm:px-6 md:px-10 lg:px-20 py-10">
+      <div className="text-3xl text-center mb-12">
+        <Title text1="CHECKOUT" text2="DETAILS" />
       </div>
-
-      <div className="bg-background p-10 rounded-md b mt-8">
-        <CartTotal />
-        <div className="mt-12">
-          <Title text1="Payment" text2="Method" />
-          <div className="flex gap-2 flex-col lg:flex-row">
-            <PaymentOption method={method} setMethod={setMethod} type="stripe" logo={assets.stripe_logo} />
-            <PaymentOption method={method} setMethod={setMethod} type="razorpay" logo={assets.razorpay_logo} />
-            <PaymentOption method={method} setMethod={setMethod} type="cod" />
-          </div>
-          <div className="w-full text-end mt-8">
-            <button type="submit" className="px-16 py-3 bg-secondary text-primary text-sm" >
-              Place order
-            </button>
+      <form onSubmit={onSubmitHandler} className="grid lg:grid-cols-[2fr_1fr] gap-8">
+        {/* Delivery Information */}
+        <div className="space-y-8">
+          <div className="border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+            <div className="p-6 border-b border-gray-200 flex items-center gap-3">
+              <Home size={22} className="text-black" />
+              <h3 className="font-medium text-lg">Delivery Information</h3>
+            </div>
+            <div className="p-6 space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label className="block text-xs uppercase tracking-wider text-gray-900 font-medium">First Name</label>
+                  <input onChange={onChangeHandler} name="firstName" value={formData.firstName} className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black" type="text" placeholder="Enter your first name" required />
+                </div>
+                <div className="space-y-2">
+                  <label className="block text-xs uppercase tracking-wider text-gray-900 font-medium">Last Name</label>
+                  <input onChange={onChangeHandler} name="lastName" value={formData.lastName} className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black" type="text" placeholder="Enter your last name" required />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <label className="block text-xs uppercase tracking-wider text-gray-900 font-medium">Email Address</label>
+                <input onChange={onChangeHandler} name="email" value={formData.email} className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black" type="email" placeholder="Enter your email address" required />
+              </div>
+              <div className="space-y-2">
+                <label className="block text-xs uppercase tracking-wider text-gray-900 font-medium">Street Address</label>
+                <input onChange={onChangeHandler} name="street" value={formData.street} className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black" type="text" placeholder="Enter your street address" required />
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label className="block text-xs uppercase tracking-wider text-gray-900 font-medium">City</label>
+                  <input onChange={onChangeHandler} name="city" value={formData.city} className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black" type="text" placeholder="Enter your city" required />
+                </div>
+                <div className="space-y-2">
+                  <label className="block text-xs uppercase tracking-wider text-gray-900 font-medium">State</label>
+                  <input onChange={onChangeHandler} name="state" value={formData.state} className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black" type="text" placeholder="Enter your state" required />
+                </div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label className="block text-xs uppercase tracking-wider text-gray-900 font-medium">Postal Code</label>
+                  <input onChange={onChangeHandler} name="pincode" value={formData.pincode} className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black" type="number" placeholder="Enter your postal code" required />
+                </div>
+                <div className="space-y-2">
+                  <label className="block text-xs uppercase tracking-wider text-gray-900 font-medium">Country</label>
+                  <input onChange={onChangeHandler} name="country" value={formData.country} className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black" type="text" placeholder="Enter your country" required />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <label className="block text-xs uppercase tracking-wider text-gray-900 font-medium">Phone Number</label>
+                <input onChange={onChangeHandler} name="phone" value={formData.phone} className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black" type="number" placeholder="Enter your phone number" required />
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </form>
 
+        {/* Order Summary */}
+        <div className="h-fit">
+          <div className="sticky top-24 bg-white border border-gray-100 rounded-2xl shadow-md overflow-hidden">
+            <div className="p-6 border-b border-gray-100">
+              <h3 className="text-xl font-semibold text-gray-900 mb-4">Order Summary</h3>
+              <CartTotal />
+            </div>
+            <div className="p-6 space-y-4 bg-gray-50">
+              <button type="submit" className="w-full py-3 rounded-lg bg-gradient-to-r from-black to-gray-900 text-white font-semibold hover:from-gray-900 hover:to-black transition-all">
+                PLACE ORDER
+              </button>
+              <p className="text-xs text-gray-500 text-center mt-4">
+                By placing your order, you agree to our <span className="underline cursor-pointer hover:text-black">Terms of Service</span> and <span className="underline cursor-pointer hover:text-black">Privacy Policy</span>
+              </p>
+            </div>
+
+            {/* Payment Method */}
+            <div className="border-t border-gray-100 bg-white">
+              <div className="p-6 border-b border-gray-100 flex items-center gap-3">
+                <CreditCard size={22} className="text-black" />
+                <h3 className="font-semibold text-lg text-gray-900">Payment Method</h3>
+              </div>
+              <div className="p-6 space-y-4">
+                <PaymentOption method={method} setMethod={setMethod} type="stripe" logo={assets.stripe_logo} />
+                <PaymentOption method={method} setMethod={setMethod} type="razorpay" logo={assets.razorpay_logo} />
+                <PaymentOption method={method} setMethod={setMethod} type="cod" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
   );
 };
 
 const PaymentOption = ({ method, setMethod, type, logo }) => (
-  <div onClick={() => setMethod(type)} className='flex items-center gap-3 border p-2 px-3 cursor-pointer'>
-    <p className={`min-w-3.5 h-3.5 border rounded-full ${method === type ? 'bg-green-400' : ''}`}></p>
-    {logo ? <img className='h-5 mx-4' src={logo} alt='' /> : <p className='text-gray-700 text-sm mx-4'>Cash on delivery</p>}
+  <div onClick={() => setMethod(type)} className={`flex items-center gap-3 p-4 border rounded-md cursor-pointer transition-all ${method === type ? 'border-black bg-gray-50' : 'border-gray-200 hover:border-gray-300'}`}>
+    <div className={`w-5 h-5 rounded-full border border-gray-300 flex items-center justify-center ${method === type ? 'border-black' : ''}`}>
+      {method === type && <div className="w-3 h-3 bg-black rounded-full"></div>}
+    </div>
+    {logo ? (
+      <img className="h-6" src={logo} alt={`${type} payment`} />
+    ) : (
+      <div className="flex items-center gap-2">
+        <div className="bg-gray-100 p-1 rounded">
+          <CreditCard size={18} />
+        </div>
+        <span className="font-medium">Cash on Delivery</span>
+      </div>
+    )}
   </div>
 );
 
