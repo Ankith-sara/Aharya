@@ -4,7 +4,7 @@ import LastestCollection from '../components/LastestCollection';
 import BestSeller from '../components/BestSeller';
 import Collections from '../components/Collections';
 import WhatWeDo from '../components/WhatWeDo';
-import LuxEco from '../components/luxeco';
+import BrandCategories from '../components/BrandCategories';
 
 const Home = () => {
     return (
@@ -13,7 +13,7 @@ const Home = () => {
             <Collections />
             <LastestCollection />
             <BestSeller />
-            <LuxEco/>
+            <BrandCategories />
             <WhatWeDo />
         </div>
     )
