@@ -135,7 +135,7 @@ const Orders = () => {
                       </div>
 
                       <div className="flex flex-col gap-2 w-full md:w-auto">
-                        <button className="flex items-center justify-center gap-1 px-6 py-2 border border-black text-black text-sm font-medium hover:bg-black hover:text-white transition-colors" onClick={() => navigate('/trackorder')}>
+                        <button className="flex items-center justify-center gap-1 px-6 py-2 border border-black text-black text-sm font-medium hover:bg-black hover:text-white transition-colors" onClick={() => navigate(`/trackorder/${item.orderId}`)}>
                           <Truck size={16} />
                           <span>Track Order</span>
                         </button>

@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { assets } from '../assets/frontend_assets/assets';
 import Title from '../components/Title';
 import { ArrowRight, TrendingUp, Package, Truck, CreditCard } from 'lucide-react';
 
 const Sell = () => {
+    useEffect(() => {
+        document.title = 'Become a Seller | Aharyas'
+      })
     return (
         <div className="min-h-screen bg-white text-black">
             {/* Hero Section with Diagonal Split */}

@@ -32,6 +32,10 @@ const Cart = () => {
     }
   };
 
+  useEffect(() => {
+    document.title = 'Cart | Aharyas'
+  })
+
   return (
     <div className="min-h-screen bg-white text-black mt-20 px-4 sm:px-6 md:px-10 lg:px-20 py-10">
       <div className="text-3xl text-center mb-10">

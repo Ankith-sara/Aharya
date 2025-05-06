@@ -65,6 +65,10 @@ const Login = () => {
     }
   }, [token, navigate]);
 
+  useEffect(() => {
+    document.title = 'Login | Aharyas'
+  })
+
   return (
     <div className="min-h-screen text-white flex items-center justify-center">
       <div className="w-full max-w-6xl flex flex-col md:flex-row">
@@ -72,7 +76,7 @@ const Login = () => {
         <div className="w-full md:w-1/2 relative hidden md:block">
           <div className="absolute inset-0 bg-black/30 z-10"></div>
           <div className="h-full flex items-center justify-center overflow-hidden">
-            <img src={assets.login_bg} alt="Premium craftsmanship" className="object-cover h-full w-full grayscale"  />
+            <img src="https://okhai.org/cdn/shop/files/8_Chikankari.jpg?v=1712064786" alt="Premium craftsmanship" className="object-cover h-full w-full grayscale"  />
           </div>
           <div className="absolute inset-0 z-20 flex items-center justify-center p-10">
             <div className="border border-white/20 p-6 bg-black/40 backdrop-blur-sm">

@@ -107,6 +107,12 @@ const Product = () => {
     }
   }, [productId, products, addProductToRecentlyViewed]);
 
+  useEffect(() => {
+    if (productData?.name) {
+      document.title = `${productData.name} | Aharyas`;
+    }
+  }, [productData?.name]);  
+
   if (!productData) {
     return <div className="flex justify-center items-center text-lg min-h-screen font-semibold p-10">Loading...</div>;
   }

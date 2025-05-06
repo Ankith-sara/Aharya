@@ -45,7 +45,7 @@ const Collections = () => {
         </div>
 
         {/* Featured collections grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {categories.map((category, index) => (
             <div key={category.name} className="flex flex-col h-full">
               <NavLink to={`/shop/${category.name}`} onClick={() => handleCategoryClick(category.name)} className="group h-full">

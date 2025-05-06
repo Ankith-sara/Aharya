@@ -6,7 +6,7 @@ const BrandCategories = () => {
   const { navigate } = useContext(ShopContext);
 
   return (
-    <div className="w-full py-5 px-4 md:px-10">
+    <div className="w-full py-10 px-4 sm:px-6 md:px-10 lg:px-20">
       <div className="flex flex-wrap md:flex-nowrap gap-6">
 
         {/* Aharyas Luxury Section */}

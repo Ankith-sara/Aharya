@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { assets } from '../assets/frontend_assets/assets';
 import NewsletterBox from '../components/NewsletterBox';
 import { CheckCircle } from "lucide-react";
@@ -6,6 +6,10 @@ import OurPolicy from '../components/OurPolicy';
 import Title from '../components/Title';
 
 const About = () => {
+  useEffect(() => {
+    document.title = 'About Aharyas | Aharayas'
+  })
+
   return (
     <div className="min-h-screen text-black mt-20 px-4 sm:px-6 md:px-10 lg:px-20 py-16">
       <div className="text-center mb-10">
@@ -45,7 +49,7 @@ const About = () => {
       </div>
 
       {/* Our Story Section */}
-      <div className="mb-24 bg-gray-50 py-20 px-6 md:px-12 -mx-4 sm:-mx-6 md:-mx-10 lg:-mx-20">
+      <div className="mb-20 bg-gray-50 py-20 px-6 md:px-12 -mx-4 sm:-mx-6 md:-mx-10 lg:-mx-20">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <Title text1="OUR" text2="STORY" />
@@ -89,7 +93,7 @@ const About = () => {
       </div>
 
       {/* Mission and Vision Section */}
-      <div className="mb-20">
+      <div className="mb-10">
         <div className="grid md:grid-cols-2 gap-16">
           <div className="border border-gray-200 p-10 hover:border-black transition-all duration-300">
             <h3 className="text-lg uppercase tracking-widest font-medium mb-6">Our Mission</h3>
@@ -122,8 +126,8 @@ const About = () => {
       </div>
 
       {/* Artisan Gallery Section */}
-      <div className="mb-24">
-        <div className="text-center mb-16">
+      <div className="mb-10">
+        <div className="text-center mb-10">
           <h2 className="text-3xl font-bold tracking-tight mb-2">
             OUR <span className="font-bold">ARTISANS</span>
           </h2>
@@ -168,12 +172,12 @@ const About = () => {
       </div>
 
       {/* Our Policies Section */}
-      <div className="mb-20">
+      <div className="mb-10">
         <OurPolicy />
       </div>
 
       {/* Our Process Section with Image Timeline */}
-      <div className="mb-20">
+      <div className="mb-10">
         <div className="text-center mb-10">
           <Title text1="OUR" text2="PROCESS" />
         </div>
@@ -226,7 +230,7 @@ const About = () => {
       </div>
 
       {/* Newsletter Section */}
-      <div className="bg-gray-50 py-20 px-6 md:px-12 -mx-4 sm:-mx-6 md:-mx-10 lg:-mx-20">
+      <div className="bg-gray-50 py-10 px-6 md:px-12 -mx-4 sm:-mx-6 md:-mx-10 lg:-mx-20">
         <NewsletterBox />
       </div>
     </div>

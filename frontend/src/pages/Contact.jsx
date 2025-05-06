@@ -1,10 +1,14 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Title from '../components/Title';
 import { assets } from '../assets/frontend_assets/assets';
 import NewsletterBox from '../components/NewsletterBox';
 import { MapPin, Phone, Mail, Briefcase } from 'lucide-react';
 
 const Contact = () => {
+  useEffect(() => {
+    document.title = 'Contact Customer Service | Aharyas'
+  })
+
   return (
     <div className="min-h-screen bg-white text-black mt-20 px-4 sm:px-6 md:px-10 lg:px-20 py-10">
       <div className="text-3xl text-center mb-6">

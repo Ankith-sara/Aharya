@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Title from '../components/Title';
 
 const BlogPage = () => {
@@ -18,6 +18,10 @@ const BlogPage = () => {
       link: 'https://okhai.org/pages/about-us',
     },
   ];
+
+  useEffect(() => {
+    document.title = 'Aharyas Blogs | Aharyas'
+  })
 
   return (
     <div className="min-h-screen text-black mt-20 px-4 sm:px-6 md:px-10 lg:px-20 py-10">
