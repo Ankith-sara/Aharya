@@ -29,7 +29,7 @@ const TrackOrder = () => {
     const fetchOrder = async () => {
       setLoading(true);
       setError(null);
-      
+
       try {
         // Demo mode - using static data
         if (!backendUrl || !token || !orderId) {
@@ -104,17 +104,17 @@ const TrackOrder = () => {
             tax: 16.40,
             paymentMethod: 'Credit Card (ending in 4321)'
           };
-          
+
           setOrder(mockOrder);
         } else {
           // Fetch from API if we have real credentials
           const response = await fetch(
-            `${backendUrl}/api/order/track/${orderId}`, 
+            `${backendUrl}/api/order/track/${orderId}`,
             { headers: { token } }
           );
-          
+
           const data = await response.json();
-          
+
           if (data.success) {
             setOrder(data.order);
           } else {
@@ -128,7 +128,7 @@ const TrackOrder = () => {
         setLoading(false);
       }
     };
-    
+
     fetchOrder();
   }, [orderId, backendUrl, token]);
 
@@ -148,8 +148,7 @@ const TrackOrder = () => {
     switch (status) {
       case 'Order Placed': return <Clock size={24} />;
       case 'Processing': return <Package size={24} />;
-      case 'Shipped': return <Package size={24} />;
-      case 'In Transit': return <Truck size={24} />;
+      case 'Shipping': return <Package size={24} />;
       case 'Out for Delivery': return <Truck size={24} />;
       case 'Delivered': return <CheckCircle size={24} />;
       default: return <AlertCircle size={24} />;
@@ -159,12 +158,12 @@ const TrackOrder = () => {
   // Determine status for the complete timeline
   const getStatusState = (status) => {
     if (!order || !order.status) return 'upcoming';
-    
+
     const currentStatusIndex = allStatuses.indexOf(order.status);
     const statusIndex = allStatuses.indexOf(status);
-    
+
     if (statusIndex < 0) return 'upcoming';
-    
+
     if (statusIndex < currentStatusIndex) {
       return 'completed';
     } else if (statusIndex === currentStatusIndex) {
@@ -217,7 +216,7 @@ const TrackOrder = () => {
         {/* Order Status Banner */}
         <div className="bg-gray-900 text-white p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
           <div>
-            <p className="text-sm text-gray-300">Order #{order._id}</p>
+            <p className="text-sm text-gray-300">Order: {order._id}</p>
             <h2 className="text-xl font-medium mt-1">
               Status: {order.status}
             </h2>
@@ -238,78 +237,74 @@ const TrackOrder = () => {
         {/* Tracking Progress */}
         <div className="bg-white border border-gray-200 rounded-lg overflow-hidden mb-8">
           <div className="p-6 border-b border-gray-200">
-            <div className="flex justify-between items-center">
-              <h3 className="text-lg font-medium">Tracking Progress</h3>
-              <div>
-                <span className="text-sm text-gray-500 mr-2">Tracking Number:</span>
-                <span className="font-medium">{order.trackingNumber || order._id}</span>
-              </div>
-            </div>
+            <h3 className="text-lg font-medium">Tracking Progress</h3>
           </div>
-          
+
           {/* Complete Timeline */}
-          <div className="p-6">
-            <div className="relative">
-              {/* Vertical line */}
-              <div className="absolute left-6 ml-1 top-1 h-full w-0.5 bg-gray-200"></div>
-              
-              {/* Complete timeline items */}
-              {allStatuses.map((status, index) => {
-                const state = getStatusState(status);
-                const historyItem = findHistoryForStatus(status);
-                
-                return (
-                  <div key={index} className="mb-8 relative">
-                    <div className="flex items-start">
-                      <div className={`relative z-10 flex items-center justify-center w-14 h-14 rounded-full transition-all ${
-                        state === 'completed' 
-                          ? 'bg-green-500 text-white border-2 border-green-500' 
-                          : state === 'current'
-                            ? 'bg-blue-600 text-white border-2 border-blue-600 shadow-lg animate-pulse'
-                            : 'border-2 border-gray-300 bg-white text-gray-400'
-                      }`}>
-                        {state === 'completed' 
-                          ? <CheckCircle size={26} /> 
-                          : getStatusIcon(status)}
-                      </div>
-                      <div className="ml-6">
-                        <div className="flex flex-col sm:flex-row sm:items-baseline">
-                          <h4 className={`text-lg font-medium ${
-                            state === 'upcoming' ? 'text-gray-400' : 
-                            state === 'current' ? 'text-blue-600' : 'text-black'
-                          }`}>{status}</h4>
-                          
+          <div className="p-6 w-full overflow-x-auto">
+            <div className="relative min-w-max">
+              {/* Horizontal line */}
+              <div className="absolute top-16 left-0 w-full h-0.5 bg-gray-200"></div>
+
+              {/* Status points */}
+              <div className="flex">
+                {allStatuses.map((status, index) => {
+                  const state = getStatusState(status);
+                  const historyItem = findHistoryForStatus(status);
+
+                  return (
+                    <div key={index} className="flex-1 px-2 first:pl-0 last:pr-0 min-w-48">
+                      <div className="flex flex-col items-center">
+                        {/* Icon circle */}
+                        <div
+                          className={`relative z-10 flex items-center justify-center w-14 h-14 rounded-full transition-all ${state === 'completed'
+                              ? 'bg-green-500 text-white border-2 border-green-500'
+                              : state === 'current'
+                                ? 'bg-blue-600 text-white border-2 border-blue-600 shadow-lg animate-pulse'
+                                : 'border-2 border-gray-300 bg-white text-gray-400'
+                            }`}
+                        >
+                          {state === 'completed'
+                            ? <CheckCircle size={24} />
+                            : getStatusIcon(status)}
+                        </div>
+
+                        {/* Status label and details */}
+                        <div className="mt-4 text-center">
+                          <h4 className={`text-md font-medium ${state === 'upcoming' ? 'text-gray-400' :
+                              state === 'current' ? 'text-blue-600' : 'text-black'
+                            }`}>
+                            {status}
+                          </h4>
+
                           {historyItem && (
-                            <span className="sm:ml-4 text-sm text-gray-500">
-                              {formatDate(historyItem.timestamp)}, {formatTime(historyItem.timestamp)}
-                            </span>
+                            <>
+                              <span className="text-xs text-gray-500 block mt-1">
+                                {formatDate(historyItem.timestamp)}, {formatTime(historyItem.timestamp)}
+                              </span>
+                              <p className={`mt-2 text-sm ${state === 'upcoming' ? 'text-gray-400' : 'text-gray-600'}`}>
+                                {historyItem.description}
+                              </p>
+                              <div className="mt-2 flex items-center justify-center text-xs text-gray-500">
+                                <MapPin size={12} className="mr-1" />
+                                {historyItem.location}
+                              </div>
+                            </>
+                          )}
+
+                          {state === 'current' && !historyItem && (
+                            <p className="mt-1 text-sm text-blue-600">Current stage</p>
+                          )}
+
+                          {state === 'upcoming' && !historyItem && (
+                            <p className="mt-1 text-sm text-gray-400">Awaiting</p>
                           )}
                         </div>
-                        
-                        {historyItem && (
-                          <>
-                            <p className={`mt-1 ${state === 'upcoming' ? 'text-gray-400' : 'text-gray-600'}`}>
-                              {historyItem.description}
-                            </p>
-                            <div className="mt-2 flex items-center text-sm text-gray-500">
-                              <MapPin size={16} className="mr-1" />
-                              {historyItem.location}
-                            </div>
-                          </>
-                        )}
-                        
-                        {state === 'current' && !historyItem && (
-                          <p className="mt-1 text-blue-600">This is the current stage of your order</p>
-                        )}
-                        
-                        {state === 'upcoming' && !historyItem && (
-                          <p className="mt-1 text-gray-400">Awaiting this stage</p>
-                        )}
                       </div>
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
             </div>
           </div>
         </div>
@@ -323,7 +318,7 @@ const TrackOrder = () => {
             <h3 className="text-lg font-medium">Order Details</h3>
             {showDetails ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
           </button>
-          
+
           {showDetails && (
             <div className="p-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -334,10 +329,10 @@ const TrackOrder = () => {
                     {order.items.map((item, index) => (
                       <div key={index} className="flex gap-4">
                         <div className="w-20 h-24 bg-gray-100 flex-shrink-0">
-                          <img 
-                            src={item.images?.[0] || item.image || '/api/placeholder/120/150'} 
-                            alt={item.name} 
-                            className="w-full h-full object-cover" 
+                          <img
+                            src={item.images?.[0] || item.image || '/api/placeholder/120/150'}
+                            alt={item.name}
+                            className="w-full h-full object-cover"
                           />
                         </div>
                         <div className="flex-grow">
@@ -354,7 +349,7 @@ const TrackOrder = () => {
                     ))}
                   </div>
                 </div>
-                
+
                 {/* Shipping & Payment */}
                 <div className="space-y-8">
                   {/* Shipping Address */}
@@ -373,7 +368,7 @@ const TrackOrder = () => {
                       {order.address?.phone && <p>Phone: {order.address.phone}</p>}
                     </address>
                   </div>
-                  
+
                   {/* Order Summary */}
                   <div>
                     <h4 className="text-sm uppercase tracking-wider font-medium text-gray-500 mb-4">Order Summary</h4>
@@ -382,8 +377,8 @@ const TrackOrder = () => {
                         <span>Subtotal</span>
                         <span>
                           {currency}
-                          {order.amount 
-                            ? (order.amount - (order.delivery_fee || 0) - (order.tax || 0)).toFixed(2) 
+                          {order.amount
+                            ? (order.amount - (order.delivery_fee || 0) - (order.tax || 0)).toFixed(2)
                             : '--'}
                         </span>
                       </div>
@@ -403,7 +398,7 @@ const TrackOrder = () => {
                       </div>
                     </div>
                   </div>
-                  
+
                   {/* Payment Method */}
                   <div>
                     <h4 className="text-sm uppercase tracking-wider font-medium text-gray-500 mb-4">Payment Method</h4>
@@ -414,13 +409,10 @@ const TrackOrder = () => {
             </div>
           )}
         </div>
-        
+
         {/* Back Button */}
         <div className="flex justify-start mt-10">
-          <button 
-            onClick={() => window.history.back()} 
-            className="flex items-center text-gray-700 hover:text-black transition-colors"
-          >
+          <button onClick={() => window.history.back()} className="flex items-center text-gray-700 hover:text-black transition-colors">
             <ArrowLeft size={18} className="mr-2" />
             Back to Orders
           </button>

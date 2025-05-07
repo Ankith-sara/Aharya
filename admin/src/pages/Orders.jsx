@@ -93,7 +93,7 @@ const Orders = ({ token }) => {
                   <td className="p-2 border border-gray-900">
                       <select onChange={(event) => statusHandler(event, order._id)} value={order.status} className="border border-gray-300 rounded-md py-1 px-5 bg-gray-50 focus:ring focus:ring-secondary text-sm">
                         <option value="Order Placed">Order Placed</option>
-                        <option value="Packing">Packing</option>
+                        <option value="Processing">Processing</option>
                         <option value="Shipping">Shipping</option>
                         <option value="Out of delivery">Out of delivery</option>
                         <option value="Delivered">Delivered</option>
