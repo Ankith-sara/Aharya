@@ -5,6 +5,7 @@ import logo_white from './logo_white.png'
 import cart_icon from './cart_icon.png'
 import login_bg from './login_bg.jpg'
 import exchange_icon from './exchange_icon.png'
+import comment_icon from './comment_icon.png'
 import profile_icon from './profile_icon.png'
 import quality_icon from './quality_icon.png'
 import search_icon from './search_icon.png'
@@ -41,6 +42,7 @@ export const assets = {
     support_img,
     security_icon,
     menu_icon,
+    comment_icon,
     about_img,
     contact_img,
     razorpay_logo,

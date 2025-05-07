@@ -23,11 +23,13 @@ import VirtualTryOn from './pages/VirtualTryOn';
 import BlogPage from './pages/BlogPage';
 import ScrollToTop from './components/ScrollToTop';
 import TrackOrder from './pages/TrackOrder';
+import ChatIcon from './components/ChatIcon';
 
 const App = () => {
   const location = useLocation();
   const hideNavAndFooter = location.pathname === '/login';
-
+  const hideChatIcon = location.pathname === '/aa-chatbot'; // Hide chat icon on the chatbot page
+  
   return (
     <div>
       <ToastContainer />
@@ -53,6 +55,7 @@ const App = () => {
         <Route path='/aa-chatbot' element={<ChatBot />} />
         <Route path='/try-on' element={<VirtualTryOn />} />
       </Routes>
+      {!hideChatIcon && <ChatIcon />}
       {!hideNavAndFooter && <Footer />}
     </div>
   );

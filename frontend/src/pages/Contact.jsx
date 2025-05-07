@@ -18,10 +18,10 @@ const Contact = () => {
       <div className="grid md:grid-cols-2 gap-10 mb-16">
         {/* Left column - Image */}
         <div className="overflow-hidden rounded-lg shadow-md hover:shadow-lg transition-shadow">
-          <img 
-            className="w-full h-full object-cover object-center" 
-            src={assets.contact_img} 
-            alt="Our Store" 
+          <img
+            className="w-full h-full object-cover object-center"
+            src={assets.contact_img}
+            alt="Our Store"
           />
         </div>
 

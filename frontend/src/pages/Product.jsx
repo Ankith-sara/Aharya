@@ -111,7 +111,7 @@ const Product = () => {
     if (productData?.name) {
       document.title = `${productData.name} | Aharyas`;
     }
-  }, [productData?.name]);  
+  }, [productData?.name]);
 
   if (!productData) {
     return <div className="flex justify-center items-center text-lg min-h-screen font-semibold p-10">Loading...</div>;
@@ -187,8 +187,7 @@ const Product = () => {
             <div className="mb-6">
               <span className="block text-xs uppercase tracking-wider text-gray-500 mb-2">Quantity</span>
               <div className="flex items-center">
-                <button onClick={() => handleQuantityChange('decrease')} className="w-8 h-8 flex items-center justify-center border border-gray-300 hover:bg-gray-100" disabled={quantity <= 1}
-                >
+                <button onClick={() => handleQuantityChange('decrease')} className="w-8 h-8 flex items-center justify-center border border-gray-300 hover:bg-gray-100" disabled={quantity <= 1}>
                   <Minus size={16} className={quantity <= 1 ? "text-gray-300" : "text-black"} />
                 </button>
                 <input type="number" className="w-12 h-8 border-t border-b border-gray-300 text-center focus:outline-none" value={quantity} min="1"
@@ -211,15 +210,12 @@ const Product = () => {
                 ADD TO CART
               </button>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-1">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-1">
                 <button className="py-3 flex justify-center items-center gap-2 border border-black bg-white text-black hover:bg-gray-100 transition-colors">
                   <Sliders size={18} /> CUSTOMIZE
                 </button>
                 <button onClick={() => navigate('/try-on', { state: { image: productData.images[currentIndex] } })} className="py-3 flex justify-center items-center gap-2 border border-black bg-white text-black hover:bg-gray-100 transition-colors">
                   <Camera size={18} /> VIRTUAL TRY-ON
-                </button>
-                <button onClick={() => navigate('/aa-chatbot')} className="py-3 flex justify-center items-center gap-2 border border-black bg-white text-black hover:bg-gray-100 transition-colors">
-                  <MessageCircle size={18} /> ASK AA
                 </button>
               </div>
             </div>

@@ -76,7 +76,7 @@ const Login = () => {
         <div className="w-full md:w-1/2 relative hidden md:block">
           <div className="absolute inset-0 bg-black/30 z-10"></div>
           <div className="h-full flex items-center justify-center overflow-hidden">
-            <img src="https://okhai.org/cdn/shop/files/8_Chikankari.jpg?v=1712064786" alt="Premium craftsmanship" className="object-cover h-full w-full grayscale"  />
+            <img src="https://okhai.org/cdn/shop/files/LD25330610_1_Hero_414x650.jpg?v=1745928986" alt="Premium craftsmanship" className="grayscale" />
           </div>
           <div className="absolute inset-0 z-20 flex items-center justify-center p-10">
             <div className="border border-white/20 p-6 bg-black/40 backdrop-blur-sm">
@@ -87,7 +87,7 @@ const Login = () => {
         </div>
 
         {/* Right Panel - Form */}
-        <div className="w-full md:w-1/2 bg-white text-black p-6 md:p-10">
+        <div className="w-full md:w-1/2 bg-white flex items-center text-black p-6 md:p-10">
           <div className="max-w-md mx-auto">
             <div className="mb-5">
               <h1 className="text-3xl font-bold tracking-tight mb-2">
@@ -150,20 +150,20 @@ const Login = () => {
                 {isLoading ? 'Processing...' : currentState === 'Login' ? 'Sign In' : 'Create Account'}
               </button>
 
-              <div className="pt-6 border-t border-gray-200">
+              <div className="pt-6 border-gray-200">
                 <div className="flex justify-center">
                   {currentState === 'Login' ? (
                     <p className="text-gray-600 text-sm">
                       Don't have an account?{' '}
-                      <button type="button" onClick={() => setCurrentState('Sign Up')} className="text-black font-medium hover:underline"> 
-                        Sign up 
+                      <button type="button" onClick={() => setCurrentState('Sign Up')} className="text-black font-medium hover:underline">
+                        Sign up
                       </button>
                     </p>
                   ) : (
                     <p className="text-gray-600 text-sm">
                       Already have an account?{' '}
-                      <button type="button" onClick={() => setCurrentState('Login')} className="text-black font-medium hover:underline"> 
-                        Sign in 
+                      <button type="button" onClick={() => setCurrentState('Login')} className="text-black font-medium hover:underline">
+                        Sign in
                       </button>
                     </p>
                   )}

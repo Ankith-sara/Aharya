@@ -28,18 +28,18 @@ const BlogPage = () => {
       <div className="text-3xl text-center mb-6">
         <Title text1="OUR" text2="BLOG" />
       </div>
-      
+
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
         {posts.map((post) => (
           <div key={post.id} className="border border-gray-200 rounded-md overflow-hidden">
             <div className="w-full h-48 overflow-hidden">
-              <img 
-                src={post.imageUrl} 
-                alt={post.title} 
+              <img
+                src={post.imageUrl}
+                alt={post.title}
                 className="w-full h-full object-cover object-center"
               />
             </div>
-            
+
             <div className="p-6">
               <h3 className="font-medium text-lg mb-3">{post.title}</h3>
               <p className="text-gray-600 text-sm mb-6">{post.excerpt}</p>
@@ -50,7 +50,7 @@ const BlogPage = () => {
           </div>
         ))}
       </div>
-      
+
       {posts.length === 0 && (
         <div className="flex flex-col items-center justify-center py-16 gap-6">
           <div className="w-16 h-16 border-2 border-black rounded-full flex items-center justify-center">

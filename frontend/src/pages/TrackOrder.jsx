@@ -6,7 +6,6 @@ import {
   Package, Truck, CheckCircle, Clock, MapPin, AlertCircle,
   ChevronDown, ChevronUp, ArrowLeft, Calendar
 } from 'lucide-react';
-import axios from 'axios';
 
 const TrackOrder = () => {
   const { backendUrl, currency, token } = useContext(ShopContext);
@@ -14,30 +13,127 @@ const TrackOrder = () => {
   const [order, setOrder] = useState(null);
   const [showDetails, setShowDetails] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Define all possible order statuses for complete timeline
+  const allStatuses = [
+    'Order Placed',
+    'Processing',
+    'Shipped',
+    'In Transit',
+    'Out for Delivery',
+    'Delivered'
+  ];
 
   useEffect(() => {
     const fetchOrder = async () => {
       setLoading(true);
+      setError(null);
+      
       try {
-        const response = await axios.get(
-          `${backendUrl}/api/order/track/${orderId}`,
-          { headers: { token } }
-        );
-        if (response.data.success) {
-          setOrder(response.data.order);
+        // Demo mode - using static data
+        if (!backendUrl || !token || !orderId) {
+          // Mock data similar to paste-2.txt example
+          const mockOrder = {
+            _id: 'ORD-75209634',
+            date: '2025-04-22T14:35:00Z',
+            estimatedDelivery: '2025-05-01T17:00:00Z',
+            status: 'In Transit',
+            customer: {
+              name: 'Alex Johnson',
+              email: 'alex@example.com',
+            },
+            address: {
+              firstName: 'Alex',
+              lastName: 'Johnson',
+              street: '123 Fashion Avenue',
+              city: 'New York',
+              state: 'NY',
+              pincode: '10001',
+              country: 'United States',
+              phone: '555-123-4567'
+            },
+            items: [
+              {
+                id: 'PROD-12345',
+                name: 'Premium Cotton T-Shirt',
+                price: 49.99,
+                quantity: 2,
+                size: 'M',
+                image: '/api/placeholder/120/150'
+              },
+              {
+                id: 'PROD-67890',
+                name: 'Slim Fit Denim Jeans',
+                price: 89.99,
+                quantity: 1,
+                size: 'L',
+                image: '/api/placeholder/120/150'
+              }
+            ],
+            trackingNumber: 'TRK-8347562190',
+            carrier: 'Premium Logistics',
+            trackingHistory: [
+              {
+                status: 'Order Placed',
+                location: 'Online',
+                timestamp: '2025-04-22T14:35:00Z',
+                description: 'Your order has been confirmed and payment processed.'
+              },
+              {
+                status: 'Processing',
+                location: 'New York Warehouse',
+                timestamp: '2025-04-23T09:12:00Z',
+                description: 'Your order is being prepared for shipment.'
+              },
+              {
+                status: 'Shipped',
+                location: 'New York Distribution Center',
+                timestamp: '2025-04-25T16:48:00Z',
+                description: 'Your package has left our warehouse and is on its way.'
+              },
+              {
+                status: 'In Transit',
+                location: 'Chicago Sorting Facility',
+                timestamp: '2025-04-27T10:23:00Z',
+                description: 'Your package is in transit to the next facility.'
+              }
+            ],
+            amount: 221.37,
+            delivery_fee: 15.00,
+            tax: 16.40,
+            paymentMethod: 'Credit Card (ending in 4321)'
+          };
+          
+          setOrder(mockOrder);
         } else {
-          setOrder(null);
+          // Fetch from API if we have real credentials
+          const response = await fetch(
+            `${backendUrl}/api/order/track/${orderId}`, 
+            { headers: { token } }
+          );
+          
+          const data = await response.json();
+          
+          if (data.success) {
+            setOrder(data.order);
+          } else {
+            throw new Error(data.message || 'Failed to load order');
+          }
         }
-      } catch (error) {
+      } catch (err) {
+        setError(err.message || 'Failed to load order data');
         setOrder(null);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
-    if (orderId && token) fetchOrder();
+    
+    fetchOrder();
   }, [orderId, backendUrl, token]);
 
   const formatDate = (dateString) => {
-    if (!dateString) return '';
+    if (!dateString) return 'N/A';
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
     return new Date(dateString).toLocaleDateString('en-US', options);
   };
@@ -50,14 +146,38 @@ const TrackOrder = () => {
 
   const getStatusIcon = (status) => {
     switch (status) {
-      case 'Order Placed': return <Clock size={22} />;
-      case 'Processing': return <Package size={22} />;
-      case 'Shipped': return <Package size={22} />;
-      case 'In Transit': return <Truck size={22} />;
-      case 'Out for Delivery': return <Truck size={22} />;
-      case 'Delivered': return <CheckCircle size={22} />;
-      default: return <AlertCircle size={22} />;
+      case 'Order Placed': return <Clock size={24} />;
+      case 'Processing': return <Package size={24} />;
+      case 'Shipped': return <Package size={24} />;
+      case 'In Transit': return <Truck size={24} />;
+      case 'Out for Delivery': return <Truck size={24} />;
+      case 'Delivered': return <CheckCircle size={24} />;
+      default: return <AlertCircle size={24} />;
     }
+  };
+
+  // Determine status for the complete timeline
+  const getStatusState = (status) => {
+    if (!order || !order.status) return 'upcoming';
+    
+    const currentStatusIndex = allStatuses.indexOf(order.status);
+    const statusIndex = allStatuses.indexOf(status);
+    
+    if (statusIndex < 0) return 'upcoming';
+    
+    if (statusIndex < currentStatusIndex) {
+      return 'completed';
+    } else if (statusIndex === currentStatusIndex) {
+      return 'current';
+    } else {
+      return 'upcoming';
+    }
+  };
+
+  // Find actual history for a status if it exists
+  const findHistoryForStatus = (status) => {
+    if (!order || !order.trackingHistory) return null;
+    return order.trackingHistory.find(item => item.status === status);
   };
 
   if (loading) {
@@ -68,10 +188,10 @@ const TrackOrder = () => {
     );
   }
 
-  if (!order) {
+  if (error || !order) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <span className="text-lg text-red-600">Order not found.</span>
+        <span className="text-lg text-red-600">{error || 'Order not found.'}</span>
       </div>
     );
   }
@@ -104,8 +224,12 @@ const TrackOrder = () => {
           </div>
           <div className="flex items-center gap-4">
             <div className="text-right">
-              <p className="text-sm text-gray-300">Order Placed</p>
-              <p className="font-medium">{formatDate(order.date)}</p>
+              <p className="text-sm text-gray-300">
+                {order.estimatedDelivery ? 'Expected Delivery' : 'Order Placed'}
+              </p>
+              <p className="font-medium">
+                {formatDate(order.estimatedDelivery || order.date)}
+              </p>
             </div>
             <Calendar size={24} />
           </div>
@@ -122,36 +246,70 @@ const TrackOrder = () => {
               </div>
             </div>
           </div>
-          {/* Visual Timeline */}
+          
+          {/* Complete Timeline */}
           <div className="p-6">
             <div className="relative">
               {/* Vertical line */}
               <div className="absolute left-6 ml-1 top-1 h-full w-0.5 bg-gray-200"></div>
-              {/* Timeline items */}
-              {trackingHistory.map((event, index) => (
-                <div key={index} className="mb-8 relative">
-                  <div className="flex items-start">
-                    <div className={`relative z-10 flex items-center justify-center w-12 h-12 rounded-full border-2 ${
-                      index === 0 ? 'border-black bg-black text-white' : 'border-gray-400 bg-white text-gray-700'
-                    }`}>
-                      {getStatusIcon(event.status)}
-                    </div>
-                    <div className="ml-6">
-                      <div className="flex items-baseline">
-                        <h4 className="text-lg font-medium">{event.status}</h4>
-                        <span className="ml-4 text-sm text-gray-500">
-                          {formatDate(event.timestamp)}, {formatTime(event.timestamp)}
-                        </span>
+              
+              {/* Complete timeline items */}
+              {allStatuses.map((status, index) => {
+                const state = getStatusState(status);
+                const historyItem = findHistoryForStatus(status);
+                
+                return (
+                  <div key={index} className="mb-8 relative">
+                    <div className="flex items-start">
+                      <div className={`relative z-10 flex items-center justify-center w-14 h-14 rounded-full transition-all ${
+                        state === 'completed' 
+                          ? 'bg-green-500 text-white border-2 border-green-500' 
+                          : state === 'current'
+                            ? 'bg-blue-600 text-white border-2 border-blue-600 shadow-lg animate-pulse'
+                            : 'border-2 border-gray-300 bg-white text-gray-400'
+                      }`}>
+                        {state === 'completed' 
+                          ? <CheckCircle size={26} /> 
+                          : getStatusIcon(status)}
                       </div>
-                      <p className="mt-1 text-gray-600">{event.description}</p>
-                      <div className="mt-2 flex items-center text-sm text-gray-500">
-                        <MapPin size={16} className="mr-1" />
-                        {event.location}
+                      <div className="ml-6">
+                        <div className="flex flex-col sm:flex-row sm:items-baseline">
+                          <h4 className={`text-lg font-medium ${
+                            state === 'upcoming' ? 'text-gray-400' : 
+                            state === 'current' ? 'text-blue-600' : 'text-black'
+                          }`}>{status}</h4>
+                          
+                          {historyItem && (
+                            <span className="sm:ml-4 text-sm text-gray-500">
+                              {formatDate(historyItem.timestamp)}, {formatTime(historyItem.timestamp)}
+                            </span>
+                          )}
+                        </div>
+                        
+                        {historyItem && (
+                          <>
+                            <p className={`mt-1 ${state === 'upcoming' ? 'text-gray-400' : 'text-gray-600'}`}>
+                              {historyItem.description}
+                            </p>
+                            <div className="mt-2 flex items-center text-sm text-gray-500">
+                              <MapPin size={16} className="mr-1" />
+                              {historyItem.location}
+                            </div>
+                          </>
+                        )}
+                        
+                        {state === 'current' && !historyItem && (
+                          <p className="mt-1 text-blue-600">This is the current stage of your order</p>
+                        )}
+                        
+                        {state === 'upcoming' && !historyItem && (
+                          <p className="mt-1 text-gray-400">Awaiting this stage</p>
+                        )}
                       </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </div>
@@ -165,6 +323,7 @@ const TrackOrder = () => {
             <h3 className="text-lg font-medium">Order Details</h3>
             {showDetails ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
           </button>
+          
           {showDetails && (
             <div className="p-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -175,15 +334,19 @@ const TrackOrder = () => {
                     {order.items.map((item, index) => (
                       <div key={index} className="flex gap-4">
                         <div className="w-20 h-24 bg-gray-100 flex-shrink-0">
-                          <img src={item.images?.[0] || item.image} alt={item.name} className="w-full h-full object-cover" />
+                          <img 
+                            src={item.images?.[0] || item.image || '/api/placeholder/120/150'} 
+                            alt={item.name} 
+                            className="w-full h-full object-cover" 
+                          />
                         </div>
                         <div className="flex-grow">
                           <h5 className="font-medium">{item.name}</h5>
                           <div className="mt-2 grid grid-cols-2 gap-2 text-sm text-gray-600">
-                            <p>Size: {item.size}</p>
+                            <p>Size: {item.size || 'N/A'}</p>
                             <p>Qty: {item.quantity}</p>
                             <p className="font-medium text-black">
-                              {currency}{item.price} each
+                              {currency}{(item.price || 0).toFixed(2)} each
                             </p>
                           </div>
                         </div>
@@ -191,50 +354,73 @@ const TrackOrder = () => {
                     ))}
                   </div>
                 </div>
+                
                 {/* Shipping & Payment */}
                 <div className="space-y-8">
                   {/* Shipping Address */}
                   <div>
                     <h4 className="text-sm uppercase tracking-wider font-medium text-gray-500 mb-4">Shipping Address</h4>
                     <address className="not-italic">
-                      <p className="font-medium">{order.address?.firstName} {order.address?.lastName}</p>
-                      <p>{order.address?.street}</p>
-                      <p>{order.address?.city}, {order.address?.country} {order.address?.pincode}</p>
-                      <p>Phone: {order.address?.phone}</p>
+                      <p className="font-medium">
+                        {order.address?.firstName || ''} {order.address?.lastName || order.customer?.name || ''}
+                      </p>
+                      <p>{order.address?.street || 'N/A'}</p>
+                      <p>
+                        {order.address?.city || ''}{order.address?.city && order.address?.state ? ', ' : ''}
+                        {order.address?.state || ''} {order.address?.pincode || order.address?.zipCode || ''}
+                      </p>
+                      <p>{order.address?.country || 'N/A'}</p>
+                      {order.address?.phone && <p>Phone: {order.address.phone}</p>}
                     </address>
                   </div>
+                  
                   {/* Order Summary */}
                   <div>
                     <h4 className="text-sm uppercase tracking-wider font-medium text-gray-500 mb-4">Order Summary</h4>
                     <div className="space-y-2">
                       <div className="flex justify-between">
                         <span>Subtotal</span>
-                        <span>{currency}{order.amount ? (order.amount - (order.delivery_fee || 0)).toFixed(2) : '--'}</span>
+                        <span>
+                          {currency}
+                          {order.amount 
+                            ? (order.amount - (order.delivery_fee || 0) - (order.tax || 0)).toFixed(2) 
+                            : '--'}
+                        </span>
                       </div>
                       <div className="flex justify-between">
                         <span>Shipping</span>
                         <span>{currency}{order.delivery_fee ? order.delivery_fee.toFixed(2) : '0.00'}</span>
                       </div>
+                      {order.tax > 0 && (
+                        <div className="flex justify-between">
+                          <span>Tax</span>
+                          <span>{currency}{order.tax ? order.tax.toFixed(2) : '0.00'}</span>
+                        </div>
+                      )}
                       <div className="pt-2 mt-2 border-t border-gray-200 flex justify-between font-medium">
                         <span>Total</span>
                         <span>{currency}{order.amount ? order.amount.toFixed(2) : '--'}</span>
                       </div>
                     </div>
                   </div>
+                  
                   {/* Payment Method */}
                   <div>
                     <h4 className="text-sm uppercase tracking-wider font-medium text-gray-500 mb-4">Payment Method</h4>
-                    <p>{order.paymentMethod}</p>
+                    <p>{order.paymentMethod || 'N/A'}</p>
                   </div>
                 </div>
               </div>
             </div>
           )}
         </div>
-
+        
         {/* Back Button */}
         <div className="flex justify-start mt-10">
-          <button onClick={() => window.history.back()} className="flex items-center text-gray-700 hover:text-black transition-colors">
+          <button 
+            onClick={() => window.history.back()} 
+            className="flex items-center text-gray-700 hover:text-black transition-colors"
+          >
             <ArrowLeft size={18} className="mr-2" />
             Back to Orders
           </button>

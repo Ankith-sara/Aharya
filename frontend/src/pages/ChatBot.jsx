@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Send, Image, X, ShoppingBag, MessageCircle } from "lucide-react";
+import { Send, Image, X, BotMessageSquare } from "lucide-react";
 
 const ChatBot = () => {
   const [question, setQuestion] = useState("");
@@ -104,7 +104,7 @@ const ChatBot = () => {
       {showChat ? (
         <div className="flex-1 flex flex-col max-w-4xl mx-auto w-full px-4 sm:px-6 md:px-10 lg:px-20 py-10 mt-20">
           <div className="text-3xl text-center mb-8 flex items-center justify-center gap-2">
-            <MessageCircle className="w-8 h-8" />
+            <BotMessageSquare className="w-8 h-8" />
             <div className="font-light tracking-wide">FASHION <span className="font-semibold">ADVISOR</span></div>
           </div>
 
@@ -124,7 +124,7 @@ const ChatBot = () => {
             ))}
             {chatLog.length === 0 && (
               <div className="flex flex-col items-center justify-center h-full text-gray-400 py-12">
-                <MessageCircle className="w-12 h-12 mb-4 opacity-50" />
+                <BotMessageSquare className="w-12 h-12 mb-4 opacity-50" />
                 <p className="text-center text-sm">Start a conversation about fashion or upload an image for style advice</p>
               </div>
             )}
@@ -167,7 +167,7 @@ const ChatBot = () => {
           <div className="w-full max-w-2xl">
             <div className="text-center mb-12">
               <div className="inline-flex items-center justify-center w-16 h-16 border-2 border-black rounded-full mb-6">
-                <MessageCircle className="w-8 h-8" />
+                <BotMessageSquare className="w-8 h-8" />
               </div>
               <h1 className="text-3xl font-light mb-3 tracking-wide">FASHION <span className="font-semibold">ADVISOR</span></h1>
               <p className="text-gray-600 max-w-md mx-auto">Upload images or ask questions about fashion, style, trends, and outfit recommendations.</p>

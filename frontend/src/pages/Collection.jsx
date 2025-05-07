@@ -10,7 +10,7 @@ const Collection = () => {
   const [showFilter, setShowFilter] = useState(false);
   const [filterProducts, setFilterProducts] = useState([]);
   const [viewMode, setViewMode] = useState('grid');
-  
+
   // Enhanced filtering options
   const [category, setCategory] = useState([]);
   const [subCategory, setSubCategory] = useState([]);
@@ -195,9 +195,9 @@ const Collection = () => {
       <div>
         <h4 className="text-xs uppercase tracking-wider font-medium mb-2">Price Range</h4>
         <div className="flex items-center gap-2">
-          <input type="number" min="0" value={priceRange.min} onChange={(e) => setPriceRange({ ...priceRange, min: Number(e.target.value) })} className="w-20 border border-gray-300 p-1 text-xs rounded-md" placeholder="Min"  />
+          <input type="number" min="0" value={priceRange.min} onChange={(e) => setPriceRange({ ...priceRange, min: Number(e.target.value) })} className="w-20 border border-gray-300 p-1 text-xs rounded-md" placeholder="Min" />
           <span className="text-gray-400">-</span>
-          <input type="number" min="0" value={priceRange.max} onChange={(e) => setPriceRange({ ...priceRange, max: Number(e.target.value) })} className="w-20 border border-gray-300 p-1 text-xs rounded-md" placeholder="Max"  />
+          <input type="number" min="0" value={priceRange.max} onChange={(e) => setPriceRange({ ...priceRange, max: Number(e.target.value) })} className="w-20 border border-gray-300 p-1 text-xs rounded-md" placeholder="Max" />
         </div>
       </div>
 
@@ -210,7 +210,7 @@ const Collection = () => {
               <div className={`w-3 h-3 border rounded flex items-center justify-center ${category.includes(item) ? 'bg-black border-black' : 'border-gray-400'}`}>
                 {category.includes(item) && <Check size={8} className="text-white" />}
               </div>
-              <input className="sr-only" type="checkbox" value={item} checked={category.includes(item)} onChange={toggleCategory}  />
+              <input className="sr-only" type="checkbox" value={item} checked={category.includes(item)} onChange={toggleCategory} />
               <span className="text-xs">{item}</span>
             </label>
           ))}
@@ -226,7 +226,7 @@ const Collection = () => {
               <div className={`w-3 h-3 border rounded flex items-center justify-center ${subCategory.includes(item) ? 'bg-black border-black' : 'border-gray-400'}`}>
                 {subCategory.includes(item) && <Check size={8} className="text-white" />}
               </div>
-              <input className="sr-only" type="checkbox" value={item} checked={subCategory.includes(item)} onChange={toggleSubCategory}  />
+              <input className="sr-only" type="checkbox" value={item} checked={subCategory.includes(item)} onChange={toggleSubCategory} />
               <span className="text-xs">{item}</span>
             </label>
           ))}
@@ -327,7 +327,7 @@ const Collection = () => {
             <div className="text-xs text-neutral-600">
               Showing {filterProducts.length} product{filterProducts.length !== 1 ? 's' : ''}
             </div>
-            
+
             {/* Mobile View Mode Toggle */}
             <div className="flex sm:hidden items-center border border-neutral-300 bg-white rounded-md overflow-hidden">
               <button onClick={() => setViewMode('grid')} className={`p-1.5 ${viewMode === 'grid' ? 'bg-black text-white' : 'bg-white'}`} aria-label="Grid view">
@@ -353,11 +353,11 @@ const Collection = () => {
                     }
                     return (
                       <div key={index}>
-                        <ProductItem 
-                          name={item.name} 
-                          id={item._id} 
-                          price={item.price} 
-                          image={item.images} 
+                        <ProductItem
+                          name={item.name}
+                          id={item._id}
+                          price={item.price}
+                          image={item.images}
                         />
                       </div>
                     );

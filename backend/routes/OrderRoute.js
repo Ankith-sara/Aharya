@@ -13,6 +13,6 @@ orderRouter.post('/razorpay', authUser, placeOrderRazorpay)
 orderRouter.post('/userorders', authUser, userOrders)
 orderRouter.post('/verifystripe', authUser, verifyStripe)
 orderRouter.post('/verifyRazorpay', authUser, verifyRazorpay)
-orderRouter.post('/track/:orderId', orderStatus)
+orderRouter.get('/track/:orderId', orderStatus)
 
 export default orderRouter;
