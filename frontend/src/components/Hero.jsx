@@ -28,7 +28,7 @@ const Hero = () => {
         playsInline
         className="absolute top-0 left-0 w-full h-full object-cover"
       >
-        <source src={assets.hero_vid} type="video/mp4" />
+        <source src="https://videos.pexels.com/video-files/27433112/12142544_1920_1080_50fps.mp4" type="video/mp4" />
         Your browser does not support the video tag.
       </video>
 

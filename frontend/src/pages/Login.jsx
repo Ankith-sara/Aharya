@@ -71,7 +71,7 @@ const Login = () => {
 
   return (
     <div className="min-h-screen text-white flex items-center justify-center">
-      <div className="w-full max-w-6xl flex flex-col md:flex-row">
+      <div className="w-full flex flex-col md:flex-row">
         {/* Left Panel - Image with overlay */}
         <div className="w-full md:w-1/2 relative hidden md:block">
           <div className="absolute inset-0 bg-black/30 z-10"></div>

@@ -3,6 +3,7 @@ import { assets } from '../assets/frontend_assets/assets';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { ShopContext } from '../context/ShopContext';
 import { ChevronDown, ChevronRight, X } from 'lucide-react';
+import { jwtDecode } from "jwt-decode";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -11,6 +12,13 @@ const Navbar = () => {
   const [expandedCategory, setExpandedCategory] = useState(null);
   const location = useLocation();
   const menuRef = useRef(null);
+
+  let userId = "";
+
+  if (token) {
+    const decoded = jwtDecode(token);
+    userId = decoded.id;
+  }
 
   // Check if we're on the home page
   const isHomePage = location.pathname === '/';
@@ -145,7 +153,7 @@ const Navbar = () => {
               <div className="hidden group-hover:block absolute right-0 pt-4 z-10">
                 <div className="w-44 py-3 px-4 bg-white text-gray-800 rounded-md">
                   <div className="flex flex-col gap-3">
-                    <NavLink to="/profile/:id" className="hover:text-black font-medium transition-colors">
+                    <NavLink to={`/profile/${userId}`} className="hover:text-black font-medium transition-colors">
                       My Profile
                     </NavLink>
                     <NavLink to="/orders" className="hover:text-black font-medium transition-colors">

@@ -19,7 +19,7 @@ const MyProfile = () => {
   const [editProfile, setEditProfile] = useState({ name: "", email: "", image: "" });
   const [addressModal, setAddressModal] = useState({ open: false, address: {}, index: -1 });
   const [loading, setLoading] = useState(false);
-  const { setToken, navigate } = useContext(ShopContext);
+  const { backendUrl, setToken, navigate } = useContext(ShopContext);
 
   // Fetch user details
   useEffect(() => {
@@ -37,7 +37,7 @@ const MyProfile = () => {
       return;
     }
     axios
-      .get(`${import.meta.env.VITE_BACKEND_URL}/api/user/profile/${userId}`, { headers: { token } })
+      .get(backendUrl + `/api/user/profile/${userId}`, { headers: { token } })
       .then((res) => {
         if (res.data.success) {
           setUserData(res.data.user);
