@@ -34,7 +34,7 @@ const ProductPage = () => {
 
   useEffect(() => {
     document.title = `${getCollectionTitle()} | Aharyas`;
-  }, [getCollectionTitle]);  
+  }, [selectedSubCategory]);
 
   useEffect(() => {
     let updatedProducts = [...products];
@@ -85,7 +85,7 @@ const ProductPage = () => {
 
   // Determine the title based on selectedSubCategory
   const getCollectionTitle = () => {
-    return selectedSubCategory ? selectedSubCategory.toUpperCase() : "AHARYAS";
+    return selectedSubCategory ? selectedSubCategory : "AHARYAS";
   };
 
   const FilterPanel = () => (
@@ -199,7 +199,7 @@ const ProductPage = () => {
             <div className="text-xs text-neutral-600">
               Showing {filteredProducts.length} product{filteredProducts.length !== 1 ? 's' : ''}
             </div>
-            
+
             {/* Mobile View Mode Toggle */}
             <div className="flex sm:hidden items-center border border-neutral-300 bg-white rounded-md overflow-hidden">
               <button onClick={() => setViewMode('grid')} className={`p-1.5 ${viewMode === 'grid' ? 'bg-black text-white' : 'bg-white'}`} aria-label="Grid view">
@@ -245,8 +245,8 @@ const ProductPage = () => {
                         </div>
                         <div className="flex justify-between items-center pt-3 mt-3 border-t border-neutral-100">
                           <span className="font-medium">{currency || '$'}{product.price.toFixed(2)}</span>
-                          <button 
-                            onClick={() => navigate ? navigate(`/product/${product._id}`) : window.location.href = `/product/${product._id}`} 
+                          <button
+                            onClick={() => navigate ? navigate(`/product/${product._id}`) : window.location.href = `/product/${product._id}`}
                             className="px-3 py-1.5 bg-black text-white text-xs hover:bg-neutral-800 transition-colors rounded-md"
                           >
                             View Details
