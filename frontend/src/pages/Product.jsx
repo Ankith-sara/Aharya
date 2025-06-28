@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { ShopContext } from '../context/ShopContext';
-import { Camera, ChevronDown, ChevronUp, MessageCircle, Sliders, Minus, Plus } from 'lucide-react';
+import { Camera, ChevronDown, ChevronUp, Sliders, Minus, Plus } from 'lucide-react';
 import RelatedProducts from '../components/RelatedProducts';
 import RecentlyViewed from '../components/RecentlyViewed';
 import Title from '../components/Title';

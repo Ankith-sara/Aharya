@@ -4,7 +4,7 @@ import validator from 'validator';
 import userModel from '../models/UserModel.js';
 
 const createToken = (id, role = 'user') => {
-    return jwt.sign({ id, role }, process.env.JWT_SECRET);
+    return jwt.sign({ id, role }, process.env.JWT_SECRET, { expiresIn: "7d" });
 };
 
 const loginUser = async (req, res) => {
@@ -47,7 +47,6 @@ const registerUser = async (req, res) => {
             message: `Welcome, ${user.name}! Registration successful.`,
         });
     } catch (error) {
-        console.error('Error in registerUser:', error);
         res.status(500).json({ success: false, message: error.message });
     }
 };
@@ -72,15 +71,93 @@ const getUserDetails = async (req, res) => {
         if (!id) {
             return res.status(400).json({ success: false, message: "User ID is required" });
         }
-        const user = await userModel.findById(id)
+        const user = await userModel.findById(id).select('-password');
         if (!user) {
             return res.status(404).json({ success: false, message: "User not found" });
         }
         res.json({ success: true, user });
     } catch (error) {
-        console.error("Error in Fetching User Details:", error);
         res.status(500).json({ success: false, message: "Internal server error" });
     }
 };
 
-export { loginUser, registerUser, adminLogin, getUserDetails };
+// Update profile: name, email, image
+const updateUserProfile = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { name, email, image } = req.body;
+        const user = await userModel.findByIdAndUpdate(
+            id,
+            { name, email, image },
+            { new: true, runValidators: true }
+        ).select('-password');
+        if (!user) return res.status(404).json({ success: false, message: "User not found" });
+        res.json({ success: true, user });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+// Add or update address
+const addOrUpdateAddress = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { addressObj, index } = req.body; // index: if updating, else -1 for add
+        const user = await userModel.findById(id);
+        if (!user) return res.status(404).json({ success: false, message: "User not found" });
+
+        if (typeof index === "number" && index >= 0) {
+            // Update existing address
+            user.addresses[index] = addressObj;
+        } else {
+            // Add new address
+            user.addresses.push(addressObj);
+        }
+        await user.save();
+        res.json({ success: true, addresses: user.addresses });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+// Delete address
+const deleteAddress = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { index } = req.body;
+        const user = await userModel.findById(id);
+        if (!user) return res.status(404).json({ success: false, message: "User not found" });
+
+        user.addresses.splice(index, 1);
+        await user.save();
+        res.json({ success: true, addresses: user.addresses });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+// Change password
+const changePassword = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { password } = req.body;
+        if (!password || password.length < 8) {
+            return res.status(400).json({ success: false, message: "Password must be at least 8 characters" });
+        }
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+        const user = await userModel.findByIdAndUpdate(
+            id,
+            { password: hashedPassword },
+            { new: true }
+        );
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found" });
+        }
+        res.json({ success: true, message: "Password updated" });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+export { loginUser, registerUser, adminLogin, getUserDetails, updateUserProfile, addOrUpdateAddress, deleteAddress, changePassword };

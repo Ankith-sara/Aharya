@@ -1,21 +1,20 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { assets } from '../assets/frontend_assets/assets';
-import Title from '../components/Title';
 import { ArrowRight, TrendingUp, Package, Truck, CreditCard } from 'lucide-react';
 
 const Sell = () => {
     useEffect(() => {
         document.title = 'Become a Seller | Aharyas'
-      })
+    })
     return (
         <div className="min-h-screen bg-white text-black">
-            {/* Hero Section with Diagonal Split */}
+            {/* Hero Section */}
             <div className="relative h-screen">
                 <div className="absolute inset-0 bg-black clip-diagonal"></div>
                 <div className="absolute inset-0 flex items-center justify-center px-6 md:px-20">
                     <div className="max-w-4xl w-full text-center">
-                        <h1 className="text-white text-4xl md:text-6xl font-light tracking-tight mb-6">
+                        <h1 className="text-white text-4xl md:text-5xl font-light tracking-tight mb-6">
                             BECOME A <span className="font-bold">SELLER</span>
                         </h1>
                         <p className="text-white text-lg md:text-xl mb-10 max-w-2xl mx-auto font-light">
@@ -65,12 +64,11 @@ const Sell = () => {
                 </div>
             </div>
 
-            {/* Why Sell Section with Bold Typography */}
             <div className="py-20 px-4 sm:px-6 md:px-10 lg:px-20 bg-black text-white">
                 <div className="text-center mb-16">
                     <h2 className="text-4xl md:text-5xl font-bold mb-6">WHY <span className="font-light">SELL</span></h2>
                 </div>
-                
+
                 <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
                     <div className="border-l-4 border-white p-6 transform transition-transform hover:translate-y-[-10px] duration-300">
                         <span className="text-4xl font-bold block mb-4">01</span>
@@ -95,7 +93,7 @@ const Sell = () => {
                 <div className="text-center mb-10">
                     <h2 className="text-3xl md:text-4xl font-light mb-6">SUCCESS <span className="font-bold">STORIES</span></h2>
                 </div>
-                
+
                 <div className="grid gap-10 md:grid-cols-2">
                     {[
                         { name: 'Sunehra Koshi', role: 'Founder, Crack of Dawn Crafts', quote: '"From five members to fifteen, a little trust can go a long way."', image: assets.seller_1 },
@@ -104,9 +102,9 @@ const Sell = () => {
                         <div key={index} className="group">
                             <div className="relative overflow-hidden">
                                 <div className="aspect-w-16 aspect-h-9 overflow-hidden">
-                                    <img 
-                                        src={testimonial.image} 
-                                        alt={testimonial.name} 
+                                    <img
+                                        src={testimonial.image}
+                                        alt={testimonial.name}
                                         className="w-full h-screen object-cover object-center filter grayscale group-hover:grayscale-0"
                                     />
                                 </div>
@@ -124,23 +122,21 @@ const Sell = () => {
                 </div>
             </div>
 
-            {/* Bold CTA Section */}
-            <div className="px-4 sm:px-6 md:px-10 lg:px-20 py-20 bg-gradient-to-r from-gray-900 to-black text-white">
-                <div className="max-w-4xl mx-auto text-center">
-                    <h2 className="text-3xl md:text-5xl font-bold mb-10">READY TO TRANSFORM YOUR BUSINESS?</h2>
-                    <p className="text-xl mb-10 text-gray-300 max-w-2xl mx-auto">
+            <div className="px-4 sm:px-6 md:px-10 py-20 text-black">
+                <div className="mx-auto text-center">
+                    <h2 className="text-2xl md:text-4xl font-bold mb-10">READY TO TRANSFORM YOUR BUSINESS?</h2>
+                    <p className="text-xl mb-10 max-w-3xl mx-auto">
                         Join the thousands of sellers who have found success on Aharya.
                         Your journey starts now.
                     </p>
                     <Link to="/login">
-                        <button className="px-10 py-5 bg-white text-black font-bold text-lg hover:bg-gray-200">
+                        <button className="px-10 py-5 bg-black text-white font-bold text-lg hover:bg-gray-900">
                             BECOME A SELLER
                         </button>
                     </Link>
                 </div>
             </div>
 
-            {/* Add custom CSS for diagonal clip */}
             <style>{`
                 .clip-diagonal {
                     clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);

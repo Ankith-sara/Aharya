@@ -1,74 +1,66 @@
 import React from 'react';
-import { assets } from '../assets/frontend_assets/assets';
+import { Heart, Leaf, Globe } from 'lucide-react';
 import Title from './Title';
 
 const OurPolicy = () => {
-  const policies = [
+  const principles = [
     {
-      img: assets.exchange_icon,
-      title: 'EASY EXCHANGE',
-      description: 'We offer a hassle-free exchange policy to ensure your complete satisfaction.',
+      icon: <Heart className="w-10 h-10 text-gray-500 group-hover:text-white transition-colors duration-500" />,
+      title: 'HANDMADE WITH HEART',
     },
     {
-      img: assets.quality_icon,
-      title: '7 DAYS RETURN',
-      description: 'Enjoy a 7-day return window with no questions asked and no extra charges.',
+      icon: <Leaf className="w-10 h-10 text-gray-500 group-hover:text-white transition-colors duration-500" />,
+      title: 'ECO-CONSCIOUS BY CHOICE',
     },
     {
-      img: assets.support_img,
-      title: '24/7 SUPPORT',
-      description: 'Our dedicated support team is available around the clock to assist you with any concerns.',
-    },
-    {
-      img: assets.security_icon,
-      title: 'SECURE SHOPPING',
-      description: 'Your transactions are protected with advanced security measures for peace of mind.',
+      icon: <Globe className="w-10 h-10 text-gray-500 group-hover:text-white transition-colors duration-500" />,
+      title: 'CULTURALLY RICH BY SOUL',
     },
   ];
 
   return (
-    <div className="py-10 px-4 md:px-10">
-      <div className="max-w-6xl mx-auto">
+    <div className="py-16 px-4 md:px-10">
+      <div className="max-w-4xl mx-auto">
         {/* Header Section */}
-        <div className="text-center mb-16">
-          <Title text1="WHY SHOP WITH" text2="US?" />
-          <p className="max-w-2xl mx-auto text-gray-600">
-            Experience exceptional service with our customer-first policies designed for your convenience and peace of mind.
+        <div className="text-center mb-8">
+          <Title text1="WHY CHOOSE" text2="AHARYAS?" />
+          <p className="max-w-2xl mx-auto text-gray-700 text-lg mt-6">
+            Because we don't do fast fashion—we do <em>forever fashion</em>.
+          </p>
+          <p className="max-w-2xl mx-auto text-gray-600 mt-4">
+            At Aharyas, luxury isn't just in the fabric. It's in the hands that weave it, 
+            the stories it tells, and the heritage it carries.
           </p>
         </div>
 
         {/* Policy Cards */}
-        <div className="grid gap-6 md:gap-10 grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
-          {policies.map((policy, index) => (
-            <div key={index} className="group relative bg-white border border-gray-200 hover:border-black transition-all duration-300">
+        <div className="grid gap-6 md:gap-8 grid-cols-1 md:grid-cols-3">
+          {principles.map((principle, index) => (
+            <div key={index} className="group relative overflow-hidden bg-white hover:border-black transition-all duration-500 hover:shadow-lg">
+              <div className="absolute bottom-0 left-0 right-0 h-1 bg-black transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
               {/* Card Content */}
               <div className="flex flex-col p-8 h-full">
-                {/* Icon with Circle Background */}
-                <div className="mb-6 relative mx-auto">
-                  <div className="w-20 h-20 rounded-full bg-gray-100 group-hover:bg-black transition-colors duration-300 flex items-center justify-center">
-                    <img
-                      className="w-10 h-10 object-contain grayscale group-hover:invert transition-all duration-300"
-                      src={policy.img}
-                      alt={policy.title}
-                    />
+                <div className="mb-8 relative mx-auto">
+                  <div className="w-20 h-20 rounded-full bg-gray-100 group-hover:bg-black transition-colors duration-500 flex items-center justify-center">
+                    {principle.icon}
                   </div>
                 </div>
-
-                {/* Title */}
-                <h3 className="text-sm font-medium tracking-widest text-black mb-4">
-                  {policy.title}
+                <h3 className="text-sm font-medium tracking-widest text-center text-black mb-4">
+                  {principle.title}
                 </h3>
-
-                {/* Divider Line */}
-                <div className="h-px w-8 bg-gray-300 mx-auto mb-4 group-hover:bg-black transition-colors duration-300"></div>
-
-                {/* Description */}
-                <p className="text-sm text-gray-600 mb-6 flex-grow">
-                  {policy.description}
-                </p>
               </div>
             </div>
           ))}
+        </div>
+
+        {/* Closing Statement */}
+        <div className="mt-8 text-center">
+          <p className="text-lg text-gray-700 italic">
+            We craft clothing that <em>breathes, belongs,</em> and becomes a part of you.
+          </p>
+          <p className="text-lg text-gray-700 mt-2">
+            Because at Aharyas, we don't just make clothes—we weave legacy into every stitch.
+          </p>
         </div>
       </div>
     </div>

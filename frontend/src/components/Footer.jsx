@@ -17,7 +17,7 @@ const Footer = () => {
               Bringing the finest curated products to your doorstep with a commitment to quality, authenticity, and exceptional service. Elevate your lifestyle with our premium selections.
             </p>
             <div className="flex space-x-4">
-              <NavLink to="https://www.instagram.com/aharyas.in/" target='_blank' rel="noopener noreferrer" className="w-10 h-10 flex items-center justify-center hover:bg-gray-800 transition-colors rounded-xl">
+              <NavLink to="https://www.instagram.com/aharyass/" target='_blank' rel="noopener noreferrer" className="w-10 h-10 flex items-center justify-center hover:bg-gray-800 transition-colors rounded-xl">
                 <Instagram size={24} />
               </NavLink>
               <NavLink to="https://in.linkedin.com/" target='_blank' rel="noopener noreferrer" className="w-10 h-10 flex items-center justify-center hover:bg-gray-800 transition-colors rounded-xl">

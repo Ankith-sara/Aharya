@@ -74,7 +74,7 @@ const Contact = () => {
             </div>
             <div className="p-6 space-y-4">
               <p className="text-gray-700">Learn more about our teams and job openings. Join our growing family and be part of our journey.</p>
-              <button className="px-6 py-3 bg-black text-white hover:bg-gray-800 transition-colors">
+              <button className="px-6 py-3 bg-black text-white hover:bg-gray-900 transition-colors">
                 EXPLORE JOBS
               </button>
             </div>

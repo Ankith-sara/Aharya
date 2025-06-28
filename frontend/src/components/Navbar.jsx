@@ -129,7 +129,7 @@ const Navbar = () => {
 
       {/* Navbar */}
       <div className={`fixed top-0 left-0 right-0 px-4 sm:px-6 md:px-10 lg:px-20 z-50 flex items-center justify-between text-white py-5 transition-all duration-300 ${getNavbarBackground()}`}>
-        <Link to='/' className="flex-shrink-0">
+        <Link to='/' onClick={() => window.location.href = '/'} className="flex-shrink-0">
           <img src={assets.logo_white} className="w-36" alt="Logo" />
         </Link>
         <div className="flex items-center gap-5">
@@ -145,7 +145,7 @@ const Navbar = () => {
               <div className="hidden group-hover:block absolute right-0 pt-4 z-10">
                 <div className="w-44 py-3 px-4 bg-white text-gray-800 rounded-md">
                   <div className="flex flex-col gap-3">
-                    <NavLink to="/profile" className="hover:text-black font-medium transition-colors">
+                    <NavLink to="/profile/:id" className="hover:text-black font-medium transition-colors">
                       My Profile
                     </NavLink>
                     <NavLink to="/orders" className="hover:text-black font-medium transition-colors">

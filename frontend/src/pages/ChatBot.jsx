@@ -164,16 +164,12 @@ const ChatBot = () => {
         </div>
       ) : (
         <div className="min-h-screen flex items-center justify-center px-4 sm:px-6 md:px-10 lg:px-20 py-20">
-          <div className="w-full max-w-2xl">
+          <div className="w-full max-w-3xl">
             <div className="text-center mb-12">
-              <div className="inline-flex items-center justify-center w-16 h-16 border-2 border-black rounded-full mb-6">
-                <BotMessageSquare className="w-8 h-8" />
-              </div>
-              <h1 className="text-3xl font-light mb-3 tracking-wide">FASHION <span className="font-semibold">ADVISOR</span></h1>
-              <p className="text-gray-600 max-w-md mx-auto">Upload images or ask questions about fashion, style, trends, and outfit recommendations.</p>
+              <h1 className="text-4xl font-light mb-3 tracking-wide">FASHION <span className="font-semibold">ADVISOR</span></h1>
+              <p className="text-gray-600 max-w-xl mx-auto">Upload images or ask questions about fashion, style, trends, and outfit recommendations.</p>
             </div>
 
-            <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-6">
               {/* Image Upload Section */}
               {image && (
                 <div className="mb-6 flex items-center gap-4">
@@ -202,13 +198,6 @@ const ChatBot = () => {
                   </button>
                 </div>
               </div>
-
-              <div className="mt-6 text-center">
-                <button onClick={generateAnswer} disabled={!question.trim() && !image} className={`px-6 py-3 bg-black text-white font-medium hover:bg-gray-800 transition-colors w-full sm:w-auto rounded-md ${(!question.trim() && !image) ? 'opacity-50 cursor-not-allowed' : ''}`}>
-                  START CONVERSATION
-                </button>
-              </div>
-            </div>
           </div>
         </div>
       )}

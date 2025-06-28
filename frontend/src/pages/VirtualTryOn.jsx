@@ -186,9 +186,8 @@ const VirtualTryOn = () => {
     }
   };
 
-  // 5. UI
   return (
-    <div className="min-h-screen mt-20 mb-10 mx-4 sm:mx-8 md:mx-20 px-6 py-10 bg-primary">
+    <div className="min-h-screen mt-20 mb-10 mx-4 sm:mx-8 md:mx-20 px-6 py-10">
       <div className="text-center py-8">
         <Title text1="Virtual" text2="Try-On" />
         <p className="w-full sm:w-3/4 m-auto text-sm md:text-base text-text-light mt-4">
@@ -196,14 +195,14 @@ const VirtualTryOn = () => {
         </p>
       </div>
 
-      <div className="w-full max-w-4xl mx-auto bg-white shadow-lg rounded-lg border-2 border-secondary p-6 sm:p-8">
-        <div className="flex flex-col sm:flex-row justify-between items-center border-b border-secondary pb-4 mb-6">
-          <h2 className="text-xl sm:text-2xl font-semibold text-secondary mb-4 sm:mb-0">
+      <div className="w-full max-w-4xl mx-auto bg-white shadow-lg rounded-lg border-2 border-black p-6 sm:p-8">
+        <div className="flex flex-col sm:flex-row justify-between items-center border-b border-black pb-4 mb-6">
+          <h2 className="text-xl sm:text-2xl font-semibold text-black mb-4 sm:mb-0">
             Virtual Try-On Experience
           </h2>
           <button
             onClick={isWebcamActive ? stopWebcam : startWebcam}
-            className="bg-secondary text-primary font-medium flex items-center gap-2 text-sm px-6 py-3 rounded-md hover:scale-105 transition-all duration-300 shadow-md"
+            className="bg-black text-white font-medium flex items-center gap-2 text-sm px-6 py-3 rounded-md hover:scale-105 transition-all duration-300 shadow-md"
           >
             {isWebcamActive ? <CameraOff size={20} /> : <Camera size={20} />}
             {isWebcamActive ? "Stop Camera" : "Start Camera"}
@@ -211,13 +210,13 @@ const VirtualTryOn = () => {
         </div>
 
         {loading && (
-          <div className="text-center mt-4 py-3 text-secondary font-medium">
+          <div className="text-center mt-4 py-3 text-black font-medium">
             Loading camera...
           </div>
         )}
 
         {removingBg && (
-          <div className="text-center mt-4 py-3 text-secondary font-medium">
+          <div className="text-center mt-4 py-3 text-black font-medium">
             Processing dress image...
           </div>
         )}
@@ -228,7 +227,7 @@ const VirtualTryOn = () => {
           </div>
         )}
 
-        <div className="relative mt-6 aspect-video bg-gray-100 rounded-lg overflow-hidden border-2 border-secondary shadow-md">
+        <div className="relative mt-6 aspect-video bg-gray-100 rounded-lg overflow-hidden border-2 border-black shadow-md">
           <video
             ref={videoRef}
             autoPlay
@@ -250,34 +249,6 @@ const VirtualTryOn = () => {
               </p>
             </div>
           )}
-        </div>
-
-        <div className="text-center mt-16 mb-6">
-          <Title text1="Try" text2="These Looks" />
-          <p className="w-full sm:w-3/4 m-auto text-sm md:text-base text-text-light mt-2">
-            Explore our featured styles with our virtual try-on technology
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-6 mt-6">
-          {exampleVideos.map((item, index) => (
-            <div
-              key={index}
-              className="relative w-full h-80 rounded-lg shadow-lg hover:scale-105 transition-all duration-300 cursor-pointer overflow-hidden border-2 border-secondary group"
-              onClick={() => window.location.assign(`/virtual-try-on?image=${encodeURIComponent(item.image)}`)}
-            >
-              <img
-                src={item.image}
-                alt={`Preview ${index + 1}`}
-                className="w-full h-full object-cover rounded-lg group-hover:opacity-90 transition-opacity"
-              />
-              <div className="absolute inset-0 bg-secondary bg-opacity-0 group-hover:bg-opacity-20 flex items-center justify-center transition-all duration-300">
-                <button className="bg-primary border-2 border-secondary text-secondary font-medium text-sm px-6 py-3 rounded-md opacity-0 group-hover:opacity-100 hover:bg-secondary hover:text-primary transition-all duration-300">
-                  Try This Look
-                </button>
-              </div>
-            </div>
-          ))}
         </div>
       </div>
     </div>

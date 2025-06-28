@@ -28,7 +28,7 @@ import ChatIcon from './components/ChatIcon';
 const App = () => {
   const location = useLocation();
   const hideNavAndFooter = location.pathname === '/login';
-  const hideChatIcon = location.pathname === '/aa-chatbot'; // Hide chat icon on the chatbot page
+  const hideChatIcon = location.pathname === '/aa-chatbot';
   
   return (
     <div>
@@ -49,7 +49,7 @@ const App = () => {
         <Route path='/orders' element={<Orders />} />
         <Route path='/trackorder/:orderId' element={<TrackOrder />} />
         <Route path='/verify' element={<Verify />} />
-        <Route path='/profile' element={<MyProfile />} />
+        <Route path='/profile/:id' element={<MyProfile />} />
         <Route path='/sell' element={<Sell />} />
         <Route path='/blog' element={<BlogPage />} />
         <Route path='/aa-chatbot' element={<ChatBot />} />
