@@ -17,7 +17,7 @@ const Hero = () => {
   }, []);
 
   const brandName = "AHARYAS";
-  
+
   return (
     <div className="relative w-full h-screen overflow-hidden m-0 p-0">
       {/* Background Video */}
@@ -26,9 +26,10 @@ const Hero = () => {
         loop
         muted
         playsInline
-        className="absolute top-0 left-0 w-full h-full object-cover"
+        preload="auto"
+        className="absolute top-0 left-0 w-full h-full object-cover bg-black"
       >
-        <source src="https://videos.pexels.com/video-files/27433112/12142544_1920_1080_50fps.mp4" type="video/mp4" />
+        <source src={assets.hero_vid} type="video/mp4" />
         Your browser does not support the video tag.
       </video>
 

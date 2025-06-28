@@ -7,6 +7,7 @@ import login_bg from './login_bg.jpg'
 import comment_icon from './comment_icon.png'
 import profile_icon from './profile_icon.png'
 import search_icon from './search_icon.png'
+import hero_vid from './hero.mp4'
 import menu_icon from './menu_icon.png'
 import about_img from './about_img.jpg'
 import contact_img from './contact_img.jpg'
@@ -20,6 +21,7 @@ import mallesh_img from './mallesh.jpg'
 export const assets = {
     logo,
     logo_white,
+    hero_vid,
     cart_icon,
     login_bg,
     profile_icon,
