@@ -12,15 +12,6 @@ const About = () => {
     document.title = 'About Aharyas | Conscious Luxury, Indian Heritage';
   }, []);
 
-  // Assuming these images would be added to your assets
-  const imageAssets = {
-    founders: assets.about_img, // Existing founders image
-    journey: "/api/placeholder/1200/500", // Journey panoramic image
-    craftsmanDetail: "/api/placeholder/400/600", // Detailed craftsmanship
-    artisanPortrait: "/api/placeholder/400/500", // Artisan portrait
-    sustainabilityImage: "/api/placeholder/600/400", // Sustainability image
-  };
-
   return (
     <div className="min-h-screen text-black mt-20 py-16">
       <section className="text-center">
@@ -42,7 +33,7 @@ const About = () => {
             <div className="absolute -top-4 -left-4 w-40 h-40 border-l-2 border-t-2 border-black opacity-20"></div>
             <img
               className="rounded-xl shadow-2xl w-full object-cover z-10 relative"
-              src={imageAssets.founders}
+              src={assets.about_img}
               alt="Aharyas Founders"
             />
             <div className="absolute -bottom-4 -right-4 w-40 h-40 border-r-2 border-b-2 border-black opacity-20"></div>
