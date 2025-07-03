@@ -69,11 +69,11 @@ const MyProfile = () => {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setEditProfile((prev) => ({ ...prev, image: reader.result }));
-    };
-    reader.readAsDataURL(file);
+    setEditProfile((prev) => ({
+      ...prev,
+      imageFile: file, // keep the File object for upload
+      image: URL.createObjectURL(file), // preview only
+    }));
   };
 
   // --- Edit Profile Submit ---
@@ -82,11 +82,25 @@ const MyProfile = () => {
     setLoading(true);
     try {
       const token = localStorage.getItem("token");
+
+      const formData = new FormData();
+      formData.append("name", editProfile.name);
+      formData.append("email", editProfile.email);
+      if (editProfile.imageFile) {
+        formData.append("image", editProfile.imageFile); // single file input name 'image'
+      }
+
       const res = await axios.put(
-        `${import.meta.env.VITE_BACKEND_URL}/api/user/update/${userData._id}`,
-        { name: editProfile.name, email: editProfile.email, image: editProfile.image },
-        { headers: { token } }
+        `${import.meta.env.VITE_BACKEND_URL}/api/user/profile/${userData._id}`,
+        formData,
+        {
+          headers: {
+            token,
+            "Content-Type": "multipart/form-data",
+          },
+        }
       );
+
       if (res.data.success) {
         setUserData(res.data.user);
         setActiveSection(null);
@@ -98,6 +112,7 @@ const MyProfile = () => {
     }
     setLoading(false);
   };
+
 
   // --- Address Management ---
   const saveAddress = async (addressObj, index = -1) => {

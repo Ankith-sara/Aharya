@@ -1,6 +1,7 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import validator from 'validator';
+import { v2 as cloudinary } from 'cloudinary';
 import userModel from '../models/UserModel.js';
 
 const createToken = (id, role = 'user') => {
@@ -51,19 +52,56 @@ const registerUser = async (req, res) => {
     }
 };
 
+// Admin login using stored admin user
 const adminLogin = async (req, res) => {
     const { email, password } = req.body;
     try {
-        if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
-            const token = jwt.sign(email + password, process.env.JWT_SECRET);
-            res.json({ success: true, message: 'Login successful', token })
-        } else {
-            res.json({ success: false, message: "Invalid credentials" })
-        }
+        const user = await userModel.findOne({ email, role: 'admin' });
+        if (!user) return res.status(404).json({ success: false, message: 'Admin not found' });
+
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) return res.status(401).json({ success: false, message: 'Invalid credentials' });
+
+        const token = createToken(user._id, 'admin');
+        res.status(200).json({ success: true, token, message: 'Admin login successful' });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
 };
+
+const registerAdmin = async (req, res) => {
+    const { name, email, password } = req.body;
+    try {
+        const exists = await userModel.findOne({ email });
+        if (exists) {
+            return res.status(400).json({ success: false, message: 'Admin already exists' });
+        }
+
+        if (!validator.isEmail(email)) {
+            return res.status(400).json({ success: false, message: 'Invalid email format' });
+        }
+
+        if (password.length < 8) {
+            return res.status(400).json({ success: false, message: 'Password must be at least 8 characters' });
+        }
+
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+        const newAdmin = new userModel({ name, email, password: hashedPassword, role: 'admin', isAdmin: true });
+        const user = await newAdmin.save();
+
+        const token = createToken(user._id, 'admin');
+
+        res.status(201).json({
+            success: true,
+            token,
+            message: `Welcome Admin ${user.name}, registration successful.`,
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
 
 const getUserDetails = async (req, res) => {
     try {
@@ -81,22 +119,47 @@ const getUserDetails = async (req, res) => {
     }
 };
 
-// Update profile: name, email, image
+// Update profile
 const updateUserProfile = async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, email, image } = req.body;
-        const user = await userModel.findByIdAndUpdate(
-            id,
-            { name, email, image },
-            { new: true, runValidators: true }
-        ).select('-password');
-        if (!user) return res.status(404).json({ success: false, message: "User not found" });
+        const { name, email } = req.body;
+
+        // Handle file upload
+        const imageFile = req.file;
+        let imageUrl = null;
+
+        if (imageFile) {
+            const result = await cloudinary.uploader.upload(imageFile.path, {
+                resource_type: 'image',
+                folder: 'user_profiles'
+            });
+            imageUrl = result.secure_url;
+        }
+
+        const updatedFields = { name, email };
+
+        if (imageUrl) {
+            updatedFields.image = imageUrl;
+        }
+
+        // Update the user
+        const user = await userModel.findByIdAndUpdate(id, updatedFields, {
+            new: true,
+            runValidators: true,
+        }).select('-password');
+
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found" });
+        }
+
         res.json({ success: true, user });
     } catch (error) {
+        console.error("Error updating profile:", error);
         res.status(500).json({ success: false, message: error.message });
     }
 };
+
 
 // Add or update address
 const addOrUpdateAddress = async (req, res) => {
@@ -160,4 +223,4 @@ const changePassword = async (req, res) => {
     }
 };
 
-export { loginUser, registerUser, adminLogin, getUserDetails, updateUserProfile, addOrUpdateAddress, deleteAddress, changePassword };
+export { loginUser, registerUser, adminLogin, registerAdmin, getUserDetails, updateUserProfile, addOrUpdateAddress, deleteAddress, changePassword };

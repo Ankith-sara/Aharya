@@ -20,11 +20,11 @@ const Sell = () => {
                         <p className="text-white text-lg md:text-xl mb-10 max-w-2xl mx-auto font-light">
                             Join thousands of entrepreneurs and artisans who are transforming their business on Aharya's marketplace.
                         </p>
-                        <Link to="/login">
+                        <a href="https://admin.aharyas.com/" target="_blank" rel="noopener noreferrer">
                             <button className="px-8 py-4 bg-white text-black font-medium hover:bg-gray-100 transition-colors transform hover:scale-105 duration-300 text-lg">
                                 START SELLING NOW
                             </button>
-                        </Link>
+                        </a>
                     </div>
                 </div>
                 <div className="absolute bottom-10 left-0 right-0 flex justify-center">
@@ -129,11 +129,11 @@ const Sell = () => {
                         Join the thousands of sellers who have found success on Aharya.
                         Your journey starts now.
                     </p>
-                    <Link to="/login">
+                    <a href="https://admin.aharyas.com/" target="_blank" rel="noopener noreferrer">
                         <button className="px-10 py-5 bg-black text-white font-bold text-lg hover:bg-gray-900">
                             BECOME A SELLER
                         </button>
-                    </Link>
+                    </a>
                 </div>
             </div>
 

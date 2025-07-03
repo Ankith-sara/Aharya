@@ -197,12 +197,17 @@ const updateStatus = async (req, res) => {
 const orderStatus = async (req, res) => {
   try {
     const { orderId } = req.params;
+    console.log("Tracking order:", orderId); // Debug log
     const order = await orderModel.findById(orderId);
-    if (!order) return res.status(404).json({ success: false, message: 'Order not found' });
+    if (!order) {
+      return res.status(404).json({ success: false, message: 'Order not found' });
+    }
     res.json({ success: true, order });
   } catch (e) {
+    console.error("Tracking Error:", e.message); // Add detailed logging
     res.status(500).json({ success: false, message: e.message });
   }
-}
+};
+
 
 export { verifyRazorpay, verifyStripe, placeOrder, placeOrderStripe, placeOrderRazorpay, allOrders, userOrders, updateStatus, orderStatus }

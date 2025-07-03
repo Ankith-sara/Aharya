@@ -74,7 +74,7 @@ const Orders = ({ token }) => {
                     ))}
                   </td>
                   <td className="p-3 border border-gray-900">
-                    <p className="font-medium"> {order.address.firstName} {order.address.lastName} </p>
+                    <p className="font-medium"> {order.address.Name} </p>
                   </td>
                   <td className="p-3 border border-gray-900 text-sm text-gray-600">
                     <p>{order.address.street},</p>

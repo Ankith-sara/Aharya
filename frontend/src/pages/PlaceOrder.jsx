@@ -1,4 +1,5 @@
 import React, { useContext, useState } from 'react';
+import { jwtDecode } from 'jwt-decode';
 import Title from '../components/Title';
 import CartTotal from '../components/CartTotal';
 import { assets } from '../assets/frontend_assets/assets';
@@ -6,14 +7,13 @@ import { ShopContext } from '../context/ShopContext';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { CreditCard, Truck, Home } from 'lucide-react';
+import { useEffect } from 'react';
 
 const PlaceOrder = () => {
   const [method, setMethod] = useState('cod');
   const { navigate, backendUrl, token, cartItems, setCartItems, getCartAmount, delivery_fee, products } = useContext(ShopContext);
-
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
+    Name: '',
     email: '',
     street: '',
     city: '',
@@ -22,6 +22,43 @@ const PlaceOrder = () => {
     country: '',
     phone: '',
   });
+
+  useEffect(() => {
+  const fetchUser = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
+      const decoded = jwtDecode(token);
+      const userId = decoded.id;
+
+      const res = await axios.get(`${backendUrl}/api/user/profile/${userId}`, {
+        headers: { token }
+      });
+
+      if (res.data.success) {
+        const user = res.data.user;
+
+        // Autofill the form
+        setFormData(prev => ({
+          ...prev,
+          Name: user.name || '',
+          email: user.email || '',
+          street: user.addresses?.[0]?.address || '',
+          city: user.addresses?.[0]?.city || '',
+          state: user.addresses?.[0]?.state || '',
+          pincode: user.addresses?.[0]?.zip || '',
+          country: user.addresses?.[0]?.country || '',
+          phone: user.addresses?.[0]?.phone || ''
+        }));
+      }
+    } catch (error) {
+      console.error('Error fetching user:', error);
+    }
+  };
+
+  fetchUser();
+}, []);
 
   // Handles input changes
   const onChangeHandler = (event) => {
@@ -130,16 +167,10 @@ const PlaceOrder = () => {
               <h3 className="font-medium text-lg">Delivery Information</h3>
             </div>
             <div className="p-6 space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label className="block text-xs uppercase tracking-wider text-gray-900 font-medium">First Name</label>
-                  <input onChange={onChangeHandler} name="firstName" value={formData.firstName} className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black" type="text" placeholder="Enter your first name" required />
+                  <label className="block text-xs uppercase tracking-wider text-gray-900 font-medium">Name</label>
+                  <input onChange={onChangeHandler} name="Name" value={formData.Name} className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black" type="text" placeholder="Enter your name" required />
                 </div>
-                <div className="space-y-2">
-                  <label className="block text-xs uppercase tracking-wider text-gray-900 font-medium">Last Name</label>
-                  <input onChange={onChangeHandler} name="lastName" value={formData.lastName} className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black" type="text" placeholder="Enter your last name" required />
-                </div>
-              </div>
               <div className="space-y-2">
                 <label className="block text-xs uppercase tracking-wider text-gray-900 font-medium">Email Address</label>
                 <input onChange={onChangeHandler} name="email" value={formData.email} className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black" type="email" placeholder="Enter your email address" required />

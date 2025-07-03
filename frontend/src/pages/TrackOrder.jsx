@@ -19,8 +19,7 @@ const TrackOrder = () => {
   const allStatuses = [
     'Order Placed',
     'Processing',
-    'Shipped',
-    'In Transit',
+    'Shipping',
     'Out for Delivery',
     'Delivered'
   ];
@@ -31,95 +30,23 @@ const TrackOrder = () => {
       setError(null);
 
       try {
-        // Demo mode - using static data
         if (!backendUrl || !token || !orderId) {
-          // Mock data similar to paste-2.txt example
-          const mockOrder = {
-            _id: 'ORD-75209634',
-            date: '2025-04-22T14:35:00Z',
-            estimatedDelivery: '2025-05-01T17:00:00Z',
-            status: 'In Transit',
-            customer: {
-              name: 'Alex Johnson',
-              email: 'alex@example.com',
-            },
-            address: {
-              firstName: 'Alex',
-              lastName: 'Johnson',
-              street: '123 Fashion Avenue',
-              city: 'New York',
-              state: 'NY',
-              pincode: '10001',
-              country: 'United States',
-              phone: '555-123-4567'
-            },
-            items: [
-              {
-                id: 'PROD-12345',
-                name: 'Premium Cotton T-Shirt',
-                price: 49.99,
-                quantity: 2,
-                size: 'M',
-                image: '/api/placeholder/120/150'
-              },
-              {
-                id: 'PROD-67890',
-                name: 'Slim Fit Denim Jeans',
-                price: 89.99,
-                quantity: 1,
-                size: 'L',
-                image: '/api/placeholder/120/150'
-              }
-            ],
-            trackingNumber: 'TRK-8347562190',
-            carrier: 'Premium Logistics',
-            trackingHistory: [
-              {
-                status: 'Order Placed',
-                location: 'Online',
-                timestamp: '2025-04-22T14:35:00Z',
-                description: 'Your order has been confirmed and payment processed.'
-              },
-              {
-                status: 'Processing',
-                location: 'New York Warehouse',
-                timestamp: '2025-04-23T09:12:00Z',
-                description: 'Your order is being prepared for shipment.'
-              },
-              {
-                status: 'Shipped',
-                location: 'New York Distribution Center',
-                timestamp: '2025-04-25T16:48:00Z',
-                description: 'Your package has left our warehouse and is on its way.'
-              },
-              {
-                status: 'In Transit',
-                location: 'Chicago Sorting Facility',
-                timestamp: '2025-04-27T10:23:00Z',
-                description: 'Your package is in transit to the next facility.'
-              }
-            ],
-            amount: 221.37,
-            delivery_fee: 15.00,
-            tax: 16.40,
-            paymentMethod: 'Credit Card (ending in 4321)'
-          };
+          throw new Error("Missing backend URL, token, or order ID");
+        }
 
-          setOrder(mockOrder);
-        } else {
-          // Fetch from API if we have real credentials
-          const response = await fetch(
-            `${backendUrl}/api/order/track/${orderId}`,
-            { headers: { token } }
-          );
-
-          const data = await response.json();
-
-          if (data.success) {
-            setOrder(data.order);
-          } else {
-            throw new Error(data.message || 'Failed to load order');
+        const response = await fetch(`${backendUrl}/api/order/track/${orderId}`, {
+          method: "GET",
+          headers: {
+            token: token
           }
+        })
+
+        const data = await response.json();
+
+        if (data.success) {
+          setOrder(data.order);
+        } else {
+          throw new Error(data.message || 'Failed to load order');
         }
       } catch (err) {
         setError(err.message || 'Failed to load order data');
@@ -131,6 +58,7 @@ const TrackOrder = () => {
 
     fetchOrder();
   }, [orderId, backendUrl, token]);
+
 
   const formatDate = (dateString) => {
     if (!dateString) return 'N/A';
@@ -163,6 +91,11 @@ const TrackOrder = () => {
     const statusIndex = allStatuses.indexOf(status);
 
     if (statusIndex < 0) return 'upcoming';
+
+    if (order.status === 'Delivered') {
+      // All statuses are completed once delivered
+      return 'completed';
+    }
 
     if (statusIndex < currentStatusIndex) {
       return 'completed';
@@ -258,10 +191,10 @@ const TrackOrder = () => {
                         {/* Icon circle */}
                         <div
                           className={`relative z-10 flex items-center justify-center w-14 h-14 rounded-full transition-all ${state === 'completed'
-                              ? 'bg-green-500 text-white border-2 border-green-500'
-                              : state === 'current'
-                                ? 'bg-blue-600 text-white border-2 border-blue-600 shadow-lg animate-pulse'
-                                : 'border-2 border-gray-300 bg-white text-gray-400'
+                            ? 'bg-green-500 text-white border-2 border-green-500'
+                            : state === 'current'
+                              ? 'bg-blue-600 text-white border-2 border-blue-600 shadow-lg animate-pulse'
+                              : 'border-2 border-gray-300 bg-white text-gray-400'
                             }`}
                         >
                           {state === 'completed'
@@ -272,7 +205,7 @@ const TrackOrder = () => {
                         {/* Status label and details */}
                         <div className="mt-4 text-center">
                           <h4 className={`text-md font-medium ${state === 'upcoming' ? 'text-gray-400' :
-                              state === 'current' ? 'text-blue-600' : 'text-black'
+                            state === 'current' ? 'text-blue-600' : 'text-black'
                             }`}>
                             {status}
                           </h4>

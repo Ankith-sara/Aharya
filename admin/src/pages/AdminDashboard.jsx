@@ -133,7 +133,7 @@ const AdminDashboard = ({ token }) => {
               {orders.slice(0, 5).map((order, index) => (
                 <tr key={order._id} className="hover:bg-background transition-all">
                   <td className="p-3 border border-gray-900">{index + 1}</td>
-                  <td className="p-3 border border-gray-900">{order.address.firstName} {order.address.lastName}</td>
+                  <td className="p-3 border border-gray-900">{order.address.Name}</td>
                   <td className="p-3 border border-gray-900">{currency} {order.amount}</td>
                   <td className={`p-3 border border-gray-900 ${order.payment ? "text-green-600" : "text-red-600"}`}>
                     {order.payment ? "Paid" : "Pending"}

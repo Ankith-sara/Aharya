@@ -12,6 +12,11 @@ import orderRouter from './routes/OrderRoute.js';
 const app = express();
 const port = process.env.PORT || 4000;
 
+app.use(cors({
+  origin: "*", // your frontend
+  credentials: true
+}));
+
 // Connect to DB and Cloudinary
 connectDB();
 connectCloudinary();
