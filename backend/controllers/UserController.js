@@ -3,6 +3,79 @@ import jwt from 'jsonwebtoken';
 import validator from 'validator';
 import { v2 as cloudinary } from 'cloudinary';
 import userModel from '../models/UserModel.js';
+import { sendOtpMail } from '../middlewares/sendOtpMail.js';
+
+const generateOtp = () => Math.floor(100000 + Math.random() * 900000).toString();
+
+export const sendOtp = async (req, res) => {
+    const { email } = req.body;
+    if (!email) return res.status(400).json({ success: false, message: 'Email is required' });
+
+    try {
+        let user = await userModel.findOne({ email });
+        if (!user) {
+            // Optionally, auto-register user here if you want OTP login for new users
+            user = new userModel({ email, name: 'User', password: 'dummy-password' });
+            await user.save();
+        }
+
+        const otp = generateOtp();
+        const otpExpiry = new Date(Date.now() + 5 * 60 * 1000);
+
+        user.otp = otp;
+        user.otpExpiry = otpExpiry;
+        await user.save();
+
+        await sendOtpMail(email, otp);
+
+        res.json({ success: true, message: 'OTP sent' });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+};
+
+export const verifyOtp = async (req, res) => {
+    const { email, otp, name, password } = req.body;
+    if (!email || !otp) {
+        return res.status(400).json({ success: false, message: 'Email and OTP required' });
+    }
+
+    try {
+        const user = await userModel.findOne({ email });
+
+        if (!user || !user.otp || !user.otpExpiry) {
+            return res.status(400).json({ success: false, message: 'OTP not requested or expired' });
+        }
+
+        if (user.otp !== otp) {
+            return res.status(401).json({ success: false, message: 'Invalid OTP' });
+        }
+
+        if (user.otpExpiry < new Date()) {
+            return res.status(401).json({ success: false, message: 'OTP expired' });
+        }
+
+        if (name) user.name = name;
+        if (password) {
+            if (password.length < 8) {
+                return res.status(400).json({ success: false, message: 'Password must be at least 8 characters' });
+            }
+            const salt = await bcrypt.genSalt(10);
+            user.password = await bcrypt.hash(password, salt);
+        }
+
+        user.otp = undefined;
+        user.otpExpiry = undefined;
+
+        await user.save();
+
+        const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '7d' });
+        res.json({ success: true, token });
+
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+};
 
 const createToken = (id, role = 'user') => {
     return jwt.sign({ id, role }, process.env.JWT_SECRET, { expiresIn: "7d" });
@@ -16,7 +89,7 @@ const loginUser = async (req, res) => {
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) return res.status(401).json({ success: false, message: "Invalid credentials" });
         const token = createToken(user._id);
-        res.status(200).json({ success: true, token });
+        res.status(200).json({ success: true, token, name: user.name });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }

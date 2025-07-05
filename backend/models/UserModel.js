@@ -20,6 +20,8 @@ const userSchema = new mongoose.Schema(
     role: { type: String, default: 'user', enum: ['user', 'admin'] },
     isAdmin: { type: Boolean, default: false },
     createdAt: { type: Date, default: Date.now },
+    otp: { type: String },
+    otpExpiry: { type: Date },
   },
   { timestamps: true, minimize: false },
   
