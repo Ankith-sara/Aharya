@@ -2,7 +2,11 @@ import React, { useState, useEffect, useContext } from "react";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import {
-  ChevronRight, Heart, Clock, User, ShoppingBag, Settings, LogOut, Edit2, Trash2, MapPinHouse, X, Camera, Mail, Save
+  ChevronRight, Heart, Clock, User, ShoppingBag, Settings, LogOut, Edit2, Trash2,
+  MapPinHouse,
+  X,
+  Camera,
+  Mail
 } from "lucide-react";
 import Title from "../components/Title";
 import ProductItem from "../components/ProductItem";
@@ -87,7 +91,7 @@ const MyProfile = () => {
         formData.append("image", editProfile.imageFile);
       }
 
-      await axios.put(
+      const res = await axios.put(
         `${backendUrl}/api/user/profile/${userData._id}`,
         formData,
         {
@@ -99,17 +103,23 @@ const MyProfile = () => {
       );
 
       if (res.data.success) {
-        setUserData(res.data.user);
+        setUserData(res.data.user); // update the UI
+        setEditProfile({
+          name: res.data.user.name,
+          email: res.data.user.email,
+          image: res.data.user.image || "",
+        });
         setActiveSection(null);
       } else {
         alert(res.data.message || "Failed to update profile.");
       }
     } catch (err) {
+      console.error("Edit profile failed:", err);
       alert("Failed to update profile.");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
-
 
   // --- Address Management ---
   const saveAddress = async (addressObj, index = -1) => {
@@ -299,9 +309,9 @@ const MyProfile = () => {
       {/* Edit Profile Modal */}
       {activeSection === "Edit Profile" && (
         <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-md w-full max-w-md transform transition-all duration-300 overflow-hidden">
+          <div className="bg-white rounded-lg w-full max-w-md transform transition-all duration-300 overflow-hidden">
             {/* Header */}
-            <div className="bg-black text-white p-4 relative">
+            <div className="bg-black text-white p-3 relative">
               <button onClick={() => setActiveSection(null)} className="absolute right-4 top-4 p-2 hover:bg-gray-800 rounded-full transition-colors">
                 <X size={20} />
               </button>
@@ -311,9 +321,7 @@ const MyProfile = () => {
               </h2>
               <p className="text-gray-300 mt-1 text-sm">Update your personal information</p>
             </div>
-
-            {/* Form */}
-            <div className="p-5 space-y-5">
+            <form className="p-5 space-y-3" onSubmit={handleEditProfileSubmit}>
               {/* Profile Image */}
               <div className="flex flex-col items-center">
                 <div className="relative">
@@ -335,70 +343,34 @@ const MyProfile = () => {
                   </label>
                 </div>
               </div>
-
-              {/* Name Input */}
-              <div className="space-y-1">
-                <label className="flex items-center gap-1 text-sm font-medium text-gray-700">
-                  <User size={14} />
-                  Full Name
-                </label>
-                <input
-                  type="text"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 focus:outline-none focus:ring-2 focus:ring-black"
-                  value={editProfile.name}
-                  onChange={e => setEditProfile({ ...editProfile, name: e.target.value })}
-                  placeholder="Enter your name"
-                  required
-                />
-              </div>
-
-              {/* Email Input */}
-              <div className="space-y-1">
-                <label className="flex items-center gap-1 text-sm font-medium text-gray-700">
-                  <Mail size={14} />
-                  Email
-                </label>
-                <input
-                  type="email"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 focus:outline-none focus:ring-2 focus:ring-black"
-                  value={editProfile.email}
-                  onChange={e => setEditProfile({ ...editProfile, email: e.target.value })}
-                  placeholder="Enter your email"
-                  required
-                />
-              </div>
-
-              {/* Buttons */}
-              <div className="flex gap-3 pt-2">
-                <button type="submit" disabled={loading} className="flex-1 bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800 transition disabled:opacity-50 flex items-center justify-center gap-2 text-sm font-medium">
-                  {loading ? (
-                    <>
-                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                      Saving...
-                    </>
-                  ) : (
-                    <>
-                      <Save size={16} />
-                      Save
-                    </>
-                  )}
+              <label className="flex items-center gap-1 text-sm font-medium text-gray-700"> <User size={14} /> Full Name</label>
+              <input
+                className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 focus:outline-none focus:ring-2 focus:ring-black"
+                value={editProfile.name}
+                onChange={e => setEditProfile({ ...editProfile, name: e.target.value })}
+                placeholder="Enter your name"
+                required
+              />
+              <label className="flex items-center gap-1 text-sm font-medium text-gray-700"> <Mail size={14} /> Email</label>
+              <input
+                className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 focus:outline-none focus:ring-2 focus:ring-black"
+                value={editProfile.email}
+                onChange={e => setEditProfile({ ...editProfile, email: e.target.value })}
+                placeholder="Enter your email"
+                required
+              />
+              <div className="flex gap-1 pt-2">
+                <button type="submit" className="flex-1 bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800 transition disabled:opacity-50 flex items-center justify-center gap-2 text-sm font-medium" disabled={loading}>
+                  {loading ? "Saving..." : "Save"}
                 </button>
-                <button type="button" onClick={() => setActiveSection(null)} className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-100 text-sm font-medium">
+                <button type="button" className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-100 text-sm font-medium" onClick={() => setActiveSection(null)}>
                   Cancel
                 </button>
               </div>
-            </div>
-
-            {/* Footer */}
-            <div className="bg-gray-50 px-4 py-3 text-center">
-              <p className="text-xs text-gray-400">
-                Your data is safe and secure with us.
-              </p>
-            </div>
+            </form>
           </div>
         </div>
       )}
-
 
       {activeSection === "Delivery Address" && (
         <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
