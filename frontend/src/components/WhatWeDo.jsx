@@ -9,9 +9,9 @@ function WhatWeDo() {
     const [videosPerPage, setVideosPerPage] = useState(3);
 
     const videos = [
-        { video: "https://cdn.shopify.com/videos/c/o/v/fd1d3228b14a46a8ab9cf98d7644de90.mp4", image: "https://okhai.org/cdn/shop/files/abcd_99d512d1-7752-4dca-bd6c-e71e0d98139c.jpg?v=1717139293" },
-        { video: "https://cdn.shopify.com/videos/c/o/v/e5c75f1cccfe461bbbaf1596ed6f6e93.mp4", image: "https://okhai.org/cdn/shop/files/Website_video_cover_9.jpg?v=1717074392" },
-        { video: "https://cdn.shopify.com/videos/c/o/v/3d53794e362a4a48935236d8417b7b7a.mp4", image: "https://okhai.org/cdn/shop/files/11_fb19558a-2cbc-43a6-9ece-5a8167327e41.jpg?v=1717074505" },
+        { video: "https://res.cloudinary.com/dfzhqsfp7/video/upload/v1751704393/IMG_2973_f9oiwa.mov", image: "https://okhai.org/cdn/shop/files/abcd_99d512d1-7752-4dca-bd6c-e71e0d98139c.jpg?v=1717139293" },
+        { video: "https://res.cloudinary.com/dfzhqsfp7/video/upload/v1751704388/IMG_2975_gjpdz9.mov", image: "https://okhai.org/cdn/shop/files/Website_video_cover_9.jpg?v=1717074392" },
+        { video: "https://res.cloudinary.com/dfzhqsfp7/video/upload/v1751704385/IMG_2974_nje89b.mov", image: "https://okhai.org/cdn/shop/files/11_fb19558a-2cbc-43a6-9ece-5a8167327e41.jpg?v=1717074505" },
         { video: "https://cdn.shopify.com/videos/c/o/v/5b5ac6ebace54f98b6b182bf010a0d8e.mp4", image: "https://okhai.org/cdn/shop/files/6_30d3ac88-1ebc-4266-b286-09e49e8657ca.jpg?v=1717074927" },
         { video: "https://cdn.shopify.com/videos/c/o/v/815f45ef2a194964915d7cbf3c0fd917.mp4", image: "https://okhai.org/cdn/shop/files/4_4c3d5560-9929-4aa3-98ea-7308400648d3.jpg?v=1717074607" },
         { video: "https://cdn.shopify.com/videos/c/o/v/96b5ebb5133d4d2e8e9234c29028da5a.mp4", image: "https://okhai.org/cdn/shop/files/9_b65e0850-ad23-4ddd-9134-1c6e4978ad3a.jpg?v=1717074727" },
@@ -37,11 +37,32 @@ function WhatWeDo() {
     }, []);
 
     const scroll = (direction) => {
-        setScrollIndex((prev) => {
-            if (direction === "left") return Math.max(prev - 1, 0);
-            return Math.min(prev + 1, totalPages - 1);
+        const container = scrollRef.current;
+        if (!container) return;
+
+        const scrollAmount = container.offsetWidth;
+        const newIndex = direction === "left"
+            ? Math.max(scrollIndex - 1, 0)
+            : Math.min(scrollIndex + 1, totalPages - 1);
+
+        container.scrollTo({
+            left: scrollAmount * newIndex,
+            behavior: "smooth",
         });
+
+        setScrollIndex(newIndex);
     };
+
+    useEffect(() => {
+        const container = scrollRef.current;
+        if (!container) return;
+
+        const scrollAmount = container.offsetWidth;
+        container.scrollTo({
+            left: scrollIndex * scrollAmount,
+            behavior: "smooth",
+        });
+    }, [scrollIndex]);
 
     const playVideo = (index) => {
         setPlayingVideo((prevState) => ({
@@ -55,7 +76,7 @@ function WhatWeDo() {
 
     return (
         <section className="py-10 px-4 sm:px-6 md:px-10 lg:px-20">
-            <div className="max-w-6xl mx-auto">
+            <div className="max-w-7xl mx-auto">
                 <div className="text-center mb-12">
                     <Title text1="WHAT" text2="WE DO" />
                     <p className="mt-2 max-w-2xl mx-auto text-gray-600 text-sm md:text-base">
@@ -78,7 +99,7 @@ function WhatWeDo() {
                     </div>
 
                     <div className="relative overflow-hidden">
-                        <div ref={scrollRef} className="flex gap-6 transition-transform duration-500" style={{ transform: `translateX(-${scrollIndex * 100 / totalPages}%)` }}>
+                        <div ref={scrollRef} className="flex gap-6 overflow-x-auto scroll-smooth no-scrollbar">
                             {videos.map((item, index) => (
                                 <div key={index} className="flex-shrink-0 w-full sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)]">
                                     <div className="relative aspect-[3/4] overflow-hidden shadow-md group">

@@ -41,7 +41,7 @@ function LatestCollection() {
 
   return (
     <section className="bg-white py-10 px-4 sm:px-6 md:px-10 lg:px-20">
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-7xl mx-auto">
         <div className="flex flex-col mb-10 items-center text-center gap-2">
           <div>
             <Title text1="LATEST" text2="COLLECTION" />
