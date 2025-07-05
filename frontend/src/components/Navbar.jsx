@@ -228,7 +228,7 @@ const Navbar = () => {
 
             {token ? (
               <>
-                <NavLink to="/profile" onClick={() => setMenuVisible(false)} className={({ isActive }) => `block p-4 hover:bg-gray-50 transition-colors ${isActive ? 'text-secondary font-medium' : 'text-gray-800'}`}>
+                <NavLink to={`/profile/${userId}`} onClick={() => setMenuVisible(false)} className={({ isActive }) => `block p-4 hover:bg-gray-50 transition-colors ${isActive ? 'text-secondary font-medium' : 'text-gray-800'}`}>
                   My Profile
                 </NavLink>
                 <NavLink to="/orders" onClick={() => setMenuVisible(false)} className={({ isActive }) => `block p-4 hover:bg-gray-50 transition-colors ${isActive ? 'text-secondary font-medium' : 'text-gray-800'}`}>

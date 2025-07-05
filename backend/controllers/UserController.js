@@ -124,13 +124,10 @@ const updateUserProfile = async (req, res) => {
     try {
         const { id } = req.params;
         const { name, email } = req.body;
-
-        // Handle file upload
-        const imageFile = req.file;
         let imageUrl = null;
 
-        if (imageFile) {
-            const result = await cloudinary.uploader.upload(imageFile.path, {
+        if (req.file) {
+            const result = await cloudinary.uploader.upload(req.file.path, {
                 resource_type: 'image',
                 folder: 'user_profiles'
             });
@@ -138,12 +135,8 @@ const updateUserProfile = async (req, res) => {
         }
 
         const updatedFields = { name, email };
+        if (imageUrl) updatedFields.image = imageUrl;
 
-        if (imageUrl) {
-            updatedFields.image = imageUrl;
-        }
-
-        // Update the user
         const user = await userModel.findByIdAndUpdate(id, updatedFields, {
             new: true,
             runValidators: true,
@@ -155,11 +148,10 @@ const updateUserProfile = async (req, res) => {
 
         res.json({ success: true, user });
     } catch (error) {
-        console.error("Error updating profile:", error);
         res.status(500).json({ success: false, message: error.message });
+        console.error("Error updating profile:", error);
     }
 };
-
 
 // Add or update address
 const addOrUpdateAddress = async (req, res) => {

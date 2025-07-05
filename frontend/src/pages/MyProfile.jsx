@@ -2,15 +2,12 @@ import React, { useState, useEffect, useContext } from "react";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import {
-  ChevronRight, Heart, Clock, User, ShoppingBag, Settings, LogOut, Edit2, Trash2,
-  MapPinHouse
+  ChevronRight, Heart, Clock, User, ShoppingBag, Settings, LogOut, Edit2, Trash2, MapPinHouse, X, Camera, Mail, Save
 } from "lucide-react";
 import Title from "../components/Title";
 import ProductItem from "../components/ProductItem";
 import { ShopContext } from "../context/ShopContext";
 import { Link } from "react-router-dom";
-
-const defaultAvatar = "https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png";
 
 const MyProfile = () => {
   const [userData, setUserData] = useState(null);
@@ -87,11 +84,11 @@ const MyProfile = () => {
       formData.append("name", editProfile.name);
       formData.append("email", editProfile.email);
       if (editProfile.imageFile) {
-        formData.append("image", editProfile.imageFile); // single file input name 'image'
+        formData.append("image", editProfile.imageFile);
       }
 
-      const res = await axios.put(
-        `${import.meta.env.VITE_BACKEND_URL}/api/user/profile/${userData._id}`,
+      await axios.put(
+        `${backendUrl}/api/user/profile/${userData._id}`,
         formData,
         {
           headers: {
@@ -187,7 +184,7 @@ const MyProfile = () => {
             <div className="px-6 pb-6 flex flex-col items-center relative">
               <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-full border-4 border-white overflow-hidden -mt-16 mb-4 shadow-md relative group">
                 <img
-                  src={userData.image || defaultAvatar}
+                  src={userData.image}
                   alt="Profile"
                   className="w-full h-full object-cover bg-white"
                 />
@@ -212,14 +209,11 @@ const MyProfile = () => {
                   </div>
                   <div>
                     <p className="text-xs uppercase tracking-wider text-gray-500 mb-1">Member Since</p>
-                    <p className="text-sm">{new Date(userData.createdAt).toLocaleString()}</p>
+                    <p className="text-sm">{new Date(userData.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
                   </div>
                 </div>
               </div>
-              <button
-                className="mt-6 w-full py-2 px-4 border border-black text-black font-medium hover:bg-gray-50 transition-colors"
-                onClick={() => setActiveSection("Edit Profile")}
-              >
+              <button className="mt-6 w-full py-2 px-4 border border-black text-black font-medium hover:bg-gray-50 transition-colors" onClick={() => setActiveSection("Edit Profile")}>
                 EDIT PROFILE
               </button>
             </div>
@@ -304,49 +298,107 @@ const MyProfile = () => {
 
       {/* Edit Profile Modal */}
       {activeSection === "Edit Profile" && (
-        <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
-          <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-            <h2 className="text-xl font-bold mb-4">Edit Profile</h2>
-            <form onSubmit={handleEditProfileSubmit}>
-              <label className="block mb-2">Name</label>
-              <input
-                className="border p-2 w-full mb-4"
-                value={editProfile.name}
-                onChange={e => setEditProfile({ ...editProfile, name: e.target.value })}
-                required
-              />
-              <label className="block mb-2">Email</label>
-              <input
-                className="border p-2 w-full mb-4"
-                value={editProfile.email}
-                onChange={e => setEditProfile({ ...editProfile, email: e.target.value })}
-                required
-              />
-              <label className="block mb-2">Profile Image</label>
-              <input type="file" accept="image/*" onChange={handleImageChange} className="mb-4" />
-              {editProfile.image && (
-                <img src={editProfile.image} alt="Preview" className="w-16 h-16 rounded-full mb-4" />
-              )}
-              <div className="flex gap-2">
-                <button
-                  type="submit"
-                  className="bg-black text-white px-4 py-2 rounded"
-                  disabled={loading}
-                >
-                  {loading ? "Saving..." : "Save"}
+        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-md w-full max-w-md transform transition-all duration-300 overflow-hidden">
+            {/* Header */}
+            <div className="bg-black text-white p-4 relative">
+              <button onClick={() => setActiveSection(null)} className="absolute right-4 top-4 p-2 hover:bg-gray-800 rounded-full transition-colors">
+                <X size={20} />
+              </button>
+              <h2 className="text-xl font-bold flex items-center gap-2">
+                <User size={22} />
+                Edit Profile
+              </h2>
+              <p className="text-gray-300 mt-1 text-sm">Update your personal information</p>
+            </div>
+
+            {/* Form */}
+            <div className="p-5 space-y-5">
+              {/* Profile Image */}
+              <div className="flex flex-col items-center">
+                <div className="relative">
+                  <div className="w-28 h-28 bg-gray-100 rounded-full flex items-center justify-center border-4 border-gray-200 overflow-hidden">
+                    {editProfile.image ? (
+                      <img src={editProfile.image} alt="Profile" className="w-full h-full object-cover" />
+                    ) : (
+                      <User size={28} className="text-gray-400" />
+                    )}
+                  </div>
+                  <label className="absolute -bottom-2 -right-2 bg-black text-white p-2 rounded-full cursor-pointer hover:bg-gray-800 transition-colors shadow-lg">
+                    <Camera size={16} />
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageChange}
+                      className="hidden"
+                    />
+                  </label>
+                </div>
+              </div>
+
+              {/* Name Input */}
+              <div className="space-y-1">
+                <label className="flex items-center gap-1 text-sm font-medium text-gray-700">
+                  <User size={14} />
+                  Full Name
+                </label>
+                <input
+                  type="text"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 focus:outline-none focus:ring-2 focus:ring-black"
+                  value={editProfile.name}
+                  onChange={e => setEditProfile({ ...editProfile, name: e.target.value })}
+                  placeholder="Enter your name"
+                  required
+                />
+              </div>
+
+              {/* Email Input */}
+              <div className="space-y-1">
+                <label className="flex items-center gap-1 text-sm font-medium text-gray-700">
+                  <Mail size={14} />
+                  Email
+                </label>
+                <input
+                  type="email"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 focus:outline-none focus:ring-2 focus:ring-black"
+                  value={editProfile.email}
+                  onChange={e => setEditProfile({ ...editProfile, email: e.target.value })}
+                  placeholder="Enter your email"
+                  required
+                />
+              </div>
+
+              {/* Buttons */}
+              <div className="flex gap-3 pt-2">
+                <button type="submit" disabled={loading} className="flex-1 bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800 transition disabled:opacity-50 flex items-center justify-center gap-2 text-sm font-medium">
+                  {loading ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      Saving...
+                    </>
+                  ) : (
+                    <>
+                      <Save size={16} />
+                      Save
+                    </>
+                  )}
                 </button>
-                <button
-                  type="button"
-                  className="px-4 py-2 rounded border"
-                  onClick={() => setActiveSection(null)}
-                >
+                <button type="button" onClick={() => setActiveSection(null)} className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-100 text-sm font-medium">
                   Cancel
                 </button>
               </div>
-            </form>
+            </div>
+
+            {/* Footer */}
+            <div className="bg-gray-50 px-4 py-3 text-center">
+              <p className="text-xs text-gray-400">
+                Your data is safe and secure with us.
+              </p>
+            </div>
           </div>
         </div>
       )}
+
 
       {activeSection === "Delivery Address" && (
         <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
