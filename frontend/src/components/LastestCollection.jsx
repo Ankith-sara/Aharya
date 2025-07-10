@@ -45,11 +45,8 @@ function LatestCollection() {
         <div className="flex flex-col mb-10 items-center text-center gap-2">
           <div>
             <Title text1="LATEST" text2="COLLECTION" />
-            <p className="mt-[-5px] max-w-xl text-gray-600 text-sm md:text-base">
-              Discover our newest arrivals, thoughtfully crafted to elevate your everyday.
-            </p>
           </div>
-          <NavLink to="/shop/collection" className="mt-4 md:mt-0 group flex items-center text-sm font-medium hover:text-gray-700 transition-colors">
+          <NavLink to="/shop/collection" className="mt-4 md:mt-0 group flex items-center text-xs font-medium hover:text-gray-700 transition-colors">
             View all collections
             <ChevronRight size={16} className="ml-1 transition-transform group-hover:translate-x-1" />
           </NavLink>

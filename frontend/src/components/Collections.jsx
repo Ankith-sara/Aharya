@@ -37,11 +37,12 @@ const Collections = () => {
   return (
     <section className="bg-white py-10 px-4 sm:px-6 md:px-10 lg:px-20">
       <div className="max-w-7xl mx-auto">
+<<<<<<< HEAD:src/components/Collections.jsx
+        <div className="text-center mb-10">
+=======
         <div className="text-center mb-12">
+>>>>>>> b8c6ad68b28994f3916b4764c2a2c123c6a79f28:frontend/src/components/Collections.jsx
           <Title text1="EXPLORE THE" text2="COLLECTIONS" />
-          <p className="mt-[-5px] max-w-2xl mx-auto text-gray-600 text-sm md:text-base">
-            Thoughtfully designed pieces that celebrate craftsmanship and individuality.
-          </p>
         </div>
 
         {/* Featured collections grid */}

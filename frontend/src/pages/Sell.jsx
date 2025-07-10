@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { assets } from '../assets/frontend_assets/assets';
 import { ArrowRight, TrendingUp, Package, Truck, CreditCard } from 'lucide-react';
 
