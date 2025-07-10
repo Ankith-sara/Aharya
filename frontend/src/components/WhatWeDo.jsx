@@ -9,15 +9,9 @@ function WhatWeDo() {
     const [videosPerPage, setVideosPerPage] = useState(3);
 
     const videos = [
-<<<<<<< HEAD:src/components/WhatWeDo.jsx
         { video: "https://res.cloudinary.com/dfzhqsfp7/video/upload/v1751704393/IMG_2973_f9oiwa.mov", image: "https://res.cloudinary.com/dfzhqsfp7/image/upload/v1752148793/IMG_2973_exported_1350_nwvpgm.jpg" },
         { video: "https://res.cloudinary.com/dfzhqsfp7/video/upload/v1751704388/IMG_2975_gjpdz9.mov", image: "https://res.cloudinary.com/dfzhqsfp7/image/upload/v1752148793/IMG_2975_exported_0_hojskt.jpg" },
         { video: "https://res.cloudinary.com/dfzhqsfp7/video/upload/v1751704385/IMG_2974_nje89b.mov", image: "https://res.cloudinary.com/dfzhqsfp7/image/upload/v1752148793/IMG_2974_exported_1600_lfcasj.jpg" },
-=======
-        { video: "https://res.cloudinary.com/dfzhqsfp7/video/upload/v1751704393/IMG_2973_f9oiwa.mov", image: "https://okhai.org/cdn/shop/files/abcd_99d512d1-7752-4dca-bd6c-e71e0d98139c.jpg?v=1717139293" },
-        { video: "https://res.cloudinary.com/dfzhqsfp7/video/upload/v1751704388/IMG_2975_gjpdz9.mov", image: "https://okhai.org/cdn/shop/files/Website_video_cover_9.jpg?v=1717074392" },
-        { video: "https://res.cloudinary.com/dfzhqsfp7/video/upload/v1751704385/IMG_2974_nje89b.mov", image: "https://okhai.org/cdn/shop/files/11_fb19558a-2cbc-43a6-9ece-5a8167327e41.jpg?v=1717074505" },
->>>>>>> b8c6ad68b28994f3916b4764c2a2c123c6a79f28:frontend/src/components/WhatWeDo.jsx
         { video: "https://cdn.shopify.com/videos/c/o/v/5b5ac6ebace54f98b6b182bf010a0d8e.mp4", image: "https://okhai.org/cdn/shop/files/6_30d3ac88-1ebc-4266-b286-09e49e8657ca.jpg?v=1717074927" },
         { video: "https://cdn.shopify.com/videos/c/o/v/815f45ef2a194964915d7cbf3c0fd917.mp4", image: "https://okhai.org/cdn/shop/files/4_4c3d5560-9929-4aa3-98ea-7308400648d3.jpg?v=1717074607" },
         { video: "https://cdn.shopify.com/videos/c/o/v/96b5ebb5133d4d2e8e9234c29028da5a.mp4", image: "https://okhai.org/cdn/shop/files/9_b65e0850-ad23-4ddd-9134-1c6e4978ad3a.jpg?v=1717074727" },

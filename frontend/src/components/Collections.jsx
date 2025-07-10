@@ -12,23 +12,23 @@ const Collections = () => {
   };
 
   const categories = [
-    { 
-      name: 'Kurtis', 
+    {
+      name: 'Kurtis',
       imageUrl: 'https://res.cloudinary.com/dfzhqsfp7/image/upload/v1734960230/xwz3navthgy7tlzkiqma.webp',
       description: 'Elegant, handcrafted designs'
     },
-    { 
-      name: 'Tops', 
+    {
+      name: 'Tops',
       imageUrl: 'https://res.cloudinary.com/dfzhqsfp7/image/upload/v1734961885/xmrbsna2rywkv2j801ky.webp',
       description: 'Chic silhouettes for everyday'
     },
-    { 
-      name: 'Wall Decor', 
+    {
+      name: 'Wall Decor',
       imageUrl: 'https://okhai.org/cdn/shop/files/7_e28f8fae-bd02-4f11-9917-a8fc4a4fd462.jpg?v=1716982545',
       description: 'Artful pieces for your space'
     },
-    { 
-      name: 'Bags', 
+    {
+      name: 'Bags',
       imageUrl: 'https://res.cloudinary.com/dfzhqsfp7/image/upload/v1744127544/igwttafu4fgj6pwb54yw.webp',
       description: 'Handcrafted with care'
     },
@@ -36,12 +36,8 @@ const Collections = () => {
 
   return (
     <section className="bg-white py-10 px-4 sm:px-6 md:px-10 lg:px-20">
-      <div className="max-w-7xl mx-auto">
-<<<<<<< HEAD:src/components/Collections.jsx
-        <div className="text-center mb-10">
-=======
+      <div className="max-w-6xl mx-auto">
         <div className="text-center mb-12">
->>>>>>> b8c6ad68b28994f3916b4764c2a2c123c6a79f28:frontend/src/components/Collections.jsx
           <Title text1="EXPLORE THE" text2="COLLECTIONS" />
         </div>
 
