@@ -23,42 +23,52 @@ const PlaceOrder = () => {
     phone: '',
   });
 
+  function loadRazorpayScript(src) {
+    return new Promise((resolve) => {
+      const script = document.createElement('script');
+      script.src = src;
+      script.onload = () => resolve(true);
+      script.onerror = () => resolve(false);
+      document.body.appendChild(script);
+    });
+  }
+
   useEffect(() => {
-  const fetchUser = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      if (!token) return;
+    const fetchUser = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) return;
 
-      const decoded = jwtDecode(token);
-      const userId = decoded.id;
+        const decoded = jwtDecode(token);
+        const userId = decoded.id;
 
-      const res = await axios.get(`${backendUrl}/api/user/profile/${userId}`, {
-        headers: { token }
-      });
+        const res = await axios.get(`${backendUrl}/api/user/profile/${userId}`, {
+          headers: { token }
+        });
 
-      if (res.data.success) {
-        const user = res.data.user;
+        if (res.data.success) {
+          const user = res.data.user;
 
-        // Autofill the form
-        setFormData(prev => ({
-          ...prev,
-          Name: user.name || '',
-          email: user.email || '',
-          street: user.addresses?.[0]?.address || '',
-          city: user.addresses?.[0]?.city || '',
-          state: user.addresses?.[0]?.state || '',
-          pincode: user.addresses?.[0]?.zip || '',
-          country: user.addresses?.[0]?.country || '',
-          phone: user.addresses?.[0]?.phone || ''
-        }));
+          // Autofill the form
+          setFormData(prev => ({
+            ...prev,
+            Name: user.name || '',
+            email: user.email || '',
+            street: user.addresses?.[0]?.address || '',
+            city: user.addresses?.[0]?.city || '',
+            state: user.addresses?.[0]?.state || '',
+            pincode: user.addresses?.[0]?.zip || '',
+            country: user.addresses?.[0]?.country || '',
+            phone: user.addresses?.[0]?.phone || ''
+          }));
+        }
+      } catch (error) {
+        console.error('Error fetching user:', error);
       }
-    } catch (error) {
-      console.error('Error fetching user:', error);
-    }
-  };
+    };
 
-  fetchUser();
-}, []);
+    fetchUser();
+  }, []);
 
   // Handles input changes
   const onChangeHandler = (event) => {
@@ -66,39 +76,54 @@ const PlaceOrder = () => {
     setFormData((data) => ({ ...data, [name]: value }));
   };
 
-  const initPay = (order) => {
+  const initPay = async (order, userId, orderItems, totalAmount) => {
+    await loadRazorpayScript("https://checkout.razorpay.com/v1/checkout.js");
+
     const options = {
       key: import.meta.env.VITE_RAZORPAY_KEY_ID,
       amount: order.amount,
       currency: order.currency,
-      name: 'Order Payment',
+      name: 'Aharyas',
       description: 'Payment for order',
       order_id: order.id,
-      receipt: order.receipt,
       handler: async (response) => {
-        console.log(response);
         try {
-          const { data } = await axios.post(`${backendUrl}/api/order/verifyRazorpay`, response, { headers: { token } });
-          if (data.success) {
+          const verifyRes = await axios.post(`${backendUrl}/api/order/verifyRazorpay`, {
+            ...response,
+            userId,
+            items: orderItems,
+            amount: totalAmount,
+            address: formData
+          }, { headers: { token } });
+
+          if (verifyRes.data.success) {
             setCartItems({});
             navigate('/orders');
+          } else {
+            toast.error(verifyRes.data.message);
           }
-        } catch (error) {
-          console.log(error);
-          toast.error(error.message);
+        } catch {
+          console.error('Error verifying Razorpay payment:', err);
+          toast.error('Payment verification failed.');
         }
+      },
+      prefill: {
+        name: formData.Name,
+        email: formData.email,
+        contact: formData.phone
       }
-    }
+    };
+
     const rzp = new window.Razorpay(options);
     rzp.open();
-  }
+  };
 
-  // Handles form submission
   const onSubmitHandler = async (event) => {
     event.preventDefault();
 
+    const decoded = jwtDecode(token);
+
     try {
-      // Prepare order items
       let orderItems = [];
       for (const items in cartItems) {
         for (const item in cartItems[items]) {
@@ -114,6 +139,7 @@ const PlaceOrder = () => {
       }
 
       let orderData = {
+        userId: decoded.id,
         address: formData,
         items: orderItems,
         amount: getCartAmount() + delivery_fee,
@@ -143,7 +169,9 @@ const PlaceOrder = () => {
         case 'razorpay':
           const responseRazorpay = await axios.post(`${backendUrl}/api/order/razorpay`, orderData, { headers: { token } });
           if (responseRazorpay.data.success) {
-            initPay(responseRazorpay.data.order);
+            initPay(responseRazorpay.data.order, decoded.id, orderItems, orderData.amount);
+          } else {
+            toast.error(responseRazorpay.data.message);
           }
           break;
       }
@@ -167,10 +195,10 @@ const PlaceOrder = () => {
               <h3 className="font-medium text-lg">Delivery Information</h3>
             </div>
             <div className="p-6 space-y-6">
-                <div className="space-y-2">
-                  <label className="block text-xs uppercase tracking-wider text-gray-900 font-medium">Name</label>
-                  <input onChange={onChangeHandler} name="Name" value={formData.Name} className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black" type="text" placeholder="Enter your name" required />
-                </div>
+              <div className="space-y-2">
+                <label className="block text-xs uppercase tracking-wider text-gray-900 font-medium">Name</label>
+                <input onChange={onChangeHandler} name="Name" value={formData.Name} className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black" type="text" placeholder="Enter your name" required />
+              </div>
               <div className="space-y-2">
                 <label className="block text-xs uppercase tracking-wider text-gray-900 font-medium">Email Address</label>
                 <input onChange={onChangeHandler} name="email" value={formData.email} className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black" type="email" placeholder="Enter your email address" required />

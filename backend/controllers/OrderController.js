@@ -1,12 +1,20 @@
 import orderModel from "../models/OrderModel.js";
 import userModel from "../models/UserModel.js";
 import Stripe from 'stripe'
+import Razorpay from 'razorpay';
+import crypto from 'crypto';
+import dotenv from 'dotenv';
+dotenv.config();
 
 const currency = 'inr'
 const deliveryCharge = 50
 
 // gateway initialize
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
+const razorpayInstance = new Razorpay({
+  key_id: 'rzp_test_uM02M9vap07NI8',
+  key_secret: 'NoJ69YK2pyp4aEDnMwmOaqFr',
+});
 
 // Placeing orders using COD Method
 const placeOrder = async (req, res) => {
@@ -108,55 +116,73 @@ const verifyStripe = async (req, res) => {
 // Placeing orders using Razorpay Method
 const placeOrderRazorpay = async (req, res) => {
   try {
-    const { userId, items, amount, address } = req.body;
+    const { amount } = req.body;
 
+    if (!amount) {
+      return res.status(400).json({ success: false, message: "Amount required" });
+    }
+
+    const options = {
+      amount: amount * 100, // in paise
+      currency: "INR",
+      receipt: `receipt_order_${Date.now()}`,
+    };
+
+    const order = await razorpayInstance.orders.create(options);
+
+    res.json({ success: true, order });
+
+  } catch (error) {
+    console.error("Razorpay order error:", error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+const verifyRazorpay = async (req, res) => {
+  try {
+    const {
+      userId,
+      razorpay_order_id,
+      razorpay_payment_id,
+      razorpay_signature,
+      items,
+      amount,
+      address,
+    } = req.body;
+
+    // Signature verification
+    const expectedSignature = crypto
+      .createHmac('sha256', process.env.RAZORPAY_SECRET_KEY)
+      .update(`${razorpay_order_id}|${razorpay_payment_id}`)
+      .digest('hex');
+
+    if (expectedSignature !== razorpay_signature) {
+      return res.status(400).json({ success: false, message: "Invalid payment signature" });
+    }
+
+    // Save verified order
     const orderData = {
       userId,
       items,
       amount,
       address,
-      paymentMethod: "Stripe",
-      payment: false,
-      date: Date.now()
+      paymentMethod: "Razorpay",
+      payment: true,
+      date: Date.now(),
     };
 
     const newOrder = new orderModel(orderData);
     await newOrder.save();
 
-    const options = {
-      amount: amount * 100,
-      currency: currency.toUpperCase(),
-      receipt: newOrder._id.toString(),
-    }
-    await razorpayInstance.orders.create(options, (error, order) => {
-      if (error) {
-        console.log(error)
-        return res.json({ success: false, message: error.message })
-      }
-      res.json({ success: true, order })
-    })
-  } catch (error) {
-    console.error("Error placing Razorpay order:", error.message);
-    res.status(500).json({ success: false, message: "Failed to create order. Please try again." });
-  }
-}
+    await userModel.findByIdAndUpdate(userId, { cartData: {} });
 
-const verifyRazorpay = async (req, res) => {
-  try {
-    const { userId, razorpay_order_id } = req.body
-    const orderInfo = await razorpayInstance.orders.fetch(razorpay_order_id)
-    if (orderInfo.status === 'paid') {
-      await orderModel.findByIdAndUpdate(orderInfo.receipt, { payment: true })
-      await userModel.findByIdAndUpdate(userId, { cartData: {} })
-      res.json({ success: true, message: "Payment successful" })
-    } else {
-      res.json({ success: false, message: "Payment failed" })
-    }
+    res.json({ success: true, message: "Payment verified & order placed" });
+
   } catch (error) {
-    console.log(error)
-    res.json({ success: false, message: error.message })
+    console.error("Razorpay verification error:", error);
+    res.status(500).json({ success: false, message: error.message });
   }
-}
+};
 
 // All orders using COD Method
 const allOrders = async (req, res) => {
