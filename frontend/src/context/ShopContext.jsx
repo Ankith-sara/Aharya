@@ -128,7 +128,7 @@ const ShopContextProvider = (props) => {
             }
         } catch (error) {
             console.log(error)
-            toast.error(error.message)
+            toast.error("token expired, Login Again")
         }
     }
 
@@ -167,7 +167,7 @@ const ShopContextProvider = (props) => {
             console.error('Failed to parse recently viewed products:', error);
             return [];
         }
-    };    
+    };
 
     useEffect(() => {
         const storedSubCategory = localStorage.getItem("selectedSubCategory");
@@ -196,7 +196,7 @@ const ShopContextProvider = (props) => {
         cartItems, addToCart, setCartItems, getCartCount, updateQuantity, getCartAmount,
         navigate, backendUrl, setToken, token, selectedSubCategory, setSelectedSubCategory,
         addProductToRecentlyViewed, getRecentlyViewed
-    };    
+    };
 
     return (
         <ShopContext.Provider value={value}>

@@ -1,103 +1,174 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
-import { backendURl } from '../App';
 import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { backendURl } from '../App';
 
 const Login = ({ setToken }) => {
-    const [isRegistering, setIsRegistering] = useState(false);
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+  const [isRegistering, setIsRegistering] = useState(false);
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [otpSent, setOtpSent] = useState(false);
+  const [otp, setOtp] = useState('');
+  const [otpTimer, setOtpTimer] = useState(0);
+  const [otpDigits, setOtpDigits] = useState(Array(6).fill(''));
+  const otpRefs = useRef([]);
 
-    const onSubmitHandler = async (e) => {
-        e.preventDefault();
-        try {
-            const endpoint = isRegistering ? '/api/user/admin-register' : '/api/user/admin';
-            const payload = isRegistering ? { name, email, password } : { email, password };
+  // OTP handlers
+  const handleOtpChange = (index, value) => {
+    if (!/^\d?$/.test(value)) return;
+    const updated = [...otpDigits];
+    updated[index] = value;
+    setOtpDigits(updated);
+    setOtp(updated.join(''));
+    if (value && index < 5) otpRefs.current[index + 1]?.focus();
+  };
 
-            const response = await axios.post(`${backendURl}${endpoint}`, payload);
+  const handleSendOtp = async () => {
+    if (!email) return toast.error('Please enter a valid email');
+    try {
+      const res = await axios.post(`${backendURl}/api/user/send-otp`, { email });
+      if (res.data.success) {
+        setOtpSent(true);
+        setOtpTimer(60);
+        toast.success('OTP sent to your email');
+      } else toast.error(res.data.message);
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Failed to send OTP');
+    }
+  };
 
-            if (response.data.success) {
-                toast.success(response.data.message || 'Success');
-                setToken(response.data.token);
-            } else {
-                toast.error(response.data.message);
-            }
-        } catch (error) {
-            console.error(error);
-            toast.error(
-                error.response?.data?.message || 'Something went wrong. Please try again.'
-            );
-        }
-    };
+  const handleVerifyOtp = async (e) => {
+    e.preventDefault();
+    if (!otp || otp.length < 6) return toast.error('Enter the complete 6-digit OTP');
+    try {
+      const res = await axios.post(`${backendURl}/api/user/verify-otp`, {
+        name,
+        email,
+        password,
+        otp,
+        role: 'admin'
+      });
+      if (res.data.success) {
+        setToken(res.data.token);
+        localStorage.setItem('token', res.data.token);
+      } else {
+        toast.error(res.data.message || 'Invalid OTP');
+      }
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Error verifying OTP');
+    }
+  };
 
-    return (
-        <div className="min-h-screen flex items-center justify-center w-full">
-            <div className="bg-white shadow-md rounded-lg px-8 py-6 max-w-md w-full">
-                <h1 className="text-2xl font-bold mb-4 text-center">
-                    Admin {isRegistering ? 'Register' : 'Login'} Panel
-                </h1>
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await axios.post(`${backendURl}/api/user/admin-login`, { email, password });
+      if (res.data.success) {
+        toast.success('Admin login successful');
+        setToken(res.data.token);
+        localStorage.setItem('token', res.data.token);
+      } else toast.error(res.data.message);
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Login error');
+    }
+  };
 
-                <form onSubmit={onSubmitHandler}>
-                    {isRegistering && (
-                        <div className="mb-3">
-                            <p className="text-sm font-medium text-gray-700 mb-2">Full Name</p>
-                            <input
-                                onChange={(e) => setName(e.target.value)}
-                                value={name}
-                                type="text"
-                                placeholder="Your name"
-                                className="rounded-md w-full px-3 py-2 border border-gray-300 outline-none"
-                                required
-                            />
-                        </div>
-                    )}
+  useEffect(() => {
+    if (otpTimer > 0) {
+      const timer = setTimeout(() => setOtpTimer(otpTimer - 1), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [otpTimer]);
 
-                    <div className="mb-3">
-                        <p className="text-sm font-medium text-gray-700 mb-2">Email address</p>
-                        <input
-                            onChange={(e) => setEmail(e.target.value)}
-                            value={email}
-                            type="email"
-                            placeholder="your@email.com"
-                            className="rounded-md w-full px-3 py-2 border border-gray-300 outline-none"
-                            required
-                        />
-                    </div>
+  return (
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="bg-white p-8 rounded-lg shadow-md max-w-md w-full">
+        <h2 className="text-2xl font-bold mb-4 text-center">Admin {isRegistering ? 'Register' : 'Login'}</h2>
+        <form onSubmit={isRegistering ? handleVerifyOtp : handleLogin}>
+          {isRegistering && (
+            <>
+              <input
+                type="text"
+                placeholder="Full Name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="w-full mb-3 px-3 py-2 border rounded"
+              />
+            </>
+          )}
 
-                    <div className="mb-4">
-                        <p className="text-sm font-medium text-gray-700 mb-2">Password</p>
-                        <input
-                            onChange={(e) => setPassword(e.target.value)}
-                            value={password}
-                            type="password"
-                            placeholder="Your password"
-                            className="rounded-md w-full px-3 py-2 border border-gray-300 outline-none"
-                            required
-                        />
-                    </div>
+          <input
+            type="email"
+            placeholder="Email Address"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full mb-3 px-3 py-2 border rounded"
+          />
 
-                    <button
-                        className="w-full py-2 px-4 rounded-md text-white bg-black font-semibold hover:opacity-90 transition"
-                        type="submit"
-                    >
-                        {isRegistering ? 'Register' : 'Login'}
-                    </button>
-                </form>
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full mb-3 px-3 py-2 border rounded"
+          />
 
-                <p className="text-sm text-gray-600 mt-4 text-center">
-                    {isRegistering ? 'Already have an account?' : "Don't have an account?"}{' '}
-                    <button
-                        className="text-indigo-600 hover:underline font-medium"
-                        onClick={() => setIsRegistering(!isRegistering)}
-                    >
-                        {isRegistering ? 'Login here' : 'Register here'}
-                    </button>
-                </p>
-            </div>
-        </div>
-    );
+          {isRegistering && !otpSent && (
+            <button
+              type="button"
+              onClick={handleSendOtp}
+              disabled={otpTimer > 0}
+              className="w-full bg-black text-white py-2 rounded hover:opacity-90 mb-3"
+            >
+              {otpTimer > 0 ? `Resend OTP in ${otpTimer}s` : 'Send OTP'}
+            </button>
+          )}
+
+          {isRegistering && otpSent && (
+            <>
+              <div className="flex justify-between gap-2 mb-3">
+                {Array(6)
+                  .fill(0)
+                  .map((_, i) => (
+                    <input
+                      key={i}
+                      maxLength="1"
+                      ref={(el) => (otpRefs.current[i] = el)}
+                      value={otpDigits[i]}
+                      onChange={(e) => handleOtpChange(i, e.target.value)}
+                      className="w-10 h-10 text-center border rounded"
+                    />
+                  ))}
+              </div>
+            </>
+          )}
+
+          <button
+            type="submit"
+            className="w-full bg-black text-white py-2 rounded hover:opacity-90"
+          >
+            {isRegistering ? 'Verify & Register' : 'Login'}
+          </button>
+        </form>
+
+        <p className="text-center mt-4 text-sm text-gray-600">
+          {isRegistering ? 'Already an admin?' : 'New admin?'}{' '}
+          <button
+            onClick={() => {
+              setIsRegistering(!isRegistering);
+              setOtpSent(false);
+              setOtp('');
+              setOtpDigits(Array(6).fill(''));
+            }}
+            className="text-indigo-600 hover:underline"
+          >
+            {isRegistering ? 'Login here' : 'Register here'}
+          </button>
+        </p>
+      </div>
+    </div>
+  );
 };
 
 export default Login;

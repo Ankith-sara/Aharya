@@ -4,6 +4,7 @@ import validator from 'validator';
 import { v2 as cloudinary } from 'cloudinary';
 import userModel from '../models/UserModel.js';
 import { sendOtpMail } from '../middlewares/sendOtpMail.js';
+import { sendWelcomeMail } from '../middlewares/sendWelcomeMail.js';
 
 const generateOtp = () => Math.floor(100000 + Math.random() * 900000).toString();
 
@@ -63,13 +64,29 @@ export const verifyOtp = async (req, res) => {
             const salt = await bcrypt.genSalt(10);
             user.password = await bcrypt.hash(password, salt);
         }
+        if (req.body.role) {
+            user.role = req.body.role;
+            if (req.body.role === 'admin') {
+                user.isAdmin = true;
+            }
+        }
 
         user.otp = undefined;
         user.otpExpiry = undefined;
 
         await user.save();
+        await sendWelcomeMail(email, user.name);
+
+        if (!user.role) {
+            user.role = 'user';
+        }
+
+        if (req.body.role && req.body.role === 'admin') {
+            user.role = 'admin';
+        }
 
         const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '7d' });
+
         res.json({ success: true, token });
 
     } catch (err) {
@@ -174,7 +191,6 @@ const registerAdmin = async (req, res) => {
         res.status(500).json({ success: false, message: error.message });
     }
 };
-
 
 const getUserDetails = async (req, res) => {
     try {
