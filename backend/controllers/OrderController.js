@@ -187,7 +187,10 @@ const verifyRazorpay = async (req, res) => {
 // All orders using COD Method
 const allOrders = async (req, res) => {
   try {
-    const orders = await orderModel.find({})
+    const adminId = req.user.id;
+    const adminProducts = await productModel.find({ adminId: adminId }).select('_id');
+    const adminProductIds = adminProducts.map(p => p._id);
+    const orders = await orderModel.find({ 'items.productId': { $in: adminProductIds } })
     res.json({ success: true, orders })
   } catch (error) {
     console.log(error)

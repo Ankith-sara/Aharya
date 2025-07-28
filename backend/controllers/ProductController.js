@@ -6,6 +6,8 @@ const addProduct = async (req, res) => {
     try {
         // Destructure the request body
         const { name, description, price, category, subCategory, bestseller, sizes } = req.body;
+        const adminId = req.user.id;
+
         const image1 = req.files?.image1?.[0];
         const image2 = req.files?.image2?.[0];
         const image3 = req.files?.image3?.[0];
@@ -35,6 +37,7 @@ const addProduct = async (req, res) => {
             bestseller: isBestseller,
             sizes: parsedSizes,
             images: imagesUrl,
+            adminId: adminId,
             date: Date.now(),
         };
 
@@ -53,11 +56,16 @@ const addProduct = async (req, res) => {
 const editProduct = async (req, res) => {
     try {
         const { id } = req.params;
+        const adminId = req.user.id;
         const { name, description, price, category, subCategory, bestseller, sizes } = req.body;
 
         const existingProduct = await productModel.findById(id);
         if (!existingProduct) {
             return res.status(404).json({ success: false, message: "Product not found" });
+        }
+
+        if (existingProduct.adminId.toString() !== adminId) {
+            return res.status(403).json({ success: false, message: "Forbidden: You can only edit your own products." });
         }
 
         const imageFiles = [
@@ -116,7 +124,8 @@ const editProduct = async (req, res) => {
 // Function for listing products
 const listProducts = async (req, res) => {
     try {
-        const products = await productModel.find({});
+        const adminId = req.user.id;
+        const products = await productModel.find({ adminId: adminId });
         if (products.length === 0) {
             return res.json({ success: true, message: "No products found" });
         }
@@ -127,10 +136,22 @@ const listProducts = async (req, res) => {
     }
 };
 
+// List all products for customer view
+const listAllProductsPublic = async (req, res) => {
+    try {
+        const products = await productModel.find({});
+        res.json({ success: true, products });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+}
+
 // Function for removing a product
 const removeProduct = async (req, res) => {
     try {
         const { id } = req.params;
+        const adminId = req.user.id;
+        
         if (!id) {
             return res.status(400).json({ success: false, message: "Product ID is required" });
         }
@@ -163,4 +184,4 @@ const singleProduct = async (req, res) => {
     }
 };
 
-export { listProducts, addProduct, editProduct, removeProduct, singleProduct };
+export { listProducts, addProduct, editProduct, listAllProductsPublic, removeProduct, singleProduct };

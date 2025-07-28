@@ -10,6 +10,11 @@ const productSchema = new mongoose.Schema({
     sizes: { type: Array, required: true },
     bestseller: { type: Boolean },
     date: { type: Number, required: true },
+    adminId: { 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'users',
+        required: true 
+    }
 })
 
 const productModel = mongoose.models.product || mongoose.model('product', productSchema)
