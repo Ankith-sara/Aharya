@@ -19,6 +19,9 @@ const BrandCategories = () => {
           <div className="absolute inset-0 bg-black bg-opacity-30 flex flex-col items-center justify-center text-white transition-opacity duration-500 group-hover:bg-opacity-50 px-4 text-center">
             <h2 className="text-4xl sm:text-5xl md:text-6xl font-light tracking-wider mb-4">AHARYAS</h2>
             <h3 className="text-2xl sm:text-3xl md:text-4xl font-light tracking-wide mb-6">LUXURY</h3>
+            <p className="text-sm sm:text-base md:text-lg max-w-md mb-6">
+              Experience a curated selection of handcrafted clothing, décor, and accessories from India’s finest artisans. Perfect for those seeking timeless elegance and exceptional craftsmanship.
+            </p>
             <div className="overflow-hidden">
               <div className="transform translate-y-full group-hover:translate-y-0 transition-transform duration-500">
                 <button onClick={() => navigate('shop/special')} className="px-6 py-3 bg-white text-black font-semibold hover:bg-gray-200 transition-colors">
@@ -39,6 +42,9 @@ const BrandCategories = () => {
           <div className="absolute inset-0 bg-black bg-opacity-30 flex flex-col items-center justify-center text-white transition-opacity duration-500 group-hover:bg-opacity-50 px-4 text-center">
             <h2 className="text-4xl sm:text-5xl md:text-6xl font-light tracking-wider mb-4">AHARYAS</h2>
             <h3 className="text-2xl sm:text-3xl md:text-4xl font-light tracking-wide mb-6">ECONOMY</h3>
+            <p className="text-sm sm:text-base md:text-lg max-w-md mb-6">
+              Discover affordable, handcrafted clothing, toys, and décor made by Indian artisans. Everyday elegance meets sustainable craftsmanship for modern living.
+            </p>
             <div className="overflow-hidden">
               <div className="transform translate-y-full group-hover:translate-y-0 transition-transform duration-500">
                 <button onClick={() => navigate('shop/collection')} className="px-6 py-3 bg-white text-black font-semibold hover:bg-gray-200 transition-colors">

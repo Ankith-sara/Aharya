@@ -39,6 +39,9 @@ const Collections = () => {
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-12">
           <Title text1="EXPLORE THE" text2="COLLECTIONS" />
+          <p className="text-gray-600 text-sm md:text-base">
+            Discover Aharyas curated collections — Each piece is made with care by Indian artisans, blending timeless tradition with modern style for your everyday life.
+          </p>
         </div>
 
         {/* Featured collections grid */}
