@@ -1,55 +1,184 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { backendURl, currency } from '../App';
+import { backendUrl, currency } from '../App';
 import { toast } from 'react-toastify';
-import { assets } from '../assets/assets';
+import { 
+  Package, 
+  Edit3, 
+  Trash2, 
+  Search, 
+  Filter, 
+  Star, 
+  Image as ImageIcon, 
+  Upload, 
+  X, 
+  Save,
+  AlertCircle,
+  CheckCircle2,
+  IndianRupee,
+  Grid,
+  List as ListIcon,
+  Tag,
+  DollarSign
+} from 'lucide-react';
 
-const ImageUpload = ({ id, image, currentImage, setImage }) => (
-  <label htmlFor={id} className="w-24 h-24 border border-gray-300 flex items-center justify-center rounded-md cursor-pointer overflow-hidden">
-    {image ? (
-      <img src={URL.createObjectURL(image)} alt={`Upload ${id}`} className="object-cover w-full h-full" />
-    ) : currentImage ? (
-      <img src={currentImage} alt={`Current ${id}`} className="object-cover w-full h-full" />
-    ) : (
-      <img src={assets.upload_area} alt="Upload area" className="object-contain w-full h-full" />
+const ImageUpload = ({ id, image, currentImage, setImage, index, onRemove }) => (
+  <div className="relative group">
+    <label
+      htmlFor={id}
+      className="w-20 h-20 border-2 border-dashed border-gray-300 hover:border-indigo-400 flex items-center justify-center rounded-xl cursor-pointer overflow-hidden transition-all duration-200 hover:shadow-md bg-gray-50 hover:bg-gray-100"
+    >
+      {image ? (
+        <>
+          <img src={URL.createObjectURL(image)} alt={`Upload ${id}`} className="object-cover w-full h-full rounded-xl" />
+          <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-200 flex items-center justify-center rounded-xl">
+            <ImageIcon className="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200" size={16} />
+          </div>
+        </>
+      ) : currentImage ? (
+        <>
+          <img src={currentImage} alt={`Current ${id}`} className="object-cover w-full h-full rounded-xl" />
+          <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-200 flex items-center justify-center rounded-xl">
+            <ImageIcon className="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200" size={16} />
+          </div>
+        </>
+      ) : (
+        <div className="flex flex-col items-center justify-center text-gray-400">
+          <Upload size={16} className="mb-1" />
+          <span className="text-xs font-medium">Add</span>
+        </div>
+      )}
+    </label>
+    {(image || currentImage) && (
+      <button
+        type="button"
+        onClick={() => onRemove(index)}
+        className="absolute -top-2 -right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-all duration-200 shadow-lg"
+      >
+        <Trash2 size={10} />
+      </button>
     )}
-    <input type="file" id={id} hidden onChange={(e) => setImage(e.target.files[0])} accept="image/*" />
-  </label>
+    <input
+      type="file"
+      id={id}
+      hidden
+      onChange={(e) => setImage(e.target.files[0])}
+      accept="image/*"
+    />
+  </div>
+);
+
+const ProductCard = ({ item, index, onEdit, onRemove, currency }) => (
+  <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-200">
+    <div className="relative">
+      <img 
+        src={item.images?.[0] || 'default-image-path.jpg'} 
+        alt={item.name} 
+        className="w-full h-48 object-cover"
+      />
+      {item.bestseller && (
+        <div className="absolute top-3 left-3 bg-yellow-500 text-white px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1">
+          <Star size={12} fill="white" />
+          Bestseller
+        </div>
+      )}
+      <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm rounded-lg px-2 py-1">
+        <span className="text-xs font-medium text-gray-700">#{index + 1}</span>
+      </div>
+    </div>
+    
+    <div className="p-4">
+      <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2">{item.name}</h3>
+      <div className="flex items-center gap-2 mb-2">
+        <Tag size={14} className="text-gray-400" />
+        <span className="text-sm text-gray-600">{item.category}</span>
+        {item.subCategory && (
+          <>
+            <span className="text-gray-400">•</span>
+            <span className="text-sm text-gray-600">{item.subCategory}</span>
+          </>
+        )}
+      </div>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-1">
+          <IndianRupee size={16} className="text-green-600" />
+          <span className="font-semibold text-green-600">{item.price}</span>
+        </div>
+        <div className="flex gap-2">
+          <button
+            onClick={() => onEdit(item)}
+            className="p-2 text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+          >
+            <Edit3 size={16} />
+          </button>
+          <button
+            onClick={() => {
+              if (window.confirm(`Are you sure you want to delete "${item.name}"?`)) {
+                onRemove(item._id);
+              }
+            }}
+            className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+          >
+            <Trash2 size={16} />
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 );
 
 const List = ({ token }) => {
   const [list, setList] = useState([]);
+  const [filteredList, setFilteredList] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editedProduct, setEditedProduct] = useState(null);
   const [images, setImages] = useState([null, null, null, null, null, null]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'list'
 
-  const menSubCategories = ["", "Shirts", "Half-hand Shirts", "Vests", "Trousers"];
-  const womenSubCategories = ["", "Kurtis", "Tops", "Blazers", "Dresses"];
-  const homeFurnishingSubCategories = ["", "Home Décor", "Handmade Toys", "Baskets", "Bags and Pouches", "Stationery"];
-  const kitchenwareSubCategories = ["", "Brass Bowls", "Wooden Spoons"];
-
-  const menSizes = ['28', '30', '32', '34', '36', '38', '40', '42', '44', '46'];
-  const womenSizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+  const categoryData = {
+    Men: {
+      subCategories: ["", "Shirts", "Half-hand Shirts", "Vests", "Trousers", "Jackets", "Men-Blazers"],
+      sizes: ['28', '30', '32', '34', '36', '38', '40', '42', '44', '46']
+    },
+    Women: {
+      subCategories: ["", "Kurtis", "Tops", "Blazers", "Dresses", "Corset-tops"],
+      sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL']
+    },
+    "Home Furnishing": {
+      subCategories: ["", "Home Décor", "Handmade Toys", "Baskets", "Bags and Pouches", "Stationery", "Wall Decor"],
+      sizes: []
+    },
+    Kitchenware: {
+      subCategories: ["", "Brass Bowls", "Wooden Spoons"],
+      sizes: []
+    },
+    "Special Product": {
+      subCategories: ["", "Bags"],
+      sizes: []
+    }
+  };
 
   const getAvailableSubCategories = (category) => {
-    switch (category) {
-      case "Men": return menSubCategories;
-      case "Women": return womenSubCategories;
-      case "Home Furnishing": return homeFurnishingSubCategories;
-      case "Kitchenware": return kitchenwareSubCategories;
-      default: return [];
-    }
+    return categoryData[category]?.subCategories || [];
+  };
+
+  const getAvailableSizes = (category) => {
+    return categoryData[category]?.sizes || [];
   };
 
   const fetchList = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(backendURl + '/api/product/list', {
+      const response = await axios.get(backendUrl + '/api/product/list', {
         headers: { token }
       });
       if (response.data.success) {
-        setList(response.data.products || []);
+        const products = response.data.products || [];
+        setList(products);
+        setFilteredList(products);
       } else {
         toast.error(`Error: ${response.data.message}`);
       }
@@ -64,7 +193,7 @@ const List = ({ token }) => {
   const removeProduct = async (id) => {
     setLoading(true);
     try {
-      const response = await axios.delete(backendURl + `/api/product/remove/${id}`, {
+      const response = await axios.delete(backendUrl + `/api/product/remove/${id}`, {
         headers: { token }
       });
       if (response.data.success) {
@@ -91,14 +220,14 @@ const List = ({ token }) => {
       formData.append('category', editedProduct.category);
       formData.append('subCategory', editedProduct.subCategory);
       formData.append('bestseller', editedProduct.bestseller);
-      formData.append('sizes', JSON.stringify(editedProduct.sizes));
+      formData.append('sizes', JSON.stringify(editedProduct.sizes || []));
 
       images.forEach((image, index) => {
         if (image) formData.append(`image${index + 1}`, image);
       });
 
       const response = await axios.put(
-        backendURl + `/api/product/edit/${editedProduct._id}`,
+        backendUrl + `/api/product/edit/${editedProduct._id}`,
         formData,
         { headers: { token } }
       );
@@ -123,128 +252,440 @@ const List = ({ token }) => {
   const toggleSize = (size) => {
     setEditedProduct(prev => ({
       ...prev,
-      sizes: prev.sizes.includes(size)
+      sizes: prev.sizes?.includes(size)
         ? prev.sizes.filter(s => s !== size)
-        : [...prev.sizes, size]
+        : [...(prev.sizes || []), size]
     }));
   };
+
+  const removeImage = (index) => {
+    setImages(prev => prev.map((img, i) => i === index ? null : img));
+  };
+
+  // Filter products based on search and category
+  useEffect(() => {
+    let filtered = list;
+
+    if (searchTerm) {
+      filtered = filtered.filter(product =>
+        product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        product.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        product.subCategory?.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    if (selectedCategory) {
+      filtered = filtered.filter(product => product.category === selectedCategory);
+    }
+
+    setFilteredList(filtered);
+  }, [list, searchTerm, selectedCategory]);
 
   useEffect(() => {
     fetchList();
   }, []);
 
   return (
-    <div className="p-4 bg-background rounded-lg shadow-md space-y-4">
-      <h1 className="text-2xl mb-4 font-semibold text-primary">Product Inventory</h1>
-      {loading ? (
-        <div className="text-center text-lg text-primary">Loading...</div>
-      ) : list.length === 0 ? (
-        <div className="text-center text-lg text-slate-500">No products available.</div>
-      ) : (
-        <div className="space-y-4">
-          <div className="hidden md:grid grid-cols-[1fr_2fr_4fr_2fr_2fr_3fr] items-center bg-secondary text-text p-2 rounded shadow-sm">
-            <p className="font-semibold">Sl.no</p>
-            <p className="font-semibold">Image</p>
-            <p className="font-semibold">Name</p>
-            <p className="font-semibold">Category</p>
-            <p className="font-semibold">Price</p>
-            <p className="text-center font-semibold">Actions</p>
-          </div>
-          {list.map((item) => (
-            <div key={item._id} className="grid grid-cols-[1fr_2fr_4fr_2fr_2fr_3fr] items-center gap-2 bg-white p-2 rounded shadow-sm">
-              <p>{list.indexOf(item) + 1}</p>
-              <img className="w-16 h-full object-cover rounded" src={item.images?.[0] || 'default-image-path.jpg'} alt={item.name} />
-              <p className="truncate">{item.name}</p>
-              <p className="truncate">{item.category}</p>
-              <p className="text-primary font-semibold">{currency} {item.price}</p>
-              <div className="flex space-x-2 justify-center">
-                <button
-                  className="px-4 py-2 bg-secondary text-text rounded-md hover:bg-background hover:text-primary"
-                  onClick={() => {
-                    if (window.confirm(`Are you sure to delete "${item.name}"?`)) {
-                      removeProduct(item._id);
-                    }
-                  }}> Remove </button>
-                <button className="px-4 py-2 bg-text text-primary rounded-md hover:bg-background hover:text-secondary" onClick={() => { setEditedProduct(item); setIsEditing(true); }}> Edit </button>
+    <div className="min-h-screen bg-background py-8">
+      <div className="max-w-7xl mx-auto px-4">
+        {/* Header */}
+        <div className="bg-text rounded-2xl shadow-sm border border-secondary mb-8 p-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center">
+                <Package className="text-indigo-600" size={24} />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900">Product Inventory</h1>
+                <p className="text-gray-600 mt-1">Manage your product catalog and inventory</p>
               </div>
             </div>
-          ))}
+            <div className="text-right">
+              <div className="text-2xl font-bold text-indigo-600">{filteredList.length}</div>
+              <div className="text-sm text-gray-600">Total Products</div>
+            </div>
+          </div>
         </div>
-      )}
 
-      {/* Edit Product Modal */}
-      {isEditing && editedProduct && (
-        <div className="fixed inset-0 flex items-center justify-center bg-primary bg-opacity-50">
-          <div className="bg-text rounded-lg p-6 shadow-lg w-full max-w-4xl mx-4 max-h-[90vh] overflow-y-auto">
-            <h2 className="text-2xl text-primary font-semibold mb-4">Edit Product</h2>
+        {/* Search and Filters */}
+        <div className="bg-text rounded-2xl shadow-sm border border-secondary mb-8 p-6">
+          <div className="flex flex-col lg:flex-row gap-4">
+            {/* Search */}
+            <div className="flex-1">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+                <input
+                  type="text"
+                  placeholder="Search products..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-secondary focus:border-secondary transition-colors"
+                />
+              </div>
+            </div>
 
-            <div className="space-y-6">
-              <div>
-                <p className="mb-2 text-primary font-medium">Product Images</p>
-                <div className="flex gap-4 flex-wrap">
-                  {Array(6).fill(null).map((_, index) => (
-                    <ImageUpload key={index} id={`edit-image-${index}`} image={images[index]} currentImage={editedProduct.images[index]} setImage={(img) => setImages(prev => prev.map((val, i) => i === index ? img : val))} />
+            {/* Category Filter */}
+            <div className="lg:w-64">
+              <div className="relative">
+                <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+                <select
+                  value={selectedCategory}
+                  onChange={(e) => setSelectedCategory(e.target.value)}
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-secondary focus:border-secondary transition-colors"
+                >
+                  <option value="">All Categories</option>
+                  {Object.keys(categoryData).map(category => (
+                    <option key={category} value={category}>{category}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            {/* View Mode Toggle */}
+            <div className="flex bg-gray-100 rounded-xl p-1">
+              <button
+                onClick={() => setViewMode('grid')}
+                className={`p-2 rounded-lg transition-colors ${viewMode === 'grid' ? 'bg-white shadow-sm' : 'hover:bg-gray-200'}`}
+              >
+                <Grid size={20} className={viewMode === 'grid' ? 'text-indigo-600' : 'text-gray-600'} />
+              </button>
+              <button
+                onClick={() => setViewMode('list')}
+                className={`p-2 rounded-lg transition-colors ${viewMode === 'list' ? 'bg-white shadow-sm' : 'hover:bg-gray-200'}`}
+              >
+                <ListIcon size={20} className={viewMode === 'list' ? 'text-indigo-600' : 'text-gray-600'} />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Products List */}
+        <div className="bg-text rounded-2xl shadow-sm border border-secondary p-6">
+          {loading ? (
+            <div className="flex items-center justify-center py-12">
+              <div className="flex items-center gap-3">
+                <div className="w-6 h-6 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+                <span className="text-lg text-gray-600">Loading products...</span>
+              </div>
+            </div>
+          ) : filteredList.length === 0 ? (
+            <div className="text-center py-12">
+              <Package className="mx-auto text-gray-400 mb-4" size={48} />
+              <h3 className="text-lg font-medium text-gray-900 mb-2">No products found</h3>
+              <p className="text-gray-600">
+                {list.length === 0 ? "Start by adding your first product" : "Try adjusting your search or filters"}
+              </p>
+            </div>
+          ) : (
+            <>
+              {viewMode === 'grid' ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                  {filteredList.map((item, index) => (
+                    <ProductCard
+                      key={item._id}
+                      item={item}
+                      index={index}
+                      onEdit={(product) => {
+                        setEditedProduct(product);
+                        setIsEditing(true);
+                      }}
+                      onRemove={removeProduct}
+                      currency={currency}
+                    />
                   ))}
                 </div>
+              ) : (
+                <div className="space-y-4">
+                  {/* Table Header */}
+                  <div className="hidden md:grid grid-cols-[60px_120px_1fr_150px_120px_150px] items-center bg-gray-50 p-4 rounded-xl font-medium text-gray-700">
+                    <div>#</div>
+                    <div>Image</div>
+                    <div>Product Details</div>
+                    <div>Category</div>
+                    <div>Price</div>
+                    <div className="text-center">Actions</div>
+                  </div>
+
+                  {/* Table Rows */}
+                  {filteredList.map((item, index) => (
+                    <div key={item._id} className="grid grid-cols-[60px_120px_1fr_150px_120px_150px] items-center gap-4 p-4 bg-white border border-gray-200 rounded-xl hover:shadow-sm transition-shadow">
+                      <div className="font-medium text-gray-600">#{index + 1}</div>
+                      <div className="relative">
+                        <img 
+                          src={item.images?.[0] || 'default-image-path.jpg'} 
+                          alt={item.name} 
+                          className="w-16 h-16 object-cover rounded-xl border border-gray-200"
+                        />
+                        {item.bestseller && (
+                          <Star className="absolute -top-1 -right-1 text-yellow-500 fill-yellow-500" size={16} />
+                        )}
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-gray-900 mb-1 line-clamp-1">{item.name}</h3>
+                        <p className="text-sm text-gray-600 line-clamp-2">{item.description}</p>
+                      </div>
+                      <div>
+                        <div className="font-medium text-gray-900">{item.category}</div>
+                        {item.subCategory && (
+                          <div className="text-sm text-gray-600">{item.subCategory}</div>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-1 font-semibold text-green-600">
+                        <IndianRupee size={16} />
+                        {item.price}
+                      </div>
+                      <div className="flex justify-center gap-2">
+                        <button
+                          onClick={() => {
+                            setEditedProduct(item);
+                            setIsEditing(true);
+                          }}
+                          className="p-2 text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                        >
+                          <Edit3 size={16} />
+                        </button>
+                        <button
+                          onClick={() => {
+                            if (window.confirm(`Are you sure you want to delete "${item.name}"?`)) {
+                              removeProduct(item._id);
+                            }
+                          }}
+                          className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </>
+          )}
+        </div>
+
+        {/* Edit Product Modal */}
+        {isEditing && editedProduct && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-y-auto">
+              {/* Modal Header */}
+              <div className="flex items-center justify-between p-6 border-b border-gray-200">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-indigo-100 rounded-xl flex items-center justify-center">
+                    <Edit3 className="text-indigo-600" size={20} />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-bold text-gray-900">Edit Product</h2>
+                    <p className="text-gray-600">Update product information and images</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => {
+                    setIsEditing(false);
+                    setEditedProduct(null);
+                    setImages([null, null, null, null, null, null]);
+                  }}
+                  className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                >
+                  <X size={20} />
+                </button>
               </div>
 
-              <div className="w-full">
-                <p className="mb-2 text-primary font-medium">Product Name</p>
-                <input value={editedProduct.name} onChange={(e) => setEditedProduct(prev => ({ ...prev, name: e.target.value }))} className="w-full px-4 py-2 border border-secondary text-primary rounded-md" type="text" placeholder="Enter product name" required />
-              </div>
-              <div className="w-full">
-                <p className="mb-2 text-primary font-medium">Product Description</p>
-                <textarea value={editedProduct.description} onChange={(e) => setEditedProduct(prev => ({ ...prev, description: e.target.value }))} className="w-full px-4 py-2 border border-secondary rounded-md resize-none" rows="3" placeholder="Enter product description" required />
-              </div>
-              <div className="flex flex-wrap gap-6">
-                <div>
-                  <p className="mb-2 text-primary font-medium">Category</p>
-                  <select value={editedProduct.category} onChange={(e) => setEditedProduct(prev => ({ ...prev, category: e.target.value, subCategory: "" }))}
-                    className="px-4 py-2 border border-secondary text-primary rounded-md">
-                    <option value="Men">Men</option>
-                    <option value="Women">Women</option>
-                    <option value="Home Furnishing">Home Furnishing</option>
-                    <option value="Kitchenware">Kitchenware</option>
-                  </select>
-                </div>
-                <div>
-                  <p className="mb-2 text-primary font-medium">Sub-Category</p>
-                  <select value={editedProduct.subCategory} onChange={(e) => setEditedProduct(prev => ({ ...prev, subCategory: e.target.value }))} className="px-4 py-2 border border-secondary rounded-md" >
-                    {getAvailableSubCategories(editedProduct.category).map((subCat, index) => (
-                      <option key={index} value={subCat}>{subCat}</option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <p className="mb-2 text-primary font-medium">Price {currency}</p>
-                  <input value={editedProduct.price} onChange={(e) => setEditedProduct(prev => ({ ...prev, price: e.target.value }))} className="px-4 py-2 border border-secondary text-primary rounded-md" type="number" placeholder="Enter price" required />
-                </div>
-              </div>
-              {["Men", "Women"].includes(editedProduct.category) && (
-                <div>
-                  <p className="mb-2 text-primary font-medium">Available Sizes</p>
-                  <div className="flex flex-wrap gap-2">
-                    {(editedProduct.category === "Men" ? menSizes : womenSizes).map((size) => (
-                      <button key={size} type="button" onClick={() => toggleSize(size)} className={`px-4 py-2 rounded-md border ${editedProduct.sizes.includes(size) ? 'bg-white' : 'bg-slate-200'}`}>{size}</button>
+              <div className="p-6 space-y-8">
+                {/* Product Images */}
+                <div className="bg-gray-50 rounded-2xl p-6">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                      <ImageIcon className="text-purple-600" size={16} />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-900">Product Images</h3>
+                      <p className="text-sm text-gray-600">Upload new images to replace existing ones</p>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-3 md:grid-cols-6 gap-4">
+                    {Array(6).fill(null).map((_, index) => (
+                      <ImageUpload
+                        key={index}
+                        id={`edit-image-${index}`}
+                        image={images[index]}
+                        currentImage={editedProduct.images?.[index]}
+                        setImage={(img) => setImages(prev => prev.map((val, i) => i === index ? img : val))}
+                        index={index}
+                        onRemove={removeImage}
+                      />
                     ))}
                   </div>
                 </div>
-              )}
-              <div className="flex items-center gap-2">
-                <input type="checkbox" id="edit-bestseller" checked={editedProduct.bestseller} onChange={() => setEditedProduct(prev => ({ ...prev, bestseller: !prev.bestseller }))} />
-                <label htmlFor="edit-bestseller" className="cursor-pointer text-primary font-medium">Mark as Bestseller</label>
-              </div>
-              <div className="flex justify-end space-x-2 mt-6">
-                <button
-                  onClick={() => { setIsEditing(false); setEditedProduct(null); setImages([null, null, null, null, null, null]); }} className="px-6 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600">Cancel</button>
-                <button onClick={editProduct} disabled={loading} className="px-6 py-2 bg-black text-white rounded-md hover:bg-gray-900" >
-                  {loading ? 'Saving...' : 'Save Changes'}
-                </button>
+
+                {/* Product Information */}
+                <div className="space-y-6">
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Product Information</h3>
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                      <div className="lg:col-span-2">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Product Name *</label>
+                        <input
+                          value={editedProduct.name}
+                          onChange={(e) => setEditedProduct(prev => ({ ...prev, name: e.target.value }))}
+                          className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-secondary focus:border-secondary transition-colors"
+                          type="text"
+                          placeholder="Enter product name"
+                          required
+                        />
+                      </div>
+
+                      <div className="lg:col-span-2">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Product Description *</label>
+                        <textarea
+                          value={editedProduct.description}
+                          onChange={(e) => setEditedProduct(prev => ({ ...prev, description: e.target.value }))}
+                          className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-secondary focus:border-secondary transition-colors resize-none"
+                          rows="4"
+                          placeholder="Enter product description"
+                          required
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Category & Pricing */}
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Category & Pricing</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Category *</label>
+                        <select
+                          value={editedProduct.category}
+                          onChange={(e) => setEditedProduct(prev => ({ 
+                            ...prev, 
+                            category: e.target.value, 
+                            subCategory: "",
+                            sizes: []
+                          }))}
+                          className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-secondary focus:border-secondary transition-colors"
+                        >
+                          {Object.keys(categoryData).map(cat => (
+                            <option key={cat} value={cat}>{cat}</option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Sub-Category *</label>
+                        <select
+                          value={editedProduct.subCategory}
+                          onChange={(e) => setEditedProduct(prev => ({ ...prev, subCategory: e.target.value }))}
+                          className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-secondary focus:border-secondary transition-colors"
+                        >
+                          {getAvailableSubCategories(editedProduct.category).map((subCat, index) => (
+                            <option key={index} value={subCat}>{subCat || "Select Sub-Category"}</option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Price ({currency}) *</label>
+                        <div className="relative">
+                          <IndianRupee className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+                          <input
+                            value={editedProduct.price}
+                            onChange={(e) => setEditedProduct(prev => ({ ...prev, price: e.target.value }))}
+                            className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-secondary focus:border-secondary transition-colors"
+                            type="number"
+                            placeholder="0.00"
+                            min="0"
+                            step="0.01"
+                            required
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Sizes */}
+                  {getAvailableSizes(editedProduct.category).length > 0 && (
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-900 mb-4">Available Sizes</h3>
+                      <div className="flex flex-wrap gap-3">
+                        {getAvailableSizes(editedProduct.category).map((size) => (
+                          <button
+                            key={size}
+                            type="button"
+                            onClick={() => toggleSize(size)}
+                            className={`px-4 py-2 rounded-xl border-2 font-medium transition-all duration-200 ${
+                              editedProduct.sizes?.includes(size)
+                                ? 'bg-secondary text-white border-secondary shadow-md'
+                                : 'bg-white text-gray-700 border-gray-300 hover:border-secondary hover:bg-indigo-50'
+                            }`}
+                          >
+                            {size}
+                          </button>
+                        ))}
+                      </div>
+                      {editedProduct.sizes?.length > 0 && (
+                        <div className="mt-4 flex items-center gap-2 text-green-700 bg-green-50 p-3 rounded-lg">
+                          <CheckCircle2 size={16} />
+                          <span className="text-sm">{editedProduct.sizes.length} size{editedProduct.sizes.length !== 1 ? 's' : ''} selected</span>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Bestseller */}
+                  <div>
+                    <div className="flex items-center gap-3 p-4 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-xl border border-yellow-200">
+                      <input
+                        type="checkbox"
+                        id="edit-bestseller"
+                        checked={editedProduct.bestseller}
+                        onChange={() => setEditedProduct(prev => ({ ...prev, bestseller: !prev.bestseller }))}
+                        className="w-5 h-5 text-yellow-600 border-yellow-300 rounded focus:ring-yellow-500"
+                      />
+                      <label htmlFor="edit-bestseller" className="cursor-pointer flex items-center gap-2 text-gray-700 font-medium">
+                        <Star className="text-yellow-500" size={18} />
+                        Mark as Bestseller
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex flex-col sm:flex-row gap-4 justify-end pt-6 border-t border-gray-200">
+                  <button
+                    onClick={() => {
+                      setIsEditing(false);
+                      setEditedProduct(null);
+                      setImages([null, null, null, null, null, null]);
+                    }}
+                    className="px-6 py-3 border border-gray-300 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-colors"
+                    disabled={loading}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={editProduct}
+                    disabled={loading}
+                    className="px-8 py-3 bg-secondary text-white font-medium rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 min-w-[140px]"
+                  >
+                    {loading ? (
+                      <>
+                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                        Saving...
+                      </>
+                    ) : (
+                      <>
+                        <Save size={18} />
+                        Save Changes
+                      </>
+                    )}
+                  </button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };

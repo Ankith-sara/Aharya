@@ -1,5 +1,6 @@
 import orderModel from "../models/OrderModel.js";
 import userModel from "../models/UserModel.js";
+import productModel from "../models/ProductModal.js"
 import Stripe from 'stripe'
 import Razorpay from 'razorpay';
 import crypto from 'crypto';

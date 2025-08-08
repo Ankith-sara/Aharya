@@ -22,11 +22,13 @@ const About = () => {
       <section className="py-16 px-4 sm:px-8 md:px-10 lg:px-20">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
           <div>
-            <h2 className="text-2xl font-bold mb-6 tracking-wider uppercase text-black">Our Origin</h2>
+            <h2 className="text-2xl font-bold mb-6 tracking-wider uppercase text-black">About Us</h2>
             <div className="space-y-6 text-gray-800 text-lg leading-relaxed">
-              <p> Aharyas began during our college days. We wanted something elegant, something real, something that whispered of our roots but fit into today's world. The spark came when we read about the difficult lives of Indian artisans—especially weavers—whose skills were fading into obscurity. Behind every woven thread was a weaver fading into silence. We couldn't unsee it. </p>
-              <p> Aharyas was born not just as a label, but as a tribute to the hands that carry India's artistry. They are not workers. Today, we work with over 300+ artisan families, empowering them through fair opportunities and long-term support. They're not just artisans—they're the soul of Aharyas. They are the keepers of legacy, the soul behind every Aharyas piece. </p>
-              <p> What began as a college frustration became a movement to wear India, with pride and purpose, blending traditional craftsmanship with conscious luxury. </p>
+              <p> We, at Aharyas, are driven by the potential of handcrafted narratives. We're not creating a brand — we're creating a bridge between India's storied craft heritage and the world of mindful fashion. Aharyas was born from our profound respect for artisans and our ambitious vision to bring their work the visibility and audience it rightly deserves. </p>
+              <p> By our online platform, Aharyas unites craftsmanship, technology, and meaning. We employ AI and AR to design an immersive shopping experience to enable customers to engage with each product — to view, touch, and learn the story behind it. </p>
+              <p> Aharyas operates now under three essential categories — one that promotes genuine handmade craft from artisans, the second one that serves sustainable and affordable fashion for daily wear, and a luxury segment that is specific to high-end fashion with Indian sensibilities. These categories speak of our dedication towards quality, culture, and community. </p>
+              <p> Until now, Aharyas has on-boarded more than 300 artisans, many belonging to self-help groups, with a platform to feature their work, earn equitable income, and revive their creative identity. Each item we present at Aharyas comes with a story — of skill, determination, and heritage. </p>
+              <p> At Aharyas, we’re driven by purpose, powered by innovation, and grounded in tradition. Join us in reimagining Indian craftsmanship for the world — one artisan, one product, one story at a time. </p>
             </div>
           </div>
           <div className="relative">

@@ -1,18 +1,47 @@
 import React, { useState } from 'react';
 import { assets } from '../assets/assets';
 import axios from 'axios';
-import { backendURl, currency } from '../App';
+import { backendUrl, currency } from '../App';
 import { toast } from 'react-toastify';
+import { Upload, Package, Tag, DollarSign, Star, Image as ImageIcon, AlertCircle, CheckCircle2, Trash2, IndianRupee } from 'lucide-react';
 
-const ImageUpload = ({ id, image, setImage }) => (
-  <label htmlFor={id} className="w-24 h-24 border border-gray-300 flex items-center justify-center rounded-md cursor-pointer overflow-hidden">
-    {image ? (
-      <img src={URL.createObjectURL(image)} alt={`Upload ${id}`} className="object-cover w-full h-full" />
-    ) : (
-      <img src={assets.upload_area} alt="Upload area" className="object-contain w-full h-full" />
+const ImageUpload = ({ id, image, setImage, onRemove, index }) => (
+  <div className="relative group">
+    <label
+      htmlFor={id}
+      className="w-28 h-28 border-2 border-dashed border-gray-300 hover:border-indigo-400 flex items-center justify-center rounded-xl cursor-pointer overflow-hidden transition-all duration-200 hover:shadow-md bg-gray-50 hover:bg-gray-100"
+    >
+      {image ? (
+        <>
+          <img src={URL.createObjectURL(image)} alt={`Upload ${id}`} className="object-cover w-full h-full rounded-xl" />
+          <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-200 flex items-center justify-center rounded-xl">
+            <ImageIcon className="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200" size={20} />
+          </div>
+        </>
+      ) : (
+        <div className="flex flex-col items-center justify-center text-gray-400">
+          <Upload size={20} className="mb-1" />
+          <span className="text-xs font-medium">Add Image</span>
+        </div>
+      )}
+    </label>
+    {image && (
+      <button
+        type="button"
+        onClick={() => onRemove(index)}
+        className="absolute -top-2 -right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-all duration-200 shadow-lg"
+      >
+        <Trash2 size={12} />
+      </button>
     )}
-    <input type="file" id={id} hidden onChange={(e) => setImage(e.target.files[0])} accept="image/*" />
-  </label>
+    <input
+      type="file"
+      id={id}
+      hidden
+      onChange={(e) => setImage(e.target.files[0])}
+      accept="image/*"
+    />
+  </div>
 );
 
 const Add = ({ token }) => {
@@ -26,22 +55,42 @@ const Add = ({ token }) => {
   const [sizes, setSizes] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const menSubCategories = ["", "Shirts", "Half-hand Shirts", "Vests", "Trousers", "Jackets", "Men-Blazers"];
-  const womenSubCategories = ["", "Kurtis", "Tops", "Blazers", "Dresses", "Corset-tops"];
-  const homeFurnishingSubCategories = ["", "Home Décor", "Handmade Toys", "Baskets", "Bags and Pouches", "Stationery", "Wall Decor"];
-  const kitchenwareSubCategories = ["", "Brass Bowls", "Wooden Spoons"];
-  const specialSubCategories = ["", "Bags"];
+  const categoryData = {
+    Men: {
+      subCategories: ["", "Shirts", "Half-hand Shirts", "Vests", "Trousers", "Jackets", "Men-Blazers"],
+      sizes: ['28', '30', '32', '34', '36', '38', '40', '42', '44', '46']
+    },
+    Women: {
+      subCategories: ["", "Kurtis", "Tops", "Blazers", "Dresses", "Corset-tops"],
+      sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL']
+    },
+    "Home Furnishing": {
+      subCategories: ["", "Home Décor", "Handmade Toys", "Baskets", "Bags and Pouches", "Stationery", "Wall Decor"],
+      sizes: []
+    },
+    Kitchenware: {
+      subCategories: ["", "Brass Bowls", "Wooden Spoons"],
+      sizes: []
+    },
+    "Special Product": {
+      subCategories: ["", "Bags"],
+      sizes: []
+    }
+  };
 
-  const availableSubCategories = category === "Men" ? menSubCategories : category === "Women" ? womenSubCategories : [];
-
-  const menSizes = ['28', '30', '32', '34', '36', '38', '40', '42', '44', '46'];
-  const womenSizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+  const currentCategoryData = categoryData[category] || { subCategories: [], sizes: [] };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!name || !description || !price || !subCategory) {
       toast.error("Please fill in all required fields.");
+      return;
+    }
+
+    const hasImages = images.some(img => img !== null);
+    if (!hasImages) {
+      toast.error("Please upload at least one product image.");
       return;
     }
 
@@ -60,7 +109,7 @@ const Add = ({ token }) => {
         if (image) formData.append(`image${index + 1}`, image);
       });
 
-      const response = await axios.post(`${backendURl}/api/product/add`, formData, {
+      const response = await axios.post(`${backendUrl}/api/product/add`, formData, {
         headers: { token },
       });
 
@@ -74,7 +123,6 @@ const Add = ({ token }) => {
       console.error("Error while submitting the product:", error);
       if (error.response) {
         toast.error(`Server Error: ${error.response.data?.message || 'Unable to process your request.'}`);
-        console.log("Error Response:", error.response);
       } else if (error.request) {
         toast.error('Network Error: Could not connect to the server. Please check your internet connection.');
       } else {
@@ -102,88 +150,256 @@ const Add = ({ token }) => {
     );
   };
 
+  const removeImage = (index) => {
+    setImages(prev => prev.map((img, i) => i === index ? null : img));
+  };
+
+  const uploadedImagesCount = images.filter(img => img !== null).length;
+
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col w-full items-start gap-6 p-6 bg-background rounded-lg shadow-md max-w-4xl mx-auto mt-6">
-      <h2 className="text-2xl text-primary font-semibold mb-4">Add New Product</h2>
-      <div>
-        <p className="mb-2 text-primary font-medium">Upload Images</p>
-        <div className="flex gap-4">
-          {
-            images.map((image, index) => (
-              <ImageUpload key={index} id={`image${index + 1}`} image={image} setImage={(img) => setImages((prev) => prev.map((val, i) => (i === index ? img : val)))} />
-            ))
-          }
-        </div>
-      </div>
-      <div className="w-full">
-        <p className="mb-2 text-primary font-medium">Product Name</p>
-        <input onChange={(e) => setName(e.target.value)} value={name} className="w-full px-4 py-2 border border-secondary text-primary rounded-md" type="text" placeholder="Enter product name" required />
-      </div>
-      <div className="w-full">
-        <p className="mb-2 text-primary font-medium">Product Description</p>
-        <textarea onChange={(e) => setDescription(e.target.value)} value={description} className="w-full px-4 py-2 border border-secondary rounded-md resize-none" rows="3" placeholder="Enter product description" required />
-      </div>
-      <div className="flex flex-wrap gap-6">
-        <div>
-          <p className="mb-2 text-primary font-medium">Category</p>
-          <select onChange={(e) => { setCategory(e.target.value); setSubCategory(""); }} value={category} className="px-4 py-2 border border-secondary text-primary rounded-md" >
-            <option value="Men">Men</option>
-            <option value="Women">Women</option>
-            <option value="Home Furnishing">Home Furnishing</option>
-            <option value="Kitchenware">Kitchenware</option>
-            <option value="Special Product">Special Product</option>
-          </select>
-        </div>
-        <div>
-          <p className="mb-2 text-primary font-medium">Sub-Category</p>
-          <select onChange={(e) => setSubCategory(e.target.value)} value={subCategory} className="px-4 py-2 border border-secondary rounded-md" >
-            {
-              (category === "Men" || category === "Women") && availableSubCategories.length > 0 && availableSubCategories.map((subCat, index) => (
-                <option key={index} value={subCat}> {subCat} </option>
-              ))
-            }
-            {
-              category === "Home Furnishing" && homeFurnishingSubCategories.map((subCat, index) => (
-                <option key={index} value={subCat}> {subCat} </option>
-              ))
-            }
-            {
-              category === "Kitchenware" && kitchenwareSubCategories.map((subCat, index) => (
-                <option key={index} value={subCat}> {subCat} </option>
-              ))
-            }
-            {
-              category === "Special Product" && specialSubCategories.map((subCat, index) => (
-                <option key={index} value={subCat}> {subCat} </option>
-              ))
-            }
-          </select>
-        </div>
-        <div>
-          <p className="mb-2 text-primary font-medium">Price {currency}</p>
-          <input onChange={(e) => setPrice(e.target.value)} value={price} className="px-4 py-2 border border-secondary text-primary rounded-md" type="number" placeholder="Enter price" required />
-        </div>
-      </div>
-      <div>
-        {
-          ["Men", "Women"].includes(category) && (
+    <div className="min-h-screen bg-background py-8">
+      <div className="max-w-5xl mx-auto px-4">
+        {/* Header */}
+        <div className="bg-text rounded-2xl shadow-sm border border-secondary mb-8 p-6">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center">
+              <Package className="text-indigo-600" size={24} />
+            </div>
             <div>
-              <p className="mb-2 text-primary font-medium">Available Sizes</p>
-              {(category === "Men" ? menSizes : womenSizes).map((size) => (
-                <button key={size} type="button" onClick={() => toggleSize(size)} className={`px-4 py-2 mx-1 rounded-md border ${sizes.includes(size) ? 'bg-white' : 'bg-slate-200'}`}>
-                  {size}
-                </button>
+              <h1 className="text-2xl font-bold text-gray-900">Add New Product</h1>
+              <p className="text-gray-600 mt-1">Fill in the details below to add a new product to your inventory</p>
+            </div>
+          </div>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-8">
+          {/* Product Images */}
+          <div className="bg-text rounded-2xl shadow-sm border border-secondary p-6">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                <ImageIcon className="text-purple-600" size={18} />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900">Product Images</h3>
+                <p className="text-sm text-gray-600">Upload up to 6 high-quality images ({uploadedImagesCount}/6 uploaded)</p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
+              {images.map((image, index) => (
+                <ImageUpload
+                  key={index}
+                  id={`image${index + 1}`}
+                  image={image}
+                  setImage={(img) => setImages(prev => prev.map((val, i) => (i === index ? img : val)))}
+                  onRemove={removeImage}
+                  index={index}
+                />
               ))}
             </div>
-          )
-        }
+
+            {uploadedImagesCount === 0 && (
+              <div className="mt-4 flex items-center gap-2 text-amber-700 bg-amber-50 p-3 rounded-lg">
+                <AlertCircle size={16} />
+                <span className="text-sm">Please upload at least one product image</span>
+              </div>
+            )}
+          </div>
+
+          {/* Product Information */}
+          <div className="bg-text rounded-2xl shadow-sm border border-secondary p-6">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                <Package className="text-blue-600" size={18} />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900">Product Information</h3>
+                <p className="text-sm text-gray-600">Basic details about your product</p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="lg:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2">Product Name *</label>
+                <input
+                  onChange={(e) => setName(e.target.value)}
+                  value={name}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-secondary focus:border-secondary transition-colors"
+                  type="text"
+                  placeholder="Enter a descriptive product name"
+                  required
+                />
+              </div>
+
+              <div className="lg:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2">Product Description *</label>
+                <textarea
+                  onChange={(e) => setDescription(e.target.value)}
+                  value={description}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-secondary focus:border-secondary transition-colors resize-none"
+                  rows="4"
+                  placeholder="Describe your product in detail, including features, materials, and benefits"
+                  required
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Category & Pricing */}
+          <div className="bg-text rounded-2xl shadow-sm border border-secondary p-6">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                <Tag className="text-green-600" size={18} />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900">Category & Pricing</h3>
+                <p className="text-sm text-gray-600">Categorize and price your product</p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Category *</label>
+                <select
+                  onChange={(e) => { setCategory(e.target.value); setSubCategory(""); setSizes([]); }}
+                  value={category}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-secondary focus:border-secondary transition-colors"
+                >
+                  {Object.keys(categoryData).map(cat => (
+                    <option key={cat} value={cat}>{cat}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Sub-Category *</label>
+                <select
+                  onChange={(e) => setSubCategory(e.target.value)}
+                  value={subCategory}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-secondary focus:border-secondary transition-colors"
+                  required
+                >
+                  {currentCategoryData.subCategories.map((subCat, index) => (
+                    <option key={index} value={subCat}>{subCat || "Select Sub-Category"}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Price ({currency}) *</label>
+                <div className="relative">
+                  <IndianRupee className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+                  <input
+                    onChange={(e) => setPrice(e.target.value)}
+                    value={price}
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-secondary focus:border-secondary transition-colors"
+                    type="number"
+                    placeholder="0.00"
+                    min="0"
+                    step="0.01"
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Sizes (if applicable) */}
+          {currentCategoryData.sizes.length > 0 && (
+            <div className="bg-text rounded-2xl shadow-sm border border-secondary p-6">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center">
+                  <Package className="text-orange-600" size={18} />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900">Available Sizes</h3>
+                  <p className="text-sm text-gray-600">Select all available sizes for this product</p>
+                </div>
+              </div>
+
+              <div className="flex flex-wrap gap-3">
+                {currentCategoryData.sizes.map((size) => (
+                  <button
+                    key={size}
+                    type="button"
+                    onClick={() => toggleSize(size)}
+                    className={`px-4 py-2 rounded-xl border-2 font-medium transition-all duration-200 ${sizes.includes(size)
+                      ? 'bg-gray-300 text-white border-secondary shadow-md'
+                      : 'bg-white text-gray-700 border-gray-300 hover:border-secondary hover:bg-indigo-50'
+                      }`}
+                  >
+                    {size}
+                  </button>
+                ))}
+              </div>
+
+              {sizes.length > 0 && (
+                <div className="mt-4 flex items-center gap-2 text-green-700 bg-green-50 p-3 rounded-lg">
+                  <CheckCircle2 size={16} />
+                  <span className="text-sm">{sizes.length} size{sizes.length !== 1 ? 's' : ''} selected</span>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Additional Options */}
+          <div className="bg-text rounded-2xl shadow-sm border border-gray-200 p-6">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center">
+                <Star className="text-yellow-600" size={18} />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900">Additional Options</h3>
+                <p className="text-sm text-gray-600">Special settings for your product</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3 p-4 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-xl border border-yellow-200">
+              <input
+                type="checkbox"
+                id="bestseller"
+                checked={bestseller}
+                onChange={() => setBestseller(prev => !prev)}
+                className="w-5 h-5 text-yellow-600 border-yellow-300 rounded focus:ring-yellow-500"
+              />
+              <label htmlFor="bestseller" className="cursor-pointer flex items-center gap-2 text-gray-700 font-medium">
+                <Star className="text-yellow-500" size={18} />
+                Mark as Bestseller
+              </label>
+            </div>
+          </div>
+
+          {/* Submit Button */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-end">
+            <button
+              type="button"
+              onClick={resetForm}
+              className="px-6 py-3 border border-secondary text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-colors"
+              disabled={loading}
+            >
+              Reset Form
+            </button>
+            <button
+              className="px-8 py-3 bg-secondary text-white font-medium rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 min-w-[140px]"
+              type="submit"
+              disabled={loading}
+            >
+              {loading ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  Adding...
+                </>
+              ) : (
+                <>
+                  <Package size={18} />
+                  Add Product
+                </>
+              )}
+            </button>
+          </div>
+        </form>
       </div>
-      <div className="flex items-center gap-2">
-        <input type="checkbox" id="bestseller" checked={bestseller} onChange={() => setBestseller((prev) => !prev)} />
-        <label htmlFor="bestseller" className="cursor-pointer text-primary font-medium"> Mark as Bestseller </label>
-      </div>
-      <button className="w-32 py-2 bg-black text-text font-medium rounded-md" type="submit" disabled={loading} > {loading ? 'Adding...' : 'Add Product'} </button>
-    </form>
+    </div>
   );
 };
 

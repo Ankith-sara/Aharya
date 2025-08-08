@@ -92,7 +92,7 @@ const Orders = () => {
                     <div className="w-24 h-24 md:w-32 md:h-32 overflow-hidden flex items-center justify-center">
                       <img
                         className="w-full h-full object-contain object-center"
-                        src={item.images[0]}
+                        src={item.image || item.images?.[0]}
                         alt={item.name}
                       />
                     </div>
