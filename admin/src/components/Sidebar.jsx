@@ -130,15 +130,6 @@ const Sidebar = () => {
       `}>
         {/* Mobile Header */}
         <div className="flex items-center justify-between p-6 border-b border-primary/20">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center">
-              <LayoutDashboard className="text-text" size={20} />
-            </div>
-            <div>
-              <h1 className="font-bold text-primary">Admin Panel</h1>
-              <p className="text-xs text-secondary">Management Dashboard</p>
-            </div>
-          </div>
           <button
             onClick={() => setIsMobileMenuOpen(false)}
             className="p-2 hover:bg-background/50 rounded-lg transition-colors"
@@ -173,20 +164,6 @@ const Sidebar = () => {
         hidden lg:flex flex-col h-screen bg-background border-r border-primary/20 shadow-lg transition-all duration-300 ease-in-out
         ${isCollapsed ? 'w-20' : 'w-72'}
       `}>
-        {/* Header */}
-        <div className="p-6 border-b border-primary/20">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center flex-shrink-0">
-              <LayoutDashboard className="text-text" size={20} />
-            </div>
-            {!isCollapsed && (
-              <div className="min-w-0 flex-1">
-                <h1 className="font-bold text-primary truncate">Admin Panel</h1>
-                <p className="text-xs text-secondary truncate">Management Dashboard</p>
-              </div>
-            )}
-          </div>
-        </div>
 
         {/* Navigation */}
         <div className="flex-1 p-4 space-y-2 overflow-y-auto">

@@ -19,9 +19,9 @@ const NewsletterBox = () => {
           </div>
         </div>
         
-        <h2 className="text-2xl md:text-3xl font-medium text-black mb-4">
+        <h1 className="text-2xl md:text-3xl font-medium text-black mb-4">
           JOIN THE AHARYA COMMUNITY
-        </h2>
+        </h1>
         
         <p className="text-gray-600 mb-8 max-w-3xl mx-auto">
           Be the first to explore unique gifts, our latest collections, exclusive events, and initiatives.

@@ -2,16 +2,16 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { backendUrl, currency } from '../App';
 import { toast } from 'react-toastify';
-import { 
-  Package, 
-  Edit3, 
-  Trash2, 
-  Search, 
-  Filter, 
-  Star, 
-  Image as ImageIcon, 
-  Upload, 
-  X, 
+import {
+  Package,
+  Edit3,
+  Trash2,
+  Search,
+  Filter,
+  Star,
+  Image as ImageIcon,
+  Upload,
+  X,
   Save,
   AlertCircle,
   CheckCircle2,
@@ -71,9 +71,9 @@ const ImageUpload = ({ id, image, currentImage, setImage, index, onRemove }) => 
 const ProductCard = ({ item, index, onEdit, onRemove, currency }) => (
   <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-200">
     <div className="relative">
-      <img 
-        src={item.images?.[0] || 'default-image-path.jpg'} 
-        alt={item.name} 
+      <img
+        src={item.images?.[0] || 'default-image-path.jpg'}
+        alt={item.name}
         className="w-full h-48 object-cover"
       />
       {item.bestseller && (
@@ -86,7 +86,7 @@ const ProductCard = ({ item, index, onEdit, onRemove, currency }) => (
         <span className="text-xs font-medium text-gray-700">#{index + 1}</span>
       </div>
     </div>
-    
+
     <div className="p-4">
       <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2">{item.name}</h3>
       <div className="flex items-center gap-2 mb-2">
@@ -395,68 +395,79 @@ const List = ({ token }) => {
                   ))}
                 </div>
               ) : (
-                <div className="space-y-4">
-                  {/* Table Header */}
-                  <div className="hidden md:grid grid-cols-[60px_120px_1fr_150px_120px_150px] items-center bg-gray-50 p-4 rounded-xl font-medium text-gray-700">
-                    <div>#</div>
-                    <div>Image</div>
-                    <div>Product Details</div>
-                    <div>Category</div>
-                    <div>Price</div>
-                    <div className="text-center">Actions</div>
+                <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+                  <div className="overflow-x-auto">
+                    <table className="w-full">
+                      <thead className="bg-gray-50">
+                        <tr>
+                          <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">#</th>
+                          <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Image</th>
+                          <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product Details</th>
+                          <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+                          <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
+                          <th className="px-6 py-4 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gray-200">
+                        {filteredList.map((item, index) => (
+                          <tr key={item._id} className="hover:bg-gray-50 transition-colors">
+                            <td className="px-6 py-4 font-medium text-gray-600">#{index + 1}</td>
+                            <td className="px-6 py-4">
+                              <div className="relative w-16 h-16">
+                                <img
+                                  src={item.images?.[0] || 'default-image-path.jpg'}
+                                  alt={item.name}
+                                  className="w-16 h-16 object-cover rounded-xl border border-gray-200"
+                                />
+                                {item.bestseller && (
+                                  <Star className="absolute -top-1 -right-1 text-yellow-500 fill-yellow-500" size={16} />
+                                )}
+                              </div>
+                            </td>
+                            <td className="px-6 py-4">
+                              <h3 className="font-semibold text-gray-900 mb-1 line-clamp-1">{item.name}</h3>
+                              <p className="text-sm text-gray-600 line-clamp-2">{item.description}</p>
+                            </td>
+                            <td className="px-6 py-4">
+                              <div className="font-medium text-gray-900">{item.category}</div>
+                              {item.subCategory && (
+                                <div className="text-sm text-gray-600">{item.subCategory}</div>
+                              )}
+                            </td>
+                            <td className="px-6 py-4">
+                              <div className="flex items-center gap-1 font-semibold text-green-600">
+                                <IndianRupee size={16} />
+                                {item.price}
+                              </div>
+                            </td>
+                            <td className="px-6 py-4 text-center">
+                              <div className="flex justify-center gap-2">
+                                <button
+                                  onClick={() => {
+                                    setEditedProduct(item);
+                                    setIsEditing(true);
+                                  }}
+                                  className="p-2 text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                                >
+                                  <Edit3 size={16} />
+                                </button>
+                                <button
+                                  onClick={() => {
+                                    if (window.confirm(`Are you sure you want to delete "${item.name}"?`)) {
+                                      removeProduct(item._id);
+                                    }
+                                  }}
+                                  className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                >
+                                  <Trash2 size={16} />
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
                   </div>
-
-                  {/* Table Rows */}
-                  {filteredList.map((item, index) => (
-                    <div key={item._id} className="grid grid-cols-[60px_120px_1fr_150px_120px_150px] items-center gap-4 p-4 bg-white border border-gray-200 rounded-xl hover:shadow-sm transition-shadow">
-                      <div className="font-medium text-gray-600">#{index + 1}</div>
-                      <div className="relative">
-                        <img 
-                          src={item.images?.[0] || 'default-image-path.jpg'} 
-                          alt={item.name} 
-                          className="w-16 h-16 object-cover rounded-xl border border-gray-200"
-                        />
-                        {item.bestseller && (
-                          <Star className="absolute -top-1 -right-1 text-yellow-500 fill-yellow-500" size={16} />
-                        )}
-                      </div>
-                      <div>
-                        <h3 className="font-semibold text-gray-900 mb-1 line-clamp-1">{item.name}</h3>
-                        <p className="text-sm text-gray-600 line-clamp-2">{item.description}</p>
-                      </div>
-                      <div>
-                        <div className="font-medium text-gray-900">{item.category}</div>
-                        {item.subCategory && (
-                          <div className="text-sm text-gray-600">{item.subCategory}</div>
-                        )}
-                      </div>
-                      <div className="flex items-center gap-1 font-semibold text-green-600">
-                        <IndianRupee size={16} />
-                        {item.price}
-                      </div>
-                      <div className="flex justify-center gap-2">
-                        <button
-                          onClick={() => {
-                            setEditedProduct(item);
-                            setIsEditing(true);
-                          }}
-                          className="p-2 text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
-                        >
-                          <Edit3 size={16} />
-                        </button>
-                        <button
-                          onClick={() => {
-                            if (window.confirm(`Are you sure you want to delete "${item.name}"?`)) {
-                              removeProduct(item._id);
-                            }
-                          }}
-                          className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                        >
-                          <Trash2 size={16} />
-                        </button>
-                      </div>
-                    </div>
-                  ))}
                 </div>
               )}
             </>
@@ -557,9 +568,9 @@ const List = ({ token }) => {
                         <label className="block text-sm font-medium text-gray-700 mb-2">Category *</label>
                         <select
                           value={editedProduct.category}
-                          onChange={(e) => setEditedProduct(prev => ({ 
-                            ...prev, 
-                            category: e.target.value, 
+                          onChange={(e) => setEditedProduct(prev => ({
+                            ...prev,
+                            category: e.target.value,
                             subCategory: "",
                             sizes: []
                           }))}
@@ -613,11 +624,10 @@ const List = ({ token }) => {
                             key={size}
                             type="button"
                             onClick={() => toggleSize(size)}
-                            className={`px-4 py-2 rounded-xl border-2 font-medium transition-all duration-200 ${
-                              editedProduct.sizes?.includes(size)
+                            className={`px-4 py-2 rounded-xl border-2 font-medium transition-all duration-200 ${editedProduct.sizes?.includes(size)
                                 ? 'bg-secondary text-white border-secondary shadow-md'
                                 : 'bg-white text-gray-700 border-gray-300 hover:border-secondary hover:bg-indigo-50'
-                            }`}
+                              }`}
                           >
                             {size}
                           </button>

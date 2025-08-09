@@ -79,12 +79,8 @@ function WhatWeDo() {
             <div className="max-w-7xl mx-auto">
                 <div className="text-center mb-12">
                     <Title text1="WHAT" text2="WE DO" />
-                    <p className="mt-2 max-w-2xl mx-auto text-gray-600 text-sm md:text-base">
-                        Empowering communities with creativity, craftsmanship, and innovation.
-                    </p>
-                    <p className="mt-4 max-w-3xl mx-auto text-gray-600 text-sm md:text-base">
+                    <p className="mt-2 max-w-3xl mx-auto text-gray-600 text-sm md:text-base">
                         At Aharyas, we partner with skilled Indian artisans to bring you unique, handcrafted clothing, toys, décor, and accessories.
-                        Our mission is to preserve cultural heritage while delivering secure, tech-powered shopping experiences.
                         Every product tells a story — blending tradition, sustainability, and modern design.
                     </p>
                 </div>
