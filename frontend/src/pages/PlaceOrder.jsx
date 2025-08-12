@@ -135,7 +135,8 @@ const PlaceOrder = () => {
                 name: product.name,
                 price: product.price,
                 quantity: cartItems[items][item],
-                size: item
+                size: item,
+                image: product.images?.[0] || null
               });
             }
           }

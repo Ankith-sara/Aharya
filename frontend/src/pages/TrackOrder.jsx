@@ -4,7 +4,7 @@ import { ShopContext } from '../context/ShopContext';
 import Title from '../components/Title';
 import {
   Package, Truck, CheckCircle, Clock, MapPin, AlertCircle,
-  ChevronDown, ChevronUp, ArrowLeft, Calendar
+  ChevronDown, ChevronUp, ArrowLeft, Calendar, Phone, Mail
 } from 'lucide-react';
 
 const TrackOrder = () => {
@@ -59,7 +59,6 @@ const TrackOrder = () => {
     fetchOrder();
   }, [orderId, backendUrl, token]);
 
-
   const formatDate = (dateString) => {
     if (!dateString) return 'N/A';
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
@@ -74,16 +73,16 @@ const TrackOrder = () => {
 
   const getStatusIcon = (status) => {
     switch (status) {
-      case 'Order Placed': return <Clock size={24} />;
-      case 'Processing': return <Package size={24} />;
-      case 'Shipping': return <Package size={24} />;
-      case 'Out for Delivery': return <Truck size={24} />;
-      case 'Delivered': return <CheckCircle size={24} />;
-      default: return <AlertCircle size={24} />;
+      case 'Order Placed': return <CheckCircle size={20} />;
+      case 'Processing': return <Package size={20} />;
+      case 'Shipping': return <Truck size={20} />;
+      case 'Out for Delivery': return <Truck size={20} />;
+      case 'Delivered': return <CheckCircle size={20} />;
+      default: return <Clock size={20} />;
     }
   };
 
-  // Determine status for the complete timeline
+  // Fixed status logic - Order Placed should always be completed
   const getStatusState = (status) => {
     if (!order || !order.status) return 'upcoming';
 
@@ -92,8 +91,13 @@ const TrackOrder = () => {
 
     if (statusIndex < 0) return 'upcoming';
 
+    // Order Placed should always be completed once an order exists
+    if (status === 'Order Placed') {
+      return 'completed';
+    }
+
+    // If current status is delivered, all previous statuses are completed
     if (order.status === 'Delivered') {
-      // All statuses are completed once delivered
       return 'completed';
     }
 
@@ -112,18 +116,30 @@ const TrackOrder = () => {
     return order.trackingHistory.find(item => item.status === status);
   };
 
+  const getProgressPercentage = () => {
+    if (!order || !order.status) return 0;
+    const currentIndex = allStatuses.indexOf(order.status);
+    return currentIndex >= 0 ? ((currentIndex + 1) / allStatuses.length) * 100 : 0;
+  };
+
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <span className="text-lg">Loading order details...</span>
+      <div className="min-h-screen mt-20 px-4 sm:px-6 md:px-10 lg:px-20 py-10 flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto mb-4"></div>
+          <span className="text-lg text-gray-600">Loading order details...</span>
+        </div>
       </div>
     );
   }
 
   if (error || !order) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <span className="text-lg text-red-600">{error || 'Order not found.'}</span>
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <AlertCircle size={48} className="text-red-500 mx-auto mb-4" />
+          <span className="text-lg text-red-600">{error || 'Order not found.'}</span>
+        </div>
       </div>
     );
   }
@@ -139,100 +155,195 @@ const TrackOrder = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-white text-black mt-20 mb-10 px-4 sm:px-6 md:px-10 lg:px-20 py-10">
-      <div className="text-3xl text-center mb-12">
-        <Title text1="ORDER" text2="TRACKING" />
-      </div>
-
-      {/* Tracking Results */}
-      <div className="max-w-5xl mx-auto">
-        {/* Order Status Banner */}
-        <div className="bg-gray-900 text-white p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
-          <div>
-            <p className="text-sm text-gray-300">Order: {order._id}</p>
-            <h2 className="text-xl font-medium mt-1">
-              Status: {order.status}
-            </h2>
-          </div>
-          <div className="flex items-center gap-4">
-            <div className="text-right">
-              <p className="text-sm text-gray-300">
-                {order.estimatedDelivery ? 'Expected Delivery' : 'Order Placed'}
-              </p>
-              <p className="font-medium">
-                {formatDate(order.estimatedDelivery || order.date)}
-              </p>
-            </div>
-            <Calendar size={24} />
-          </div>
+    <div className="min-h-screen bg-gray-50 mt-20 px-4 sm:px-6 md:px-10 lg:px-20 py-10">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header */}
+        <div className="text-center mb-12">
+          <Title text1="ORDER" text2="TRACKING" />
         </div>
 
-        {/* Tracking Progress */}
-        <div className="bg-white border border-gray-200 rounded-lg overflow-hidden mb-8">
-          <div className="p-6 border-b border-gray-200">
-            <h3 className="text-lg font-medium">Tracking Progress</h3>
+        {/* Order Status Card */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mb-8">
+          {/* Header Section */}
+          <div className="bg-black text-white p-6">
+            <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-2">
+                  <Package size={24} className="text-gray-300" />
+                  <span className="text-sm text-gray-300">Order #{order._id?.slice(-8)}</span>
+                </div>
+                <h1 className="text-2xl font-semibold">{order.status}</h1>
+                <p className="text-gray-300 mt-1">
+                  Placed on {formatDate(order.date)}
+                </p>
+              </div>
+              
+              <div className="flex items-center gap-4 bg-white/10 rounded-lg p-4">
+                <Calendar size={24} className="text-gray-300" />
+                <div className="text-right">
+                  <p className="text-sm text-gray-300">
+                    {order.estimatedDelivery ? 'Expected Delivery' : 'Processing Time'}
+                  </p>
+                  <p className="font-semibold text-lg">
+                    {formatDate(order.estimatedDelivery || order.date)}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Progress Bar */}
+            <div className="mt-6">
+              <div className="flex justify-between text-sm text-gray-300 mb-2">
+                <span>Order Progress</span>
+                <span>{Math.round(getProgressPercentage())}% Complete</span>
+              </div>
+              <div className="w-full bg-white/20 rounded-full h-2">
+                <div
+                  className="bg-gradient-to-r from-green-400 to-blue-500 h-2 rounded-full transition-all duration-500"
+                  style={{ width: `${getProgressPercentage()}%` }}
+                ></div>
+              </div>
+            </div>
           </div>
 
-          {/* Complete Timeline */}
-          <div className="p-6 w-full overflow-x-auto">
-            <div className="relative min-w-max">
-              {/* Horizontal line */}
-              <div className="absolute top-16 left-0 w-full h-0.5 bg-gray-200"></div>
+          {/* Tracking Timeline */}
+          <div className="p-8">
+            <h3 className="text-xl font-semibold mb-8 text-gray-900">Tracking Timeline</h3>
+            
+            <div className="relative">
+              {/* Desktop Timeline */}
+              <div className="hidden lg:block">
+                {/* Progress Line */}
+                <div className="absolute top-12 left-0 w-full h-1 bg-gray-200 rounded-full"></div>
+                <div 
+                  className="absolute top-12 left-0 h-1 bg-gradient-to-r from-green-500 to-blue-500 rounded-full transition-all duration-1000"
+                  style={{ width: `${(getProgressPercentage() / 100) * 100}%` }}
+                ></div>
 
-              {/* Status points */}
-              <div className="flex">
+                <div className="flex justify-between">
+                  {allStatuses.map((status, index) => {
+                    const state = getStatusState(status);
+                    const historyItem = findHistoryForStatus(status);
+                    
+                    return (
+                      <div key={index} className="flex-1 relative">
+                        <div className="flex flex-col items-center">
+                          {/* Status Circle */}
+                          <div
+                            className={`relative z-10 flex items-center justify-center w-10 h-10 rounded-full transition-all duration-300 ${
+                              state === 'completed'
+                                ? 'bg-green-500 text-white shadow-lg'
+                                : state === 'current'
+                                ? 'bg-blue-500 text-white shadow-lg ring-4 ring-blue-100'
+                                : 'bg-gray-200 text-gray-400 border-2 border-gray-300'
+                            }`}
+                          >
+                            {getStatusIcon(status)}
+                          </div>
+
+                          {/* Status Details */}
+                          <div className="mt-4 text-center max-w-32">
+                            <h4
+                              className={`font-medium text-sm ${
+                                state === 'upcoming'
+                                  ? 'text-gray-400'
+                                  : state === 'current'
+                                  ? 'text-blue-600'
+                                  : 'text-gray-900'
+                              }`}
+                            >
+                              {status}
+                            </h4>
+
+                            {historyItem && (
+                              <div className="mt-2">
+                                <p className="text-xs text-gray-500">
+                                  {formatDate(historyItem.timestamp)}
+                                </p>
+                                <p className="text-xs text-gray-500">
+                                  {formatTime(historyItem.timestamp)}
+                                </p>
+                                {historyItem.location && (
+                                  <div className="flex items-center justify-center mt-1">
+                                    <MapPin size={10} className="text-gray-400 mr-1" />
+                                    <span className="text-xs text-gray-400">
+                                      {historyItem.location}
+                                    </span>
+                                  </div>
+                                )}
+                              </div>
+                            )}
+
+                            {state === 'current' && !historyItem && (
+                              <p className="text-xs text-blue-500 mt-1 font-medium">In Progress</p>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Mobile Timeline */}
+              <div className="lg:hidden space-y-4">
                 {allStatuses.map((status, index) => {
                   const state = getStatusState(status);
                   const historyItem = findHistoryForStatus(status);
-
+                  
                   return (
-                    <div key={index} className="flex-1 px-2 first:pl-0 last:pr-0 min-w-48">
-                      <div className="flex flex-col items-center">
-                        {/* Icon circle */}
-                        <div
-                          className={`relative z-10 flex items-center justify-center w-14 h-14 rounded-full transition-all ${state === 'completed'
-                            ? 'bg-green-500 text-white border-2 border-green-500'
+                    <div key={index} className="flex items-start gap-4">
+                      {/* Status Circle */}
+                      <div
+                        className={`flex items-center justify-center w-10 h-10 rounded-full transition-all ${
+                          state === 'completed'
+                            ? 'bg-green-500 text-white'
                             : state === 'current'
-                              ? 'bg-blue-600 text-white border-2 border-blue-600 shadow-lg animate-pulse'
-                              : 'border-2 border-gray-300 bg-white text-gray-400'
-                            }`}
+                            ? 'bg-blue-500 text-white ring-4 ring-blue-100'
+                            : 'bg-gray-200 text-gray-400'
+                        }`}
+                      >
+                        {getStatusIcon(status)}
+                      </div>
+
+                      {/* Status Info */}
+                      <div className="flex-1 min-w-0">
+                        <h4
+                          className={`font-medium ${
+                            state === 'upcoming'
+                              ? 'text-gray-400'
+                              : state === 'current'
+                              ? 'text-blue-600'
+                              : 'text-gray-900'
+                          }`}
                         >
-                          {state === 'completed'
-                            ? <CheckCircle size={24} />
-                            : getStatusIcon(status)}
-                        </div>
+                          {status}
+                        </h4>
 
-                        {/* Status label and details */}
-                        <div className="mt-4 text-center">
-                          <h4 className={`text-md font-medium ${state === 'upcoming' ? 'text-gray-400' :
-                            state === 'current' ? 'text-blue-600' : 'text-black'
-                            }`}>
-                            {status}
-                          </h4>
-
-                          {historyItem && (
-                            <>
-                              <span className="text-xs text-gray-500 block mt-1">
-                                {formatDate(historyItem.timestamp)}, {formatTime(historyItem.timestamp)}
-                              </span>
-                              <p className={`mt-2 text-sm ${state === 'upcoming' ? 'text-gray-400' : 'text-gray-600'}`}>
+                        {historyItem && (
+                          <div className="mt-1">
+                            <p className="text-sm text-gray-600">
+                              {formatDate(historyItem.timestamp)} at {formatTime(historyItem.timestamp)}
+                            </p>
+                            {historyItem.location && (
+                              <div className="flex items-center mt-1">
+                                <MapPin size={12} className="text-gray-400 mr-1" />
+                                <span className="text-sm text-gray-500">
+                                  {historyItem.location}
+                                </span>
+                              </div>
+                            )}
+                            {historyItem.description && (
+                              <p className="text-sm text-gray-600 mt-1">
                                 {historyItem.description}
                               </p>
-                              <div className="mt-2 flex items-center justify-center text-xs text-gray-500">
-                                <MapPin size={12} className="mr-1" />
-                                {historyItem.location}
-                              </div>
-                            </>
-                          )}
+                            )}
+                          </div>
+                        )}
 
-                          {state === 'current' && !historyItem && (
-                            <p className="mt-1 text-sm text-blue-600">Current stage</p>
-                          )}
-
-                          {state === 'upcoming' && !historyItem && (
-                            <p className="mt-1 text-sm text-gray-400">Awaiting</p>
-                          )}
-                        </div>
+                        {state === 'current' && !historyItem && (
+                          <p className="text-sm text-blue-500 font-medium">In Progress</p>
+                        )}
                       </div>
                     </div>
                   );
@@ -242,100 +353,115 @@ const TrackOrder = () => {
           </div>
         </div>
 
-        {/* Order Details Toggle */}
-        <div className="bg-white border border-gray-200 rounded-lg overflow-hidden mb-8">
+        {/* Order Details Section */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
           <button
-            className="w-full p-6 flex justify-between items-center border-b border-gray-200 hover:bg-gray-50 transition-colors"
+            className="w-full p-6 flex justify-between items-center hover:bg-gray-50 transition-colors border-b border-gray-200"
             onClick={() => setShowDetails(!showDetails)}
           >
-            <h3 className="text-lg font-medium">Order Details</h3>
+            <h3 className="text-lg font-semibold text-gray-900">Order Details</h3>
             {showDetails ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
           </button>
 
           {showDetails && (
             <div className="p-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
                 {/* Order Items */}
-                <div>
-                  <h4 className="text-sm uppercase tracking-wider font-medium text-gray-500 mb-4">Items in this order</h4>
-                  <div className="space-y-6">
-                    {order.items.map((item, index) => (
-                      <div key={index} className="flex gap-4">
-                        <div className="w-20 h-24 bg-gray-100 flex-shrink-0">
+                <div className="space-y-6">
+                  <h4 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">
+                    Order Items ({order.items?.length || 0})
+                  </h4>
+                  
+                  <div className="space-y-4">
+                    {order.items?.map((item, index) => (
+                      <div key={index} className="flex gap-4 p-4 bg-gray-50 rounded-lg">
+                        <div className="w-16 h-20 bg-white rounded-md overflow-hidden flex-shrink-0">
                           <img
-                            src={item.images?.[0] || item.image || '/api/placeholder/120/150'}
+                            src={item.images?.[0] || item.image || '/api/placeholder/64/80'}
                             alt={item.name}
                             className="w-full h-full object-cover"
                           />
                         </div>
-                        <div className="flex-grow">
-                          <h5 className="font-medium">{item.name}</h5>
-                          <div className="mt-2 grid grid-cols-2 gap-2 text-sm text-gray-600">
-                            <p>Size: {item.size || 'N/A'}</p>
-                            <p>Qty: {item.quantity}</p>
-                            <p className="font-medium text-black">
-                              {currency}{(item.price || 0).toFixed(2)} each
-                            </p>
+                        <div className="flex-1 min-w-0">
+                          <h5 className="font-medium text-gray-900 truncate">{item.name}</h5>
+                          <div className="mt-2 grid grid-cols-2 gap-2 text-sm">
+                            <span className="text-gray-600">Size: <span className="text-gray-900">{item.size || 'N/A'}</span></span>
+                            <span className="text-gray-600">Qty: <span className="text-gray-900">{item.quantity}</span></span>
                           </div>
+                          <p className="text-lg font-semibold text-gray-900 mt-2">
+                            {currency}{(item.price || 0).toFixed(2)}
+                          </p>
                         </div>
                       </div>
                     ))}
                   </div>
                 </div>
 
-                {/* Shipping & Payment */}
-                <div className="space-y-8">
+                {/* Order Information */}
+                <div className="space-y-6">
                   {/* Shipping Address */}
                   <div>
-                    <h4 className="text-sm uppercase tracking-wider font-medium text-gray-500 mb-4">Shipping Address</h4>
-                    <address className="not-italic">
-                      <p className="font-medium">
-                        {order.address?.firstName || ''} {order.address?.lastName || order.customer?.name || ''}
-                      </p>
-                      <p>{order.address?.street || 'N/A'}</p>
-                      <p>
-                        {order.address?.city || ''}{order.address?.city && order.address?.state ? ', ' : ''}
-                        {order.address?.state || ''} {order.address?.pincode || order.address?.zipCode || ''}
-                      </p>
-                      <p>{order.address?.country || 'N/A'}</p>
-                      {order.address?.phone && <p>Phone: {order.address.phone}</p>}
-                    </address>
+                    <h4 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-4">
+                      Shipping Address
+                    </h4>
+                    <div className="bg-gray-50 rounded-lg p-4">
+                      <address className="not-italic text-gray-700">
+                        <p className="mt-1">{order.address?.street || 'N/A'}</p>
+                        <p>
+                          {order.address?.city || ''}{order.address?.city && order.address?.state ? ', ' : ''}
+                          {order.address?.state || ''} {order.address?.pincode || order.address?.zipCode || ''}
+                        </p>
+                        <p>{order.address?.country || 'N/A'}</p>
+                        {order.address?.phone && (
+                          <div className="flex items-center mt-2">
+                            <Phone size={14} className="text-gray-400 mr-2" />
+                            <span>{order.address.phone}</span>
+                          </div>
+                        )}
+                      </address>
+                    </div>
                   </div>
 
                   {/* Order Summary */}
                   <div>
-                    <h4 className="text-sm uppercase tracking-wider font-medium text-gray-500 mb-4">Order Summary</h4>
-                    <div className="space-y-2">
-                      <div className="flex justify-between">
+                    <h4 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-4">
+                      Order Summary
+                    </h4>
+                    <div className="bg-gray-50 rounded-lg p-4 space-y-3">
+                      <div className="flex justify-between text-gray-700">
                         <span>Subtotal</span>
                         <span>
                           {currency}
                           {order.amount
                             ? (order.amount - (order.delivery_fee || 0) - (order.tax || 0)).toFixed(2)
-                            : '--'}
+                            : '0.00'}
                         </span>
                       </div>
-                      <div className="flex justify-between">
+                      <div className="flex justify-between text-gray-700">
                         <span>Shipping</span>
                         <span>{currency}{order.delivery_fee ? order.delivery_fee.toFixed(2) : '0.00'}</span>
                       </div>
                       {order.tax > 0 && (
-                        <div className="flex justify-between">
+                        <div className="flex justify-between text-gray-700">
                           <span>Tax</span>
                           <span>{currency}{order.tax ? order.tax.toFixed(2) : '0.00'}</span>
                         </div>
                       )}
-                      <div className="pt-2 mt-2 border-t border-gray-200 flex justify-between font-medium">
+                      <div className="pt-3 border-t border-gray-200 flex justify-between text-lg font-semibold text-gray-900">
                         <span>Total</span>
-                        <span>{currency}{order.amount ? order.amount.toFixed(2) : '--'}</span>
+                        <span>{currency}{order.amount ? order.amount.toFixed(2) : '0.00'}</span>
                       </div>
                     </div>
                   </div>
 
                   {/* Payment Method */}
                   <div>
-                    <h4 className="text-sm uppercase tracking-wider font-medium text-gray-500 mb-4">Payment Method</h4>
-                    <p>{order.paymentMethod || 'N/A'}</p>
+                    <h4 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-4">
+                      Payment Method
+                    </h4>
+                    <div className="bg-gray-50 rounded-lg p-4">
+                      <p className="text-gray-700 font-medium">{order.paymentMethod || 'N/A'}</p>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -344,8 +470,11 @@ const TrackOrder = () => {
         </div>
 
         {/* Back Button */}
-        <div className="flex justify-start mt-10">
-          <button onClick={() => window.history.back()} className="flex items-center text-gray-700 hover:text-black transition-colors">
+        <div className="flex justify-center mt-8">
+          <button
+            onClick={() => window.history.back()}
+            className="inline-flex items-center px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+          >
             <ArrowLeft size={18} className="mr-2" />
             Back to Orders
           </button>

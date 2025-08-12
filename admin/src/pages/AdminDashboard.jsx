@@ -5,10 +5,9 @@ import { Line, Bar } from "react-chartjs-2";
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, BarElement } from "chart.js";
 import { useNavigate } from "react-router-dom";
 import {
-    User, ShoppingBag, BarChart2, Edit2, X, Camera, Mail, LogOut,
+    User, ShoppingBag, BarChart2, Edit2, X, Camera, Mail,
     TrendingUp, Package, Users, Calendar, Activity, Shield,
-    Settings, Bell, Eye, ArrowUpRight, ArrowDownRight,
-    IndianRupee
+    Settings, Eye, ArrowUpRight, IndianRupee
 } from "lucide-react";
 import { jwtDecode } from "jwt-decode";
 
@@ -39,13 +38,6 @@ const AdminPanel = ({ token, setToken }) => {
         };
         if (token) fetchAdminData();
     }, [token, navigate]);
-
-    const logout = () => {
-        if (window.confirm("Are you sure you want to log out?")) {
-            localStorage.removeItem("token");
-            setToken("");
-        }
-    };
 
     return (
         <div className="flex flex-col w-full min-h-screen bg-background">
@@ -85,14 +77,6 @@ const AdminPanel = ({ token, setToken }) => {
                             >
                                 <User size={14} />
                                 <span className="hidden sm:inline">Profile</span>
-                            </button>
-
-                            <button
-                                onClick={logout}
-                                className="p-2 text-secondary hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-200"
-                                title="Sign Out"
-                            >
-                                <LogOut size={16} />
                             </button>
                         </div>
                     </div>
@@ -199,52 +183,6 @@ const AdminDashboard = ({ token, adminData }) => {
 
     return (
         <div className="max-w-7xl mx-auto space-y-6">
-            {/* Admin Welcome Card */}
-            {adminData && (
-                <div className="bg-secondary text-text rounded-2xl shadow-lg border border-primary/20 overflow-hidden">
-                    <div className="p-6">
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-4">
-                                <div className="w-16 h-16 rounded-2xl border-3 border-text/20 overflow-hidden shadow-lg bg-text/10 backdrop-blur">
-                                    <img
-                                        src={adminData.image || 'https://via.placeholder.com/64'}
-                                        alt="Admin"
-                                        className="w-full h-full object-cover"
-                                    />
-                                </div>
-                                <div>
-                                    <div className="flex items-center gap-2 mb-2">
-                                        <h2 className="text-2xl font-bold">{adminData.name}</h2>
-                                    </div>
-                                    <p className="text-text/80 flex items-center gap-2 mb-1">
-                                        <Mail size={16} />
-                                        {adminData.email}
-                                    </p>
-                                    <div className="flex items-center gap-4 text-sm text-text/70">
-                                        <span className="flex items-center gap-1">
-                                            <Calendar size={14} />
-                                            Admin since {new Date(adminData.createdAt).toLocaleDateString()}
-                                        </span>
-                                        <span className="flex items-center gap-1">
-                                            <Activity size={14} />
-                                            Online
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="text-right">
-                                <p className="text-sm text-text/70">Last Login</p>
-                                <p className="text-lg font-semibold">{new Date().toLocaleDateString()}</p>
-                                <div className="flex items-center gap-1 mt-1">
-                                    <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                                    <span className="text-xs text-text/80">Active Now</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
-
             {/* Stats Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                 <div className="bg-text rounded-2xl shadow-sm border border-primary/10 p-6 hover:shadow-md transition-shadow">
@@ -528,12 +466,12 @@ const AdminProfile = ({ token, adminData, setAdminData }) => {
 
                                 <div className="bg-gradient-to-br from-background/30 to-background/10 rounded-xl p-4 border border-primary/10">
                                     <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-                                            <Settings size={20} className="text-purple-600" />
+                                        <div className="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center">
+                                            <Calendar size={20} className="text-yellow-600" />
                                         </div>
                                         <div>
-                                            <p className="text-sm text-secondary">Permissions</p>
-                                            <p className="font-semibold text-primary">Full Access</p>
+                                            <p className="text-sm text-secondary">Last Login</p>
+                                            <p className="font-semibold text-primary">{new Date().toLocaleDateString()}</p>
                                         </div>
                                     </div>
                                 </div>

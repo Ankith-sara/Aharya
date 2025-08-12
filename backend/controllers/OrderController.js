@@ -117,14 +117,14 @@ const verifyStripe = async (req, res) => {
 // Placeing orders using Razorpay Method
 const placeOrderRazorpay = async (req, res) => {
   try {
-    const { amount } = req.body;
+    const { userId, items, amount, address } = req.body;
 
     if (!amount) {
       return res.status(400).json({ success: false, message: "Amount required" });
     }
 
     const options = {
-      amount: amount * 100, // in paise
+      amount: amount * 100,
       currency: "INR",
       receipt: `receipt_order_${Date.now()}`,
     };
