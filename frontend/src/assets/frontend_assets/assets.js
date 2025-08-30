@@ -17,6 +17,7 @@ import cross_icon from './cross_icon.png'
 import seller_1 from './seller_1.jpg'
 import seller_2 from './seller_2.jpg'
 import mallesh_img from './mallesh.jpg'
+import indian from './india.svg'
 
 export const assets = {
     logo,
@@ -36,6 +37,7 @@ export const assets = {
     seller_1,
     seller_2,
     mallesh_img,
+    indian
 }
 
 export const products = [

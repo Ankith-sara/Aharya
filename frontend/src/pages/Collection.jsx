@@ -3,7 +3,7 @@ import { ShopContext } from '../context/ShopContext';
 import Title from '../components/Title';
 import ProductItem from '../components/ProductItem';
 import RecentlyViewed from '../components/RecentlyViewed';
-import { ChevronLeft, ChevronRight, ChevronDown, Filter, SlidersHorizontal, X, ShoppingBag, GridIcon, ListIcon, Check } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ChevronDown, Filter, SlidersHorizontal, X, ShoppingBag, GridIcon, ListIcon, Check, Gift, DollarSign, Star } from 'lucide-react';
 
 const Collection = () => {
   const { products = [], search, showSearch, navigate, currency } = useContext(ShopContext);
@@ -16,6 +16,9 @@ const Collection = () => {
   const [subCategory, setSubCategory] = useState([]);
   const [priceRange, setPriceRange] = useState({ min: 0, max: 10000 });
   const [sortType, setSortType] = useState('relevant');
+  const [giftingIdea, setGiftingIdea] = useState(false);
+  const [budgetFriendly, setBudgetFriendly] = useState(false);
+  const [rareItems, setRareItems] = useState(false);
   const [activeFiltersCount, setActiveFiltersCount] = useState(0);
 
   // Pagination state
@@ -24,13 +27,47 @@ const Collection = () => {
 
   // Extract unique categories and subcategories
   const categories = [...new Set(products.map(product => product.category).filter(Boolean))];
-  const subCategories = [...new Set(products.map(product => product.subCategory).filter(Boolean))];
+  
+  // Filter subcategories based on selected categories
+  const getFilteredSubCategories = () => {
+    if (category.length === 0) {
+      // If no categories are selected, show all subcategories
+      return [...new Set(products.map(product => product.subCategory).filter(Boolean))];
+    } else {
+      // Only show subcategories from selected categories
+      return [...new Set(
+        products
+          .filter(product => category.includes(product.category))
+          .map(product => product.subCategory)
+          .filter(Boolean)
+      )];
+    }
+  };
+
+  const filteredSubCategories = getFilteredSubCategories();
 
   const toggleCategory = (e) => {
-    if (category.includes(e.target.value)) {
-      setCategory(category.filter(item => item !== e.target.value));
+    const selectedCategory = e.target.value;
+    let newCategories;
+    
+    if (category.includes(selectedCategory)) {
+      newCategories = category.filter(item => item !== selectedCategory);
     } else {
-      setCategory(prev => [...prev, e.target.value]);
+      newCategories = [...category, selectedCategory];
+    }
+    
+    setCategory(newCategories);
+    
+    // Clear subcategories that are no longer valid for the new category selection
+    if (newCategories.length > 0) {
+      const validSubCategories = [...new Set(
+        products
+          .filter(product => newCategories.includes(product.category))
+          .map(product => product.subCategory)
+          .filter(Boolean)
+      )];
+      
+      setSubCategory(prev => prev.filter(sub => validSubCategories.includes(sub)));
     }
   };
 
@@ -47,6 +84,9 @@ const Collection = () => {
     setSubCategory([]);
     setPriceRange({ min: 0, max: 10000 });
     setSortType('relevant');
+    setGiftingIdea(false);
+    setBudgetFriendly(false);
+    setRareItems(false);
   };
 
   // Count active filters for the badge
@@ -56,8 +96,11 @@ const Collection = () => {
     if (subCategory.length > 0) count++;
     if (priceRange.min > 0 || priceRange.max < 10000) count++;
     if (sortType !== 'relevant') count++;
+    if (giftingIdea) count++;
+    if (budgetFriendly) count++;
+    if (rareItems) count++;
     setActiveFiltersCount(count);
-  }, [category, subCategory, priceRange, sortType]);
+  }, [category, subCategory, priceRange, sortType, giftingIdea, budgetFriendly, rareItems]);
 
   const applyFilter = () => {
     let productsCopy = products.slice();
@@ -78,6 +121,27 @@ const Collection = () => {
     productsCopy = productsCopy.filter(
       (item) => item.price >= priceRange.min && item.price <= priceRange.max
     );
+
+    // Gifting Idea filter
+    if (giftingIdea) {
+      productsCopy = productsCopy.filter(
+        (item) => item.giftable === true || item.category === 'Gift Sets' || item.price <= 2000
+      );
+    }
+
+    // Budget Friendly filter (under 1000)
+    if (budgetFriendly) {
+      productsCopy = productsCopy.filter(
+        (item) => item.price < 1000
+      );
+    }
+
+    // Rare items filter
+    if (rareItems) {
+      productsCopy = productsCopy.filter(
+        (item) => item.rare === true || item.limited === true || item.stock < 5
+      );
+    }
 
     setFilterProducts(productsCopy);
     setCurrentPage(1);
@@ -105,7 +169,7 @@ const Collection = () => {
   // Apply filtering only when dependencies change
   useEffect(() => {
     applyFilter();
-  }, [category, subCategory, search, showSearch, products, priceRange]);
+  }, [category, subCategory, search, showSearch, products, priceRange, giftingIdea, budgetFriendly, rareItems]);
 
   // Apply sorting logic after filtering
   useEffect(() => {
@@ -217,19 +281,82 @@ const Collection = () => {
         </div>
       </div>
 
-      {/* Sub Categories */}
+      {/* Sub Categories - Only show if there are filtered subcategories */}
+      {filteredSubCategories.length > 0 && (
+        <div>
+          <h4 className="text-xs uppercase tracking-wider font-medium mb-2">
+            Type
+            {category.length > 0 && (
+              <span className="text-gray-500 font-normal ml-1">
+                ({category.length === 1 ? `for ${category[0]}` : 'for selected categories'})
+              </span>
+            )}
+          </h4>
+          <div className="flex flex-col gap-2 text-gray-700">
+            {filteredSubCategories.map((item) => (
+              <label key={item} className="flex items-center gap-2 cursor-pointer hover:text-black transition-colors">
+                <div className={`w-3 h-3 border rounded flex items-center justify-center ${subCategory.includes(item) ? 'bg-black border-black' : 'border-gray-400'}`}>
+                  {subCategory.includes(item) && <Check size={8} className="text-white" />}
+                </div>
+                <input className="sr-only" type="checkbox" value={item} checked={subCategory.includes(item)} onChange={toggleSubCategory} />
+                <span className="text-xs">{item}</span>
+              </label>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Special Filters */}
       <div>
-        <h4 className="text-xs uppercase tracking-wider font-medium mb-2">Type</h4>
-        <div className="flex flex-col gap-2 text-gray-700">
-          {subCategories.map((item) => (
-            <label key={item} className="flex items-center gap-2 cursor-pointer hover:text-black transition-colors">
-              <div className={`w-3 h-3 border rounded flex items-center justify-center ${subCategory.includes(item) ? 'bg-black border-black' : 'border-gray-400'}`}>
-                {subCategory.includes(item) && <Check size={8} className="text-white" />}
+        <h4 className="text-xs uppercase tracking-wider font-medium mb-2">Special Collections</h4>
+        <div className="space-y-2">
+          <label className="flex items-center gap-2 cursor-pointer text-xs">
+            <div className="relative">
+              <input 
+                type="checkbox" 
+                checked={giftingIdea} 
+                onChange={(e) => setGiftingIdea(e.target.checked)}
+                className="sr-only"
+              />
+              <div className={`w-4 h-4 border border-gray-300 rounded flex items-center justify-center ${giftingIdea ? 'bg-black border-black' : 'bg-white'}`}>
+                {giftingIdea && <Check size={10} className="text-white" />}
               </div>
-              <input className="sr-only" type="checkbox" value={item} checked={subCategory.includes(item)} onChange={toggleSubCategory} />
-              <span className="text-xs">{item}</span>
-            </label>
-          ))}
+            </div>
+            <Gift size={12} className="text-gray-600" />
+            <span>Gifting Ideas</span>
+          </label>
+          
+          <label className="flex items-center gap-2 cursor-pointer text-xs">
+            <div className="relative">
+              <input 
+                type="checkbox" 
+                checked={budgetFriendly} 
+                onChange={(e) => setBudgetFriendly(e.target.checked)}
+                className="sr-only"
+              />
+              <div className={`w-4 h-4 border border-gray-300 rounded flex items-center justify-center ${budgetFriendly ? 'bg-black border-black' : 'bg-white'}`}>
+                {budgetFriendly && <Check size={10} className="text-white" />}
+              </div>
+            </div>
+            <DollarSign size={12} className="text-gray-600" />
+            <span>Budget Friendly (Under ₹1K)</span>
+          </label>
+          
+          <label className="flex items-center gap-2 cursor-pointer text-xs">
+            <div className="relative">
+              <input 
+                type="checkbox" 
+                checked={rareItems} 
+                onChange={(e) => setRareItems(e.target.checked)}
+                className="sr-only"
+              />
+              <div className={`w-4 h-4 border border-gray-300 rounded flex items-center justify-center ${rareItems ? 'bg-black border-black' : 'bg-white'}`}>
+                {rareItems && <Check size={10} className="text-white" />}
+              </div>
+            </div>
+            <Star size={12} className="text-gray-600" />
+            <span>Rare & Limited</span>
+          </label>
         </div>
       </div>
     </div>

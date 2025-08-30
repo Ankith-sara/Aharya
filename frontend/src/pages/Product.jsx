@@ -236,6 +236,36 @@ const Product = () => {
               )}
             </div>
 
+            {/* Artisan Story Dropdown */}
+            <div className="border-b border-gray-200">
+              <button onClick={() => toggleSection('artisan')} className="w-full py-4 px-6 flex justify-between items-center text-left font-medium transition-colors hover:bg-gray-50">
+                ARTISAN STORY
+                {expandedSection === 'artisan' ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+              </button>
+              {expandedSection === 'artisan' && (
+                <div className="p-6 pt-0 text-gray-600">
+                  <div className="space-y-4">
+                    <div>
+                      <h4 className="font-medium text-black mb-2">Master Craftsman: Rajesh Kumar</h4>
+                      <p className="text-sm">With over 25 years of experience, Rajesh Kumar leads a team of skilled artisans in the historic textile region of Varanasi. His workshop has been creating exquisite handwoven pieces for three generations, preserving traditional techniques passed down through his family.</p>
+                    </div>
+                    <div>
+                      <h4 className="font-medium text-black mb-2">Origin & Technique</h4>
+                      <p className="text-sm">This piece originates from the vibrant looms of Uttar Pradesh, where time-honored weaving traditions meet contemporary design. Each thread is carefully selected and hand-dyed using natural pigments, ensuring rich, lasting colors that tell a story of cultural heritage.</p>
+                    </div>
+                    <div>
+                      <h4 className="font-medium text-black mb-2">Crafting Process</h4>
+                      <p className="text-sm">Every garment takes approximately 15-20 days to complete. The intricate patterns are created using traditional hand-block printing techniques, where wooden blocks carved by local artisans are used to create unique motifs that reflect the region's artistic legacy.</p>
+                    </div>
+                    <div>
+                      <h4 className="font-medium text-black mb-2">Community Impact</h4>
+                      <p className="text-sm">By choosing this piece, you're directly supporting a community of 12 artisan families. Your purchase helps preserve centuries-old craft traditions while providing sustainable livelihoods to skilled craftspeople and their families.</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
             {/* Wash Care Dropdown */}
             <div className="border-b border-gray-200">
               <button onClick={() => toggleSection('washcare')} className="w-full py-4 px-6 flex justify-between items-center text-left font-medium transition-colors hover:bg-gray-50">
