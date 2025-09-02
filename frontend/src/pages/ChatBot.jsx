@@ -9,7 +9,7 @@ const ChatBot = () => {
   const fileInputRef = useRef(null);
   const chatContainerRef = useRef(null);
 
-  const API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyCzIdhyHN32U-_wISUuBogESfAJCHNOa00";
+  const API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyA4jOuoOcaGxCT_zQ8TDVpA_XQyUyLFCTs";
 
   const generateAnswer = async () => {
     if (!question.trim() && !image) return;

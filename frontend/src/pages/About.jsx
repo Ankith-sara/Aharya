@@ -4,7 +4,7 @@ import NewsletterBox from '../components/NewsletterBox';
 import OurPolicy from '../components/OurPolicy';
 import Title from '../components/Title';
 import { ChevronDown, ChevronUp } from "lucide-react";
-import IndianMap from '../components/IndanMap';
+import IndianMap from '../components/IndianMap';
 
 const About = () => {
   const [showFullStory, setShowFullStory] = useState(false);
@@ -148,7 +148,7 @@ const About = () => {
 
             {/* Story Content */}
             <div className="lg:col-span-3">
-              <div className="bg-white shadow-2xl p-12 border-l-4 border-black hover:shadow-3xl transition-all duration-500">
+              <div className="bg-white shadow-lg p-12 border-l-4 border-black hover:shadow-xl transition-all duration-500">
                 <div className="mb-8">
                   <h3 className="text-2xl font-light mb-2 tracking-wider text-black">
                     Meet Mallesh Anna
@@ -239,7 +239,7 @@ const About = () => {
               }
             ].map((craft, index) => (
               <div key={index} className="group">
-                <div className="overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500">
+                <div className="overflow-hidden hover:shadow-lg transition-all duration-500">
                   <div className="relative h-80 overflow-hidden">
                     <img
                       src={craft.image}

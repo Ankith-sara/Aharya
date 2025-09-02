@@ -12,11 +12,6 @@ function WhatWeDo() {
         { video: "https://res.cloudinary.com/dfzhqsfp7/video/upload/v1751704393/IMG_2973_f9oiwa.mov", image: "https://res.cloudinary.com/dfzhqsfp7/image/upload/v1752148793/IMG_2973_exported_1350_nwvpgm.jpg" },
         { video: "https://res.cloudinary.com/dfzhqsfp7/video/upload/v1751704388/IMG_2975_gjpdz9.mov", image: "https://res.cloudinary.com/dfzhqsfp7/image/upload/v1752148793/IMG_2975_exported_0_hojskt.jpg" },
         { video: "https://res.cloudinary.com/dfzhqsfp7/video/upload/v1751704385/IMG_2974_nje89b.mov", image: "https://res.cloudinary.com/dfzhqsfp7/image/upload/v1752148793/IMG_2974_exported_1600_lfcasj.jpg" },
-        { video: "https://cdn.shopify.com/videos/c/o/v/5b5ac6ebace54f98b6b182bf010a0d8e.mp4", image: "https://okhai.org/cdn/shop/files/6_30d3ac88-1ebc-4266-b286-09e49e8657ca.jpg?v=1717074927" },
-        { video: "https://cdn.shopify.com/videos/c/o/v/815f45ef2a194964915d7cbf3c0fd917.mp4", image: "https://okhai.org/cdn/shop/files/4_4c3d5560-9929-4aa3-98ea-7308400648d3.jpg?v=1717074607" },
-        { video: "https://cdn.shopify.com/videos/c/o/v/96b5ebb5133d4d2e8e9234c29028da5a.mp4", image: "https://okhai.org/cdn/shop/files/9_b65e0850-ad23-4ddd-9134-1c6e4978ad3a.jpg?v=1717074727" },
-        { video: "https://cdn.shopify.com/videos/c/o/v/5b5ac6ebace54f98b6b182bf010a0d8e.mp4", image: "https://okhai.org/cdn/shop/files/6_30d3ac88-1ebc-4266-b286-09e49e8657ca.jpg?v=1717074927" },
-        { video: "https://cdn.shopify.com/videos/c/o/v/1cf28b97a88c4bd8b7b2d22b310cbb9b.mp4", image: "https://okhai.org/cdn/shop/files/10_cf6822f4-6768-447a-ad7e-ce55ba28b7c8.jpg?v=1717074830" }
     ];
 
     const totalPages = Math.ceil(videos.length / videosPerPage);
@@ -77,7 +72,7 @@ function WhatWeDo() {
     return (
         <section className="py-10 px-4 sm:px-6 md:px-10 lg:px-20">
             <div className="max-w-7xl mx-auto">
-                <div className="text-center mb-12">
+                <div className="text-center mb-10">
                     <Title text1="WHAT" text2="WE DO" />
                     <p className="mt-2 max-w-3xl mx-auto text-gray-600 text-sm md:text-base">
                         At Aharyas, we partner with skilled Indian artisans to bring you unique, handcrafted clothing, toys, décor, and accessories.
@@ -106,7 +101,7 @@ function WhatWeDo() {
                                     <div className="relative aspect-[3/4] overflow-hidden shadow-md group">
                                         {!playingVideo[index] ? (
                                             <>
-                                                <img src={item.image} alt={`Story ${index + 1}`} className="w-full h-full object-cover" />
+                                                <img src={item.image} alt={`Story ${index + 1}`} className="w-full h-full object-center" />
                                                 <div className="absolute inset-0 bg-black bg-opacity-30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center cursor-pointer" onClick={() => playVideo(index)}>
                                                     <div className="w-16 h-16 rounded-full bg-white bg-opacity-90 flex items-center justify-center">
                                                         <Play size={24} fill="black" className="ml-1" />
