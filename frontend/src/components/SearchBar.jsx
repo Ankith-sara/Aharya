@@ -19,10 +19,18 @@ const SearchBar = () => {
     if (!showSearch || !visible) return null;
 
     return (
-        <div className="border-t border-secondary bg-primary py-4 px-4 text-center mt-20 mb-[-80px]">
-            <div className="flex items-center justify-center bg-white border-2 border-secondary rounded-md px-5 py-3 mx-auto max-w-xl">
-                <input  className="flex-1 outline-none bg-transparent text-text text-sm md:text-base placeholder-text-light px-2"  type="text"  value={search || ''}  onChange={(e) => setSearch?.(e.target.value)}  placeholder="Search for products..."  aria-label="Search" />
-                <button  type="button"  className="focus:outline-none hover:scale-110 transition-transform duration-300">
+        <div className="border-t border-black bg-white py-4 px-4 text-center mt-20 mb-[-80px]">
+            <div className="flex items-center justify-center bg-white border-2 border-black rounded-md px-5 py-3 mx-auto max-w-xl">
+                <input 
+                className="flex-1 outline-none bg-transparent text-black text-sm md:text-base placeholder-gray-500 px-2" 
+                type="text" 
+                value={search || ''} 
+                onChange={(e) => setSearch?.(e.target.value)} 
+                placeholder="Search for products..." 
+                aria-label="Search" />
+                <button 
+                type="button" 
+                className="focus:outline-none hover:scale-110 transition-transform duration-300">
                     <img className="w-5 h-5" src={assets.search_icon} alt="Search Icon" />
                 </button>
                 <button onClick={() => setShowSearch?.(false)} >

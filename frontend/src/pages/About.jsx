@@ -19,7 +19,6 @@ const About = () => {
       <section className="py-24 px-4 sm:px-8 md:px-10 lg:px-20">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-            {/* Image First */}
             <div className="relative order-2 lg:order-1">
               <div className="relative overflow-hidden rounded-none shadow-2xl">
                 <img
@@ -29,12 +28,10 @@ const About = () => {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
               </div>
-              {/* Decorative Elements */}
               <div className="absolute -top-8 -left-8 w-16 h-16 border border-black/20"></div>
               <div className="absolute -bottom-8 -right-8 w-16 h-16 border border-black/20"></div>
             </div>
 
-            {/* Content */}
             <div className="order-1 lg:order-2">
               <div className="text-3xl text-center mb-6">
                 <Title text1="ABOUT" text2="AHARYAS" />
@@ -97,7 +94,7 @@ const About = () => {
         </div>
       </section>
 
-      {/* What Drives Us - Refined Quote Section */}
+      {/* What Drives Us */}
       <section className="py-24 px-4 sm:px-8 md:px-10 lg:px-20">
         <div className="max-w-5xl mx-auto text-center">
           <div className="mb-6">
@@ -120,7 +117,7 @@ const About = () => {
         </div>
       </section>
 
-      {/* Artisan Stories - Premium Layout */}
+      {/* Artisan Stories */}
       <section className="py-24 px-4 sm:px-8 md:px-10 lg:px-20 bg-gradient-to-b from-white to-stone-50">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-20">
@@ -133,7 +130,6 @@ const About = () => {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-16 items-start">
-            {/* Image */}
             <div className="lg:col-span-2">
               <div className="relative">
                 <img
@@ -146,7 +142,6 @@ const About = () => {
               </div>
             </div>
 
-            {/* Story Content */}
             <div className="lg:col-span-3">
               <div className="bg-white shadow-lg p-12 border-l-4 border-black hover:shadow-xl transition-all duration-500">
                 <div className="mb-8">
@@ -203,7 +198,7 @@ const About = () => {
         </div>
       </section>
 
-      {/* The Crafts We Celebrate - Gallery Style */}
+      {/* The Crafts We Celebrate */}
       <section className="py-24 px-4 sm:px-8 md:px-10 lg:px-20">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-20">
@@ -260,7 +255,7 @@ const About = () => {
         </div>
       </section>
 
-      {/* Our Journey - Immersive Section */}
+      {/* Our Journey */}
       <section className="relative py-32 overflow-hidden">
         <div className="absolute inset-0">
           <img
@@ -296,7 +291,7 @@ const About = () => {
       </section>
 
       {/* Our Policies */}
-      <section className="bg-stone-50">
+      <section className="">
         <OurPolicy />
       </section>
 

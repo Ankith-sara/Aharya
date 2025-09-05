@@ -40,8 +40,6 @@ const Collections = () => {
         <div className="text-center mb-10">
           <Title text1="EXPLORE THE" text2="COLLECTIONS" />
         </div>
-
-        {/* Featured collections grid */}
         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {categories.map((category, index) => (
             <div key={category.name} className="flex flex-col h-full">

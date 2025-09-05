@@ -3,6 +3,7 @@ import { assets } from '../assets/frontend_assets/assets';
 
 const Hero = () => {
   const lettersRef = useRef([]);
+  const videoRef = useRef(null);
 
   useEffect(() => {
     // Animation for letters
@@ -14,6 +15,10 @@ const Hero = () => {
         }, 200 * index);
       });
     }
+
+  if (videoRef.current) {
+      videoRef.current.playbackRate = 1.15;
+    }
   }, []);
 
   const brandName = "AHARYAS";
@@ -22,6 +27,7 @@ const Hero = () => {
     <div className="relative w-full h-screen overflow-hidden m-0 p-0">
       {/* Background Video */}
       <video
+        ref={videoRef}
         autoPlay
         loop
         muted
@@ -58,7 +64,6 @@ const Hero = () => {
         </p>
       </div>
 
-      {/* CSS for animations */}
       <style>{`
         .letter-animation {
           transition: transform 0.8s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.6s ease;

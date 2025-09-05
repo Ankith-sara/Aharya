@@ -132,18 +132,10 @@ const ShopContextProvider = (props) => {
         }
     }
 
+    // RecentlyViewed Products
     const addProductToRecentlyViewed = (product) => {
         let viewedProducts = JSON.parse(localStorage.getItem('recentlyViewed')) || [];
-
-        // If the latest viewed product (index 0) is the same as current, do nothing
-        if (viewedProducts.length > 0 && viewedProducts[0]._id === product._id) {
-            return;
-        }
-
-        // Remove if already exists elsewhere
         viewedProducts = viewedProducts.filter(p => p._id !== product._id);
-
-        // Add to the start
         viewedProducts.unshift({
             _id: product._id,
             name: product.name,
@@ -151,17 +143,25 @@ const ShopContextProvider = (props) => {
             images: product.images,
         });
 
-        // Keep only 5
-        if (viewedProducts.length > 5) {
-            viewedProducts = viewedProducts.slice(1, 6);
-        }
-
+        viewedProducts = viewedProducts.slice(0, 5);
         localStorage.setItem('recentlyViewed', JSON.stringify(viewedProducts));
     };
 
-    const getRecentlyViewed = () => {
+    const getRecentlyViewed = (allProducts = []) => {
         try {
-            const viewedProducts = JSON.parse(localStorage.getItem('recentlyViewed')) || [];
+            let viewedProducts = JSON.parse(localStorage.getItem('recentlyViewed')) || [];
+
+            if (allProducts.length > 0) {
+                viewedProducts = viewedProducts.map(vp => {
+                    const updated = allProducts.find(p => p._id === vp._id);
+                    return updated ? {
+                        _id: updated._id,
+                        name: updated.name,
+                        price: updated.price,
+                        images: updated.images,
+                    } : vp;
+                });
+            }
             return viewedProducts;
         } catch (error) {
             console.error('Failed to parse recently viewed products:', error);

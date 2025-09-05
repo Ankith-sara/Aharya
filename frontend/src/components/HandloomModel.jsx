@@ -18,17 +18,9 @@ const HandloomModal = ({ title, description, onClose }) => {
   const hasMultipleCrafts = crafts.length > 1;
 
   return (
-    <div 
-      className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4"
-      onClick={onClose}
-    >
-      <div
-        className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto relative transform transition-all duration-300 ease-out"
-        onClick={e => e.stopPropagation()}
-      >
-        {/* Header */}
+    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4" onClick={onClose}>
+      <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto relative transform transition-all duration-300 ease-out" onClick={e => e.stopPropagation()}>
         <div className="relative bg-gradient-to-r from-gray-50 to-white p-8 rounded-t-2xl border-b border-gray-100">
-          {/* Decorative corner elements */}
           <div className="absolute top-4 left-4 w-16 h-16 border-l-2 border-t-2 border-black opacity-20"></div>
           <div className="absolute top-4 right-4 w-16 h-16 border-r-2 border-t-2 border-black opacity-20"></div>
           
@@ -40,20 +32,14 @@ const HandloomModal = ({ title, description, onClose }) => {
                   {title}
                 </h2>
               </div>
-              <button
-                onClick={onClose}
-                className="w-10 h-10 bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center group border border-gray-200"
-                aria-label="Close modal"
-              >
+              <button onClick={onClose} className="w-10 h-10 bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center group border border-gray-200" aria-label="Close modal">
                 <X className="w-5 h-5 text-gray-600 group-hover:text-black transition-colors" />
               </button>
             </div>
-            
             <div className="w-24 h-1 bg-black"></div>
           </div>
         </div>
 
-        {/* Content */}
         <div className="p-8">
           {/* Stats Header */}
           <div className="flex items-center justify-between mb-8 p-6 bg-gray-50 rounded-lg">
@@ -77,7 +63,6 @@ const HandloomModal = ({ title, description, onClose }) => {
             </div>
           </div>
 
-          {/* Craft Details */}
           <div>
             <h3 className="text-xl font-semibold text-black mb-6 uppercase tracking-wider">
               Heritage Crafts of {title}
@@ -120,7 +105,6 @@ const HandloomModal = ({ title, description, onClose }) => {
             )}
           </div>
 
-          {/* Quote Section */}
           {crafts.length > 0 && (
             <div className="mt-8 bg-gradient-to-r from-gray-100 to-transparent rounded-lg p-6 border-l-4 border-black">
               <p className="text-gray-700 italic text-center">
@@ -131,16 +115,12 @@ const HandloomModal = ({ title, description, onClose }) => {
           )}
         </div>
 
-        {/* Footer */}
         <div className="bg-gray-50 px-8 py-6 rounded-b-2xl border-t border-gray-100">
           <div className="flex items-center justify-between">
             <div className="text-sm text-gray-600">
               Part of Aharyas Heritage Collection
             </div>
-            <button
-              onClick={onClose}
-              className="bg-black text-white px-6 py-2 rounded-lg hover:bg-gray-800 transition-colors duration-200 font-medium"
-            >
+            <button onClick={onClose} className="bg-black text-white px-6 py-2 rounded-lg hover:bg-gray-800 transition-colors duration-200 font-medium">
               Explore More
             </button>
           </div>

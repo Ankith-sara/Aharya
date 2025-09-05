@@ -363,7 +363,7 @@ const Collection = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50 px-4 sm:px-6 md:px-8 lg:px-12 py-8 mt-20">
+    <div className="min-h-screen px-4 sm:px-6 md:px-8 lg:px-12 py-8 mt-20">
       <div className="flex flex-col md:flex-row justify-between items-center mb-6">
         <Title text1="AHARYAS" text2="COLLECTION" />
 

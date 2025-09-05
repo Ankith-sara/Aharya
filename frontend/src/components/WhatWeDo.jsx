@@ -9,8 +9,8 @@ function WhatWeDo() {
     const [videosPerPage, setVideosPerPage] = useState(3);
 
     const videos = [
-        { video: "https://res.cloudinary.com/dfzhqsfp7/video/upload/v1751704393/IMG_2973_f9oiwa.mov", image: "https://res.cloudinary.com/dfzhqsfp7/image/upload/v1752148793/IMG_2973_exported_1350_nwvpgm.jpg" },
-        { video: "https://res.cloudinary.com/dfzhqsfp7/video/upload/v1751704388/IMG_2975_gjpdz9.mov", image: "https://res.cloudinary.com/dfzhqsfp7/image/upload/v1752148793/IMG_2975_exported_0_hojskt.jpg" },
+        { video: "https://res.cloudinary.com/dfzhqsfp7/video/upload/v1756957075/IMG_2973_eylnwr.mov", image: "https://res.cloudinary.com/dfzhqsfp7/image/upload/v1752148793/IMG_2973_exported_1350_nwvpgm.jpg" },
+        { video: "https://res.cloudinary.com/dfzhqsfp7/video/upload/v1751704388/IMG_2975_gjpdz9.mov", image: "https://res.cloudinary.com/dfzhqsfp7/image/upload/v1756956929/IMG_2975_exported_6566_qtxxqf.jpg" },
         { video: "https://res.cloudinary.com/dfzhqsfp7/video/upload/v1751704385/IMG_2974_nje89b.mov", image: "https://res.cloudinary.com/dfzhqsfp7/image/upload/v1752148793/IMG_2974_exported_1600_lfcasj.jpg" },
     ];
 
@@ -101,7 +101,7 @@ function WhatWeDo() {
                                     <div className="relative aspect-[3/4] overflow-hidden shadow-md group">
                                         {!playingVideo[index] ? (
                                             <>
-                                                <img src={item.image} alt={`Story ${index + 1}`} className="w-full h-full object-center" />
+                                                <img src={item.image} alt={`Story ${index + 1}`} className="w-full h-full object-cover" />
                                                 <div className="absolute inset-0 bg-black bg-opacity-30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center cursor-pointer" onClick={() => playVideo(index)}>
                                                     <div className="w-16 h-16 rounded-full bg-white bg-opacity-90 flex items-center justify-center">
                                                         <Play size={24} fill="black" className="ml-1" />
