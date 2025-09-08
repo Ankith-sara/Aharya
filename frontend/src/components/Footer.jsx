@@ -53,16 +53,16 @@ const Footer = () => {
             <h4 className="text-sm font-medium tracking-widest uppercase mb-6">Policies</h4>
             <ul className="space-y-3">
               <li>
-                <NavLink to='/' className="text-gray-400 hover:text-white transition-colors">Return Policy</NavLink>
+                <NavLink to='/refundpolicy' className="text-gray-400 hover:text-white transition-colors">Return Policy</NavLink>
               </li>
               <li>
-                <NavLink to='/' className="text-gray-400 hover:text-white transition-colors">Privacy Policy</NavLink>
+                <NavLink to='/privacypolicy' className="text-gray-400 hover:text-white transition-colors">Privacy Policy</NavLink>
               </li>
               <li>
-                <NavLink to='/' className="text-gray-400 hover:text-white transition-colors">Terms & Conditions</NavLink>
+                <NavLink to='/termsconditions' className="text-gray-400 hover:text-white transition-colors">Terms & Conditions</NavLink>
               </li>
               <li>
-                <NavLink to='/' className="text-gray-400 hover:text-white transition-colors">Shipping Policy</NavLink>
+                <NavLink to='/shippingpolicy' className="text-gray-400 hover:text-white transition-colors">Shipping Policy</NavLink>
               </li>
             </ul>
           </div>

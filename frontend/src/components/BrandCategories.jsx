@@ -6,7 +6,7 @@ const BrandCategories = () => {
   const { navigate } = useContext(ShopContext);
 
   return (
-    <section className="py-24 px-4 sm:px-8 md:px-10 lg:px-20">
+    <section className="py-10 px-4 sm:px-8 md:px-10 lg:px-20">
       <div className="max-w-7xl mx-auto">
 
         {/* Section Header */}

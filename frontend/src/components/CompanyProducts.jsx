@@ -15,7 +15,7 @@ const CompanyProducts = () => {
       const filteredProducts = products.filter(product => 
         product.company && product.company.toLowerCase() === 'biba'
       );
-      setBibaProducts(filteredProducts.slice(0, 10)); // Limit to 10 products like other components
+      setBibaProducts(filteredProducts.slice(0, 10));
     } else {
       setBibaProducts([]);
     }

@@ -24,6 +24,10 @@ import BlogPage from './pages/BlogPage';
 import ScrollToTop from './components/ScrollToTop';
 import TrackOrder from './pages/TrackOrder';
 import ChatIcon from './components/ChatIcon';
+import CancellationRefundPolicy from './pages/RefundPolicy';
+import ShippingDeliveryPolicy from './pages/DeliveryPolicy';
+import TermsConditions from './pages/TermsConditions';
+import PrivacyPolicy from './pages/PrivacyPolicy';
 
 const App = () => {
   const location = useLocation();
@@ -52,6 +56,10 @@ const App = () => {
         <Route path='/profile/:id' element={<MyProfile />} />
         <Route path='/sell' element={<Sell />} />
         <Route path='/blog' element={<BlogPage />} />
+        <Route path='/refundpolicy' element={<CancellationRefundPolicy />} />
+        <Route path='/shippingpolicy' element={<ShippingDeliveryPolicy />} />
+        <Route path='/termsconditions' element={<TermsConditions />} />
+        <Route path='/privacypolicy' element={<PrivacyPolicy />} />
         <Route path='/aa-chatbot' element={<ChatBot />} />
         <Route path='/try-on' element={<VirtualTryOn />} />
       </Routes>
