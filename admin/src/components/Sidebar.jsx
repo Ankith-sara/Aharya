@@ -96,7 +96,6 @@ const Sidebar = ({ token, setToken }) => {
             <div className="absolute -right-3 top-1/2 transform -translate-y-1/2 w-1 h-8 bg-text rounded-l-full" />
           )}
 
-          {/* Tooltip for collapsed state */}
           {isCollapsed && !mobile && (
             <div className="absolute left-full ml-2 px-3 py-2 bg-primary text-text text-sm rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 whitespace-nowrap z-50 shadow-xl border border-primary/30">
               <div className="flex flex-col">
@@ -113,7 +112,7 @@ const Sidebar = ({ token, setToken }) => {
 
   return (
     <>
-      {/* Mobile Menu Button */}
+      {/* Mobile Menu */}
       <div className="lg:hidden fixed top-4 left-4 z-50">
         <button
           onClick={() => setIsMobileMenuOpen(true)}
@@ -123,17 +122,14 @@ const Sidebar = ({ token, setToken }) => {
         </button>
       </div>
 
-      {/* Mobile Menu Overlay */}
       {isMobileMenuOpen && (
         <div className="lg:hidden fixed inset-0 z-40 bg-primary/20 backdrop-blur-sm" onClick={() => setIsMobileMenuOpen(false)} />
       )}
 
-      {/* Mobile Sidebar */}
       <div className={`
         lg:hidden fixed top-0 left-0 z-50 h-full w-80 bg-background shadow-2xl border-r border-primary/20 transform transition-transform duration-300 ease-in-out backdrop-blur-sm
         ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}
       `}>
-        {/* Mobile Header */}
         <div className="flex items-center justify-between p-6 border-b border-primary/20 bg-gradient-to-r from-background/30 to-background/10">
           <h2 className="text-lg font-bold text-primary">Navigation</h2>
           <button
@@ -144,28 +140,14 @@ const Sidebar = ({ token, setToken }) => {
           </button>
         </div>
 
-        {/* Mobile Navigation */}
         <div className="py-6 space-y-2">
           {navigationItems.map((item, index) => (
             <NavItem key={index} item={item} mobile={true} />
           ))}
         </div>
 
-        {/* Mobile Footer */}
         <div className="absolute bottom-0 left-0 right-0 p-6 border-t border-primary/20 bg-gradient-to-r from-background/20 to-background/10">
           <div className="space-y-3">
-            {/* User Info */}
-            <div className="flex items-center gap-3 p-3 bg-gradient-to-r from-background/30 to-background/10 rounded-xl border border-primary/10">
-              <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
-                <User size={16} className="text-text" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-primary truncate">Admin User</p>
-                <p className="text-xs text-secondary truncate">admin@example.com</p>
-              </div>
-            </div>
-            
-            {/* Logout Button */}
             <button
               onClick={handleLogout}
               className="w-full flex items-center justify-center gap-3 p-3 hover:bg-gradient-to-r hover:from-red-500/10 hover:to-red-500/5 rounded-xl transition-all duration-200 group border border-transparent hover:border-red-500/20"
@@ -182,31 +164,13 @@ const Sidebar = ({ token, setToken }) => {
         hidden lg:flex flex-col h-screen bg-background border-r border-primary/20 shadow-xl transition-all duration-300 ease-in-out backdrop-blur-sm
         ${isCollapsed ? 'w-20' : 'w-72'}
       `}>
-        {/* Navigation */}
         <div className="flex-1 p-4 space-y-2 overflow-y-auto scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
           {navigationItems.map((item, index) => (
             <NavItem key={index} item={item} />
           ))}
         </div>
 
-        {/* Footer */}
         <div className="p-4 border-t border-primary/20 bg-gradient-to-r from-background/10 to-background/5">
-          {/* User Profile */}
-          {!isCollapsed && (
-            <div className="p-3 bg-gradient-to-r from-background/30 to-background/10 rounded-xl mb-4 border border-primary/10 shadow-sm">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center shadow-md">
-                  <User size={16} className="text-text" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-primary truncate">Admin User</p>
-                  <p className="text-xs text-secondary truncate">admin@example.com</p>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Action Buttons */}
           <div className={`space-y-2 ${isCollapsed ? '' : ''}`}>
             {!isCollapsed && (
               <button
@@ -218,7 +182,6 @@ const Sidebar = ({ token, setToken }) => {
               </button>
             )}
 
-            {/* Collapse Toggle */}
             <button
               onClick={() => setIsCollapsed(!isCollapsed)}
               className={`

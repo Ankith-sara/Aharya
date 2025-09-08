@@ -3,7 +3,7 @@ import { assets } from '../assets/assets';
 import axios from 'axios';
 import { backendUrl, currency } from '../App';
 import { toast } from 'react-toastify';
-import { Upload, Package, Tag, DollarSign, Star, Image as ImageIcon, AlertCircle, CheckCircle2, Trash2, IndianRupee } from 'lucide-react';
+import { Upload, Package, Tag, Star, Image as ImageIcon, AlertCircle, CheckCircle2, Trash2, IndianRupee, Building2, Plus } from 'lucide-react';
 
 const ImageUpload = ({ id, image, setImage, onRemove, index }) => (
   <div className="relative group">
@@ -51,9 +51,18 @@ const Add = ({ token }) => {
   const [price, setPrice] = useState('');
   const [category, setCategory] = useState('Men');
   const [subCategory, setSubCategory] = useState('');
+  const [company, setCompany] = useState('Aharyas');
+  const [newCompanyName, setNewCompanyName] = useState('');
+  const [showAddCompany, setShowAddCompany] = useState(false);
   const [bestseller, setBestseller] = useState(false);
   const [sizes, setSizes] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  const [companies, setCompanies] = useState([
+    'Biba',
+    'Fabindia',
+    'W for Woman'
+  ]);
 
   const categoryData = {
     Men: {
@@ -80,6 +89,21 @@ const Add = ({ token }) => {
 
   const currentCategoryData = categoryData[category] || { subCategories: [], sizes: [] };
 
+  const handleAddNewCompany = () => {
+    if (newCompanyName.trim() && !companies.includes(newCompanyName.trim())) {
+      const updatedCompanies = [...companies, newCompanyName.trim()].sort();
+      setCompanies(updatedCompanies);
+      setCompany(newCompanyName.trim());
+      setNewCompanyName('');
+      setShowAddCompany(false);
+      toast.success(`Company "${newCompanyName.trim()}" added successfully!`);
+    } else if (companies.includes(newCompanyName.trim())) {
+      toast.error('This company already exists!');
+    } else {
+      toast.error('Please enter a valid company name.');
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -102,6 +126,7 @@ const Add = ({ token }) => {
       formData.append('price', price);
       formData.append('category', category);
       formData.append('subCategory', subCategory);
+      formData.append('company', company || 'Aharyas');
       formData.append('bestseller', bestseller);
       formData.append('sizes', JSON.stringify(sizes));
 
@@ -139,9 +164,12 @@ const Add = ({ token }) => {
     setPrice('');
     setCategory('Men');
     setSubCategory('');
+    setCompany('Aharyas');
     setBestseller(false);
     setSizes([]);
     setImages([null, null, null, null, null, null]);
+    setShowAddCompany(false);
+    setNewCompanyName('');
   };
 
   const toggleSize = (size) => {
@@ -245,6 +273,84 @@ const Add = ({ token }) => {
             </div>
           </div>
 
+          {/* Company/Brand Section */}
+          <div className="bg-text rounded-2xl shadow-sm border border-secondary p-6">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center">
+                <Building2 className="text-indigo-600" size={18} />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900">Brand/Company</h3>
+                <p className="text-sm text-gray-600">Select the brand or company for this product</p>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Company/Brand</label>
+                <div className="flex gap-3">
+                  <select
+                    onChange={(e) => setCompany(e.target.value)}
+                    value={company}
+                    className="flex-1 px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-secondary focus:border-secondary transition-colors"
+                  >
+                    <option value="Aharyas">Aharyas</option>
+                    {companies.map((comp) => (
+                      <option key={comp} value={comp}>{comp}</option>
+                    ))}
+                  </select>
+                  <button
+                    type="button"
+                    onClick={() => setShowAddCompany(true)}
+                    className="px-4 py-3 bg-indigo-100 hover:bg-indigo-200 text-indigo-700 rounded-xl transition-colors flex items-center gap-2"
+                  >
+                    <Plus size={16} />
+                    Add New
+                  </button>
+                </div>
+              </div>
+
+              {/* Add New Company Modal/Form */}
+              {showAddCompany && (
+                <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-4">
+                  <h4 className="font-medium text-gray-900 mb-3">Add New Company</h4>
+                  <div className="flex gap-3">
+                    <input
+                      type="text"
+                      value={newCompanyName}
+                      onChange={(e) => setNewCompanyName(e.target.value)}
+                      placeholder="Enter company/brand name"
+                      className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary transition-colors"
+                      onKeyPress={(e) => e.key === 'Enter' && handleAddNewCompany()}
+                    />
+                    <button
+                      type="button"
+                      onClick={handleAddNewCompany}
+                      className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors"
+                    >
+                      Add
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {setShowAddCompany(false); setNewCompanyName('');}}
+                      className="px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-700 rounded-lg transition-colors"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Company Selection Status */}
+              <div className={`flex items-center gap-2 p-3 rounded-lg ${company ? 'text-blue-700 bg-blue-50' : 'text-gray-700 bg-gray-50'}`}>
+                <Building2 size={16} />
+                <span className="text-sm">
+                  {company ? `Selected: ${company}` : 'Product will be listed as Aharyas by default'}
+                </span>
+              </div>
+            </div>
+          </div>
+
           {/* Category & Pricing */}
           <div className="bg-text rounded-2xl shadow-sm border border-secondary p-6">
             <div className="flex items-center gap-3 mb-6">
@@ -342,18 +448,8 @@ const Add = ({ token }) => {
             </div>
           )}
 
-          {/* Additional Options */}
+          {/* Bestseller */}
           <div className="bg-text rounded-2xl shadow-sm border border-gray-200 p-6">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center">
-                <Star className="text-yellow-600" size={18} />
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900">Additional Options</h3>
-                <p className="text-sm text-gray-600">Special settings for your product</p>
-              </div>
-            </div>
-
             <div className="flex items-center gap-3 p-4 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-xl border border-yellow-200">
               <input
                 type="checkbox"

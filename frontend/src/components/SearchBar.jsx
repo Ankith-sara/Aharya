@@ -19,7 +19,7 @@ const SearchBar = () => {
     if (!showSearch || !visible) return null;
 
     return (
-        <div className="border-t border-black bg-white py-4 px-4 text-center mt-20 mb-[-80px]">
+        <div className="bg-white py-4 px-4 text-center mt-20 mb-[-80px]">
             <div className="flex items-center justify-center bg-white border-2 border-black rounded-md px-5 py-3 mx-auto max-w-xl">
                 <input 
                 className="flex-1 outline-none bg-transparent text-black text-sm md:text-base placeholder-gray-500 px-2" 

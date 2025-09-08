@@ -35,7 +35,6 @@ const Navbar = ({ token, setToken }) => {
 
   return (
     <div className="flex items-center py-4 px-6 justify-between bg-background border-b border-primary/20 backdrop-blur-sm">
-      {/* Logo Section */}
       <div className="flex items-center gap-4">
         <div className="relative">
           <div className="w-32 h-12 bg-gradient-to-br from-secondary to-secondary/80 rounded-xl flex items-center justify-center border border-primary/20">
@@ -52,7 +51,6 @@ const Navbar = ({ token, setToken }) => {
         </div>
       </div>
 
-      {/* Right Section */}
       <div className="flex items-center gap-3">
         <div className="relative">
           <button onClick={() => setShowUserMenu(!showUserMenu)} className="flex items-center gap-3 p-2 hover:bg-gradient-to-r hover:from-background/30 hover:to-background/10 rounded-xl transition-all duration-200 group">
@@ -71,7 +69,6 @@ const Navbar = ({ token, setToken }) => {
             </div>
           </button>
 
-          {/* Dropdown Menu */}
           {showUserMenu && (
             <>
               <div

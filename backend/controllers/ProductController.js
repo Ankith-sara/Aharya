@@ -4,19 +4,19 @@ import productModel from '../models/ProductModal.js';
 // Function for adding a product
 const addProduct = async (req, res) => {
     try {
-        // Destructure the request body
-        const { name, description, price, category, subCategory, bestseller, sizes } = req.body;
+        const { name, description, price, category, subCategory, bestseller, sizes, company } = req.body;
         const adminId = req.user.id;
 
-        const image1 = req.files?.image1?.[0];
-        const image2 = req.files?.image2?.[0];
-        const image3 = req.files?.image3?.[0];
-        const image4 = req.files?.image4?.[0];
-        const image5 = req.files?.image5?.[0];
-        const image6 = req.files?.image6?.[0];
+        // Handle images
+        const images = [
+            req.files?.image1?.[0],
+            req.files?.image2?.[0],
+            req.files?.image3?.[0],
+            req.files?.image4?.[0],
+            req.files?.image5?.[0],
+            req.files?.image6?.[0]
+        ].filter(Boolean);
 
-        // Handle images upload to cloudinary
-        const images = [image1, image2, image3, image4, image5, image6].filter((item) => item !== undefined);
         let imagesUrl = await Promise.all(
             images.map(async (item) => {
                 let result = await cloudinary.uploader.upload(item.path, { resource_type: 'image' });
@@ -24,8 +24,8 @@ const addProduct = async (req, res) => {
             })
         );
 
-        const parsedSizes = JSON.parse(sizes);
-        const isBestseller = bestseller === "true";
+        const parsedSizes = sizes ? JSON.parse(sizes) : [];
+        const isBestseller = bestseller === "true" || bestseller === true;
 
         // Prepare the product data
         const productData = {
@@ -37,15 +37,15 @@ const addProduct = async (req, res) => {
             bestseller: isBestseller,
             sizes: parsedSizes,
             images: imagesUrl,
-            adminId: adminId,
+            company: company || "Aharyas",
+            adminId,
             date: Date.now(),
         };
 
-        // Save the new product to the database
         const product = new productModel(productData);
         await product.save();
 
-        res.json({ success: true, message: "Product Added Successfully" });
+        res.json({ success: true, message: "Product Added Successfully", product });
     } catch (error) {
         console.error("Error in adding product:", error);
         res.status(500).json({ success: false, message: error.message });
@@ -57,7 +57,7 @@ const editProduct = async (req, res) => {
     try {
         const { id } = req.params;
         const adminId = req.user.id;
-        const { name, description, price, category, subCategory, bestseller, sizes } = req.body;
+        const { name, description, price, category, subCategory, bestseller, sizes, company } = req.body;
 
         const existingProduct = await productModel.findById(id);
         if (!existingProduct) {
@@ -75,9 +75,8 @@ const editProduct = async (req, res) => {
             req.files?.image4?.[0],
             req.files?.image5?.[0],
             req.files?.image6?.[0]
-        ].filter(item => item !== undefined);
+        ].filter(Boolean);
 
-        // Upload new images to cloudinary if provided
         let newImageUrls = [];
         if (imageFiles.length > 0) {
             newImageUrls = await Promise.all(
@@ -88,13 +87,11 @@ const editProduct = async (req, res) => {
             );
         }
 
-        // Combine existing and new images
         const updatedImages = newImageUrls.length > 0 ? newImageUrls : existingProduct.images;
 
-        const parsedSizes = JSON.parse(sizes);
+        const parsedSizes = sizes ? JSON.parse(sizes) : [];
         const isBestseller = bestseller === "true" || bestseller === true;
 
-        // Update the product data
         const updatedProduct = await productModel.findByIdAndUpdate(
             id,
             {
@@ -106,13 +103,10 @@ const editProduct = async (req, res) => {
                 bestseller: isBestseller,
                 sizes: parsedSizes,
                 images: updatedImages,
+                company: company || existingProduct.company || "Aharyas"
             },
             { new: true }
         );
-
-        if (!updatedProduct) {
-            return res.status(404).json({ success: false, message: "Product not found" });
-        }
 
         res.json({ success: true, message: "Product updated successfully", product: updatedProduct });
     } catch (error) {
@@ -121,14 +115,11 @@ const editProduct = async (req, res) => {
     }
 };
 
-// Function for listing products
+// Function for listing products (per admin)
 const listProducts = async (req, res) => {
     try {
         const adminId = req.user.id;
-        const products = await productModel.find({ adminId: adminId });
-        if (products.length === 0) {
-            return res.json({ success: true, message: "No products found" });
-        }
+        const products = await productModel.find({ adminId });
         res.json({ success: true, products });
     } catch (error) {
         console.error(error);
@@ -136,7 +127,7 @@ const listProducts = async (req, res) => {
     }
 };
 
-// List all products for customer view
+// Public list all products
 const listAllProductsPublic = async (req, res) => {
     try {
         const products = await productModel.find({});
@@ -144,29 +135,52 @@ const listAllProductsPublic = async (req, res) => {
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
-}
+};
 
-// Function for removing a product
+// Get all unique companies
+const getCompanies = async (req, res) => {
+    try {
+        const companies = await productModel.distinct("company");
+        const sortedCompanies = companies.sort((a, b) => {
+            if (a === "Independent") return 1;
+            if (b === "Independent") return -1;
+            return a.localeCompare(b);
+        });
+        res.json({ success: true, companies: sortedCompanies });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+// Get products by company
+const getProductsByCompany = async (req, res) => {
+    try {
+        const { company } = req.params;
+        const products = await productModel.find({ company }).sort({ date: -1 });
+        res.json({ success: true, products, company });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+// Remove product
 const removeProduct = async (req, res) => {
     try {
         const { id } = req.params;
         const adminId = req.user.id;
-        
-        if (!id) {
-            return res.status(400).json({ success: false, message: "Product ID is required" });
-        }
-        const deletedProduct = await productModel.findByIdAndDelete(id);
+
+        const deletedProduct = await productModel.findOneAndDelete({ _id: id, adminId });
         if (!deletedProduct) {
-            return res.status(404).json({ success: false, message: "Product not found" });
+            return res.status(404).json({ success: false, message: "Product not found or not owned by you" });
         }
         res.json({ success: true, message: "Product removed successfully" });
     } catch (error) {
         console.error("Error in removeProduct:", error);
-        res.status(500).json({ success: false, message: "Internal server error" });
+        res.status(500).json({ success: false, message: error.message });
     }
 };
 
-// Single product functionality
+// Single product
 const singleProduct = async (req, res) => {
     try {
         const { productId } = req.body;
@@ -180,8 +194,8 @@ const singleProduct = async (req, res) => {
         res.json({ success: true, product });
     } catch (error) {
         console.error("Error in Loading Product:", error);
-        res.status(500).json({ success: false, message: "Internal server error" });
+        res.status(500).json({ success: false, message: error.message });
     }
 };
 
-export { listProducts, addProduct, editProduct, listAllProductsPublic, removeProduct, singleProduct };
+export { listProducts, addProduct, editProduct, listAllProductsPublic, removeProduct, singleProduct, getCompanies, getProductsByCompany };

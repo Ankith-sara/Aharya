@@ -35,7 +35,6 @@ const ProductItem = ({ id, image, name, price }) => {
           <h3 className="text-sm font-medium text-black mb-2 tracking-wide leading-relaxed group-hover:text-gray-800 transition-colors duration-300">
             {name}
           </h3>
-          <div className="w-8 h-0.5 bg-black mb-1 group-hover:w-12 transition-all duration-300"></div>
           <div className="flex items-center justify-between">
             <p className="text-xl text-black tracking-wide">
               <span className="text-sm font-semibold text-gray-600 mr-1">{currency}</span>

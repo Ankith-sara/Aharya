@@ -6,7 +6,7 @@ import { assets } from '../assets/frontend_assets/assets';
 import { ShopContext } from '../context/ShopContext';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { CreditCard, Truck, Home } from 'lucide-react';
+import { CreditCard, Truck, Home, Shield, ArrowLeft, MapPin, Phone, Mail, User } from 'lucide-react';
 import { useEffect } from 'react';
 
 const PlaceOrder = () => {
@@ -22,6 +22,7 @@ const PlaceOrder = () => {
     country: '',
     phone: '',
   });
+  const [isLoading, setIsLoading] = useState(false);
 
   function loadRazorpayScript(src) {
     return new Promise((resolve) => {
@@ -102,7 +103,7 @@ const PlaceOrder = () => {
           } else {
             toast.error(verifyRes.data.message);
           }
-        } catch {
+        } catch (err) {
           console.error('Error verifying Razorpay payment:', err);
           toast.error('Payment verification failed.');
         }
@@ -120,6 +121,7 @@ const PlaceOrder = () => {
 
   const onSubmitHandler = async (event) => {
     event.preventDefault();
+    setIsLoading(true);
 
     const decoded = jwtDecode(token);
 
@@ -183,85 +185,191 @@ const PlaceOrder = () => {
     } catch (error) {
       console.error(error);
       toast.error(error.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-white text-black mt-20 px-4 sm:px-6 md:px-10 lg:px-20 py-10">
-      <div className="text-3xl text-center mb-12">
-        <Title text1="CHECKOUT" text2="DETAILS" />
-      </div>
-      <form onSubmit={onSubmitHandler} className="grid lg:grid-cols-[2fr_1fr] gap-8">
-        {/* Delivery Information */}
-        <div className="space-y-8">
-          <div className="border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-            <div className="p-6 border-b border-gray-200 flex items-center gap-3">
-              <Home size={22} className="text-black" />
-              <h3 className="font-medium text-lg">Delivery Information</h3>
-            </div>
-            <div className="p-6 space-y-6">
-              <div className="space-y-2">
-                <label className="block text-xs uppercase tracking-wider text-gray-900 font-medium">Name</label>
-                <input onChange={onChangeHandler} name="Name" value={formData.Name} className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black" type="text" placeholder="Enter your name" required />
-              </div>
-              <div className="space-y-2">
-                <label className="block text-xs uppercase tracking-wider text-gray-900 font-medium">Email Address</label>
-                <input onChange={onChangeHandler} name="email" value={formData.email} className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black" type="email" placeholder="Enter your email address" required />
-              </div>
-              <div className="space-y-2">
-                <label className="block text-xs uppercase tracking-wider text-gray-900 font-medium">Street Address</label>
-                <input onChange={onChangeHandler} name="street" value={formData.street} className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black" type="text" placeholder="Enter your street address" required />
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <label className="block text-xs uppercase tracking-wider text-gray-900 font-medium">City</label>
-                  <input onChange={onChangeHandler} name="city" value={formData.city} className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black" type="text" placeholder="Enter your city" required />
-                </div>
-                <div className="space-y-2">
-                  <label className="block text-xs uppercase tracking-wider text-gray-900 font-medium">State</label>
-                  <input onChange={onChangeHandler} name="state" value={formData.state} className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black" type="text" placeholder="Enter your state" required />
-                </div>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <label className="block text-xs uppercase tracking-wider text-gray-900 font-medium">Postal Code</label>
-                  <input onChange={onChangeHandler} name="pincode" value={formData.pincode} className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black" type="number" placeholder="Enter your postal code" required />
-                </div>
-                <div className="space-y-2">
-                  <label className="block text-xs uppercase tracking-wider text-gray-900 font-medium">Country</label>
-                  <input onChange={onChangeHandler} name="country" value={formData.country} className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black" type="text" placeholder="Enter your country" required />
-                </div>
-              </div>
-              <div className="space-y-2">
-                <label className="block text-xs uppercase tracking-wider text-gray-900 font-medium">Phone Number</label>
-                <input onChange={onChangeHandler} name="phone" value={formData.phone} className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black" type="number" placeholder="Enter your phone number" required />
-              </div>
-            </div>
-          </div>
+    <div className="min-h-screen bg-gray-50 mt-20 px-4 sm:px-6 md:px-10 lg:px-20 py-10">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="text-center mb-6">
+          <Title text1="CHECKOUT" text2="DETAILS" />
         </div>
 
-        {/* Order Summary */}
-        <div className="h-fit">
-          <div className="sticky top-24 bg-white border border-gray-100 rounded-2xl shadow-md overflow-hidden">
-            <div className="p-6 border-b border-gray-100">
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">Order Summary</h3>
-              <CartTotal />
-            </div>
-            <div className="p-6 space-y-4 bg-gray-50">
-              <button type="submit" className="w-full py-3 rounded-lg bg-gradient-to-r from-black to-gray-900 text-white font-semibold hover:from-gray-900 hover:to-black transition-all">
-                PLACE ORDER
-              </button>
-              <p className="text-xs text-gray-500 text-center mt-4">
-                By placing your order, you agree to our <span className="underline cursor-pointer hover:text-black">Terms of Service</span> and <span className="underline cursor-pointer hover:text-black">Privacy Policy</span>
-              </p>
+        <form onSubmit={onSubmitHandler} className="grid xl:grid-cols-[2fr_1fr] gap-8">
+          {/* Left Column - Forms */}
+          <div className="space-y-6">
+            {/* Delivery Information */}
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+              <div className="bg-black text-white p-6">
+                <div className="flex items-center gap-3">
+                  <Home size={24} className="text-gray-300" />
+                  <h2 className="text-xl font-semibold">Delivery Information</h2>
+                </div>
+              </div>
+
+              <div className="p-6 space-y-6">
+                {/* Personal Information */}
+                <div className="space-y-4">
+                  <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-4 flex items-center gap-2">
+                    <User size={16} className="text-gray-600" />
+                    Personal Details
+                  </h3>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <label className="block text-xs font-medium text-gray-700 uppercase tracking-wider">
+                        Full Name *
+                      </label>
+                      <input
+                        onChange={onChangeHandler}
+                        name="Name"
+                        value={formData.Name}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all"
+                        type="text"
+                        placeholder="Enter your full name"
+                        required
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="block text-xs font-medium text-gray-700 uppercase tracking-wider">
+                        Email Address *
+                      </label>
+                      <div className="relative">
+                        <Mail size={16} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                        <input
+                          onChange={onChangeHandler}
+                          name="email"
+                          value={formData.email}
+                          className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all"
+                          type="email"
+                          placeholder="Enter your email"
+                          required
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="block text-xs font-medium text-gray-700 uppercase tracking-wider">
+                      Phone Number *
+                    </label>
+                    <div className="relative">
+                      <Phone size={16} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                      <input
+                        onChange={onChangeHandler}
+                        name="phone"
+                        value={formData.phone}
+                        className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all"
+                        type="tel"
+                        placeholder="Enter your phone number"
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Address Information */}
+                <div className="space-y-4 pt-6 border-t border-gray-200">
+                  <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-4 flex items-center gap-2">
+                    <MapPin size={16} className="text-gray-600" />
+                    Delivery Address
+                  </h3>
+
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <label className="block text-xs font-medium text-gray-700 uppercase tracking-wider">
+                        Street Address *
+                      </label>
+                      <input
+                        onChange={onChangeHandler}
+                        name="street"
+                        value={formData.street}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all"
+                        type="text"
+                        placeholder="House number, street name, area"
+                        required
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <label className="block text-xs font-medium text-gray-700 uppercase tracking-wider">
+                          City *
+                        </label>
+                        <input
+                          onChange={onChangeHandler}
+                          name="city"
+                          value={formData.city}
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all"
+                          type="text"
+                          placeholder="Enter your city"
+                          required
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="block text-xs font-medium text-gray-700 uppercase tracking-wider">
+                          State *
+                        </label>
+                        <input
+                          onChange={onChangeHandler}
+                          name="state"
+                          value={formData.state}
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all"
+                          type="text"
+                          placeholder="Enter your state"
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <label className="block text-xs font-medium text-gray-700 uppercase tracking-wider">
+                          Postal Code *
+                        </label>
+                        <input
+                          onChange={onChangeHandler}
+                          name="pincode"
+                          value={formData.pincode}
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all"
+                          type="text"
+                          placeholder="Enter postal code"
+                          required
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="block text-xs font-medium text-gray-700 uppercase tracking-wider">
+                          Country *
+                        </label>
+                        <input
+                          onChange={onChangeHandler}
+                          name="country"
+                          value={formData.country}
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all"
+                          type="text"
+                          placeholder="Enter your country"
+                          required
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
 
             {/* Payment Method */}
-            <div className="border-t border-gray-100 bg-white">
-              <div className="p-6 border-b border-gray-100 flex items-center gap-3">
-                <CreditCard size={22} className="text-black" />
-                <h3 className="font-semibold text-lg text-gray-900">Payment Method</h3>
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+              <div className="bg-black text-white p-6">
+                <div className="flex items-center gap-3">
+                  <CreditCard size={24} className="text-gray-300" />
+                  <h2 className="text-xl font-semibold">Payment Method</h2>
+                </div>
               </div>
+
               <div className="p-6 space-y-4">
                 <PaymentOption method={method} setMethod={setMethod} type="stripe" logo={assets.stripe_logo} />
                 <PaymentOption method={method} setMethod={setMethod} type="razorpay" logo={assets.razorpay_logo} />
@@ -269,25 +377,100 @@ const PlaceOrder = () => {
               </div>
             </div>
           </div>
-        </div>
-      </form>
+
+          {/* Right Column - Order Summary */}
+          <div className="space-y-6">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden sticky top-6">
+              <div className="bg-black text-white p-6">
+                <div className="flex items-center gap-3">
+                  <Truck size={24} className="text-gray-300" />
+                  <h2 className="text-xl font-semibold">Order Summary</h2>
+                </div>
+              </div>
+
+              <div className="p-6 space-y-6">
+                <CartTotal />
+
+                <div className="space-y-4 pt-6 border-t border-gray-200">
+                  <button
+                    type="submit"
+                    disabled={isLoading}
+                    className="w-full py-4 bg-black text-white font-semibold rounded-lg hover:bg-gray-800 transition-all duration-200 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                  >
+                    {isLoading ? (
+                      <div className="flex items-center justify-center gap-2">
+                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                        Processing...
+                      </div>
+                    ) : (
+                      'PLACE ORDER'
+                    )}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => navigate('/cart')}
+                    className="w-full py-4 border-2 border-gray-300 text-gray-700 font-medium rounded-lg hover:border-black hover:text-black transition-all duration-200"
+                  >
+                    BACK TO CART
+                  </button>
+                </div>
+
+                {/* Terms */}
+                <div className="pt-4 border-t border-gray-200">
+                  <p className="text-xs text-gray-500 leading-relaxed">
+                    By placing your order, you agree to our{' '}
+                    <span className="underline cursor-pointer hover:text-black transition-colors">
+                      Terms of Service
+                    </span>{' '}
+                    and{' '}
+                    <span className="underline cursor-pointer hover:text-black transition-colors">
+                      Privacy Policy
+                    </span>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+
+      </div>
     </div>
   );
 };
 
 const PaymentOption = ({ method, setMethod, type, logo }) => (
-  <div onClick={() => setMethod(type)} className={`flex items-center gap-3 p-4 border rounded-md cursor-pointer transition-all ${method === type ? 'border-black bg-gray-50' : 'border-gray-200 hover:border-gray-300'}`}>
-    <div className={`w-5 h-5 rounded-full border border-gray-300 flex items-center justify-center ${method === type ? 'border-black' : ''}`}>
-      {method === type && <div className="w-3 h-3 bg-black rounded-full"></div>}
+  <div
+    onClick={() => setMethod(type)}
+    className={`flex items-center gap-4 p-4 border rounded-lg cursor-pointer transition-all duration-200 hover:shadow-md ${method === type
+        ? 'border-black bg-gray-50 shadow-sm'
+        : 'border-gray-200 hover:border-gray-300'
+      }`}
+  >
+    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${method === type ? 'border-black' : 'border-gray-300'
+      }`}>
+      {method === type && <div className="w-2.5 h-2.5 bg-black rounded-full"></div>}
     </div>
+
     {logo ? (
-      <img className="h-6" src={logo} alt={`${type} payment`} />
-    ) : (
-      <div className="flex items-center gap-2">
-        <div className="bg-gray-100 p-1 rounded">
-          <CreditCard size={18} />
+      <div className="flex items-center gap-3">
+        <img className="h-6 object-contain" src={logo} alt={`${type} payment`} />
+        <div className="flex flex-col">
+          <span className="font-medium text-gray-900 capitalize">{type}</span>
+          <span className="text-xs text-gray-500">
+            {type === 'stripe' ? 'Credit/Debit Cards' : 'UPI, Net Banking, Wallets'}
+          </span>
         </div>
-        <span className="font-medium">Cash on Delivery</span>
+      </div>
+    ) : (
+      <div className="flex items-center gap-3">
+        <div className="bg-gray-100 p-2 rounded-lg">
+          <CreditCard size={20} className="text-gray-600" />
+        </div>
+        <div className="flex flex-col">
+          <span className="font-medium text-gray-900">Cash on Delivery</span>
+          <span className="text-xs text-gray-500">Pay when you receive</span>
+        </div>
       </div>
     )}
   </div>

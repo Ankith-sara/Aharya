@@ -19,7 +19,9 @@ import {
   Grid,
   List as ListIcon,
   Tag,
-  DollarSign
+  DollarSign,
+  Building2,
+  Plus
 } from 'lucide-react';
 
 const ImageUpload = ({ id, image, currentImage, setImage, index, onRemove }) => (
@@ -74,7 +76,7 @@ const ProductCard = ({ item, index, onEdit, onRemove, currency }) => (
       <img
         src={item.images?.[0] || 'default-image-path.jpg'}
         alt={item.name}
-        className="w-full h-48 object-cover"
+        className="w-full h-full object-cover"
       />
       {item.bestseller && (
         <div className="absolute top-3 left-3 bg-yellow-500 text-white px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1">
@@ -99,6 +101,12 @@ const ProductCard = ({ item, index, onEdit, onRemove, currency }) => (
           </>
         )}
       </div>
+      {item.company && (
+        <div className="flex items-center gap-2 mb-2">
+          <Building2 size={14} className="text-blue-400" />
+          <span className="text-sm text-blue-600 font-medium">{item.company}</span>
+        </div>
+      )}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-1">
           <IndianRupee size={16} className="text-green-600" />
@@ -136,7 +144,16 @@ const List = ({ token }) => {
   const [images, setImages] = useState([null, null, null, null, null, null]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
-  const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'list'
+  const [viewMode, setViewMode] = useState('grid');
+
+  // Company-related states
+  const [companies, setCompanies] = useState([
+    'Biba',
+    'Fabindia',
+    'W for Woman'
+  ]);
+  const [newCompanyName, setNewCompanyName] = useState('');
+  const [showAddCompany, setShowAddCompany] = useState(false);
 
   const categoryData = {
     Men: {
@@ -169,6 +186,21 @@ const List = ({ token }) => {
     return categoryData[category]?.sizes || [];
   };
 
+  const handleAddNewCompany = () => {
+    if (newCompanyName.trim() && !companies.includes(newCompanyName.trim())) {
+      const updatedCompanies = [...companies, newCompanyName.trim()].sort();
+      setCompanies(updatedCompanies);
+      setEditedProduct(prev => ({ ...prev, company: newCompanyName.trim() }));
+      setNewCompanyName('');
+      setShowAddCompany(false);
+      toast.success(`Company "${newCompanyName.trim()}" added successfully!`);
+    } else if (companies.includes(newCompanyName.trim())) {
+      toast.error('This company already exists!');
+    } else {
+      toast.error('Please enter a valid company name.');
+    }
+  };
+
   const fetchList = async () => {
     setLoading(true);
     try {
@@ -179,6 +211,14 @@ const List = ({ token }) => {
         const products = response.data.products || [];
         setList(products);
         setFilteredList(products);
+        
+        // Extract unique companies from products to update the companies list
+        const productCompanies = [...new Set(products
+          .filter(product => product.company && product.company !== 'Aharyas')
+          .map(product => product.company))];
+        
+        const allCompanies = [...new Set([...companies, ...productCompanies])].sort();
+        setCompanies(allCompanies);
       } else {
         toast.error(`Error: ${response.data.message}`);
       }
@@ -219,6 +259,7 @@ const List = ({ token }) => {
       formData.append('price', editedProduct.price);
       formData.append('category', editedProduct.category);
       formData.append('subCategory', editedProduct.subCategory);
+      formData.append('company', editedProduct.company || 'Aharyas');
       formData.append('bestseller', editedProduct.bestseller);
       formData.append('sizes', JSON.stringify(editedProduct.sizes || []));
 
@@ -238,6 +279,8 @@ const List = ({ token }) => {
         setIsEditing(false);
         setEditedProduct(null);
         setImages([null, null, null, null, null, null]);
+        setShowAddCompany(false);
+        setNewCompanyName('');
       } else {
         toast.error(`Error: ${response.data.message}`);
       }
@@ -270,7 +313,8 @@ const List = ({ token }) => {
       filtered = filtered.filter(product =>
         product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         product.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        product.subCategory?.toLowerCase().includes(searchTerm.toLowerCase())
+        product.subCategory?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        product.company?.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
@@ -386,7 +430,7 @@ const List = ({ token }) => {
                       item={item}
                       index={index}
                       onEdit={(product) => {
-                        setEditedProduct(product);
+                        setEditedProduct({...product, company: product.company || ''});
                         setIsEditing(true);
                       }}
                       onRemove={removeProduct}
@@ -404,6 +448,7 @@ const List = ({ token }) => {
                           <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Image</th>
                           <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product Details</th>
                           <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+                          <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Company</th>
                           <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
                           <th className="px-6 py-4 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                         </tr>
@@ -435,6 +480,14 @@ const List = ({ token }) => {
                               )}
                             </td>
                             <td className="px-6 py-4">
+                              <div className="flex items-center gap-1">
+                                <Building2 size={14} className="text-blue-400" />
+                                <span className="text-sm text-blue-600 font-medium">
+                                  {item.company || 'Aharyas'}
+                                </span>
+                              </div>
+                            </td>
+                            <td className="px-6 py-4">
                               <div className="flex items-center gap-1 font-semibold text-green-600">
                                 <IndianRupee size={16} />
                                 {item.price}
@@ -444,7 +497,7 @@ const List = ({ token }) => {
                               <div className="flex justify-center gap-2">
                                 <button
                                   onClick={() => {
-                                    setEditedProduct(item);
+                                    setEditedProduct({...item, company: item.company || ''});
                                     setIsEditing(true);
                                   }}
                                   className="p-2 text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
@@ -494,6 +547,8 @@ const List = ({ token }) => {
                     setIsEditing(false);
                     setEditedProduct(null);
                     setImages([null, null, null, null, null, null]);
+                    setShowAddCompany(false);
+                    setNewCompanyName('');
                   }}
                   className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
                 >
@@ -556,6 +611,84 @@ const List = ({ token }) => {
                           placeholder="Enter product description"
                           required
                         />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Company/Brand Section */}
+                  <div className="rounded-2xl p-6">
+                    <div className="flex items-center gap-3 mb-6">
+                      <div className="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center">
+                        <Building2 className="text-indigo-600" size={18} />
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-semibold text-gray-900">Brand/Company</h3>
+                        <p className="text-sm text-gray-600">Select the brand or company for this product</p>
+                      </div>
+                    </div>
+
+                    <div className="space-y-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Company/Brand</label>
+                        <div className="flex gap-3">
+                          <select
+                            onChange={(e) => setEditedProduct(prev => ({ ...prev, company: e.target.value }))}
+                            value={editedProduct.company}
+                            className="flex-1 px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-secondary focus:border-secondary transition-colors"
+                          >
+                            <option value="">Aharyas</option>
+                            {companies.map((comp) => (
+                              <option key={comp} value={comp}>{comp}</option>
+                            ))}
+                          </select>
+                          <button
+                            type="button"
+                            onClick={() => setShowAddCompany(true)}
+                            className="px-4 py-3 bg-indigo-100 hover:bg-indigo-200 text-indigo-700 rounded-xl transition-colors flex items-center gap-2"
+                          >
+                            <Plus size={16} />
+                            Add New
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Add New Company Modal/Form */}
+                      {showAddCompany && (
+                        <div className="bg-white border border-indigo-200 rounded-xl p-4">
+                          <h4 className="font-medium text-gray-900 mb-3">Add New Company</h4>
+                          <div className="flex gap-3">
+                            <input
+                              type="text"
+                              value={newCompanyName}
+                              onChange={(e) => setNewCompanyName(e.target.value)}
+                              placeholder="Enter company/brand name"
+                              className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary transition-colors"
+                              onKeyPress={(e) => e.key === 'Enter' && handleAddNewCompany()}
+                            />
+                            <button
+                              type="button"
+                              onClick={handleAddNewCompany}
+                              className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors"
+                            >
+                              Add
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => {setShowAddCompany(false); setNewCompanyName('');}}
+                              className="px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-700 rounded-lg transition-colors"
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Company Selection Status */}
+                      <div className={`flex items-center gap-2 p-3 rounded-lg ${editedProduct.company ? 'text-blue-700 bg-blue-50' : 'text-gray-700 bg-gray-50'}`}>
+                        <Building2 size={16} />
+                        <span className="text-sm">
+                          {editedProduct.company ? `Selected: ${editedProduct.company}` : 'Product will be listed as Aharyas by default'}
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -667,6 +800,8 @@ const List = ({ token }) => {
                       setIsEditing(false);
                       setEditedProduct(null);
                       setImages([null, null, null, null, null, null]);
+                      setShowAddCompany(false);
+                      setNewCompanyName('');
                     }}
                     className="px-6 py-3 border border-gray-300 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-colors"
                     disabled={loading}

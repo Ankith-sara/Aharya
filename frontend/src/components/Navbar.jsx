@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext, useRef } from 'react';
 import { assets } from '../assets/frontend_assets/assets';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { ShopContext } from '../context/ShopContext';
-import { ChevronDown, ChevronRight, X } from 'lucide-react';
+import { ChevronDown, ChevronRight, X, Search, User, ShoppingCart, Menu, LogOut, ShoppingBagIcon, ShoppingCartIcon } from 'lucide-react';
 import { jwtDecode } from "jwt-decode";
 
 const Navbar = () => {
@@ -83,9 +83,9 @@ const Navbar = () => {
   // Determine navbar background based on home page and scroll position
   const getNavbarBackground = () => {
     if (isHomePage && !isScrolled) {
-      return 'bg-transparent';
+      return 'bg-transparent backdrop-blur-none';
     } else {
-      return 'bg-black shadow-md';
+      return 'bg-black/95 backdrop-blur-md';
     }
   };
 
@@ -133,86 +133,158 @@ const Navbar = () => {
   return (
     <>
       {/* Overlay for when menu is open */}
-      <div className={`fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm transition-opacity duration-300 z-40 ${menuVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'}`} onClick={() => setMenuVisible(false)} />
+      <div className={`fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm transition-all duration-300 z-40 ${menuVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'}`} onClick={() => setMenuVisible(false)} />
 
       {/* Navbar */}
-      <div className={`fixed top-0 left-0 right-0 px-4 sm:px-6 md:px-10 lg:px-20 z-50 flex items-center justify-between text-white py-5 transition-all duration-300 ${getNavbarBackground()}`}>
-        <Link to='/' onClick={() => window.location.href = '/'} className="flex-shrink-0">
-          <img src={assets.logo_white} className="w-36" alt="Logo" />
-        </Link>
-        <div className="flex items-center gap-5">
-          <div onClick={() => { setShowSearch(true); navigate('/shop/collection') }} className="cursor-pointer hover:opacity-80 transition-opacity">
-            <img src={assets.search_icon} className="w-5 h-5" alt="Search" />
-          </div>
+      <nav className={`fixed top-0 left-0 right-0 px-4 sm:px-6 md:px-10 lg:px-20 z-50 transition-all duration-300 ${getNavbarBackground()}`}>
+        <div className="flex items-center justify-between text-white py-4">
+          {/* Logo */}
+          <Link to='/' onClick={() => window.location.href = '/'} className="flex-shrink-0 group">
+            <img
+              src={assets.logo_white}
+              className="w-36"
+              alt="Logo"
+            />
+          </Link>
 
-          <div className="relative group">
-            <div onClick={() => token ? null : navigate('/login')} className="cursor-pointer hover:opacity-80 transition-opacity">
-              <img className="w-5 h-5" src={assets.profile_icon} alt="Profile" />
-            </div>
-            {token && (
-              <div className="hidden group-hover:block absolute right-0 pt-4 z-10">
-                <div className="w-44 py-3 px-4 bg-white text-gray-800 rounded-md">
-                  <div className="flex flex-col gap-3">
-                    <NavLink to={`/profile/${userId}`} className="hover:text-black font-medium transition-colors">
-                      My Profile
-                    </NavLink>
-                    <NavLink to="/orders" className="hover:text-black font-medium transition-colors">
-                      My Orders
-                    </NavLink>
-                    <button onClick={() => { if (window.confirm("Are you sure you want to log out?")) logout(); }} className="text-left hover:text-black font-medium transition-colors">
-                      Logout
-                    </button>
+          {/* Action Icons */}
+          <div className="flex items-center">
+            {/* Search Button */}
+            <button
+              onClick={() => { setShowSearch(true); navigate('/shop/collection') }}
+              className="p-3 transition-all duration-200 group"
+              aria-label="Search"
+            >
+              <Search size={20} className="group-hover:scale-110 transition-transform duration-200" />
+            </button>
+
+            {/* Profile Dropdown */}
+            <div className="relative group">
+              <button
+                onClick={() => token ? null : navigate('/login')}
+                className="p-3 transition-all duration-200 group/profile"
+                aria-label="Profile"
+              >
+                <User size={20} className="group-hover/profile:scale-110 transition-transform duration-200" />
+              </button>
+
+              {token && (
+                <div className="hidden group-hover:block absolute right-0 pt-2 z-10">
+                  <div className="w-52 bg-white rounded-xl shadow-xl border border-gray-200 overflow-hidden">
+                    <div className="p-4 border-b border-gray-100">
+                      <p className="text-sm font-medium text-gray-900">My Account</p>
+                    </div>
+                    <div className="py-2">
+                      <NavLink
+                        to={`/profile/${userId}`}
+                        className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-black font-medium transition-all duration-200"
+                      >
+                        <User size={16} className="mr-3" />
+                        My Profile
+                      </NavLink>
+                      <NavLink
+                        to="/orders"
+                        className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-black font-medium transition-all duration-200"
+                      >
+                        <ShoppingBagIcon size={16} className="mr-3" />
+                        My Orders
+                      </NavLink>
+                      <button
+                        onClick={() => { if (window.confirm("Are you sure you want to log out?")) logout(); }}
+                        className="w-full flex items-center px-4 py-3 text-left text-gray-700 hover:bg-red-50 hover:text-red-600 font-medium transition-all duration-200"
+                      >
+                        <LogOut size={16} className="mr-3" />
+                        Logout
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
+
+            {/* Cart Button */}
+            <Link to='/cart' className='relative group'>
+              <button className="p-3 transition-all duration-200" aria-label="Cart">
+                <ShoppingBagIcon size={20} className="group-hover:scale-110 transition-transform duration-200" />
+                {getCartCount() > 0 && (
+                  <div className={`absolute -top-1 -right-1 min-w-[20px] h-5 flex items-center justify-center rounded-full text-xs font-medium transition-all duration-200 ${isHomePage && !isScrolled ? 'bg-white text-black' : 'bg-white text-black'} shadow-md`}>
+                    {getCartCount()}
+                  </div>
+                )}
+              </button>
+            </Link>
+
+            {/* Menu Button */}
+            <button
+              id="menu-toggle-button"
+              onClick={() => setMenuVisible(true)}
+              className="p-3 transition-all duration-200 group"
+              aria-label="Menu"
+            >
+              <Menu size={20} className="group-hover:scale-110 transition-transform duration-200" />
+            </button>
           </div>
-          <Link to='/cart' className='relative hover:opacity-80 transition-opacity'>
-            <img src={assets.cart_icon} className='w-5 h-5' alt='Cart' />
-            {getCartCount() > 0 && (
-              <div className={`absolute -right-1.5 -bottom-1.5 w-4 h-4 flex items-center justify-center rounded-full text-xs ${isHomePage && !isScrolled ? 'bg-black text-white' : 'bg-white text-black'}`} >
-                {getCartCount()}
-              </div>
-            )}
-          </Link>
-          <button id="menu-toggle-button" onClick={() => setMenuVisible(true)} className="cursor-pointer hover:opacity-80 transition-opacity" aria-label="Menu">
-            <img src={assets.menu_icon} className="w-5 h-5" alt="Menu" />
-          </button>
         </div>
-      </div>
+      </nav>
 
       {/* Sidebar Menu */}
-      <div ref={menuRef} className={`fixed top-0 right-0 bottom-0 h-full w-full sm:w-96 md:w-96 lg:w-96 bg-white shadow-lg overflow-y-auto transition-transform duration-300 z-50 ${menuVisible ? 'translate-x-0' : 'translate-x-full'}`}>
-        <div className="bg-black text-white p-6 flex items-center justify-between">
-          <h2 className="text-xl font-medium">Menu</h2>
-          <button onClick={() => setMenuVisible(false)} className="text-white hover:text-gray-300 transition-colors" aria-label="Close menu">
-            <X size={24} />
-          </button>
+      <div ref={menuRef} className={`fixed top-0 right-0 bottom-0 h-full w-full sm:w-96 md:w-96 lg:w-96 bg-white shadow-2xl overflow-y-auto transition-transform duration-300 z-50 ${menuVisible ? 'translate-x-0' : 'translate-x-full'}`}>
+        {/* Menu Header */}
+        <div className="bg-black text-white p-6">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl font-semibold">Menu</h2>
+            <button
+              onClick={() => setMenuVisible(false)}
+              className="p-2 text-white hover:bg-white/10 rounded-lg transition-all duration-200"
+              aria-label="Close menu"
+            >
+              <X size={24} />
+            </button>
+          </div>
         </div>
-        <div className="divide-y divide-gray-200">
-          <NavLink to="/" onClick={() => setMenuVisible(false)} className={({ isActive }) => `block p-4 hover:bg-gray-50 transition-colors ${isActive ? 'text-secondary font-medium' : 'text-gray-800'}`}>
+
+        <div className="divide-y divide-gray-100">
+          {/* Home Link */}
+          <NavLink
+            to="/"
+            onClick={() => setMenuVisible(false)}
+            className={({ isActive }) => `block px-6 py-4 hover:bg-gray-50 transition-all duration-200 font-medium ${isActive ? 'text-black bg-gray-50 border-r-4 border-black' : 'text-gray-800'}`}
+          >
             Home
           </NavLink>
-          {/* Shop Categories */}
+
+          {/* Shop Categories Section */}
           <div className="py-2">
-            <div className="px-4 py-3 text-gray-500 uppercase text-sm font-medium tracking-wider">
-              Shop Categories
+            <div className="px-6 py-4 bg-gray-50">
+              <h3 className="text-gray-600 uppercase text-sm font-semibold tracking-wider">
+                Shop Categories
+              </h3>
             </div>
 
             {categories.map((category) => (
-              <div key={category.id} className="border-t border-gray-100">
-                <button className="w-full flex items-center justify-between p-4 text-gray-800 hover:bg-gray-50 transition-colors" onClick={() => toggleCategoryExpansion(category.id)}>
-                  <span className="font-medium">{category.name}</span>
-                  {expandedCategory === category.id ?
-                    <ChevronDown size={18} className="text-gray-500" /> :
-                    <ChevronRight size={18} className="text-gray-500" />
-                  }
+              <div key={category.id} className="border-b border-gray-50 last:border-b-0">
+                <button
+                  className="w-full flex items-center justify-between px-6 py-4 text-gray-800 hover:bg-gray-50 transition-all duration-200 font-medium"
+                  onClick={() => toggleCategoryExpansion(category.id)}
+                >
+                  <span>{category.name}</span>
+                  <div className={`p-1 rounded-full transition-transform duration-200 ${expandedCategory === category.id ? 'rotate-0 bg-gray-100' : 'rotate-0'}`}>
+                    {expandedCategory === category.id ?
+                      <ChevronDown size={18} className="text-gray-600" /> :
+                      <ChevronRight size={18} className="text-gray-600" />
+                    }
+                  </div>
                 </button>
 
                 {expandedCategory === category.id && (
-                  <div className="bg-gray-50 pl-4">
+                  <div className="bg-gray-50/50 border-t border-gray-100">
                     {category.subcategories.map((subcategory) => (
-                      <NavLink key={subcategory.path} to={subcategory.path} onClick={() => handleCategoryClick(subcategory.name)} className={({ isActive }) => `block p-3 pl-6 hover:bg-gray-100 text-sm transition-colors ${isActive ? 'text-secondary font-medium' : 'text-gray-600'}`}>
+                      <NavLink
+                        key={subcategory.path}
+                        to={subcategory.path}
+                        onClick={() => handleCategoryClick(subcategory.name)}
+                        className={({ isActive }) => `block px-8 py-3 hover:bg-gray-100 text-sm transition-all duration-200 border-l-2 hover:border-l-black ${isActive ? 'text-black font-medium bg-gray-100 border-l-black' : 'text-gray-600 border-l-transparent'}`}
+                      >
                         {subcategory.name}
                       </NavLink>
                     ))}
@@ -221,30 +293,53 @@ const Navbar = () => {
               </div>
             ))}
           </div>
+
+          {/* My Account Section */}
           <div className="py-2">
-            <div className="px-4 py-3 text-gray-500 uppercase text-sm font-medium tracking-wider">
-              My Account
+            <div className="px-6 py-4 bg-gray-50">
+              <h3 className="text-gray-600 uppercase text-sm font-semibold tracking-wider">
+                My Account
+              </h3>
             </div>
 
             {token ? (
-              <>
-                <NavLink to={`/profile/${userId}`} onClick={() => setMenuVisible(false)} className={({ isActive }) => `block p-4 hover:bg-gray-50 transition-colors ${isActive ? 'text-secondary font-medium' : 'text-gray-800'}`}>
+              <div className="space-y-1">
+                <NavLink
+                  to={`/profile/${userId}`}
+                  onClick={() => setMenuVisible(false)}
+                  className={({ isActive }) => `flex items-center px-6 py-4 hover:bg-gray-50 transition-all duration-200 font-medium ${isActive ? 'text-black bg-gray-50 border-r-4 border-black' : 'text-gray-800'}`}
+                >
+                  <User size={18} className="mr-3" />
                   My Profile
                 </NavLink>
-                <NavLink to="/orders" onClick={() => setMenuVisible(false)} className={({ isActive }) => `block p-4 hover:bg-gray-50 transition-colors ${isActive ? 'text-secondary font-medium' : 'text-gray-800'}`}>
+                <NavLink
+                  to="/orders"
+                  onClick={() => setMenuVisible(false)}
+                  className={({ isActive }) => `flex items-center px-6 py-4 hover:bg-gray-50 transition-all duration-200 font-medium ${isActive ? 'text-black bg-gray-50 border-r-4 border-black' : 'text-gray-800'}`}
+                >
+                  <ShoppingBagIcon size={18} className="mr-3" />
                   My Orders
                 </NavLink>
-                <button onClick={() => {
-                  if (window.confirm("Are you sure you want to log out?")) {
-                    logout();
-                    setMenuVisible(false);
-                  }
-                }} className="w-full p-4 text-left text-gray-800 font-medium hover:bg-gray-50 transition-colors">
+                <button
+                  onClick={() => {
+                    if (window.confirm("Are you sure you want to log out?")) {
+                      logout();
+                      setMenuVisible(false);
+                    }
+                  }}
+                  className="w-full flex items-center px-6 py-4 text-left text-gray-800 font-medium hover:bg-red-50 hover:text-red-600 transition-all duration-200"
+                >
+                  <LogOut size={18} className="mr-3" />
                   Logout
                 </button>
-              </>
+              </div>
             ) : (
-              <NavLink to="/login" onClick={() => setMenuVisible(false)} className="block p-4 text-gray-800 hover:bg-gray-50 transition-colors">
+              <NavLink
+                to="/login"
+                onClick={() => setMenuVisible(false)}
+                className="flex items-center px-6 py-4 text-gray-800 hover:bg-gray-50 transition-all duration-200 font-medium"
+              >
+                <User size={18} className="mr-3" />
                 Login / Sign Up
               </NavLink>
             )}

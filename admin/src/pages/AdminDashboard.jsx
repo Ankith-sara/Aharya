@@ -14,10 +14,8 @@ import { jwtDecode } from "jwt-decode";
 // Register ChartJS components
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, BarElement);
 
-// Define constants locally
 import { backendUrl, currency } from "../App";
 
-// --- Main Admin Panel Component ---
 const AdminPanel = ({ token, setToken }) => {
     const [activeTab, setActiveTab] = useState("dashboard");
     const [adminData, setAdminData] = useState(null);
@@ -41,7 +39,6 @@ const AdminPanel = ({ token, setToken }) => {
 
     return (
         <div className="flex flex-col w-full min-h-screen bg-background">
-            {/* Header */}
             <header className="bg-background border-b border-primary/20 shadow-sm">
                 <div className="px-4 sm:px-6 py-3 sm:py-4">
                     <div className="flex items-center justify-between flex-wrap gap-3">
@@ -83,7 +80,6 @@ const AdminPanel = ({ token, setToken }) => {
                 </div>
             </header>
 
-            {/* Main Content */}
             <main className="flex-grow p-4 sm:p-6">
                 {activeTab === "dashboard" && <AdminDashboard token={token} adminData={adminData} />}
                 {activeTab === "profile" && <AdminProfile token={token} adminData={adminData} setAdminData={setAdminData} />}

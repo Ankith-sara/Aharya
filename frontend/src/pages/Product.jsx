@@ -71,33 +71,85 @@ const Product = () => {
   };
 
   const handleNext = () => {
-    setCurrentIndex((prev) => (prev + 1) % productData.images.length);
+    const nextIndex = (currentIndex + 1) % productData.images.length;
+    setCurrentIndex(nextIndex);
     if (isModalOpen) {
-      setModalImage(productData.images[(currentIndex + 1) % productData.images.length]);
+      setModalImage(productData.images[nextIndex]);
     }
   };
 
   const handlePrev = () => {
-    setCurrentIndex((prev) => (prev === 0 ? productData.images.length - 1 : prev - 1));
+    const prevIndex = currentIndex === 0 ? productData.images.length - 1 : currentIndex - 1;
+    setCurrentIndex(prevIndex);
     if (isModalOpen) {
-      setModalImage(productData.images[currentIndex === 0 ? productData.images.length - 1 : currentIndex - 1]);
+      setModalImage(productData.images[prevIndex]);
     }
   };
 
+  // Fixed modal functions
   const openModal = (img) => {
+    console.log('Opening modal with image:', img); // Debug log
     setModalImage(img);
     setModalOpen(true);
+    setZoomLevel(1);
     setScrollTop(0);
     if (modalRef.current) {
       modalRef.current.scrollTop = 0;
     }
+    // Prevent body scroll when modal is open
+    document.body.style.overflow = 'hidden';
   };
 
-  const closeModal = () => {
+  const closeModal = (e) => {
+    e?.preventDefault();
+    e?.stopPropagation();
+    console.log('Closing modal'); // Debug log
     setModalOpen(false);
     setModalImage('');
     setZoomLevel(1);
+    // Restore body scroll
+    document.body.style.overflow = 'unset';
   };
+
+  // Handle image click with proper event handling
+  const handleImageClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log('Image clicked, opening modal'); // Debug log
+    openModal(productData.images[currentIndex]);
+  };
+
+  // Handle thumbnail click
+  const handleThumbnailClick = (index) => {
+    setCurrentIndex(index);
+  };
+
+  // Keyboard navigation for modal
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (!isModalOpen) return;
+
+      switch (e.key) {
+        case 'Escape':
+          closeModal();
+          break;
+        case 'ArrowLeft':
+          handlePrev();
+          break;
+        case 'ArrowRight':
+          handleNext();
+          break;
+        default:
+          break;
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = 'unset'; // Cleanup on unmount
+    };
+  }, [isModalOpen, currentIndex, productData]);
 
   useEffect(() => {
     const product = products?.find((item) => item._id === productId);
@@ -138,50 +190,58 @@ const Product = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.2fr] gap-12 items-start">
-            {/* Image Gallery - Compact Layout */}
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.2fr] gap-6 items-start">
+            {/* Image Gallery */}
             <div className="space-y-4">
-              {/* Main Image */}
               <div className="relative group">
-                <div className="relative overflow-hidden shadow-xl">
+                <div className="relative overflow-hidden">
                   <img
                     src={productData.images[currentIndex]}
                     alt={productData.name}
-                    onClick={() => openModal(productData.images[currentIndex])}
-                    className="w-full h-full object-cover cursor-pointer transition-all duration-500"
+                    onClick={handleImageClick}
+                    className="w-full h-full object-contain transition-all duration-500 hover:scale-105"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
-                  
-                  {/* Navigation Buttons */}
-                  <button 
-                    className="absolute top-1/2 left-4 transform -translate-y-1/2 w-10 h-10 flex items-center justify-center bg-white/90 text-black rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-all duration-300" 
-                    onClick={handlePrev}
-                  > 
-                    ◀ 
+
+                  <div
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      openModal(productData.images[currentIndex]);
+                    }}
+                    className="absolute top-4 right-4 bg-black/70 text-white px-2 py-1 text-xs rounded cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity">
+                    Click to zoom
+                  </div>
+
+                  <button
+                    className="absolute top-1/2 left-4 transform -translate-y-1/2 w-10 h-10 flex items-center justify-center bg-white/90 text-black rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-all duration-300"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handlePrev();
+                    }}
+                  >
+                    ◀
                   </button>
-                  <button 
-                    className="absolute top-1/2 right-4 transform -translate-y-1/2 w-10 h-10 flex items-center justify-center bg-white/90 text-black rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-all duration-300" 
-                    onClick={handleNext}
-                  > 
-                    ▶ 
+                  <button
+                    className="absolute top-1/2 right-4 transform -translate-y-1/2 w-10 h-10 flex items-center justify-center bg-white/90 text-black rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-all duration-300"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleNext();
+                    }}
+                  >
+                    ▶
                   </button>
                 </div>
-                {/* Decorative corners */}
-                <div className="absolute -top-2 -left-2 w-6 h-6 border-l border-t border-black/20"></div>
-                <div className="absolute -bottom-2 -right-2 w-6 h-6 border-r border-b border-black/20"></div>
               </div>
 
-              {/* Thumbnails */}
               <div className="flex gap-3 overflow-x-auto py-2">
                 {productData.images.map((img, index) => (
-                  <div 
-                    key={index} 
-                    onClick={() => setCurrentIndex(index)}
-                    className={`flex-shrink-0 w-20 h-20 overflow-hidden cursor-pointer transition-all duration-300 ${
-                      currentIndex === index
-                        ? 'shadow-lg border-2 border-black'
-                        : 'shadow-md border border-gray-200 hover:border-gray-400'
-                    }`}
+                  <div
+                    key={index}
+                    onClick={() => handleThumbnailClick(index)}
+                    className={`flex-shrink-0 w-20 h-20 overflow-hidden cursor-pointer transition-all duration-300 ${currentIndex === index
+                      ? 'shadow-lg border-2 border-black'
+                      : 'shadow-md border border-gray-200 hover:border-gray-400'
+                      }`}
                   >
                     <img
                       src={img}
@@ -193,19 +253,18 @@ const Product = () => {
               </div>
             </div>
 
-            {/* Product Details - Right Side */}
+            {/* Product Details */}
             <div className="bg-white border border-gray-200 shadow-lg">
               <div className="p-6 border-b border-gray-200">
                 <div className="flex items-center justify-between mb-4">
                   <h1 className="text-2xl tracking-wide text-black">{productData.name}</h1>
                   <div className="flex items-center gap-2">
-                    <button 
+                    <button
                       onClick={() => setIsWishlisted(!isWishlisted)}
-                      className={`p-2 border transition-all duration-300 ${
-                        isWishlisted 
-                          ? 'bg-black text-white border-black' 
-                          : 'bg-white text-black border-gray-300 hover:border-black'
-                      }`}
+                      className={`p-2 border transition-all duration-300 ${isWishlisted
+                        ? 'bg-black text-white border-black'
+                        : 'bg-white text-black border-gray-300 hover:border-black'
+                        }`}
                     >
                       <Heart size={16} className={isWishlisted ? 'fill-current' : ''} />
                     </button>
@@ -214,27 +273,25 @@ const Product = () => {
                     </button>
                   </div>
                 </div>
-                
+
                 <div className="flex items-baseline justify-between mb-6">
                   <div className="text-xl font-medium text-black">{currency}{productData.price}</div>
                   <div className="text-sm text-gray-500 font-light">Prices include GST</div>
                 </div>
 
-                {/* Size Selection */}
                 <div className="mb-6">
                   <label className="block text-xs uppercase tracking-wider text-gray-500 font-light mb-3">
                     Select Size
                   </label>
                   <div className="flex flex-wrap gap-2">
                     {productData.sizes.map((s, index) => (
-                      <button 
-                        key={index} 
+                      <button
+                        key={index}
                         onClick={() => setSize(s)}
-                        className={`py-2 px-3 border transition-all duration-300 ${
-                          size === s
-                            ? 'bg-black text-white border-black'
-                            : 'bg-white text-black border-gray-300 hover:border-black'
-                        }`}
+                        className={`py-2 px-3 border transition-all duration-300 ${size === s
+                          ? 'bg-black text-white border-black'
+                          : 'bg-white text-black border-gray-300 hover:border-black'
+                          }`}
                       >
                         <span className="font-light">{s}</span>
                       </button>
@@ -242,23 +299,22 @@ const Product = () => {
                   </div>
                 </div>
 
-                {/* Quantity Selection */}
                 <div className="mb-6">
                   <label className="block text-xs uppercase tracking-wider text-gray-500 font-light mb-3">
                     Quantity
                   </label>
                   <div className="flex items-center border border-gray-300 w-fit">
-                    <button 
-                      onClick={() => handleQuantityChange('decrease')} 
-                      className="w-8 h-8 flex items-center justify-center hover:bg-gray-50 transition-colors border-r border-gray-300" 
+                    <button
+                      onClick={() => handleQuantityChange('decrease')}
+                      className="w-8 h-8 flex items-center justify-center hover:bg-gray-50 transition-colors border-r border-gray-300"
                       disabled={quantity <= 1}
                     >
                       <Minus size={14} className={quantity <= 1 ? "text-gray-300" : "text-black"} />
                     </button>
-                    <input 
-                      type="number" 
-                      className="w-12 h-8 text-center focus:outline-none bg-white font-light text-sm" 
-                      value={quantity} 
+                    <input
+                      type="number"
+                      className="w-12 h-8 text-center focus:outline-none bg-white font-light text-sm"
+                      value={quantity}
                       min="1"
                       onChange={(e) => {
                         const value = e.target.value;
@@ -267,8 +323,8 @@ const Product = () => {
                         }
                       }}
                     />
-                    <button 
-                      onClick={() => handleQuantityChange('increase')} 
+                    <button
+                      onClick={() => handleQuantityChange('increase')}
                       className="w-8 h-8 flex items-center justify-center hover:bg-gray-50 transition-colors border-l border-gray-300"
                     >
                       <Plus size={14} />
@@ -276,10 +332,9 @@ const Product = () => {
                   </div>
                 </div>
 
-                {/* Action Buttons */}
                 <div className="space-y-3">
-                  <button 
-                    onClick={() => addToCart(productData._id, size, quantity)} 
+                  <button
+                    onClick={() => addToCart(productData._id, size, quantity)}
                     className="w-full py-3 bg-black text-white font-light tracking-wide hover:bg-gray-800 transition-all duration-300"
                   >
                     ADD TO CART
@@ -290,8 +345,8 @@ const Product = () => {
                       <Sliders size={16} />
                       <span className="text-sm">CUSTOMIZE</span>
                     </button>
-                    <button 
-                      onClick={() => navigate('/try-on', { state: { image: productData.images[currentIndex] } })} 
+                    <button
+                      onClick={() => navigate('/try-on', { state: { image: productData.images[currentIndex] } })}
                       className="py-2 flex justify-center items-center gap-2 border border-black bg-white text-black font-light hover:bg-gray-50 transition-all duration-300"
                     >
                       <Camera size={16} />
@@ -303,12 +358,8 @@ const Product = () => {
 
               {/* Product Information Dropdowns */}
               <div>
-                {/* Description */}
                 <div className="border-b border-gray-200">
-                  <button 
-                    onClick={() => toggleSection('description')} 
-                    className="w-full py-4 px-6 flex justify-between items-center text-left font-medium transition-colors hover:bg-gray-50"
-                  >
+                  <button onClick={() => toggleSection('description')} className="w-full py-4 px-6 flex justify-between items-center text-left font-medium transition-colors hover:bg-gray-50">
                     DESCRIPTION
                     {expandedSection === 'description' ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
                   </button>
@@ -320,12 +371,8 @@ const Product = () => {
                   )}
                 </div>
 
-                {/* Artisan Story */}
                 <div className="border-b border-gray-200">
-                  <button 
-                    onClick={() => toggleSection('artisan')} 
-                    className="w-full py-4 px-6 flex justify-between items-center text-left font-medium transition-colors hover:bg-gray-50"
-                  >
+                  <button onClick={() => toggleSection('artisan')} className="w-full py-4 px-6 flex justify-between items-center text-left font-medium transition-colors hover:bg-gray-50">
                     ARTISAN STORY
                     {expandedSection === 'artisan' ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
                   </button>
@@ -337,7 +384,7 @@ const Product = () => {
                           <h4 className="font-medium text-black mb-2">Master Craftsman: Rajesh Kumar</h4>
                           <p className="text-sm leading-relaxed">With over 25 years of experience, Rajesh Kumar leads a team of skilled artisans in the historic textile region of Varanasi. His workshop has been creating exquisite handwoven pieces for three generations.</p>
                         </div>
-                        
+
                         <div className="border-l-2 border-gray-200 pl-4">
                           <h4 className="font-medium text-black mb-2">Origin & Technique</h4>
                           <p className="text-sm leading-relaxed">This piece originates from the vibrant looms of Uttar Pradesh, where time-honored weaving traditions meet contemporary design.</p>
@@ -352,12 +399,8 @@ const Product = () => {
                   )}
                 </div>
 
-                {/* Wash Care */}
                 <div className="border-b border-gray-200">
-                  <button 
-                    onClick={() => toggleSection('washcare')} 
-                    className="w-full py-4 px-6 flex justify-between items-center text-left font-medium transition-colors hover:bg-gray-50"
-                  >
+                  <button onClick={() => toggleSection('washcare')} className="w-full py-4 px-6 flex justify-between items-center text-left font-medium transition-colors hover:bg-gray-50">
                     WASH CARE
                     {expandedSection === 'washcare' ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
                   </button>
@@ -375,12 +418,8 @@ const Product = () => {
                   )}
                 </div>
 
-                {/* Delivery Timeline */}
                 <div className="border-b border-gray-200">
-                  <button 
-                    onClick={() => toggleSection('delivery')} 
-                    className="w-full py-4 px-6 flex justify-between items-center text-left font-medium transition-colors hover:bg-gray-50"
-                  >
+                  <button onClick={() => toggleSection('delivery')} className="w-full py-4 px-6 flex justify-between items-center text-left font-medium transition-colors hover:bg-gray-50">
                     DELIVERY TIMELINE
                     {expandedSection === 'delivery' ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
                   </button>
@@ -393,12 +432,8 @@ const Product = () => {
                   )}
                 </div>
 
-                {/* Manufacturing Details */}
                 <div className="border-b border-gray-200">
-                  <button 
-                    onClick={() => toggleSection('manufacturing')} 
-                    className="w-full py-4 px-6 flex justify-between items-center text-left font-medium transition-colors hover:bg-gray-50"
-                  >
+                  <button onClick={() => toggleSection('manufacturing')} className="w-full py-4 px-6 flex justify-between items-center text-left font-medium transition-colors hover:bg-gray-50">
                     MANUFACTURING DETAILS
                     {expandedSection === 'manufacturing' ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
                   </button>
@@ -413,12 +448,8 @@ const Product = () => {
                   )}
                 </div>
 
-                {/* Returns & Exchanges */}
                 <div>
-                  <button 
-                    onClick={() => toggleSection('returns')} 
-                    className="w-full py-4 px-6 flex justify-between items-center text-left font-medium transition-colors hover:bg-gray-50"
-                  >
+                  <button onClick={() => toggleSection('returns')} className="w-full py-4 px-6 flex justify-between items-center text-left font-medium transition-colors hover:bg-gray-50">
                     RETURNS & EXCHANGES
                     {expandedSection === 'returns' ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
                   </button>
@@ -437,70 +468,90 @@ const Product = () => {
         </div>
       </section>
 
-      {/* Modal - Enhanced */}
+      {/* Modal */}
       {isModalOpen && (
-        <div 
-          className="fixed inset-0 bg-white bg-opacity-95 backdrop-blur-sm flex items-center justify-center z-50" 
-          onMouseDown={handleMouseDown} 
-          onMouseMove={handleMouseMove} 
-          onMouseUp={handleMouseUp} 
-          onMouseLeave={handleMouseUp}
+        <div
+          className="fixed inset-0 bg-black bg-opacity-90 backdrop-blur-sm flex items-center justify-center z-50"
+          onClick={closeModal}
         >
-          <div 
-            ref={modalRef} 
-            className="relative max-h-screen overflow-y-auto scrollbar-hide" 
-            style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
+          <div
+            className="relative max-w-[90vw] max-h-[90vh] flex items-center justify-center"
+            onClick={(e) => e.stopPropagation()}
           >
             <img
               src={modalImage}
-              alt="Modal View"
-              className="max-w-screen max-h-screen object-contain transition-transform duration-200 shadow-2xl"
+              alt="Product Detail View"
+              className="max-w-full max-h-[100vh] object-contain transition-transform duration-200 shadow-2xl"
               style={{ transform: `scale(${zoomLevel})` }}
             />
           </div>
-          
+
           {/* Modal Controls */}
-          <button 
-            className="absolute top-4 right-4 bg-black text-white p-3 rounded-full shadow-md" 
+          <button
+            className="absolute top-4 right-4 bg-white text-black p-3 rounded-xl shadow-md hover:bg-gray-100 transition-colors z-10"
             onClick={closeModal}
-          > 
-            ✖ 
+            aria-label="Close modal"
+          >
+            ✖
           </button>
-          <button 
-            className="absolute top-1/2 left-2 -translate-y-1/2 bg-black text-white p-3 rounded-full shadow-md" 
-            onClick={handlePrev}
-          > 
-            ◀ 
+          <button
+            className="absolute top-1/2 left-4 -translate-y-1/2 bg-white text-black p-3 rounded-full shadow-md hover:bg-gray-100 transition-colors z-10"
+            onClick={(e) => {
+              e.stopPropagation();
+              handlePrev();
+            }}
+            aria-label="Previous image"
+          >
+            ◀
           </button>
-          <button 
-            className="absolute top-1/2 right-2 -translate-y-1/2 bg-black text-white p-3 rounded-full shadow-md" 
-            onClick={handleNext}
-          > 
-            ▶ 
+          <button
+            className="absolute top-1/2 right-4 -translate-y-1/2 bg-white text-black p-3 rounded-full shadow-md hover:bg-gray-100 transition-colors z-10"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleNext();
+            }}
+            aria-label="Next image"
+          >
+            ▶
           </button>
-          <div className="absolute bottom-10 right-10 flex gap-2">
-            <button 
-              className="bg-black text-white p-2 rounded-full w-10 h-10 flex items-center justify-center shadow-md" 
-              onClick={zoomIn}
-            > 
-              + 
+
+          {/* Zoom Controls */}
+          <div className="absolute bottom-10 right-10 flex gap-2 z-10">
+            <button
+              className="bg-white text-black p-2 rounded-full w-10 h-10 flex items-center justify-center shadow-md hover:bg-gray-100 transition-colors"
+              onClick={(e) => {
+                e.stopPropagation();
+                zoomIn();
+              }}
+              aria-label="Zoom in"
+            >
+              +
             </button>
-            <button 
-              className="bg-black text-white p-2 rounded-full w-10 h-10 flex items-center justify-center shadow-md" 
-              onClick={zoomOut}
-            > 
-              - 
+            <button
+              className="bg-white text-black p-2 rounded-full w-10 h-10 flex items-center justify-center shadow-md hover:bg-gray-100 transition-colors"
+              onClick={(e) => {
+                e.stopPropagation();
+                zoomOut();
+              }}
+              aria-label="Zoom out"
+            >
+              -
             </button>
+          </div>
+
+          {/* Image Counter */}
+          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-50 text-white px-3 py-1 rounded-full text-sm">
+            {currentIndex + 1} / {productData.images.length}
           </div>
         </div>
       )}
 
       {/* Related Products Section */}
       <section className="px-4 sm:px-8 md:px-10 lg:px-20">
-        <RelatedProducts 
-          category={productData.category} 
-          subCategory={productData.subCategory} 
-          currentProductId={productId} 
+        <RelatedProducts
+          category={productData.category}
+          subCategory={productData.subCategory}
+          currentProductId={productId}
         />
       </section>
 
