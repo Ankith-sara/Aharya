@@ -1,13 +1,6 @@
 import React, { useEffect } from 'react';
 import { Shield, Eye, Lock, Cookie, Users, Mail, Phone, MapPin, Database, Settings, AlertCircle } from 'lucide-react';
-
-// Title component (assuming it exists in your project)
-const Title = ({ text1, text2 }) => (
-  <h1 className="font-light text-black">
-    <span>{text1} </span>
-    <span className="font-medium">{text2}</span>
-  </h1>
-);
+import Title from '../components/Title';
 
 const PrivacyPolicy = () => {
   useEffect(() => {
@@ -16,7 +9,6 @@ const PrivacyPolicy = () => {
 
   return (
     <div className="min-h-screen text-black mt-20">
-      {/* Hero Section */}
       <section className="py-24 px-4 sm:px-8 md:px-10 lg:px-20">
         <div className="max-w-5xl mx-auto text-center">
           <div className="text-3xl text-center mb-8">
@@ -29,9 +21,9 @@ const PrivacyPolicy = () => {
       </section>
 
       {/* Privacy Commitment */}
-      <section className="py-16 px-4 sm:px-8 md:px-10 lg:px-20 bg-gradient-to-r from-blue-50 to-white">
+      <section className="py-16 px-4 sm:px-8 md:px-10 lg:px-20">
         <div className="max-w-7xl mx-auto">
-          <div className="bg-white shadow-lg p-12 border-l-4 border-blue-500">
+          <div className="bg-white shadow-lg p-12 border-l-4 border-black">
             <div className="flex items-center gap-4 mb-8">
               <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
                 <Shield className="text-blue-600" size={24} />
@@ -41,10 +33,7 @@ const PrivacyPolicy = () => {
             
             <div className="grid lg:grid-cols-2 gap-12">
               <div className="space-y-4 text-gray-700 font-light">
-                <p className="first-letter:text-4xl first-letter:font-light first-letter:text-black first-letter:mr-2 first-letter:float-left first-letter:leading-none">
-                  TATHASTA WEAVES LLP is committed to ensuring that your privacy is protected. When you provide information that identifies you on our website, you can be assured it will only be used in accordance with this privacy statement.
-                </p>
-                
+                <p> TATHASTA WEAVES LLP is committed to ensuring that your privacy is protected. When you provide information that identifies you on our website, you can be assured it will only be used in accordance with this privacy statement. </p>
                 <div className="bg-blue-50 p-6 rounded-lg">
                   <h4 className="font-medium text-black mb-3">About This Policy</h4>
                   <p className="text-sm">
@@ -80,12 +69,11 @@ const PrivacyPolicy = () => {
               </div>
               <h2 className="text-2xl font-light tracking-wider text-black">INFORMATION WE COLLECT</h2>
             </div>
-            <div className="w-16 h-0.5 bg-black mx-auto"></div>
           </div>
 
           <div className="grid md:grid-cols-2 gap-8">
             <div className="space-y-6">
-              <div className="bg-white shadow-lg p-6 border-l-4 border-green-500 hover:shadow-xl transition-shadow">
+              <div className="bg-white shadow-lg p-6 border-l-4 border-black hover:shadow-xl transition-shadow">
                 <h3 className="font-medium text-black mb-4 flex items-center gap-2">
                   <Users size={16} />
                   Personal Information
@@ -101,12 +89,12 @@ const PrivacyPolicy = () => {
                 </div>
               </div>
 
-              <div className="bg-white shadow-lg p-6 border-l-4 border-purple-500 hover:shadow-xl transition-shadow">
+              <div className="bg-white shadow-lg p-6 border-l-4 border-black hover:shadow-xl transition-shadow">
                 <h3 className="font-medium text-black mb-4 flex items-center gap-2">
                   <Eye size={16} />
                   When We Collect Information
                 </h3>
-                <div className="bg-purple-50 p-4 rounded-lg">
+                <div className="bg-gray-100 p-4 rounded-lg">
                   <ul className="space-y-2 text-sm text-gray-700">
                     <li>• When you create an account on our website</li>
                     <li>• During the purchase process</li>
@@ -119,7 +107,7 @@ const PrivacyPolicy = () => {
             </div>
 
             <div className="space-y-6">
-              <div className="bg-white shadow-lg p-6 border-l-4 border-indigo-500 hover:shadow-xl transition-shadow">
+              <div className="bg-white shadow-lg p-6 border-l-4 border-black hover:shadow-xl transition-shadow">
                 <h3 className="font-medium text-black mb-4 flex items-center gap-2">
                   <Settings size={16} />
                   How We Use Your Information
@@ -127,7 +115,7 @@ const PrivacyPolicy = () => {
                 <p className="text-gray-700 text-sm leading-relaxed mb-3">
                   We require this information to understand your needs and provide you with better service, particularly for:
                 </p>
-                <div className="bg-indigo-50 p-4 rounded-lg">
+                <div className="bg-gray-100 p-4 rounded-lg">
                   <ul className="space-y-1 text-sm text-gray-700">
                     <li>• Internal record keeping</li>
                     <li>• Improving our products and services</li>
@@ -138,7 +126,7 @@ const PrivacyPolicy = () => {
                 </div>
               </div>
 
-              <div className="bg-white shadow-lg p-6 border-l-4 border-orange-500 hover:shadow-xl transition-shadow">
+              <div className="bg-white shadow-lg p-6 border-l-4 border-black hover:shadow-xl transition-shadow">
                 <h3 className="font-medium text-black mb-4 flex items-center gap-2">
                   <Lock size={16} />
                   Information Security
@@ -155,7 +143,7 @@ const PrivacyPolicy = () => {
       </section>
 
       {/* Cookie Policy */}
-      <section className="py-16 px-4 sm:px-8 md:px-10 lg:px-20 bg-gradient-to-r from-amber-50 to-white">
+      <section className="py-16 px-4 sm:px-8 md:px-10 lg:px-20 bg-gradient-to-r from-gray-100 to-white">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
             <div className="flex items-center justify-center gap-4 mb-6">
@@ -164,7 +152,6 @@ const PrivacyPolicy = () => {
               </div>
               <h2 className="text-2xl font-light tracking-wider text-black">HOW WE USE COOKIES</h2>
             </div>
-            <div className="w-16 h-0.5 bg-black mx-auto"></div>
           </div>
 
           <div className="bg-white shadow-lg p-12 border-l-4 border-amber-500">
@@ -219,19 +206,16 @@ const PrivacyPolicy = () => {
               </div>
               <h2 className="text-2xl font-light tracking-wider text-black">CONTROLLING YOUR PERSONAL INFORMATION</h2>
             </div>
-            <div className="w-16 h-0.5 bg-black mx-auto"></div>
           </div>
 
           <div className="grid lg:grid-cols-2 gap-12">
-            <div className="bg-white shadow-lg p-8 border-l-4 border-purple-500 hover:shadow-xl transition-shadow">
+            <div className="bg-white shadow-lg p-8 border-l-4 border-black hover:shadow-xl transition-shadow">
               <h3 className="font-medium text-black mb-6">Your Rights & Choices</h3>
               
               <div className="space-y-4 text-gray-700 font-light">
-                <p className="first-letter:text-4xl first-letter:font-light first-letter:text-black first-letter:mr-2 first-letter:float-left first-letter:leading-none">
-                  You may choose to restrict the collection or use of your personal information in the following ways:
-                </p>
+                <p> You may choose to restrict the collection or use of your personal information in the following ways: </p>
                 
-                <div className="bg-purple-50 p-6 rounded-lg">
+                <div className="bg-gray-100 p-6 rounded-lg">
                   <h4 className="font-medium text-black mb-3">Restricting Data Collection</h4>
                   <ul className="space-y-2 text-sm">
                     <li>• Look for opt-out boxes when filling forms on our website</li>
@@ -243,7 +227,7 @@ const PrivacyPolicy = () => {
               </div>
             </div>
 
-            <div className="bg-white shadow-lg p-8 border-l-4 border-red-500 hover:shadow-xl transition-shadow">
+            <div className="bg-white shadow-lg p-8 border-l-4 border-black hover:shadow-xl transition-shadow">
               <h3 className="font-medium text-black mb-6">Third-Party Information Sharing</h3>
               
               <div className="space-y-4 text-gray-700 font-light">
@@ -271,12 +255,11 @@ const PrivacyPolicy = () => {
       </section>
 
       {/* Marketing Communications */}
-      <section className="py-16 px-4 sm:px-8 md:px-10 lg:px-20 bg-gradient-to-r from-teal-50 to-white">
+      <section className="py-16 px-4 sm:px-8 md:px-10 lg:px-20 bg-gradient-to-r from-gray-100 to-white">
         <div className="max-w-5xl mx-auto">
-          <div className="bg-white/90 backdrop-blur-sm p-12 shadow-xl border-l-4 border-teal-500">
+          <div className="bg-white/90 backdrop-blur-sm p-12 shadow-xl border-l-4 border-black">
             <div className="text-center mb-8">
               <h2 className="text-2xl font-light tracking-wider text-black">MARKETING COMMUNICATIONS</h2>
-              <div className="w-16 h-0.5 bg-black mx-auto mt-4"></div>
             </div>
             
             <div className="space-y-6 text-gray-700 font-light leading-relaxed">
@@ -352,14 +335,6 @@ const PrivacyPolicy = () => {
                 Hyderabad, Telangana 500094
               </p>
             </div>
-          </div>
-
-          <div className="mt-12 bg-black text-white p-8 rounded-lg max-w-3xl mx-auto">
-            <h3 className="font-light text-xl mb-4">Data Correction Promise</h3>
-            <p className="font-light leading-relaxed">
-              We will promptly correct any information found to be incorrect. Your trust is important to us, 
-              and we are committed to maintaining the accuracy and security of your personal information.
-            </p>
           </div>
         </div>
       </section>

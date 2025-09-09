@@ -1,13 +1,6 @@
 import React, { useEffect } from 'react';
 import { Scale, FileText, AlertTriangle, Shield, Link, CreditCard, User, ShoppingCart, Gavel, Mail, Phone } from 'lucide-react';
-
-// Title component (assuming it exists in your project)
-const Title = ({ text1, text2 }) => (
-  <h1 className="font-light text-black">
-    <span>{text1} </span>
-    <span className="font-medium">{text2}</span>
-  </h1>
-);
+import Title from '../components/Title';
 
 const TermsConditions = () => {
   useEffect(() => {
@@ -16,7 +9,6 @@ const TermsConditions = () => {
 
   return (
     <div className="min-h-screen text-black mt-20">
-      {/* Hero Section */}
       <section className="py-24 px-4 sm:px-8 md:px-10 lg:px-20">
         <div className="max-w-5xl mx-auto text-center">
           <div className="text-3xl text-center mb-8">
@@ -29,9 +21,9 @@ const TermsConditions = () => {
       </section>
 
       {/* Company Information */}
-      <section className="py-16 px-4 sm:px-8 md:px-10 lg:px-20 bg-gradient-to-r from-blue-50 to-white">
+      <section className="py-16 px-4 sm:px-8 md:px-10 lg:px-20">
         <div className="max-w-7xl mx-auto">
-          <div className="bg-white shadow-lg p-12 border-l-4 border-blue-500">
+          <div className="bg-white shadow-lg p-12 border-l-4 border-black">
             <div className="flex items-center gap-4 mb-8">
               <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
                 <FileText className="text-blue-600" size={24} />
@@ -89,12 +81,11 @@ const TermsConditions = () => {
               </div>
               <h2 className="text-2xl font-light tracking-wider text-black">WEBSITE USAGE TERMS</h2>
             </div>
-            <div className="w-16 h-0.5 bg-black mx-auto"></div>
           </div>
 
           <div className="grid md:grid-cols-2 gap-8">
             <div className="space-y-6">
-              <div className="bg-white shadow-lg p-6 border-l-4 border-green-500 hover:shadow-xl transition-shadow">
+              <div className="bg-white shadow-lg p-6 border-l-4 border-gr hover:shadow-xl transition-shadow">
                 <h3 className="font-medium text-black mb-4 flex items-center gap-2">
                   <FileText size={16} />
                   Content Changes
@@ -105,7 +96,7 @@ const TermsConditions = () => {
                 </p>
               </div>
 
-              <div className="bg-white shadow-lg p-6 border-l-4 border-amber-500 hover:shadow-xl transition-shadow">
+              <div className="bg-white shadow-lg p-6 border-l-4 border-black hover:shadow-xl transition-shadow">
                 <h3 className="font-medium text-black mb-4 flex items-center gap-2">
                   <AlertTriangle size={16} />
                   Information Accuracy
@@ -117,7 +108,7 @@ const TermsConditions = () => {
                 </p>
               </div>
 
-              <div className="bg-white shadow-lg p-6 border-l-4 border-purple-500 hover:shadow-xl transition-shadow">
+              <div className="bg-white shadow-lg p-6 border-l-4 border-black hover:shadow-xl transition-shadow">
                 <h3 className="font-medium text-black mb-4 flex items-center gap-2">
                   <User size={16} />
                   User Responsibilities
@@ -130,7 +121,7 @@ const TermsConditions = () => {
             </div>
 
             <div className="space-y-6">
-              <div className="bg-white shadow-lg p-6 border-l-4 border-red-500 hover:shadow-xl transition-shadow">
+              <div className="bg-white shadow-lg p-6 border-l-4 border-black hover:shadow-xl transition-shadow">
                 <h3 className="font-medium text-black mb-4 flex items-center gap-2">
                   <Shield size={16} />
                   Prohibited Uses
@@ -145,7 +136,7 @@ const TermsConditions = () => {
                 </ul>
               </div>
 
-              <div className="bg-white shadow-lg p-6 border-l-4 border-indigo-500 hover:shadow-xl transition-shadow">
+              <div className="bg-white shadow-lg p-6 border-l-4 border-black hover:shadow-xl transition-shadow">
                 <h3 className="font-medium text-black mb-4 flex items-center gap-2">
                   <Link size={16} />
                   Third-Party Links
@@ -156,7 +147,7 @@ const TermsConditions = () => {
                 </p>
               </div>
 
-              <div className="bg-white shadow-lg p-6 border-l-4 border-teal-500 hover:shadow-xl transition-shadow">
+              <div className="bg-white shadow-lg p-6 border-l-4 border-black hover:shadow-xl transition-shadow">
                 <h3 className="font-medium text-black mb-4 flex items-center gap-2">
                   <Gavel size={16} />
                   Governing Law
@@ -172,7 +163,7 @@ const TermsConditions = () => {
       </section>
 
       {/* Purchase Terms */}
-      <section className="py-16 px-4 sm:px-8 md:px-10 lg:px-20 bg-gradient-to-r from-purple-50 to-white">
+      <section className="py-16 px-4 sm:px-8 md:px-10 lg:px-20 bg-gradient-to-r from-gray-100 to-white">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
             <div className="flex items-center justify-center gap-4 mb-6">
@@ -181,15 +172,12 @@ const TermsConditions = () => {
               </div>
               <h2 className="text-2xl font-light tracking-wider text-black">PURCHASE TERMS</h2>
             </div>
-            <div className="w-16 h-0.5 bg-black mx-auto"></div>
           </div>
 
           <div className="grid lg:grid-cols-2 gap-16">
-            <div className="bg-white shadow-lg p-8 border-l-4 border-purple-500 hover:shadow-xl transition-shadow">
+            <div className="bg-white shadow-lg p-8 border-l-4 border-black hover:shadow-xl transition-shadow">
               <div className="space-y-4 text-gray-700 font-light">
-                <p className="first-letter:text-4xl first-letter:font-light first-letter:text-black first-letter:mr-2 first-letter:float-left first-letter:leading-none">
-                  By placing an order with us, you agree to provide current, complete, and accurate purchase information.
-                </p>
+                <p> By placing an order with us, you agree to provide current, complete, and accurate purchase information. </p>
                 
                 <div className="bg-purple-50 p-6 rounded-lg">
                   <h4 className="font-medium text-black mb-3">Order Process</h4>
@@ -203,7 +191,7 @@ const TermsConditions = () => {
               </div>
             </div>
 
-            <div className="bg-white shadow-lg p-8 border-l-4 border-orange-500 hover:shadow-xl transition-shadow">
+            <div className="bg-white shadow-lg p-8 border-l-4 border-black hover:shadow-xl transition-shadow">
               <div className="flex items-center gap-4 mb-6">
                 <div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center">
                   <CreditCard className="text-orange-600" size={24} />
@@ -232,9 +220,9 @@ const TermsConditions = () => {
       </section>
 
       {/* Liability & Disclaimer */}
-      <section className="py-16 px-4 sm:px-8 md:px-10 lg:px-20 bg-gradient-to-r from-red-50 to-white">
+      <section className="py-16 px-4 sm:px-8 md:px-10 lg:px-20">
         <div className="max-w-5xl mx-auto">
-          <div className="bg-white/90 backdrop-blur-sm p-12 shadow-xl border-l-4 border-red-500">
+          <div className="bg-white/90 backdrop-blur-sm p-12 shadow-xl border-l-4 border-black">
             <h2 className="text-2xl font-light tracking-wider text-black mb-8 text-center">LIABILITY & DISCLAIMER</h2>
             
             <div className="space-y-6 text-gray-700 font-light leading-relaxed">
@@ -287,10 +275,9 @@ const TermsConditions = () => {
               </div>
               <h2 className="text-2xl font-light tracking-wider text-black">PRIVACY & DATA PROTECTION</h2>
             </div>
-            <div className="w-16 h-0.5 bg-black mx-auto"></div>
           </div>
 
-          <div className="bg-gradient-to-r from-indigo-50 to-white p-12 border-l-4 border-indigo-500">
+          <div className="bg-gradient-to-r from-gray-100 to-white p-12 border-l-4 border-black">
             <div className="max-w-4xl mx-auto">
               <p className="text-gray-700 font-light leading-relaxed mb-8 text-center">
                 Your privacy is important to us. We are committed to protecting your personal information 

@@ -15,7 +15,7 @@ const About = () => {
 
   return (
     <div className="min-h-screen text-black mt-20">
-      {/* Brand Story - Refined Layout */}
+      {/* Brand Story */}
       <section className="py-24 px-4 sm:px-8 md:px-10 lg:px-20">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
@@ -59,7 +59,7 @@ const About = () => {
         </div>
       </section>
 
-      {/* Vision & Mission - Elevated Design */}
+      {/* Vision & Mission */}
       <section className="relative py-24">
         <div className="absolute inset-0 bg-gradient-to-r from-gray-100 to-gray-50"></div>
         <div className="relative px-4 sm:px-8 md:px-10 lg:px-20">
@@ -275,9 +275,7 @@ const About = () => {
             </div>
 
             <div className="bg-white/95 backdrop-blur-md p-16 shadow-2xl max-w-4xl mx-auto">
-              <p className="text-gray-800 text-xl font-light leading-loose first-letter:text-6xl first-letter:font-light first-letter:text-black first-letter:float-left first-letter:leading-none">
-                Our journey led us across India—from the looms of Pochampally to the painted fabrics of Pedana, the earthy blocks of Rajasthan, and the delicate embroidery houses of Delhi. We met artisans who welcomed us in, shared their craft, and showed us that every thread carries patience, pride, and generations of history. What we witnessed wasn't just technique—it was tradition kept alive by hand and heart. That journey shaped not just our purpose but the soul of Aharyas.
-              </p>
+              <p> Our journey led us across India—from the looms of Pochampally to the painted fabrics of Pedana, the earthy blocks of Rajasthan, and the delicate embroidery houses of Delhi. We met artisans who welcomed us in, shared their craft, and showed us that every thread carries patience, pride, and generations of history. What we witnessed wasn't just technique—it was tradition kept alive by hand and heart. That journey shaped not just our purpose but the soul of Aharyas. </p>
             </div>
           </div>
         </div>

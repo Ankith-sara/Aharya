@@ -11,11 +11,10 @@ const CompanyProducts = () => {
 
   useEffect(() => {
     if (products && products.length > 0) {
-      // Filter products to show only Biba company products
-      const filteredProducts = products.filter(product => 
+      const filteredProducts = products.filter(product =>
         product.company && product.company.toLowerCase() === 'biba'
       );
-      setBibaProducts(filteredProducts.slice(0, 10));
+      setBibaProducts(filteredProducts.slice(0, 4));
     } else {
       setBibaProducts([]);
     }
@@ -24,9 +23,11 @@ const CompanyProducts = () => {
   return (
     <section className="bg-white py-10 px-4 sm:px-6 md:px-10 lg:px-20">
       <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col mb-10 items-center text-center gap-2">
-          <div>
-            <Title text1="BIBA" text2="COLLECTION" />
+        <div className="flex flex-col items-center mb-10 text-center gap-2">
+          <div className="flex items-center justify-center gap-4">
+            <div>
+              <Title text1="BIBA" text2="COLLECTION" />
+            </div>
           </div>
           <Link to="/shop/collection" className="mt-4 md:mt-0 group flex items-center text-xs font-medium hover:text-gray-700 transition-colors">
             View all products
@@ -35,24 +36,39 @@ const CompanyProducts = () => {
         </div>
 
         {bibaProducts.length > 0 ? (
-          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-8 md:gap-6">
-            {bibaProducts.map((item, index) => (
-              <div key={index} className="group">
-                <div className="relative overflow-hidden">
-                  <ProductItem
-                    id={item._id}
-                    image={item.images}
-                    name={item.name}
-                    price={item.price}
-                  />
-                  {index < 1 && (
-                    <div className="absolute top-3 right-3 bg-black text-white text-xs px-3 py-1 font-medium">
-                      BIBA
-                    </div>
-                  )}
-                </div>
+          <div className="grid grid-cols-1 md:grid-cols-6 gap-x-4">
+            {/* Left Promotional Section (resembling the "Our Bestsellers" box) */}
+            <div className="col-span-1 md:col-span-2 flex items-center justify-center bg-gray-100 p-8 rounded-lg mb-6 md:mb-0">
+              <div className="text-center">
+                <img
+                  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQYq3HEWU4nP1xdaWDzOr7YNmV-q8yg_IJjkcrGl4El207-C31gBbfwEcPBwBiry52hQPE&usqp=CAU"
+                  alt="BIBA Logo"
+                  className="w-auto h-60 mx-auto mb-4"
+                />
+                <p className="text-sm text-gray-600 mb-4">Discover the latest collection from BIBA.</p>
               </div>
-            ))}
+            </div>
+
+            {/* Right Product Grid */}
+            <div className="col-span-1 md:col-span-4 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-8 md:gap-6">
+              {bibaProducts.map((item, index) => (
+                <div key={index} className="group">
+                  <div className="relative overflow-hidden">
+                    <ProductItem
+                      id={item._id}
+                      image={item.images}
+                      name={item.name}
+                      price={item.price}
+                    />
+                    {index < 1 && (
+                      <div className="absolute top-3 right-3 bg-black text-white text-xs px-3 py-1 font-medium">
+                        BIBA
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         ) : (
           <div className="flex flex-col items-center justify-center py-16 text-gray-400">

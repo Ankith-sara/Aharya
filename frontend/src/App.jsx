@@ -28,6 +28,9 @@ import CancellationRefundPolicy from './pages/RefundPolicy';
 import ShippingDeliveryPolicy from './pages/DeliveryPolicy';
 import TermsConditions from './pages/TermsConditions';
 import PrivacyPolicy from './pages/PrivacyPolicy';
+import FAQs from './pages/FAQs';
+import Support from './pages/Support';
+import Sitemap from './pages/Sitemaps';
 
 const App = () => {
   const location = useLocation();
@@ -60,6 +63,9 @@ const App = () => {
         <Route path='/shippingpolicy' element={<ShippingDeliveryPolicy />} />
         <Route path='/termsconditions' element={<TermsConditions />} />
         <Route path='/privacypolicy' element={<PrivacyPolicy />} />
+        <Route path='/faqs' element={<FAQs />} />
+        <Route path='/support' element={<Support />} />
+        <Route path='/sitemap' element={<Sitemap />} />
         <Route path='/aa-chatbot' element={<ChatBot />} />
         <Route path='/try-on' element={<VirtualTryOn />} />
       </Routes>

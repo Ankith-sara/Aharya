@@ -9,7 +9,6 @@ const ShippingDeliveryPolicy = () => {
 
   return (
     <div className="min-h-screen text-black mt-20">
-      {/* Hero Section */}
       <section className="py-24 px-4 sm:px-8 md:px-10 lg:px-20">
         <div className="max-w-5xl mx-auto text-center">
           <div className="text-3xl text-center mb-8">
@@ -22,16 +21,15 @@ const ShippingDeliveryPolicy = () => {
       </section>
 
       {/* Shipping Methods */}
-      <section className="py-16 px-4 sm:px-8 md:px-10 lg:px-20 bg-gradient-to-r from-blue-50 to-white">
+      <section className="py-16 px-4 sm:px-8 md:px-10 lg:px-20">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-2xl font-light tracking-wider text-black mb-6">SHIPPING METHODS</h2>
-            <div className="w-16 h-0.5 bg-black mx-auto"></div>
           </div>
 
           <div className="grid lg:grid-cols-2 gap-16">
             {/* International Shipping */}
-            <div className="bg-white shadow-lg p-8 border-l-4 border-blue-500 hover:shadow-xl transition-shadow">
+            <div className="bg-white shadow-lg p-8 border-l-4 border-black hover:shadow-xl transition-shadow">
               <div className="flex items-center gap-4 mb-6">
                 <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
                   <Globe className="text-blue-600" size={24} />
@@ -40,9 +38,7 @@ const ShippingDeliveryPolicy = () => {
               </div>
 
               <div className="space-y-4 text-gray-700 font-light">
-                <p className="first-letter:text-4xl first-letter:font-light first-letter:text-black first-letter:mr-2 first-letter:float-left first-letter:leading-none">
-                  For our global customers, we ship through registered international courier companies and international speed post services.
-                </p>
+                <p> For our global customers, we ship through registered international courier companies and international speed post services. </p>
                 
                 <div className="bg-blue-50 p-4 rounded-lg">
                   <h4 className="font-medium text-black mb-2">Available Services:</h4>
@@ -59,7 +55,7 @@ const ShippingDeliveryPolicy = () => {
             </div>
 
             {/* Domestic Shipping */}
-            <div className="bg-white shadow-lg p-8 border-l-4 border-green-500 hover:shadow-xl transition-shadow">
+            <div className="bg-white shadow-lg p-8 border-l-4 border-black hover:shadow-xl transition-shadow">
               <div className="flex items-center gap-4 mb-6">
                 <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
                   <MapPin className="text-green-600" size={24} />
@@ -68,9 +64,7 @@ const ShippingDeliveryPolicy = () => {
               </div>
 
               <div className="space-y-4 text-gray-700 font-light">
-                <p className="first-letter:text-4xl first-letter:font-light first-letter:text-black first-letter:mr-2 first-letter:float-left first-letter:leading-none">
-                  Within India, we ensure reliable delivery through registered domestic courier companies and speed post services.
-                </p>
+                <p> Within India, we ensure reliable delivery through registered domestic courier companies and speed post services. </p>
                 
                 <div className="bg-green-50 p-4 rounded-lg">
                   <h4 className="font-medium text-black mb-2">Available Services:</h4>
@@ -99,10 +93,9 @@ const ShippingDeliveryPolicy = () => {
               </div>
               <h2 className="text-2xl font-light tracking-wider text-black">PROCESSING TIME</h2>
             </div>
-            <div className="w-16 h-0.5 bg-black mx-auto"></div>
           </div>
 
-          <div className="bg-gradient-to-r from-orange-50 to-white p-12 border-l-4 border-orange-500">
+          <div className="bg-gradient-to-r from-gray-100 to-white p-12 border-l-4 border-black">
             <div className="max-w-4xl mx-auto text-center">
               <div className="mb-8">
                 <div className="text-4xl font-light text-orange-600 mb-4">0-7 Days</div>
@@ -138,9 +131,9 @@ const ShippingDeliveryPolicy = () => {
       </section>
 
       {/* Important Notice */}
-      <section className="py-16 px-4 sm:px-8 md:px-10 lg:px-20 bg-gradient-to-r from-red-50 to-white">
+      <section className="py-16 px-4 sm:px-8 md:px-10 lg:px-20">
         <div className="max-w-5xl mx-auto">
-          <div className="bg-white/90 backdrop-blur-sm p-12 shadow-xl border-l-4 border-red-500">
+          <div className="bg-white/90 backdrop-blur-sm p-12 shadow-xl border-l-4 border-black">
             <h2 className="text-2xl font-light tracking-wider text-black mb-8 text-center">IMPORTANT NOTICE</h2>
             
             <div className="space-y-6 text-gray-700 font-light leading-relaxed">

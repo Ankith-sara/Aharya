@@ -23,6 +23,7 @@ const PlaceOrder = () => {
     phone: '',
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [agreeToTerms, setAgreeToTerms] = useState(false);
 
   function loadRazorpayScript(src) {
     return new Promise((resolve) => {
@@ -121,6 +122,12 @@ const PlaceOrder = () => {
 
   const onSubmitHandler = async (event) => {
     event.preventDefault();
+
+    if (!agreeToTerms) {
+      toast.error('Please agree to our Terms & Conditions and Privacy Policy to proceed.');
+      return;
+    }
+
     setIsLoading(true);
 
     const decoded = jwtDecode(token);
@@ -199,7 +206,7 @@ const PlaceOrder = () => {
         </div>
 
         <form onSubmit={onSubmitHandler} className="grid xl:grid-cols-[2fr_1fr] gap-8">
-          {/* Left Column - Forms */}
+          {/* Forms */}
           <div className="space-y-6">
             {/* Delivery Information */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
@@ -356,6 +363,48 @@ const PlaceOrder = () => {
                         />
                       </div>
                     </div>
+
+                    {/* Terms and Conditions */}
+                    <div className="p-6">
+                      <div className="flex items-start gap-4">
+                        <div className="flex items-center mt-1">
+                          <input
+                            type="checkbox"
+                            id="agree-terms"
+                            checked={agreeToTerms}
+                            onChange={(e) => setAgreeToTerms(e.target.checked)}
+                            className="w-4 h-4 text-black bg-gray-100 border-gray-300 rounded focus:ring-black focus:ring-2 cursor-pointer"
+                            required
+                          />
+                        </div>
+                        <div className="flex-1">
+                          <label htmlFor="agree-terms" className="block text-sm text-gray-700 cursor-pointer leading-relaxed">
+                            I agree to the{' '}
+                            <a href="/termsconditions" target="_blank" className="text-black font-medium underline hover:text-gray-700 transition-colors"> Terms & Conditions </a> ,{' '}
+                            <a href="/privacypolicy" target="_blank" className="text-black font-medium underline hover:text-gray-700 transition-colors"> Privacy Policy </a> , and{' '}
+                            <a href="/shippingpolicy" target="_blank" className="text-black font-medium underline hover:text-gray-700 transition-colors"> Shipping Policy </a>
+                            . I understand that orders are processed within 0-7 days and Aharya is not liable for courier delays. *
+                          </label>
+
+                          {!agreeToTerms && (
+                            <p className="text-xs text-red-600 mt-2 flex items-center gap-1">
+                              <Shield size={12} />
+                              You must agree to our terms before placing your order
+                            </p>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="mt-4 p-4 bg-gray-50 rounded-lg border-l-4 border-black">
+                        <h4 className="font-medium text-black text-sm mb-2">Key Policy Highlights:</h4>
+                        <ul className="text-xs text-gray-600 space-y-1">
+                          <li>• Processing time: 0-7 days from order confirmation</li>
+                          <li>• Shipping via registered courier services (domestic & international)</li>
+                          <li>• Aharya ensures timely handover to courier companies</li>
+                          <li>• Support available at +91 9063284008 or aharyasofficial@gmail.com</li>
+                        </ul>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -378,7 +427,7 @@ const PlaceOrder = () => {
             </div>
           </div>
 
-          {/* Right Column - Order Summary */}
+          {/* Order Summary */}
           <div className="space-y-6">
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden sticky top-6">
               <div className="bg-black text-white p-6">
@@ -394,8 +443,11 @@ const PlaceOrder = () => {
                 <div className="space-y-4 pt-6 border-t border-gray-200">
                   <button
                     type="submit"
-                    disabled={isLoading}
-                    className="w-full py-4 bg-black text-white font-semibold rounded-lg hover:bg-gray-800 transition-all duration-200 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                    disabled={isLoading || !agreeToTerms}
+                    className={`w-full py-4 font-semibold rounded-lg transition-all duration-200 transform ${!agreeToTerms
+                      ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                      : 'bg-black text-white hover:bg-gray-800 hover:scale-[1.02]'
+                      } disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none`}
                   >
                     {isLoading ? (
                       <div className="flex items-center justify-center gap-2">
@@ -416,17 +468,14 @@ const PlaceOrder = () => {
                   </button>
                 </div>
 
-                {/* Terms */}
+                {/* Security Badge */}
                 <div className="pt-4 border-t border-gray-200">
-                  <p className="text-xs text-gray-500 leading-relaxed">
-                    By placing your order, you agree to our{' '}
-                    <span className="underline cursor-pointer hover:text-black transition-colors">
-                      Terms of Service
-                    </span>{' '}
-                    and{' '}
-                    <span className="underline cursor-pointer hover:text-black transition-colors">
-                      Privacy Policy
-                    </span>
+                  <div className="flex items-center justify-center gap-2 text-xs text-gray-500 mb-3">
+                    <Shield size={14} className="text-green-600" />
+                    <span>Secure Checkout</span>
+                  </div>
+                  <p className="text-xs text-gray-500 leading-relaxed text-center">
+                    Your information is protected with industry-standard encryption
                   </p>
                 </div>
               </div>
@@ -443,8 +492,8 @@ const PaymentOption = ({ method, setMethod, type, logo }) => (
   <div
     onClick={() => setMethod(type)}
     className={`flex items-center gap-4 p-4 border rounded-lg cursor-pointer transition-all duration-200 hover:shadow-md ${method === type
-        ? 'border-black bg-gray-50 shadow-sm'
-        : 'border-gray-200 hover:border-gray-300'
+      ? 'border-black bg-gray-50 shadow-sm'
+      : 'border-gray-200 hover:border-gray-300'
       }`}
   >
     <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${method === type ? 'border-black' : 'border-gray-300'

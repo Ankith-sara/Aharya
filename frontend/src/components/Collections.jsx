@@ -14,7 +14,7 @@ const Collections = () => {
   const categories = [
     {
       name: 'Kurtis',
-      imageUrl: 'https://res.cloudinary.com/dfzhqsfp7/image/upload/v1734960230/xwz3navthgy7tlzkiqma.webp',
+      imageUrl: 'https://res.cloudinary.com/dfzhqsfp7/image/upload/v1757399772/afrrbr7bqvtxiw1m9azw.webp',
       description: 'Elegant, handcrafted designs'
     },
     {

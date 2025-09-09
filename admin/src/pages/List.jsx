@@ -2,27 +2,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { backendUrl, currency } from '../App';
 import { toast } from 'react-toastify';
-import {
-  Package,
-  Edit3,
-  Trash2,
-  Search,
-  Filter,
-  Star,
-  Image as ImageIcon,
-  Upload,
-  X,
-  Save,
-  AlertCircle,
-  CheckCircle2,
-  IndianRupee,
-  Grid,
-  List as ListIcon,
-  Tag,
-  DollarSign,
-  Building2,
-  Plus
-} from 'lucide-react';
+import { Package, Edit3, Trash2, Search, Filter, Star, Image as ImageIcon, Upload, X, Save, CheckCircle2, IndianRupee, Grid, List as ListIcon, Tag, Building2, Plus } from 'lucide-react';
 
 const ImageUpload = ({ id, image, currentImage, setImage, index, onRemove }) => (
   <div className="relative group">
@@ -150,18 +130,18 @@ const List = ({ token }) => {
   const [companies, setCompanies] = useState([
     'Biba',
     'Fabindia',
-    'W for Woman'
+    'Vasudhaa Vastrram Vishram'
   ]);
   const [newCompanyName, setNewCompanyName] = useState('');
   const [showAddCompany, setShowAddCompany] = useState(false);
 
   const categoryData = {
     Men: {
-      subCategories: ["", "Shirts", "Half-hand Shirts", "Vests", "Trousers", "Jackets", "Men-Blazers"],
+      subCategories: ["", "Shirts", "Sleeve Shirts", "Kurtas", "Co-ord Sets", "Vests", "Trousers", "Jackets"],
       sizes: ['28', '30', '32', '34', '36', '38', '40', '42', '44', '46']
     },
     Women: {
-      subCategories: ["", "Kurtis", "Tops", "Blazers", "Dresses", "Corset-tops"],
+      subCategories: ["", "Kurtis", "Kurta Sets", "Tops", "Blazers", "Dresses", "Corset-tops"],
       sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL']
     },
     "Home Furnishing": {
@@ -211,12 +191,12 @@ const List = ({ token }) => {
         const products = response.data.products || [];
         setList(products);
         setFilteredList(products);
-        
+
         // Extract unique companies from products to update the companies list
         const productCompanies = [...new Set(products
           .filter(product => product.company && product.company !== 'Aharyas')
           .map(product => product.company))];
-        
+
         const allCompanies = [...new Set([...companies, ...productCompanies])].sort();
         setCompanies(allCompanies);
       } else {
@@ -423,14 +403,14 @@ const List = ({ token }) => {
           ) : (
             <>
               {viewMode === 'grid' ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                   {filteredList.map((item, index) => (
                     <ProductCard
                       key={item._id}
                       item={item}
                       index={index}
                       onEdit={(product) => {
-                        setEditedProduct({...product, company: product.company || ''});
+                        setEditedProduct({ ...product, company: product.company || '' });
                         setIsEditing(true);
                       }}
                       onRemove={removeProduct}
@@ -439,7 +419,7 @@ const List = ({ token }) => {
                   ))}
                 </div>
               ) : (
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+                <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
                   <div className="overflow-x-auto">
                     <table className="w-full">
                       <thead className="bg-gray-50">
@@ -458,11 +438,11 @@ const List = ({ token }) => {
                           <tr key={item._id} className="hover:bg-gray-50 transition-colors">
                             <td className="px-6 py-4 font-medium text-gray-600">#{index + 1}</td>
                             <td className="px-6 py-4">
-                              <div className="relative w-16 h-16">
+                              <div className="relative w-16 h-full">
                                 <img
-                                  src={item.images?.[0] || 'default-image-path.jpg'}
+                                  src={item.images?.[0] || 'no image available'}
                                   alt={item.name}
-                                  className="w-16 h-16 object-cover rounded-xl border border-gray-200"
+                                  className="w-16 h-full object-cover rounded-xl border border-gray-200"
                                 />
                                 {item.bestseller && (
                                   <Star className="absolute -top-1 -right-1 text-yellow-500 fill-yellow-500" size={16} />
@@ -497,7 +477,7 @@ const List = ({ token }) => {
                               <div className="flex justify-center gap-2">
                                 <button
                                   onClick={() => {
-                                    setEditedProduct({...item, company: item.company || ''});
+                                    setEditedProduct({ ...item, company: item.company || '' });
                                     setIsEditing(true);
                                   }}
                                   className="p-2 text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
@@ -674,7 +654,7 @@ const List = ({ token }) => {
                             </button>
                             <button
                               type="button"
-                              onClick={() => {setShowAddCompany(false); setNewCompanyName('');}}
+                              onClick={() => { setShowAddCompany(false); setNewCompanyName(''); }}
                               className="px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-700 rounded-lg transition-colors"
                             >
                               Cancel
@@ -758,8 +738,8 @@ const List = ({ token }) => {
                             type="button"
                             onClick={() => toggleSize(size)}
                             className={`px-4 py-2 rounded-xl border-2 font-medium transition-all duration-200 ${editedProduct.sizes?.includes(size)
-                                ? 'bg-secondary text-white border-secondary shadow-md'
-                                : 'bg-white text-gray-700 border-gray-300 hover:border-secondary hover:bg-indigo-50'
+                              ? 'bg-secondary text-white border-secondary shadow-md'
+                              : 'bg-white text-gray-700 border-gray-300 hover:border-secondary hover:bg-indigo-50'
                               }`}
                           >
                             {size}

@@ -212,7 +212,7 @@ const getUserDetails = async (req, res) => {
 const updateUserProfile = async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, email } = req.body;
+        const { name, email, phone } = req.body;
         let imageUrl = null;
 
         if (req.file) {
@@ -223,7 +223,7 @@ const updateUserProfile = async (req, res) => {
             imageUrl = result.secure_url;
         }
 
-        const updatedFields = { name, email };
+        const updatedFields = { name, email, phone };
         if (imageUrl) updatedFields.image = imageUrl;
 
         const user = await userModel.findByIdAndUpdate(id, updatedFields, {

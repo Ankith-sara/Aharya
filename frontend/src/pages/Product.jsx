@@ -167,13 +167,10 @@ const Product = () => {
 
   if (!productData) {
     return (
-      <div className="flex justify-center items-center min-h-screen">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-pulse">
-            <div className="w-16 h-16 mx-auto mb-4 bg-gray-200 rounded-full"></div>
-            <div className="h-4 bg-gray-200 rounded w-32 mx-auto"></div>
-          </div>
-          <p className="text-gray-600 font-light mt-4 tracking-wide">Loading...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black mx-auto mb-4"></div>
+          <span className="text-gray-600">Loading profile...</span>
         </div>
       </div>
     );

@@ -9,7 +9,6 @@ const CancellationRefundPolicy = () => {
 
   return (
     <div className="min-h-screen text-black mt-20">
-      {/* Hero Section */}
       <section className="py-24 px-4 sm:px-8 md:px-10 lg:px-20">
         <div className="max-w-5xl mx-auto text-center">
           <div className="text-3xl text-center mb-8">
@@ -92,11 +91,10 @@ const CancellationRefundPolicy = () => {
               </div>
               <h2 className="text-2xl font-light tracking-wider text-black">REFUND POLICY</h2>
             </div>
-            <div className="w-16 h-0.5 bg-black mx-auto"></div>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div className="bg-white shadow-lg p-6 hover:shadow-xl transition-shadow border-l-4 border-red-500">
+            <div className="bg-white shadow-lg p-6 hover:shadow-xl transition-shadow border-l-4 border-black">
               <div className="flex items-center gap-3 mb-4">
                 <AlertCircle className="text-red-500" size={20} />
                 <h3 className="font-medium text-black">Damaged/Defective Items</h3>
@@ -107,7 +105,7 @@ const CancellationRefundPolicy = () => {
               </p>
             </div>
 
-            <div className="bg-white shadow-lg p-6 hover:shadow-xl transition-shadow border-l-4 border-amber-500">
+            <div className="bg-white shadow-lg p-6 hover:shadow-xl transition-shadow border-l-4 border-black">
               <div className="flex items-center gap-3 mb-4">
                 <RotateCcw className="text-amber-500" size={20} />
                 <h3 className="font-medium text-black">Product Expectations</h3>
@@ -118,7 +116,7 @@ const CancellationRefundPolicy = () => {
               </p>
             </div>
 
-            <div className="bg-white shadow-lg p-6 hover:shadow-xl transition-shadow border-l-4 border-blue-500">
+            <div className="bg-white shadow-lg p-6 hover:shadow-xl transition-shadow border-l-4 border-black">
               <div className="flex items-center gap-3 mb-4">
                 <Shield className="text-blue-500" size={20} />
                 <h3 className="font-medium text-black">Warranty Items</h3>
@@ -133,9 +131,9 @@ const CancellationRefundPolicy = () => {
       </section>
 
       {/* Refund Processing */}
-      <section className="py-16 px-4 sm:px-8 md:px-10 lg:px-20 bg-gradient-to-r from-green-50 to-white">
+      <section className="py-16 px-4 sm:px-8 md:px-10 lg:px-20">
         <div className="max-w-5xl mx-auto text-center">
-          <div className="bg-white/90 backdrop-blur-sm p-12 shadow-xl border-l-4 border-green-500">
+          <div className="bg-white/90 backdrop-blur-sm p-12 shadow-xl border-l-4 border-black">
             <div className="flex items-center justify-center gap-4 mb-6">
               <CheckCircle className="text-green-600" size={32} />
               <h2 className="text-2xl font-light tracking-wider text-black">REFUND PROCESSING TIME</h2>

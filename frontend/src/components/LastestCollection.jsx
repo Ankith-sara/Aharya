@@ -10,29 +10,91 @@ function LatestCollection() {
   const [latestProducts, setLatestProducts] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('All');
 
+  // Helper function to get products by category/subcategory
+  const getProductsByCategory = (products, categoryName, subcategories) => {
+    return products.filter(item => {
+      const itemCategory = item.category?.toLowerCase();
+      const itemSubCategory = item.subCategory?.toLowerCase();
+
+      return subcategories.some(sub =>
+        itemCategory?.includes(sub.toLowerCase()) ||
+        itemSubCategory?.includes(sub.toLowerCase())
+      );
+    });
+  };
+
+  // Helper function to select at least minCount products from each subcategory
+  const selectBalancedProducts = (products, categories, minPerCategory = 2) => {
+    const selectedProducts = [];
+    const usedProductIds = new Set();
+
+    categories.forEach(({ name, subcategories }) => {
+      const categoryProducts = getProductsByCategory(products, name, subcategories);
+
+      // Group by subcategory for more balanced selection
+      const productsBySubcategory = {};
+      subcategories.forEach(sub => {
+        productsBySubcategory[sub] = categoryProducts.filter(item =>
+          item.category?.toLowerCase().includes(sub.toLowerCase()) ||
+          item.subCategory?.toLowerCase().includes(sub.toLowerCase())
+        );
+      });
+
+      // Select at least minPerCategory from each subcategory if available
+      Object.values(productsBySubcategory).forEach(subProducts => {
+        const availableProducts = subProducts.filter(p => !usedProductIds.has(p._id));
+        const toSelect = Math.min(minPerCategory, availableProducts.length);
+
+        for (let i = 0; i < toSelect; i++) {
+          selectedProducts.push(availableProducts[i]);
+          usedProductIds.add(availableProducts[i]._id);
+        }
+      });
+    });
+
+    const remainingProducts = products.filter(p => !usedProductIds.has(p._id));
+    const remainingSlots = Math.max(0, 10 - selectedProducts.length);
+
+    for (let i = 0; i < Math.min(remainingSlots, remainingProducts.length); i++) {
+      selectedProducts.push(remainingProducts[i]);
+    }
+
+    return selectedProducts.slice(0, 10);
+  };
+
   useEffect(() => {
     if (products && products.length > 0) {
       if (selectedCategory === 'All') {
-        setLatestProducts(products.slice(0, 10));
-      } else {
-        // This is a placeholder - you'd need to modify based on your actual data structure
-        const filtered = products.filter(item => {
-          if (selectedCategory === 'Clothing') {
-            return ['Kurtis', 'Tops', 'Dresses', 'Blazers'].some(cat => 
-              item.category?.includes(cat) || item.subCategory?.includes(cat)
-            );
-          } else if (selectedCategory === 'Home') {
-            return ['Home', 'Wall Decor', 'Kitchenware'].some(cat => 
-              item.category?.includes(cat) || item.subCategory?.includes(cat)
-            );
-          } else if (selectedCategory === 'Accessories') {
-            return ['Bags', 'Pouches', 'Accessories'].some(cat => 
-              item.category?.includes(cat) || item.subCategory?.includes(cat)
-            );
+        // Define all categories and their subcategories
+        const allCategories = [
+          {
+            name: 'Women',
+            subcategories: ['Kurtis', 'Kurta Sets', 'Dresses']
+          },
+          {
+            name: 'Men',
+            subcategories: ['Shirts', 'Sleeve Shirts', 'Trousers']
+          },
+          {
+            name: 'Home',
+            subcategories: ['Home', 'Wall Decor', 'Kitchenware']
+          },
+          {
+            name: 'Accessories',
+            subcategories: ['Bags', 'Pouches', 'Accessories']
           }
-          return false;
-        });
-        setLatestProducts(filtered.slice(0, 10));
+        ];
+
+        const balancedProducts = selectBalancedProducts(products, allCategories, 2);
+        setLatestProducts(balancedProducts);
+
+      } else {
+        if (categoryConfig.name) {
+          const balancedProducts = selectBalancedProducts(products, [categoryConfig], 2);
+          setLatestProducts(balancedProducts);
+        } else {
+          setLatestProducts(products.slice(0, 10));
+        }
       }
     } else {
       setLatestProducts([]);
@@ -57,11 +119,11 @@ function LatestCollection() {
             {latestProducts.map((item, index) => (
               <div key={index} className="group">
                 <div className="relative overflow-hidden">
-                  <ProductItem 
-                    id={item._id} 
-                    image={item.images} 
-                    name={item.name} 
-                    price={item.price} 
+                  <ProductItem
+                    id={item._id}
+                    image={item.images}
+                    name={item.name}
+                    price={item.price}
                   />
                   {index < 1 && (
                     <div className="absolute top-3 right-3 bg-black text-white text-xs px-3 py-1 font-medium">

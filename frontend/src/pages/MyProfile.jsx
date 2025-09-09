@@ -47,6 +47,7 @@ const MyProfile = () => {
           setEditProfile({
             name: res.data.user.name,
             email: res.data.user.email,
+            phone: res.data.user.phone,
             image: res.data.user.image || "",
           });
         } else {
@@ -74,8 +75,8 @@ const MyProfile = () => {
     if (!file) return;
     setEditProfile((prev) => ({
       ...prev,
-      imageFile: file, // keep the File object for upload
-      image: URL.createObjectURL(file), // preview only
+      imageFile: file,
+      image: URL.createObjectURL(file),
     }));
   };
 
@@ -105,7 +106,7 @@ const MyProfile = () => {
       );
 
       if (res.data.success) {
-        setUserData(res.data.user); // update the UI
+        setUserData(res.data.user);
         setEditProfile({
           name: res.data.user.name,
           email: res.data.user.email,
@@ -186,15 +187,13 @@ const MyProfile = () => {
   return (
     <div className="min-h-screen bg-gray-50 mt-20 px-4 sm:px-6 md:px-10 lg:px-20 py-10">
       <div className="max-w-7xl mx-auto">
-        {/* Profile Title */}
         <div className="text-center mb-8">
           <Title text1="MY" text2="PROFILE" />
         </div>
 
         <div className="grid xl:grid-cols-[1fr_2fr] gap-8">
-          {/* Left Column - Profile Card */}
+          {/* Profile Card */}
           <div className="space-y-6">
-            {/* Main Profile Card */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
               <div className="bg-black text-white p-6">
                 <div className="flex items-center gap-3">
@@ -254,10 +253,7 @@ const MyProfile = () => {
                   </div>
                 </div>
 
-                <button 
-                  className="w-full py-3 bg-black text-white font-medium rounded-lg hover:bg-gray-800 transition-all duration-200 transform hover:scale-[1.02]"
-                  onClick={() => setActiveSection("Edit Profile")}
-                >
+                <button className="w-full py-3 bg-black text-white font-medium rounded-lg hover:bg-gray-800 transition-all duration-200 transform hover:scale-[1.02]" onClick={() => setActiveSection("Edit Profile")}>
                   EDIT PROFILE
                 </button>
               </div>
@@ -277,9 +273,8 @@ const MyProfile = () => {
             </div>
           </div>
 
-          {/* Right Column - Account Management */}
+          {/* Account Management */}
           <div className="space-y-8">
-            {/* Account Management Card */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
               <div className="bg-black text-white p-6">
                 <div className="flex items-center gap-3">
@@ -328,11 +323,6 @@ const MyProfile = () => {
                     <Clock size={24} className="text-gray-300" />
                     <h3 className="text-xl font-semibold">Recently Viewed</h3>
                   </div>
-                  {recentlyViewed.length > 0 && (
-                    <button className="text-sm text-gray-300 hover:text-white transition-colors">
-                      View All
-                    </button>
-                  )}
                 </div>
               </div>
               
@@ -354,7 +344,7 @@ const MyProfile = () => {
                 </div>
               ) : (
                 <div className="p-6">
-                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
                     {recentlyViewed.slice(0, 8).map((item) => (
                       <ProductItem
                         key={item._id}

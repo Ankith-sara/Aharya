@@ -10,8 +10,6 @@ const Collection = () => {
   const [showFilter, setShowFilter] = useState(false);
   const [filterProducts, setFilterProducts] = useState([]);
   const [viewMode, setViewMode] = useState('grid');
-
-  // Enhanced filtering options
   const [category, setCategory] = useState([]);
   const [subCategory, setSubCategory] = useState([]);
   const [priceRange, setPriceRange] = useState({ min: 0, max: 10000 });
@@ -20,21 +18,16 @@ const Collection = () => {
   const [budgetFriendly, setBudgetFriendly] = useState(false);
   const [rareItems, setRareItems] = useState(false);
   const [activeFiltersCount, setActiveFiltersCount] = useState(0);
-
-  // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
-  const productsPerPage = 12;
+  const productsPerPage = 16;
 
-  // Extract unique categories and subcategories
   const categories = [...new Set(products.map(product => product.category).filter(Boolean))];
   
   // Filter subcategories based on selected categories
   const getFilteredSubCategories = () => {
     if (category.length === 0) {
-      // If no categories are selected, show all subcategories
       return [...new Set(products.map(product => product.subCategory).filter(Boolean))];
     } else {
-      // Only show subcategories from selected categories
       return [...new Set(
         products
           .filter(product => category.includes(product.category))
@@ -117,26 +110,22 @@ const Collection = () => {
       productsCopy = productsCopy.filter(item => subCategory.includes(item.subCategory));
     }
 
-    // Price range filter
     productsCopy = productsCopy.filter(
       (item) => item.price >= priceRange.min && item.price <= priceRange.max
     );
 
-    // Gifting Idea filter
     if (giftingIdea) {
       productsCopy = productsCopy.filter(
         (item) => item.giftable === true || item.category === 'Gift Sets' || item.price <= 2000
       );
     }
 
-    // Budget Friendly filter (under 1000)
     if (budgetFriendly) {
       productsCopy = productsCopy.filter(
         (item) => item.price < 1000
       );
     }
 
-    // Rare items filter
     if (rareItems) {
       productsCopy = productsCopy.filter(
         (item) => item.rare === true || item.limited === true || item.stock < 5
@@ -219,7 +208,6 @@ const Collection = () => {
         pageNumbers.push(i);
       }
     } else {
-      // Show some page numbers with ellipsis
       if (currentPage <= 3) {
         for (let i = 1; i <= 4; i++) {
           pageNumbers.push(i);
@@ -281,7 +269,7 @@ const Collection = () => {
         </div>
       </div>
 
-      {/* Sub Categories - Only show if there are filtered subcategories */}
+      {/* Sub Categories */}
       {filteredSubCategories.length > 0 && (
         <div>
           <h4 className="text-xs uppercase tracking-wider font-medium mb-2">
@@ -448,7 +436,7 @@ const Collection = () => {
           </div>
         )}
 
-        {/* Main content - WIDER */}
+        {/* Main content */}
         <div className="flex-1">
           <div className="mb-4 flex justify-between items-center">
             <div className="text-xs text-neutral-600">

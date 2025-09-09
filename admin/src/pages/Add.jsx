@@ -61,16 +61,16 @@ const Add = ({ token }) => {
   const [companies, setCompanies] = useState([
     'Biba',
     'Fabindia',
-    'W for Woman'
+    'Vasudhaa Vastrram Vishram'
   ]);
 
   const categoryData = {
     Men: {
-      subCategories: ["", "Shirts", "Half-hand Shirts", "Vests", "Trousers", "Jackets", "Men-Blazers"],
+      subCategories: ["", "Shirts", "Sleeve Shirts", "Kurtas", "Co-ord Sets", "Vests", "Trousers", "Jackets"],
       sizes: ['28', '30', '32', '34', '36', '38', '40', '42', '44', '46']
     },
     Women: {
-      subCategories: ["", "Kurtis", "Tops", "Blazers", "Dresses", "Corset-tops"],
+      subCategories: ["", "Kurtis", "Kurta Sets", "Tops", "Blazers", "Dresses", "Corset-tops"],
       sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL']
     },
     "Home Furnishing": {
@@ -213,7 +213,7 @@ const Add = ({ token }) => {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-7 gap-6">
               {images.map((image, index) => (
                 <ImageUpload
                   key={index}

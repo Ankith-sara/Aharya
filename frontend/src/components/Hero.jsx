@@ -35,7 +35,7 @@ const Hero = () => {
         preload="auto"
         className="absolute top-0 left-0 w-full h-full object-cover bg-black"
       >
-        <source src="https://res.cloudinary.com/dfzhqsfp7/video/upload/v1751705180/hero_nrnwhy.mp4" type="video/mp4" />
+        <source src="https://res.cloudinary.com/dfzhqsfp7/video/upload/f_auto,q_auto:eco/hero_nrnwhy.mp4" type="video/mp4" />
         Your browser does not support the video tag.
       </video>
 
