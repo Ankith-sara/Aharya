@@ -5,6 +5,7 @@ import Stripe from 'stripe'
 import Razorpay from 'razorpay';
 import crypto from 'crypto';
 import dotenv from 'dotenv';
+import { sendOrderEmails } from "../middlewares/sendOrderMail.js"; // Updated import
 dotenv.config();
 
 const currency = 'inr'
@@ -17,10 +18,19 @@ const razorpayInstance = new Razorpay({
   key_secret: 'NoJ69YK2pyp4aEDnMwmOaqFr',
 });
 
-// Placeing orders using COD Method
+// Placing orders using COD Method
 const placeOrder = async (req, res) => {
   try {
     const { userId, items, amount, address } = req.body;
+
+    // Validate required fields
+    if (!userId || !items || !amount || !address) {
+      return res.status(400).json({
+        success: false,
+        message: 'Missing required fields: userId, items, amount, or address'
+      });
+    }
+
     const orderData = {
       userId,
       items,
@@ -30,22 +40,53 @@ const placeOrder = async (req, res) => {
       payment: false,
       date: Date.now()
     }
-    const neworder = new orderModel(orderData);
-    await neworder.save();
 
-    await userModel.findByIdAndUpdate(userId, { cartData: {} })
-    res.status(201).json({ success: true, message: "Order placed successfully" });
+    const newOrder = new orderModel(orderData);
+    await newOrder.save();
+
+    // Clear user cart
+    await userModel.findByIdAndUpdate(userId, { cartData: {} });
+
+    // Fetch user details for email
+    const user = await userModel.findById(userId);
+    if (!user) {
+      console.error('User not found for email notification');
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    // Send emails to both customer and admin
+    try {
+      await sendOrderEmails(newOrder, user);
+    } catch (emailError) {
+      console.error('Email sending failed:', emailError);
+      // Don't fail the order if email fails, just log it
+    }
+
+    res.status(201).json({
+      success: true,
+      message: "Order placed successfully",
+      orderId: newOrder._id
+    });
+
   } catch (error) {
-    console.log(error)
-    res.json({ success: false, message: error.message })
+    console.error('COD Order Error:', error);
+    res.status(500).json({ success: false, message: error.message });
   }
-}
+};
 
-// Placeing orders using Stripe Method
+// Placing orders using Stripe Method
 const placeOrderStripe = async (req, res) => {
   try {
     const { userId, items, amount, address } = req.body;
     const { origin } = req.headers;
+
+    // Validate required fields
+    if (!userId || !items || !amount || !address) {
+      return res.status(400).json({
+        success: false,
+        message: 'Missing required fields'
+      });
+    }
 
     const orderData = {
       userId,
@@ -98,23 +139,44 @@ const placeOrderStripe = async (req, res) => {
 
 // Verify Stripe Payment
 const verifyStripe = async (req, res) => {
-  const { orderId, success, userId } = req.body
-  try {
-    if (success) {
-      await orderModel.findByIdAndUpdate(orderId, { payment: true })
-      await userModel.findByIdAndUpdate(userId, { cartData: {} })
-      res.json({ success: true, message: "Payment successful" })
-    } else {
-      await orderModel.findByIdAndDelete(orderId)
-      res.json({ success: false, message: "Payment failed" })
-    }
-  } catch (error) {
-    console.log(error)
-    res.json({ success: false, message: error.message })
-  }
-}
+  const { orderId, success, userId } = req.body;
 
-// Placeing orders using Razorpay Method
+  try {
+    if (!success) {
+      // Delete failed order
+      await orderModel.findByIdAndDelete(orderId);
+      return res.json({ success: false, message: "Payment not successful" });
+    }
+
+    // Fetch order and user details
+    const order = await orderModel.findById(orderId);
+    const user = await userModel.findById(userId);
+
+    if (!order || !user) {
+      await orderModel.findByIdAndDelete(orderId);
+      return res.json({ success: false, message: "Invalid order or user" });
+    }
+
+    // Update order status & clear user cart
+    await orderModel.findByIdAndUpdate(orderId, { payment: true });
+    await userModel.findByIdAndUpdate(userId, { cartData: {} });
+
+    // Send emails to both customer and admin
+    try {
+      await sendOrderEmails(order, user);
+    } catch (emailError) {
+      console.error('Email sending failed after Stripe payment:', emailError);
+    }
+
+    return res.json({ success: true, message: "Payment successful" });
+
+  } catch (error) {
+    console.error("Stripe verification error:", error);
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// Placing orders using Razorpay Method
 const placeOrderRazorpay = async (req, res) => {
   try {
     const { userId, items, amount, address } = req.body;
@@ -130,7 +192,6 @@ const placeOrderRazorpay = async (req, res) => {
     };
 
     const order = await razorpayInstance.orders.create(options);
-
     res.json({ success: true, order });
 
   } catch (error) {
@@ -151,17 +212,26 @@ const verifyRazorpay = async (req, res) => {
       address,
     } = req.body;
 
-    // Signature verification
     const expectedSignature = crypto
-      .createHmac('sha256', process.env.RAZORPAY_SECRET_KEY)
+      .createHmac("sha256", process.env.RAZORPAY_SECRET_KEY)
       .update(`${razorpay_order_id}|${razorpay_payment_id}`)
-      .digest('hex');
+      .digest("hex");
 
     if (expectedSignature !== razorpay_signature) {
-      return res.status(400).json({ success: false, message: "Invalid payment signature" });
+      return res.status(400).json({
+        success: false,
+        message: "Invalid payment signature"
+      });
     }
 
-    // Save verified order
+    const user = await userModel.findById(userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found"
+      });
+    }
+
     const orderData = {
       userId,
       items,
@@ -177,11 +247,22 @@ const verifyRazorpay = async (req, res) => {
 
     await userModel.findByIdAndUpdate(userId, { cartData: {} });
 
-    res.json({ success: true, message: "Payment verified & order placed" });
+    // Send emails to both customer and admin
+    try {
+      await sendOrderEmails(newOrder, user);
+    } catch (emailError) {
+      console.error('Email sending failed after Razorpay payment:', emailError);
+    }
+
+    return res.json({
+      success: true,
+      message: "Payment verified & order placed",
+      orderId: newOrder._id,
+    });
 
   } catch (error) {
     console.error("Razorpay verification error:", error);
-    res.status(500).json({ success: false, message: error.message });
+    return res.status(500).json({ success: false, message: error.message });
   }
 };
 
@@ -223,7 +304,7 @@ const updateStatus = async (req, res) => {
   }
 }
 
-// In your order routes/controller:
+// Get order status
 const orderStatus = async (req, res) => {
   try {
     const { orderId } = req.params;
@@ -233,10 +314,9 @@ const orderStatus = async (req, res) => {
     }
     res.json({ success: true, order });
   } catch (e) {
-    console.error("Tracking Error:", e.message); // Add detailed logging
+    console.error("Tracking Error:", e.message);
     res.status(500).json({ success: false, message: e.message });
   }
 };
 
-
-export { verifyRazorpay, verifyStripe, placeOrder, placeOrderStripe, placeOrderRazorpay, allOrders, userOrders, updateStatus, orderStatus }
+export { verifyRazorpay, verifyStripe, placeOrder, placeOrderStripe, placeOrderRazorpay, allOrders, userOrders, updateStatus, orderStatus };

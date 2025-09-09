@@ -1,6 +1,6 @@
 import nodemailer from 'nodemailer';
 
-export const sendWelcomeMail = async (email, name = 'User') => {
+const sendWelcomeMail = async (email, name = 'User') => {
   const transporter = nodemailer.createTransport({
     service: 'gmail', // or your email provider (use Mailgun/SendGrid in production)
     auth: {
@@ -26,3 +26,5 @@ export const sendWelcomeMail = async (email, name = 'User') => {
 
   await transporter.sendMail(mailOptions);
 };
+
+export default sendWelcomeMail;

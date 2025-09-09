@@ -3,8 +3,8 @@ import jwt from 'jsonwebtoken';
 import validator from 'validator';
 import { v2 as cloudinary } from 'cloudinary';
 import userModel from '../models/UserModel.js';
-import { sendOtpMail } from '../middlewares/sendOtpMail.js';
-import { sendWelcomeMail } from '../middlewares/sendWelcomeMail.js';
+import sendOtpMail from '../middlewares/sendOtpMail.js';
+import sendWelcomeMail from '../middlewares/sendWelcomeMail.js';
 
 const generateOtp = () => Math.floor(100000 + Math.random() * 900000).toString();
 

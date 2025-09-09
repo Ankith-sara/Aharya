@@ -13,7 +13,7 @@ const productSchema = new mongoose.Schema({
     date: { type: Number, required: true },
     adminId: { 
         type: mongoose.Schema.Types.ObjectId, 
-        ref: 'users',
+        ref: 'user',
         required: true 
     }
 })
