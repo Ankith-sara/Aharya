@@ -25,8 +25,8 @@ const TermsConditions = () => {
         <div className="max-w-7xl mx-auto">
           <div className="bg-white shadow-lg p-12 border-l-4 border-black">
             <div className="flex items-center gap-4 mb-8">
-              <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-                <FileText className="text-blue-600" size={24} />
+              <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center">
+                <FileText size={24} />
               </div>
               <h2 className="text-2xl font-light tracking-wider text-black">COMPANY INFORMATION</h2>
             </div>
@@ -37,7 +37,7 @@ const TermsConditions = () => {
                   These terms and conditions apply to TATHASTA WEAVES LLP and all users of our website and services.
                 </p>
                 
-                <div className="bg-blue-50 p-6 rounded-lg">
+                <div className="bg-gray-100 p-6 rounded-lg">
                   <h4 className="font-medium text-black mb-3">Legal Entity</h4>
                   <p><strong>TATHASTA WEAVES LLP</strong></p>
                   <p className="text-sm mt-2">
@@ -76,8 +76,8 @@ const TermsConditions = () => {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
             <div className="flex items-center justify-center gap-4 mb-6">
-              <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
-                <Scale className="text-green-600" size={24} />
+              <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center">
+                <Scale size={24} />
               </div>
               <h2 className="text-2xl font-light tracking-wider text-black">WEBSITE USAGE TERMS</h2>
             </div>
@@ -163,12 +163,12 @@ const TermsConditions = () => {
       </section>
 
       {/* Purchase Terms */}
-      <section className="py-16 px-4 sm:px-8 md:px-10 lg:px-20 bg-gradient-to-r from-gray-100 to-white">
+      <section className="py-16 px-4 sm:px-8 md:px-10 lg:px-20">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
             <div className="flex items-center justify-center gap-4 mb-6">
-              <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
-                <ShoppingCart className="text-purple-600" size={24} />
+              <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center">
+                <ShoppingCart size={24} />
               </div>
               <h2 className="text-2xl font-light tracking-wider text-black">PURCHASE TERMS</h2>
             </div>
@@ -179,7 +179,7 @@ const TermsConditions = () => {
               <div className="space-y-4 text-gray-700 font-light">
                 <p> By placing an order with us, you agree to provide current, complete, and accurate purchase information. </p>
                 
-                <div className="bg-purple-50 p-6 rounded-lg">
+                <div className="bg-gray-100 p-6 rounded-lg">
                   <h4 className="font-medium text-black mb-3">Order Process</h4>
                   <ul className="space-y-2 text-sm">
                     <li>• Order confirmation sent within 24 hours</li>
@@ -193,8 +193,8 @@ const TermsConditions = () => {
 
             <div className="bg-white shadow-lg p-8 border-l-4 border-black hover:shadow-xl transition-shadow">
               <div className="flex items-center gap-4 mb-6">
-                <div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center">
-                  <CreditCard className="text-orange-600" size={24} />
+                <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center">
+                  <CreditCard size={24} />
                 </div>
                 <h3 className="text-xl font-medium text-black">Payment Terms</h3>
               </div>
@@ -204,7 +204,7 @@ const TermsConditions = () => {
                   We reserve the right to refuse or cancel your order if fraud or unauthorized purchase is suspected.
                 </p>
                 
-                <div className="bg-orange-50 p-4 rounded-lg">
+                <div className="bg-gray-100 p-4 rounded-lg">
                   <h4 className="font-medium text-black mb-2">Accepted Payment Methods:</h4>
                   <ul className="space-y-1 text-sm">
                     <li>• Credit/Debit Cards</li>
@@ -226,12 +226,12 @@ const TermsConditions = () => {
             <h2 className="text-2xl font-light tracking-wider text-black mb-8 text-center">LIABILITY & DISCLAIMER</h2>
             
             <div className="space-y-6 text-gray-700 font-light leading-relaxed">
-              <div className="bg-red-50 p-6 rounded-lg border border-red-200">
-                <h3 className="font-medium text-red-800 mb-3 flex items-center gap-2">
+              <div className="bg-gray-100 p-6 rounded-lg border border-gray-200">
+                <h3 className="font-medium mb-3 flex items-center gap-2">
                   <AlertTriangle size={16} />
                   Limitation of Liability
                 </h3>
-                <p className="text-red-700 text-sm">
+                <p className="text-sm">
                   <strong>In no case shall TATHASTA WEAVES LLP be liable for any direct, indirect, punitive, 
                   incidental, special, consequential damages</strong> that result from the use of, or inability to use, 
                   this website or the purchase of products from us. This includes, without limitation, 
@@ -239,23 +239,23 @@ const TermsConditions = () => {
                 </p>
               </div>
 
-              <div className="bg-blue-50 p-6 rounded-lg border border-blue-200">
-                <h3 className="font-medium text-blue-800 mb-3 flex items-center gap-2">
+              <div className="bg-gray-100 p-6 rounded-lg border border-gray-200">
+                <h3 className="font-medium mb-3 flex items-center gap-2">
                   <Shield size={16} />
                   Product Quality
                 </h3>
-                <p className="text-blue-700 text-sm">
+                <p className="text-sm">
                   While we take great care in crafting our products, we acknowledge that handmade items may have 
                   natural variations. We provide detailed product descriptions and images to help you make informed decisions.
                 </p>
               </div>
 
-              <div className="bg-green-50 p-6 rounded-lg border border-green-200">
-                <h3 className="font-medium text-green-800 mb-3 flex items-center gap-2">
+              <div className="bg-gray-100 p-6 rounded-lg border border-gray-200">
+                <h3 className="font-medium mb-3 flex items-center gap-2">
                   <Scale size={16} />
                   Force Majeure
                 </h3>
-                <p className="text-green-700 text-sm">
+                <p className="text-sm">
                   We shall not be liable for any failure to perform our obligations where such failure results 
                   from acts of nature, war, terrorism, labor disputes, or other causes beyond our reasonable control.
                 </p>
@@ -270,8 +270,8 @@ const TermsConditions = () => {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
             <div className="flex items-center justify-center gap-4 mb-6">
-              <div className="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center">
-                <Shield className="text-indigo-600" size={24} />
+              <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center">
+                <Shield size={24} />
               </div>
               <h2 className="text-2xl font-light tracking-wider text-black">PRIVACY & DATA PROTECTION</h2>
             </div>
@@ -285,7 +285,7 @@ const TermsConditions = () => {
               </p>
 
               <div className="grid md:grid-cols-2 gap-8">
-                <div className="bg-white p-6 shadow-sm rounded-lg border-l-2 border-indigo-300">
+                <div className="bg-white p-6 shadow-sm rounded-lg border-l-2 border-gray-500">
                   <h4 className="font-medium text-black mb-3">Information We Collect</h4>
                   <ul className="text-sm text-gray-600 space-y-1">
                     <li>• Contact information (name, email, phone)</li>
@@ -295,7 +295,7 @@ const TermsConditions = () => {
                   </ul>
                 </div>
                 
-                <div className="bg-white p-6 shadow-sm rounded-lg border-l-2 border-indigo-300">
+                <div className="bg-white p-6 shadow-sm rounded-lg border-l-2 border-gray-500">
                   <h4 className="font-medium text-black mb-3">How We Use Your Data</h4>
                   <ul className="text-sm text-gray-600 space-y-1">
                     <li>• Processing and fulfilling orders</li>

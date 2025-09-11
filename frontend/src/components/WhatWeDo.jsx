@@ -9,9 +9,9 @@ function WhatWeDo() {
     const [videosPerPage, setVideosPerPage] = useState(3);
 
     const videos = [
-        { video: "https://res.cloudinary.com/dfzhqsfp7/video/upload/v1756957075/IMG_2973_eylnwr.mov", image: "https://res.cloudinary.com/dfzhqsfp7/image/upload/v1752148793/IMG_2973_exported_1350_nwvpgm.jpg" },
-        { video: "https://res.cloudinary.com/dfzhqsfp7/video/upload/v1751704388/IMG_2975_gjpdz9.mov", image: "https://res.cloudinary.com/dfzhqsfp7/image/upload/v1756956929/IMG_2975_exported_6566_qtxxqf.jpg" },
-        { video: "https://res.cloudinary.com/dfzhqsfp7/video/upload/v1751704385/IMG_2974_nje89b.mov", image: "https://res.cloudinary.com/dfzhqsfp7/image/upload/v1752148793/IMG_2974_exported_1600_lfcasj.jpg" },
+        { video: "https://res.cloudinary.com/dfzhqsfp7/video/upload/f_auto,q_auto:eco/v1756957075/IMG_2973_eylnwr.mov", image: "https://res.cloudinary.com/dfzhqsfp7/image/upload/v1752148793/IMG_2973_exported_1350_nwvpgm.jpg" },
+        { video: "https://res.cloudinary.com/dfzhqsfp7/video/upload/f_auto,q_auto:eco/v1751704388/IMG_2975_gjpdz9.mov", image: "https://res.cloudinary.com/dfzhqsfp7/image/upload/v1756956929/IMG_2975_exported_6566_qtxxqf.jpg" },
+        { video: "https://res.cloudinary.com/dfzhqsfp7/video/upload/f_auto,q_auto:eco/v1751704385/IMG_2974_nje89b.mov", image: "https://res.cloudinary.com/dfzhqsfp7/image/upload/v1752148793/IMG_2974_exported_1600_lfcasj.jpg" },
     ];
 
     const totalPages = Math.ceil(videos.length / videosPerPage);

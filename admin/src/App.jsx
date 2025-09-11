@@ -31,10 +31,10 @@ const App = () => {
       {token === ""
         ? <Login setToken={setToken} />
         : <>
-          <Navbar setToken={setToken} />
+          {/* <Navbar setToken={setToken} /> */}
           <hr />
           <div className='flex w-full'>
-            <Sidebar />
+            <Sidebar setToken={setToken} />
             <div className='w-full text-gray-600 text-base'>
                 <Routes>
                   <Route path='/' element={<AdminDashboard token={token} />} />

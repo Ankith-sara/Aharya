@@ -38,49 +38,49 @@ const AdminPanel = ({ token, setToken }) => {
     }, [token, navigate]);
 
     return (
-        <div className="flex flex-col w-full min-h-screen bg-background">
-            <header className="bg-background border-b border-primary/20 shadow-sm">
-                <div className="px-4 sm:px-6 py-3 sm:py-4">
-                    <div className="flex items-center justify-between flex-wrap gap-3">
-                        <div className="flex items-center gap-3 sm:gap-4 flex-shrink-0">
-                            <div className="flex items-center gap-2 sm:gap-3">
-                                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-primary rounded-xl flex items-center justify-center">
-                                    <Shield className="text-text" size={18} />
-                                </div>
-                                <div>
-                                    <h1 className="text-lg sm:text-xl font-bold text-primary">Admin Dashboard</h1>
-                                    <p className="text-[10px] sm:text-xs text-secondary">Management Panel</p>
-                                </div>
+        <div className="min-h-screen bg-gray-50">
+            {/* Header */}
+            <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-40">
+                <div className="px-4 sm:px-6 py-4">
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                            <div className="w-10 h-10 bg-black rounded-xl flex items-center justify-center">
+                                <Shield className="text-white" size={20} />
+                            </div>
+                            <div>
+                                <h1 className="text-xl font-semibold text-gray-900">Admin Dashboard</h1>
+                                <p className="text-sm text-gray-600">Management Panel</p>
                             </div>
                         </div>
-                        <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
+
+                        <div className="flex items-center gap-2">
                             <button
                                 onClick={() => setActiveTab("dashboard")}
-                                className={`flex items-center gap-1 sm:gap-2 px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all duration-200 ${activeTab === 'dashboard'
-                                    ? 'bg-primary text-text shadow-md'
-                                    : 'text-secondary hover:text-primary hover:bg-background/30'
+                                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${activeTab === 'dashboard'
+                                    ? 'bg-black text-white shadow-md'
+                                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
                                     }`}
                             >
-                                <BarChart2 size={14} />
-                                <span className="hidden sm:inline">Dashboard</span>
+                                <BarChart2 size={16} />
+                                Dashboard
                             </button>
 
                             <button
                                 onClick={() => setActiveTab("profile")}
-                                className={`flex items-center gap-1 sm:gap-2 px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all duration-200 ${activeTab === 'profile'
-                                    ? 'bg-primary text-text shadow-md'
-                                    : 'text-secondary hover:text-primary hover:bg-background/30'
+                                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${activeTab === 'profile'
+                                    ? 'bg-black text-white shadow-md'
+                                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
                                     }`}
                             >
-                                <User size={14} />
-                                <span className="hidden sm:inline">Profile</span>
+                                <User size={16} />
+                                Profile
                             </button>
                         </div>
                     </div>
                 </div>
             </header>
 
-            <main className="flex-grow p-4 sm:p-6">
+            <main className="px-4 sm:px-6 md:px-10 lg:px-20 py-8">
                 {activeTab === "dashboard" && <AdminDashboard token={token} adminData={adminData} />}
                 {activeTab === "profile" && <AdminProfile token={token} adminData={adminData} setAdminData={setAdminData} />}
             </main>
@@ -136,16 +136,35 @@ const AdminDashboard = ({ token, adminData }) => {
         plugins: {
             legend: {
                 display: false
+            },
+            tooltip: {
+                backgroundColor: '#1f2937',
+                titleColor: '#f9fafb',
+                bodyColor: '#f9fafb',
+                borderColor: '#374151',
+                borderWidth: 1
             }
         },
         scales: {
             x: {
-                grid: { color: 'rgba(58, 42, 33, 0.1)' },
-                ticks: { color: '#3c2a21' }
+                grid: { 
+                    color: 'rgba(107, 114, 128, 0.1)',
+                    borderColor: 'rgba(107, 114, 128, 0.2)'
+                },
+                ticks: { 
+                    color: '#6b7280',
+                    font: { size: 12 }
+                }
             },
             y: {
-                grid: { color: 'rgba(58, 42, 33, 0.1)' },
-                ticks: { color: '#3c2a21' }
+                grid: { 
+                    color: 'rgba(107, 114, 128, 0.1)',
+                    borderColor: 'rgba(107, 114, 128, 0.2)'
+                },
+                ticks: { 
+                    color: '#6b7280',
+                    font: { size: 12 }
+                }
             }
         }
     };
@@ -158,12 +177,14 @@ const AdminDashboard = ({ token, adminData }) => {
         datasets: [{
             label: "Sales Revenue",
             data: salesData.slice(0, 10).reverse(),
-            borderColor: "#1a120b",
-            backgroundColor: "rgba(26, 18, 11, 0.1)",
+            borderColor: "#000000",
+            backgroundColor: "rgba(0, 0, 0, 0.05)",
             fill: true,
             tension: 0.4,
-            pointBackgroundColor: "#3c2a21",
-            pointBorderColor: "#1a120b",
+            pointBackgroundColor: "#000000",
+            pointBorderColor: "#ffffff",
+            pointBorderWidth: 2,
+            pointRadius: 4,
         }],
     };
 
@@ -172,61 +193,61 @@ const AdminDashboard = ({ token, adminData }) => {
         datasets: [{
             label: "Items per Order",
             data: orders.slice(0, 10).reverse().map(o => o.items.length),
-            backgroundColor: "#3c2a21",
-            borderRadius: 8,
+            backgroundColor: "#000000",
+            borderRadius: 4,
         }],
     };
 
     return (
-        <div className="max-w-7xl mx-auto space-y-6">
+        <div className="max-w-8xl mx-auto space-y-8">
             {/* Stats Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                <div className="bg-text rounded-2xl shadow-sm border border-primary/10 p-6 hover:shadow-md transition-shadow">
+                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
                     <div className="flex items-center justify-between">
                         <div>
-                            <p className="text-secondary text-sm font-medium">Total Revenue</p>
-                            <p className="text-2xl font-bold text-primary mt-1">{currency} {stats.totalRevenue.toFixed(2)}</p>
+                            <p className="text-sm font-medium text-gray-600 mb-1">Total Revenue</p>
+                            <p className="text-2xl font-semibold text-gray-900">{currency} {stats.totalRevenue.toFixed(2)}</p>
                             <div className="flex items-center gap-1 mt-2">
                                 <ArrowUpRight size={14} className="text-green-600" />
-                                <span className="text-xs text-green-600 font-medium">+12.5%</span>
-                                <span className="text-xs text-secondary">vs last month</span>
+                                <span className="text-sm text-green-600 font-medium">+12.5%</span>
+                                <span className="text-sm text-gray-500">vs last month</span>
                             </div>
                         </div>
-                        <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+                        <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
                             <IndianRupee className="text-green-600" size={24} />
                         </div>
                     </div>
                 </div>
 
-                <div className="bg-text rounded-2xl shadow-sm border border-primary/10 p-6 hover:shadow-md transition-shadow">
+                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
                     <div className="flex items-center justify-between">
                         <div>
-                            <p className="text-secondary text-sm font-medium">Total Orders</p>
-                            <p className="text-2xl font-bold text-primary mt-1">{stats.totalOrders}</p>
+                            <p className="text-sm font-medium text-gray-600 mb-1">Total Orders</p>
+                            <p className="text-2xl font-semibold text-gray-900">{stats.totalOrders}</p>
                             <div className="flex items-center gap-1 mt-2">
                                 <ArrowUpRight size={14} className="text-blue-600" />
-                                <span className="text-xs text-blue-600 font-medium">+8.2%</span>
-                                <span className="text-xs text-secondary">vs last month</span>
+                                <span className="text-sm text-blue-600 font-medium">+8.2%</span>
+                                <span className="text-sm text-gray-500">vs last month</span>
                             </div>
                         </div>
-                        <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                        <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
                             <ShoppingBag className="text-blue-600" size={24} />
                         </div>
                     </div>
                 </div>
 
-                <div className="bg-text rounded-2xl shadow-sm border border-primary/10 p-6 hover:shadow-md transition-shadow">
+                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
                     <div className="flex items-center justify-between">
                         <div>
-                            <p className="text-secondary text-sm font-medium">Total Products</p>
-                            <p className="text-2xl font-bold text-primary mt-1">{stats.totalProducts}</p>
+                            <p className="text-sm font-medium text-gray-600 mb-1">Total Products</p>
+                            <p className="text-2xl font-semibold text-gray-900">{stats.totalProducts}</p>
                             <div className="flex items-center gap-1 mt-2">
                                 <ArrowUpRight size={14} className="text-orange-600" />
-                                <span className="text-xs text-orange-600 font-medium">+3.1%</span>
-                                <span className="text-xs text-secondary">vs last month</span>
+                                <span className="text-sm text-orange-600 font-medium">+3.1%</span>
+                                <span className="text-sm text-gray-500">vs last month</span>
                             </div>
                         </div>
-                        <div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center">
+                        <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
                             <Package className="text-orange-600" size={24} />
                         </div>
                     </div>
@@ -235,88 +256,96 @@ const AdminDashboard = ({ token, adminData }) => {
 
             {/* Charts */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div className="bg-text rounded-2xl shadow-sm border border-primary/10 p-6">
-                    <div className="flex items-center justify-between mb-6">
-                        <div>
-                            <h3 className="text-lg font-semibold text-primary">Sales Revenue</h3>
-                            <p className="text-sm text-secondary">Recent sales performance</p>
-                        </div>
-                        <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                            <TrendingUp className="text-green-600" size={20} />
+                <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                    <div className="bg-black text-white p-6">
+                        <div className="flex items-center gap-3">
+                            <TrendingUp size={24} className="text-gray-300" />
+                            <div>
+                                <h3 className="text-xl font-semibold">Sales Revenue</h3>
+                                <p className="text-sm text-gray-300">Recent sales performance</p>
+                            </div>
                         </div>
                     </div>
-                    <div className="h-64">
-                        <Line data={salesChart} options={chartOptions} />
+                    <div className="p-6">
+                        <div className="h-64">
+                            <Line data={salesChart} options={chartOptions} />
+                        </div>
                     </div>
                 </div>
 
-                <div className="bg-text rounded-2xl shadow-sm border border-primary/10 p-6">
-                    <div className="flex items-center justify-between mb-6">
-                        <div>
-                            <h3 className="text-lg font-semibold text-primary">Order Volume</h3>
-                            <p className="text-sm text-secondary">Items per order analysis</p>
-                        </div>
-                        <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                            <BarChart2 className="text-blue-600" size={20} />
+                <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                    <div className="bg-black text-white p-6">
+                        <div className="flex items-center gap-3">
+                            <BarChart2 size={24} className="text-gray-300" />
+                            <div>
+                                <h3 className="text-xl font-semibold">Order Volume</h3>
+                                <p className="text-sm text-gray-300">Items per order analysis</p>
+                            </div>
                         </div>
                     </div>
-                    <div className="h-64">
-                        <Bar data={ordersChart} options={chartOptions} />
+                    <div className="p-6">
+                        <div className="h-64">
+                            <Bar data={ordersChart} options={chartOptions} />
+                        </div>
                     </div>
                 </div>
             </div>
 
             {/* Recent Orders Table */}
-            <div className="bg-text rounded-2xl shadow-sm border border-primary/10 overflow-hidden">
-                <div className="p-6 border-b border-primary/10">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                <div className="bg-black text-white p-6">
                     <div className="flex items-center justify-between">
-                        <div>
-                            <h3 className="text-lg font-semibold text-primary">Recent Orders</h3>
-                            <p className="text-sm text-secondary">Latest customer orders</p>
+                        <div className="flex items-center gap-3">
+                            <ShoppingBag size={24} className="text-gray-300" />
+                            <div>
+                                <h3 className="text-xl font-semibold">Recent Orders</h3>
+                                <p className="text-sm text-gray-300">Latest customer orders</p>
+                            </div>
                         </div>
-                        <button className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-secondary hover:text-primary transition-colors">
+                        <button className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-300 hover:text-white transition-colors bg-white/10 hover:bg-white/20 rounded-lg">
                             <Eye size={16} />
                             View All
                         </button>
                     </div>
                 </div>
+
                 <div className="overflow-x-auto">
                     <table className="w-full">
-                        <thead className="bg-background/30">
+                        <thead className="bg-gray-50">
                             <tr>
-                                <th className="px-6 py-4 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Order ID</th>
-                                <th className="px-6 py-4 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Customer</th>
-                                <th className="px-6 py-4 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Amount</th>
-                                <th className="px-6 py-4 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Status</th>
-                                <th className="px-6 py-4 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Date</th>
+                                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order ID</th>
+                                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
+                                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-primary/5">
-                            {orders.slice(0, 5).map((order, index) => (
-                                <tr key={order._id} className="hover:bg-background/20 transition-colors">
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-primary">
+                        <tbody className="divide-y divide-gray-200">
+                            {orders.slice(0, 8).map((order, index) => (
+                                <tr key={order._id} className="hover:bg-gray-50 transition-colors">
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                                         #{(index + 1).toString().padStart(4, '0')}
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
-                                                <User size={14} className="text-primary" />
+                                            <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
+                                                <User size={14} className="text-gray-600" />
                                             </div>
-                                            <span className="text-sm font-medium text-primary">{order.address.Name}</span>
+                                            <span className="text-sm font-medium text-gray-900">{order.address.Name}</span>
                                         </div>
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-primary">
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">
                                         {currency} {order.amount.toFixed(2)}
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">
-                                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${order.payment
+                                        <span className={`inline-flex items-center px-3 py-1 rounded-lg text-xs font-medium ${order.payment
                                             ? 'bg-green-100 text-green-800'
                                             : 'bg-red-100 text-red-800'
                                             }`}>
                                             {order.payment ? "Paid" : "Pending"}
                                         </span>
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-secondary">
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                         {new Date(order.date).toLocaleDateString()}
                                     </td>
                                 </tr>
@@ -390,39 +419,42 @@ const AdminProfile = ({ token, adminData, setAdminData }) => {
         return (
             <div className="flex items-center justify-center min-h-64">
                 <div className="text-center">
-                    <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                    <p className="text-secondary">Loading profile...</p>
+                    <div className="w-12 h-12 border-4 border-gray-300 border-t-black rounded-full animate-spin mx-auto mb-4"></div>
+                    <p className="text-gray-600">Loading profile...</p>
                 </div>
             </div>
         );
     }
 
     return (
-        <div className="max-w-6xl mx-auto">
-            <div className="bg-text border border-primary/10 rounded-2xl shadow-sm overflow-hidden">
+        <div className="max-w-4xl mx-auto">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
                 {/* Cover */}
-                <div className="h-32 bg-gradient-to-br from-primary via-secondary to-primary"></div>
+                <div className="h-32 bg-gradient-to-r from-gray-900 via-black to-gray-900"></div>
 
                 {/* Profile Content */}
                 <div className="px-6 pb-6 relative">
                     {/* Profile Image */}
-                    <div className="w-32 h-32 rounded-2xl border-4 border-text overflow-hidden -mt-16 mb-6 shadow-lg bg-text">
-                        <img src={adminData.image || 'https://via.placeholder.com/150'} alt="Admin" className="w-full h-full object-cover" />
+                    <div className="w-32 h-32 rounded-xl border-4 border-white overflow-hidden -mt-16 mb-6 shadow-lg bg-white">
+                        <img 
+                            src={adminData.image || 'https://via.placeholder.com/150'} 
+                            alt="Admin" 
+                            className="w-full h-full object-cover" 
+                        />
                     </div>
 
                     {/* Profile Info */}
                     <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
                         <div className="flex-1">
-                            <div className="flex items-center gap-3 mb-3">
-                                <h2 className="text-3xl font-bold text-primary">{adminData.name}</h2>
+                            <div className="mb-4">
+                                <h2 className="text-3xl font-semibold text-gray-900 mb-2">{adminData.name}</h2>
+                                <div className="flex items-center gap-2 text-gray-600 mb-4">
+                                    <Mail size={18} />
+                                    <span className="text-lg">{adminData.email}</span>
+                                </div>
                             </div>
 
-                            <div className="flex items-center gap-2 mb-4 text-secondary">
-                                <Mail size={18} />
-                                <span className="text-lg">{adminData.email}</span>
-                            </div>
-
-                            <div className="flex items-center gap-6 text-sm text-secondary mb-6">
+                            <div className="flex items-center gap-6 text-sm text-gray-500 mb-6">
                                 <span className="flex items-center gap-2">
                                     <Calendar size={16} />
                                     Joined {new Date(adminData.createdAt).toLocaleDateString()}
@@ -435,39 +467,39 @@ const AdminProfile = ({ token, adminData, setAdminData }) => {
                             </div>
 
                             {/* Profile Stats */}
-                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-                                <div className="bg-gradient-to-br from-background/30 to-background/10 rounded-xl p-4 border border-primary/10">
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
                                     <div className="flex items-center gap-3">
                                         <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
                                             <Shield size={20} className="text-green-600" />
                                         </div>
                                         <div>
-                                            <p className="text-sm text-secondary">Account Status</p>
+                                            <p className="text-sm text-gray-600">Account Status</p>
                                             <p className="font-semibold text-green-600">Active</p>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div className="bg-gradient-to-br from-background/30 to-background/10 rounded-xl p-4 border border-primary/10">
+                                <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
                                     <div className="flex items-center gap-3">
                                         <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
                                             <Users size={20} className="text-blue-600" />
                                         </div>
                                         <div>
-                                            <p className="text-sm text-secondary">Role</p>
-                                            <p className="font-semibold text-primary">Administrator</p>
+                                            <p className="text-sm text-gray-600">Role</p>
+                                            <p className="font-semibold text-gray-900">Administrator</p>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div className="bg-gradient-to-br from-background/30 to-background/10 rounded-xl p-4 border border-primary/10">
+                                <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
                                     <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center">
-                                            <Calendar size={20} className="text-yellow-600" />
+                                        <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
+                                            <Calendar size={20} className="text-orange-600" />
                                         </div>
                                         <div>
-                                            <p className="text-sm text-secondary">Last Login</p>
-                                            <p className="font-semibold text-primary">{new Date().toLocaleDateString()}</p>
+                                            <p className="text-sm text-gray-600">Last Login</p>
+                                            <p className="font-semibold text-gray-900">{new Date().toLocaleDateString()}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -478,7 +510,7 @@ const AdminProfile = ({ token, adminData, setAdminData }) => {
                         <div className="lg:mt-8">
                             <button
                                 onClick={() => setEditModalOpen(true)}
-                                className="flex items-center gap-2 px-6 py-3 bg-primary text-text font-semibold rounded-xl hover:bg-secondary transition-all duration-200 shadow-md hover:shadow-lg"
+                                className="flex items-center gap-2 px-6 py-3 bg-black text-white font-medium rounded-lg hover:bg-gray-800 transition-all duration-200 transform hover:scale-[1.02] shadow-md hover:shadow-lg"
                             >
                                 <Edit2 size={18} />
                                 Edit Profile
@@ -491,14 +523,14 @@ const AdminProfile = ({ token, adminData, setAdminData }) => {
             {/* Edit Profile Modal */}
             {editModalOpen && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-text rounded-2xl w-full max-w-md shadow-2xl border border-primary/20">
-                        <div className="flex justify-between items-center p-6 border-b border-primary/10">
-                            <h3 className="text-xl font-semibold text-primary">Edit Profile</h3>
+                    <div className="bg-white rounded-xl w-full max-w-md shadow-2xl border border-gray-200">
+                        <div className="flex justify-between items-center p-6 border-b border-gray-200">
+                            <h3 className="text-xl font-semibold text-gray-900">Edit Profile</h3>
                             <button
                                 onClick={() => setEditModalOpen(false)}
-                                className="p-2 hover:bg-background/30 rounded-xl transition-colors"
+                                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
                             >
-                                <X size={20} className="text-secondary" />
+                                <X size={20} className="text-gray-500" />
                             </button>
                         </div>
 
@@ -508,9 +540,9 @@ const AdminProfile = ({ token, adminData, setAdminData }) => {
                                     <img
                                         src={editProfile.imagePreview || 'https://via.placeholder.com/150'}
                                         alt="Preview"
-                                        className="w-28 h-28 rounded-2xl object-cover border-4 border-primary/10"
+                                        className="w-28 h-28 rounded-xl object-cover border-4 border-gray-200"
                                     />
-                                    <label className="absolute -bottom-2 -right-2 bg-primary text-text p-2 rounded-xl cursor-pointer hover:bg-secondary transition-colors shadow-lg">
+                                    <label className="absolute -bottom-2 -right-2 bg-black text-white p-2 rounded-lg cursor-pointer hover:bg-gray-800 transition-colors shadow-lg">
                                         <Camera size={16} />
                                         <input type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
                                     </label>
@@ -518,9 +550,9 @@ const AdminProfile = ({ token, adminData, setAdminData }) => {
                             </div>
 
                             <div>
-                                <label className="block text-sm font-semibold text-primary mb-2">Full Name</label>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
                                 <input
-                                    className="w-full px-4 py-3 border border-primary/20 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary transition-colors bg-background/30"
+                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black transition-colors"
                                     value={editProfile.name}
                                     onChange={e => setEditProfile({ ...editProfile, name: e.target.value })}
                                     required
@@ -528,10 +560,10 @@ const AdminProfile = ({ token, adminData, setAdminData }) => {
                             </div>
 
                             <div>
-                                <label className="block text-sm font-semibold text-primary mb-2">Email Address</label>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
                                 <input
                                     type="email"
-                                    className="w-full px-4 py-3 border border-primary/20 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary transition-colors bg-background/30"
+                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black transition-colors"
                                     value={editProfile.email}
                                     onChange={e => setEditProfile({ ...editProfile, email: e.target.value })}
                                     required
@@ -542,18 +574,18 @@ const AdminProfile = ({ token, adminData, setAdminData }) => {
                                 <button
                                     type="button"
                                     onClick={() => setEditModalOpen(false)}
-                                    className="px-6 py-3 border border-primary/20 text-secondary font-medium rounded-xl hover:bg-background/30 transition-colors"
+                                    className="px-6 py-3 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
-                                    className="px-6 py-3 bg-primary text-text rounded-xl font-medium hover:bg-secondary disabled:opacity-50 transition-colors shadow-md"
+                                    className="px-6 py-3 bg-black text-white rounded-lg font-medium hover:bg-gray-800 disabled:opacity-50 transition-colors shadow-md transform hover:scale-[1.02] disabled:hover:scale-100"
                                     disabled={loading}
                                 >
                                     {loading ? (
                                         <div className="flex items-center gap-2">
-                                            <div className="w-4 h-4 border-2 border-text border-t-transparent rounded-full animate-spin"></div>
+                                            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                                             Saving...
                                         </div>
                                     ) : (

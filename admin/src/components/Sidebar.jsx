@@ -1,16 +1,8 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { 
-  LayoutDashboard, 
-  Plus, 
-  Package, 
-  ShoppingBag, 
-  ChevronLeft, 
-  ChevronRight,
-  User,
-  LogOut,
-  Menu,
-  X
+import {
+  LayoutDashboard, Plus, Package,
+  ShoppingBag, ChevronLeft, ChevronRight, LogOut, Menu, X, Shield
 } from 'lucide-react';
 
 const Sidebar = ({ token, setToken }) => {
@@ -54,10 +46,10 @@ const Sidebar = ({ token, setToken }) => {
       to={item.to}
       onClick={() => mobile && setIsMobileMenuOpen(false)}
       className={({ isActive }) => `
-        group relative flex items-center gap-3 p-3 rounded-xl transition-all duration-200
-        ${isActive 
-          ? 'bg-primary text-text shadow-lg shadow-primary/25 border border-primary/30' 
-          : 'text-secondary hover:bg-gradient-to-r hover:from-background/30 hover:to-background/10 hover:text-primary border border-transparent'
+        group relative flex items-center gap-3 p-3 rounded-lg transition-all duration-200
+        ${isActive
+          ? 'bg-black text-white shadow-md'
+          : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
         }
         ${mobile ? 'mx-4' : ''}
       `}
@@ -66,43 +58,36 @@ const Sidebar = ({ token, setToken }) => {
         <>
           <div className={`
             flex items-center justify-center w-8 h-8 rounded-lg transition-all duration-200
-            ${isActive ? 'bg-text/20' : 'group-hover:bg-primary/10'}
+            ${isActive ? 'bg-white/20' : 'group-hover:bg-gray-200'}
           `}>
-            <item.icon 
-              size={18} 
-              className={`transition-colors duration-200 ${
-                isActive ? 'text-text' : 'text-secondary group-hover:text-primary'
-              }`} 
+            <item.icon
+              size={18}
+              className={`transition-colors duration-200 ${isActive ? 'text-white' : 'text-gray-600 group-hover:text-gray-900'
+                }`}
             />
           </div>
-          
+
           {(!isCollapsed || mobile) && (
             <div className="flex-1 min-w-0">
-              <p className={`font-semibold text-sm transition-colors duration-200 ${
-                isActive ? 'text-text' : 'text-primary group-hover:text-primary'
-              }`}>
+              <p className={`font-medium text-sm transition-colors duration-200 ${isActive ? 'text-white' : 'text-gray-900 group-hover:text-gray-900'
+                }`}>
                 {item.label}
               </p>
-              <p className={`text-xs transition-colors duration-200 ${
-                isActive ? 'text-text/80' : 'text-secondary group-hover:text-primary'
-              }`}>
+              <p className={`text-xs transition-colors duration-200 ${isActive ? 'text-white/80' : 'text-gray-500 group-hover:text-gray-600'
+                }`}>
                 {item.description}
               </p>
             </div>
           )}
 
-          {/* Active indicator */}
-          {isActive && !mobile && (
-            <div className="absolute -right-3 top-1/2 transform -translate-y-1/2 w-1 h-8 bg-text rounded-l-full" />
-          )}
-
+          {/* Tooltip for collapsed state */}
           {isCollapsed && !mobile && (
-            <div className="absolute left-full ml-2 px-3 py-2 bg-primary text-text text-sm rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 whitespace-nowrap z-50 shadow-xl border border-primary/30">
+            <div className="absolute left-full ml-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 whitespace-nowrap z-50 shadow-xl">
               <div className="flex flex-col">
-                <span className="font-semibold">{item.label}</span>
-                <span className="text-xs text-text/70">{item.description}</span>
+                <span className="font-medium">{item.label}</span>
+                <span className="text-xs text-gray-300">{item.description}</span>
               </div>
-              <div className="absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-1 w-2 h-2 bg-primary rotate-45 border-l border-b border-primary/30" />
+              <div className="absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-1 w-2 h-2 bg-gray-900 rotate-45" />
             </div>
           )}
         </>
@@ -112,95 +97,142 @@ const Sidebar = ({ token, setToken }) => {
 
   return (
     <>
-      {/* Mobile Menu */}
+      {/* Mobile Menu Button */}
       <div className="lg:hidden fixed top-4 left-4 z-50">
         <button
           onClick={() => setIsMobileMenuOpen(true)}
-          className="p-2 bg-background rounded-xl shadow-lg border border-primary/20 hover:bg-gradient-to-r hover:from-background/50 hover:to-background/30 transition-all duration-200 group backdrop-blur-sm"
+          className="p-3 bg-white rounded-lg shadow-sm border border-gray-200 hover:bg-gray-50 transition-all duration-200"
         >
-          <Menu size={20} className="text-primary group-hover:text-primary transition-colors duration-200" />
+          <Menu size={20} className="text-gray-600" />
         </button>
       </div>
 
+      {/* Mobile Menu Overlay */}
       {isMobileMenuOpen && (
-        <div className="lg:hidden fixed inset-0 z-40 bg-primary/20 backdrop-blur-sm" onClick={() => setIsMobileMenuOpen(false)} />
+        <div className="lg:hidden fixed inset-0 z-40 bg-black bg-opacity-50" onClick={() => setIsMobileMenuOpen(false)} />
       )}
 
+      {/* Mobile Sidebar */}
       <div className={`
-        lg:hidden fixed top-0 left-0 z-50 h-full w-80 bg-background shadow-2xl border-r border-primary/20 transform transition-transform duration-300 ease-in-out backdrop-blur-sm
+        lg:hidden fixed top-0 left-0 z-50 h-full w-80 bg-white shadow-2xl border-r border-gray-200 transform transition-transform duration-300 ease-in-out
         ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}
       `}>
-        <div className="flex items-center justify-between p-6 border-b border-primary/20 bg-gradient-to-r from-background/30 to-background/10">
-          <h2 className="text-lg font-bold text-primary">Navigation</h2>
+        {/* Mobile Header */}
+        <div className="flex items-center justify-between p-6 border-b border-gray-200 bg-gray-50">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
+              <Shield className="text-white" size={16} />
+            </div>
+            <h2 className="text-lg font-semibold text-gray-900">Menu</h2>
+          </div>
           <button
             onClick={() => setIsMobileMenuOpen(false)}
-            className="p-2 hover:bg-gradient-to-r hover:from-background/30 hover:to-background/10 rounded-lg transition-all duration-200 group"
+            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
           >
-            <X size={20} className="text-secondary group-hover:text-primary transition-colors duration-200" />
+            <X size={20} className="text-gray-500" />
           </button>
         </div>
 
+        {/* Mobile Navigation */}
         <div className="py-6 space-y-2">
           {navigationItems.map((item, index) => (
             <NavItem key={index} item={item} mobile={true} />
           ))}
         </div>
 
-        <div className="absolute bottom-0 left-0 right-0 p-6 border-t border-primary/20 bg-gradient-to-r from-background/20 to-background/10">
-          <div className="space-y-3">
-            <button
-              onClick={handleLogout}
-              className="w-full flex items-center justify-center gap-3 p-3 hover:bg-gradient-to-r hover:from-red-500/10 hover:to-red-500/5 rounded-xl transition-all duration-200 group border border-transparent hover:border-red-500/20"
-            >
-              <LogOut size={16} className="text-secondary group-hover:text-red-500 transition-colors duration-200" />
-              <span className="text-sm text-secondary group-hover:text-red-500 transition-colors duration-200 font-medium">Logout</span>
-            </button>
-          </div>
+        {/* Mobile Footer */}
+        <div className="absolute bottom-0 left-0 right-0 p-6 border-t border-gray-200 bg-gray-50">
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center justify-center gap-3 p-3 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all duration-200 border border-gray-200 hover:border-red-200"
+          >
+            <LogOut size={16} />
+            <span className="text-sm font-medium">Logout</span>
+          </button>
         </div>
       </div>
 
       {/* Desktop Sidebar */}
       <div className={`
-        hidden lg:flex flex-col h-screen bg-background border-r border-primary/20 shadow-xl transition-all duration-300 ease-in-out backdrop-blur-sm
+        hidden lg:flex flex-col h-screen bg-white border-r border-gray-200 shadow-sm transition-all duration-300 ease-in-out
         ${isCollapsed ? 'w-20' : 'w-72'}
       `}>
-        <div className="flex-1 p-4 space-y-2 overflow-y-auto scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
+        {/* Desktop Header */}
+        {!isCollapsed && (
+          <div className="p-6 border-b border-gray-200 bg-gray-50">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-black rounded-xl flex items-center justify-center">
+                <Shield className="text-white" size={20} />
+              </div>
+              <div>
+                <h1 className="text-lg font-semibold text-gray-900">Admin Panel</h1>
+                <p className="text-sm text-gray-600">Management System</p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Collapsed Header */}
+        {isCollapsed && (
+          <div className="p-4 border-b border-gray-200 bg-gray-50 flex justify-center">
+            <div className="w-10 h-10 bg-black rounded-xl flex items-center justify-center">
+              <Shield className="text-white" size={20} />
+            </div>
+          </div>
+        )}
+
+        {/* Desktop Navigation */}
+        <div className="flex-1 p-4 space-y-2 overflow-y-auto">
           {navigationItems.map((item, index) => (
             <NavItem key={index} item={item} />
           ))}
         </div>
 
-        <div className="p-4 border-t border-primary/20 bg-gradient-to-r from-background/10 to-background/5">
-          <div className={`space-y-2 ${isCollapsed ? '' : ''}`}>
-            {!isCollapsed && (
-              <button
-                onClick={handleLogout}
-                className="w-full flex items-center justify-center gap-3 p-3 hover:bg-gradient-to-r hover:from-red-500/10 hover:to-red-500/5 rounded-xl transition-all duration-200 group border border-transparent hover:border-red-500/20"
-              >
-                <LogOut size={16} className="text-secondary group-hover:text-red-500 transition-colors duration-200" />
-                <span className="text-sm text-secondary group-hover:text-red-500 transition-colors duration-200 font-medium">Logout</span>
-              </button>
-            )}
-
+        {/* Desktop Footer */}
+        <div className="p-4 border-t border-gray-200 bg-gray-50 space-y-2">
+          {!isCollapsed && (
             <button
-              onClick={() => setIsCollapsed(!isCollapsed)}
-              className={`
-                w-full flex items-center justify-center p-3 rounded-xl transition-all duration-200
-                bg-gradient-to-r from-background/30 to-background/10 hover:from-background/50 hover:to-background/30 
-                text-secondary hover:text-primary border border-primary/10 hover:border-primary/20 shadow-sm
-                ${isCollapsed ? 'px-3' : 'gap-3'}
-              `}
+              onClick={handleLogout}
+              className="w-full flex items-center justify-center gap-3 p-3 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all duration-200 border border-gray-200 hover:border-red-200"
             >
-              {isCollapsed ? (
-                <ChevronRight size={18} />
-              ) : (
-                <>
-                  <ChevronLeft size={18} />
-                  <span className="text-sm font-medium">Collapse</span>
-                </>
-              )}
+              <LogOut size={16} />
+              <span className="text-sm font-medium">Logout</span>
             </button>
-          </div>
+          )}
+
+          <button
+            onClick={() => setIsCollapsed(!isCollapsed)}
+            className={`
+              w-full flex items-center justify-center p-3 rounded-lg transition-all duration-200
+              bg-white hover:bg-gray-100 text-gray-600 hover:text-gray-900 
+              border border-gray-200 hover:border-gray-300 shadow-sm
+              ${isCollapsed ? 'px-3' : 'gap-3'}
+            `}
+          >
+            {isCollapsed ? (
+              <ChevronRight size={18} />
+            ) : (
+              <>
+                <ChevronLeft size={18} />
+                <span className="text-sm font-medium">Collapse</span>
+              </>
+            )}
+          </button>
+
+          {/* Collapsed Logout Button */}
+          {isCollapsed && (
+            <button
+              onClick={handleLogout}
+              className="w-full flex items-center justify-center p-3 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all duration-200 border border-gray-200 hover:border-red-200 group"
+              title="Logout"
+            >
+              <LogOut size={16} />
+              <div className="absolute left-full ml-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 whitespace-nowrap z-50 shadow-xl">
+                Logout
+                <div className="absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-1 w-2 h-2 bg-gray-900 rotate-45" />
+              </div>
+            </button>
+          )}
         </div>
       </div>
     </>

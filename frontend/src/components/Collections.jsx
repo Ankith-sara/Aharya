@@ -18,9 +18,9 @@ const Collections = () => {
       description: 'Elegant, handcrafted designs'
     },
     {
-      name: 'Tops',
-      imageUrl: 'https://res.cloudinary.com/dfzhqsfp7/image/upload/v1734961885/xmrbsna2rywkv2j801ky.webp',
-      description: 'Chic silhouettes for everyday'
+      name: 'Shirts',
+      imageUrl: 'https://res.cloudinary.com/dfzhqsfp7/image/upload/v1757408846/ab80rkpc7iqiekkdlhnx.webp',
+      description: 'Classic and trendy for every occasion'
     },
     {
       name: 'Wall Decor',
@@ -35,7 +35,7 @@ const Collections = () => {
   ];
 
   return (
-    <section className="bg-white py-10 px-4 sm:px-6 md:px-10 lg:px-20">
+    <section className="bg-white py-16 px-4 sm:px-6 md:px-10 lg:px-20">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-10">
           <Title text1="EXPLORE THE" text2="COLLECTIONS" />

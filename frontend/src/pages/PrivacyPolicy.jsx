@@ -25,8 +25,8 @@ const PrivacyPolicy = () => {
         <div className="max-w-7xl mx-auto">
           <div className="bg-white shadow-lg p-12 border-l-4 border-black">
             <div className="flex items-center gap-4 mb-8">
-              <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-                <Shield className="text-blue-600" size={24} />
+              <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center">
+                <Shield size={24} />
               </div>
               <h2 className="text-2xl font-light tracking-wider text-black">OUR COMMITMENT TO PRIVACY</h2>
             </div>
@@ -34,7 +34,7 @@ const PrivacyPolicy = () => {
             <div className="grid lg:grid-cols-2 gap-12">
               <div className="space-y-4 text-gray-700 font-light">
                 <p> TATHASTA WEAVES LLP is committed to ensuring that your privacy is protected. When you provide information that identifies you on our website, you can be assured it will only be used in accordance with this privacy statement. </p>
-                <div className="bg-blue-50 p-6 rounded-lg">
+                <div className="bg-gray-100 p-6 rounded-lg">
                   <h4 className="font-medium text-black mb-3">About This Policy</h4>
                   <p className="text-sm">
                     This privacy policy sets out how TATHASTA WEAVES LLP uses and protects any information 
@@ -43,7 +43,7 @@ const PrivacyPolicy = () => {
                 </div>
               </div>
 
-              <div className="bg-gray-50 p-6 rounded-lg">
+              <div className="bg-gray-100 p-6 rounded-lg">
                 <h3 className="font-medium text-black mb-4 flex items-center gap-2">
                   <AlertCircle size={16} />
                   Policy Updates
@@ -65,7 +65,7 @@ const PrivacyPolicy = () => {
           <div className="text-center mb-12">
             <div className="flex items-center justify-center gap-4 mb-6">
               <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
-                <Database className="text-green-600" size={24} />
+                <Database size={24} />
               </div>
               <h2 className="text-2xl font-light tracking-wider text-black">INFORMATION WE COLLECT</h2>
             </div>
@@ -143,18 +143,18 @@ const PrivacyPolicy = () => {
       </section>
 
       {/* Cookie Policy */}
-      <section className="py-16 px-4 sm:px-8 md:px-10 lg:px-20 bg-gradient-to-r from-gray-100 to-white">
+      <section className="py-16 px-4 sm:px-8 md:px-10 lg:px-20">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
             <div className="flex items-center justify-center gap-4 mb-6">
-              <div className="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center">
-                <Cookie className="text-amber-600" size={24} />
+              <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center">
+                <Cookie size={24} />
               </div>
               <h2 className="text-2xl font-light tracking-wider text-black">HOW WE USE COOKIES</h2>
             </div>
           </div>
 
-          <div className="bg-white shadow-lg p-12 border-l-4 border-amber-500">
+          <div className="bg-white shadow-lg p-12 border-l-4 border-black">
             <div className="space-y-6">
               <p className="text-gray-700 font-light leading-relaxed first-letter:text-4xl first-letter:font-light first-letter:text-black first-letter:mr-2 first-letter:float-left first-letter:leading-none">
                 A cookie is a small file which asks permission to be placed on your computer's hard drive. 
@@ -162,7 +162,7 @@ const PrivacyPolicy = () => {
               </p>
 
               <div className="grid lg:grid-cols-2 gap-8">
-                <div className="bg-amber-50 p-6 rounded-lg">
+                <div className="bg-gray-100 p-6 rounded-lg">
                   <h4 className="font-medium text-black mb-3">What Cookies Do</h4>
                   <ul className="space-y-2 text-sm text-gray-700">
                     <li>• Allow web applications to respond to you as an individual</li>
@@ -172,7 +172,7 @@ const PrivacyPolicy = () => {
                   </ul>
                 </div>
 
-                <div className="bg-gray-50 p-6 rounded-lg">
+                <div className="bg-gray-100 p-6 rounded-lg">
                   <h4 className="font-medium text-black mb-3">Traffic Log Cookies</h4>
                   <p className="text-sm text-gray-700 leading-relaxed">
                     We use traffic log cookies to identify which pages are being used. This helps us analyze 
@@ -182,9 +182,9 @@ const PrivacyPolicy = () => {
                 </div>
               </div>
 
-              <div className="bg-blue-50 p-6 rounded-lg border border-blue-200">
-                <h4 className="font-medium text-blue-800 mb-3">Your Cookie Choices</h4>
-                <p className="text-blue-700 text-sm leading-relaxed">
+              <div className="p-6 rounded-lg border border-gray-200">
+                <h4 className="font-medium text-black mb-3">Your Cookie Choices</h4>
+                <p className="text-sm leading-relaxed">
                   You can choose to accept or decline cookies. Most web browsers automatically accept cookies, 
                   but you can usually modify your browser setting to decline cookies if you prefer. 
                   This may prevent you from taking full advantage of the website. A cookie in no way gives us 
@@ -201,8 +201,8 @@ const PrivacyPolicy = () => {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
             <div className="flex items-center justify-center gap-4 mb-6">
-              <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
-                <Settings className="text-purple-600" size={24} />
+              <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center">
+                <Settings size={24} />
               </div>
               <h2 className="text-2xl font-light tracking-wider text-black">CONTROLLING YOUR PERSONAL INFORMATION</h2>
             </div>
@@ -231,9 +231,9 @@ const PrivacyPolicy = () => {
               <h3 className="font-medium text-black mb-6">Third-Party Information Sharing</h3>
               
               <div className="space-y-4 text-gray-700 font-light">
-                <div className="bg-red-50 p-6 rounded-lg border border-red-200">
-                  <h4 className="font-medium text-red-800 mb-3">Our Promise</h4>
-                  <p className="text-red-700 text-sm leading-relaxed">
+                <div className="p-6 rounded-lg border border-gray-200">
+                  <h4 className="font-medium text-black mb-3">Our Promise</h4>
+                  <p className="text-sm leading-relaxed">
                     <strong>We will not sell, distribute, or lease your personal information to third parties</strong> 
                     unless we have your permission or are required by law to do so. We may use your personal 
                     information to send you promotional information about third parties which we think you may 
@@ -241,9 +241,9 @@ const PrivacyPolicy = () => {
                   </p>
                 </div>
 
-                <div className="bg-green-50 p-6 rounded-lg border border-green-200">
-                  <h4 className="font-medium text-green-800 mb-3">Data Accuracy</h4>
-                  <p className="text-green-700 text-sm leading-relaxed">
+                <div className="p-6 rounded-lg border border-gray-200">
+                  <h4 className="font-medium text-black mb-3">Data Accuracy</h4>
+                  <p className="text-sm leading-relaxed">
                     If you believe that any information we are holding about you is incorrect or incomplete, 
                     please contact us as soon as possible. We will promptly correct any information found to be incorrect.
                   </p>
@@ -269,22 +269,21 @@ const PrivacyPolicy = () => {
               </p>
 
               <div className="grid md:grid-cols-2 gap-6">
-                <div className="bg-teal-50 p-6 rounded-lg border border-teal-200">
-                  <h3 className="font-medium text-teal-800 mb-3">Communication Methods</h3>
-                  <p className="text-teal-700 text-sm mb-3">
+                <div className="bg-gray-100 p-6 rounded-lg border border-gray-200">
+                  <h3 className="font-medium mb-3">Communication Methods</h3>
+                  <p className="text-sm mb-3">
                     From time to time, we may also use your information to contact you for market research purposes. 
                     We may contact you by:
                   </p>
-                  <ul className="text-teal-700 text-sm space-y-1">
+                  <ul className="text-sm space-y-1">
                     <li>• Email</li>
                     <li>• Phone</li>
-                    <li>• Mail</li>
                   </ul>
                 </div>
 
-                <div className="bg-blue-50 p-6 rounded-lg border border-blue-200">
-                  <h3 className="font-medium text-blue-800 mb-3">Opt-Out Options</h3>
-                  <p className="text-blue-700 text-sm">
+                <div className="bg-gray-100 p-6 rounded-lg border border-gray-200">
+                  <h3 className="font-medium mb-3">Opt-Out Options</h3>
+                  <p className="text-sm">
                     If you have previously agreed to us using your personal information for direct marketing purposes, 
                     you may change your mind at any time by writing to or emailing us at 
                     <strong> aharyasofficial@gmail.com</strong>

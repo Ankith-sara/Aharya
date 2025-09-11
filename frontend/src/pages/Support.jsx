@@ -66,41 +66,27 @@ const Support = () => {
       icon: Truck,
       title: "Orders & Shipping",
       description: "Track orders, shipping updates, delivery issues",
-      topics: ["Order status", "Tracking", "Delivery delays", "Shipping charges"],
-      iconColor: "blue"
+      topics: ["Order status", "Tracking", "Delivery delays", "Shipping charges"]
     },
     {
       icon: RefreshCw,
       title: "Returns & Exchanges",
       description: "Return requests, refund status, exchange policies",
-      topics: ["Return policy", "Refund status", "Exchange requests", "Return pickup"],
-      iconColor: "green"
+      topics: ["Return policy", "Refund status", "Exchange requests", "Return pickup"]
     },
     {
       icon: CreditCard,
       title: "Payment & Billing",
       description: "Payment issues, billing queries, transaction problems",
-      topics: ["Payment failed", "Refund queries", "Invoice requests", "Payment methods"],
-      iconColor: "orange"
+      topics: ["Payment failed", "Refund queries", "Invoice requests", "Payment methods"]
     },
     {
       icon: HelpCircle,
       title: "General Support",
       description: "Account issues, technical problems, product queries",
-      topics: ["Account access", "Technical issues", "Product information", "Website problems"],
-      iconColor: "purple"
+      topics: ["Account access", "Technical issues", "Product information", "Website problems"]
     }
   ];
-
-  const getIconColorClasses = (color) => {
-    const colors = {
-      blue: { bg: "bg-blue-100", text: "text-blue-600", border: "border-blue-500" },
-      green: { bg: "bg-green-100", text: "text-green-600", border: "border-green-500" },
-      orange: { bg: "bg-orange-100", text: "text-orange-600", border: "border-orange-500" },
-      purple: { bg: "bg-purple-100", text: "text-purple-600", border: "border-purple-500" }
-    };
-    return colors[color] || colors.blue;
-  };
 
   return (
     <div className="min-h-screen text-black mt-20">
@@ -122,19 +108,18 @@ const Support = () => {
       </section>
 
       {/* Contact Methods */}
-      <section className="py-16 px-4 sm:px-8 md:px-10 lg:px-20 bg-gradient-to-r from-blue-50 to-white">
+      <section className="py-16 px-4 sm:px-8 md:px-10 lg:px-20">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-2xl font-light tracking-wider text-black mb-6">GET IN TOUCH</h2>
-            <div className="w-16 h-0.5 bg-black mx-auto"></div>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 gap-8">
             {/* Phone Support */}
-            <div className="bg-white shadow-lg p-8 border-l-4 border-blue-500 hover:shadow-xl transition-shadow">
+            <div className="bg-white shadow-lg p-8 border-l-4 border-black hover:shadow-xl transition-shadow">
               <div className="flex items-center gap-4 mb-6">
-                <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-                  <Phone className="text-blue-600" size={24} />
+                <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center">
+                  <Phone className="text-black" size={24} />
                 </div>
                 <div>
                   <h3 className="text-xl font-medium text-black">Phone Support</h3>
@@ -153,10 +138,10 @@ const Support = () => {
             </div>
 
             {/* Email Support */}
-            <div className="bg-white shadow-lg p-8 border-l-4 border-green-500 hover:shadow-xl transition-shadow">
+            <div className="bg-white shadow-lg p-8 border-l-4 border-black hover:shadow-xl transition-shadow">
               <div className="flex items-center gap-4 mb-6">
-                <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
-                  <Mail className="text-green-600" size={24} />
+                <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center">
+                  <Mail className="text-black" size={24} />
                 </div>
                 <div>
                   <h3 className="text-xl font-medium text-black">Email Support</h3>
@@ -170,26 +155,6 @@ const Support = () => {
                 <p className="text-sm italic">Perfect for detailed inquiries</p>
               </div>
             </div>
-
-            {/* Live Chat */}
-            <div className="bg-white shadow-lg p-8 border-l-4 border-purple-500 hover:shadow-xl transition-shadow">
-              <div className="flex items-center gap-4 mb-6">
-                <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
-                  <MessageCircle className="text-purple-600" size={24} />
-                </div>
-                <div>
-                  <h3 className="text-xl font-medium text-black">Live Chat</h3>
-                  <p className="text-sm text-gray-600">Instant help available</p>
-                </div>
-              </div>
-
-              <div className="space-y-4 text-gray-700 font-light">
-                <p className="text-sm text-gray-600 mb-4">Real-time support for quick questions</p>
-                <button className="w-full bg-black text-white py-3 px-4 rounded-lg hover:bg-gray-800 transition-colors font-medium">
-                  Start Chat
-                </button>
-              </div>
-            </div>
           </div>
         </div>
       </section>
@@ -199,33 +164,31 @@ const Support = () => {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-2xl font-light tracking-wider text-black mb-6">SUPPORT CATEGORIES</h2>
-            <div className="w-16 h-0.5 bg-black mx-auto"></div>
           </div>
 
           <div className="grid md:grid-cols-2 gap-8">
             {supportCategories.map((category, index) => {
               const IconComponent = category.icon;
-              const iconColors = getIconColorClasses(category.iconColor);
               
               return (
-                <div key={index} className={`bg-white shadow-lg p-8 border-l-4 ${iconColors.border} hover:shadow-xl transition-shadow`}>
+                <div key={index} className="bg-white shadow-lg p-8 border-l-4 border-black hover:shadow-xl transition-shadow">
                   <div className="flex items-center gap-4 mb-6">
-                    <div className={`w-12 h-12 ${iconColors.bg} rounded-xl flex items-center justify-center`}>
-                      <IconComponent className={iconColors.text} size={24} />
+                    <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center">
+                      <IconComponent className="text-black" size={24} />
                     </div>
                     <div>
                       <h3 className="text-xl font-medium text-black">{category.title}</h3>
-                      <p className="text-sm text-gray-600">{category.description}</p>
+                      <p className="text-sm">{category.description}</p>
                     </div>
                   </div>
 
-                  <div className={`${iconColors.bg} p-4 rounded-lg`}>
+                  <div className="bg-gray-100 p-4 rounded-lg">
                     <h4 className="font-medium text-black mb-3">Common Topics:</h4>
                     <div className="flex flex-wrap gap-2">
                       {category.topics.map((topic, topicIndex) => (
                         <span
                           key={topicIndex}
-                          className="px-3 py-1 bg-white text-xs text-gray-700 rounded-full font-medium"
+                          className="px-3 py-1 bg-white text-xs text-gray-700 rounded-full font-medium border border-gray-200"
                         >
                           {topic}
                         </span>
@@ -240,18 +203,17 @@ const Support = () => {
       </section>
 
       {/* Contact Form */}
-      <section className="py-16 px-4 sm:px-8 md:px-10 lg:px-20 bg-gradient-to-r from-gray-50 to-white">
+      <section className="py-16 px-4 sm:px-8 md:px-10 lg:px-20 bg-gray-50">
         <div className="max-w-5xl mx-auto">
           <div className="bg-white shadow-xl p-12 border-l-4 border-black">
             <div className="text-center mb-8">
               <h2 className="text-2xl font-light tracking-wider text-black mb-6">SEND US A MESSAGE</h2>
-              <div className="w-16 h-0.5 bg-black mx-auto"></div>
             </div>
             
             {isSubmitted ? (
               <div className="text-center py-12">
-                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <CheckCircle size={32} className="text-green-600" />
+                <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <CheckCircle size={32} className="text-gray-600" />
                 </div>
                 <h3 className="text-xl font-medium text-black mb-4">Message Sent Successfully!</h3>
                 <p className="text-gray-600 font-light leading-relaxed">
@@ -272,7 +234,7 @@ const Support = () => {
                       value={formData.name}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent font-light"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-gray-400 font-light"
                       placeholder="Your full name"
                     />
                   </div>
@@ -287,7 +249,7 @@ const Support = () => {
                       value={formData.email}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent font-light"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-gray-400 font-light"
                       placeholder="your.email@example.com"
                     />
                   </div>
@@ -304,7 +266,7 @@ const Support = () => {
                       value={formData.category}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent font-light"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-gray-400 font-light"
                     >
                       <option value="">Select a category</option>
                       <option value="orders">Orders & Shipping</option>
@@ -326,7 +288,7 @@ const Support = () => {
                       value={formData.subject}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent font-light"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-gray-400 font-light"
                       placeholder="Brief description of your inquiry"
                     />
                   </div>
@@ -343,7 +305,7 @@ const Support = () => {
                     onChange={handleInputChange}
                     required
                     rows={6}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent font-light"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-gray-400 font-light"
                     placeholder="Please provide as much detail as possible about your inquiry..."
                   />
                 </div>
@@ -364,38 +326,38 @@ const Support = () => {
       {/* Quick Tips */}
       <section className="py-16 px-4 sm:px-8 md:px-10 lg:px-20">
         <div className="max-w-7xl mx-auto">
-          <div className="bg-blue-50 border-l-4 border-blue-500 p-12">
+          <div className="bg-gray-100 border-l-4 border-black p-12">
             <div className="text-center mb-8">
-              <h3 className="text-xl font-medium text-blue-900 mb-4">Quick Tips for Faster Support</h3>
-              <div className="w-16 h-0.5 bg-blue-600 mx-auto"></div>
+              <h3 className="text-xl font-medium text-gray-900 mb-4">Quick Tips for Faster Support</h3>
+              <div className="w-16 h-0.5 bg-gray-600 mx-auto"></div>
             </div>
             <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
               <div className="space-y-3">
                 <div className="flex items-start gap-3">
-                  <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <div className="w-6 h-6 bg-black rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
                     <span className="text-white text-xs font-medium">1</span>
                   </div>
-                  <p className="text-sm text-blue-800 font-light">Include your order number for order-related inquiries</p>
+                  <p className="text-sm font-light">Include your order number for order-related inquiries</p>
                 </div>
                 <div className="flex items-start gap-3">
-                  <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <div className="w-6 h-6 bg-black rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
                     <span className="text-white text-xs font-medium">2</span>
                   </div>
-                  <p className="text-sm text-blue-800 font-light">Provide screenshots for technical issues</p>
+                  <p className="text-sm font-light">Provide screenshots for technical issues</p>
                 </div>
               </div>
               <div className="space-y-3">
                 <div className="flex items-start gap-3">
-                  <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <div className="w-6 h-6 bg-black rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
                     <span className="text-white text-xs font-medium">3</span>
                   </div>
-                  <p className="text-sm text-blue-800 font-light">Check our FAQ page first - your question might already be answered</p>
+                  <p className="text-sm font-light">Check our FAQ page first - your question might already be answered</p>
                 </div>
                 <div className="flex items-start gap-3">
-                  <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <div className="w-6 h-6 bg-black rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
                     <span className="text-white text-xs font-medium">4</span>
                   </div>
-                  <p className="text-sm text-blue-800 font-light">Be as specific as possible about your issue</p>
+                  <p className="text-sm font-light">Be as specific as possible about your issue</p>
                 </div>
               </div>
             </div>
@@ -413,7 +375,7 @@ const Support = () => {
           </p>
           
           <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-            <div className="bg-white p-6 shadow-sm border-l-4 border-black">
+            <div className="bg-white p-6 shadow-sm border-l-4 border-gray-400">
               <div className="flex items-center justify-center gap-2 mb-3">
                 <Phone size={16} />
                 <h4 className="font-medium text-black">Phone Support</h4>
@@ -422,7 +384,7 @@ const Support = () => {
               <p className="text-sm text-gray-500">Mon-Sat: 9 AM - 6 PM</p>
             </div>
             
-            <div className="bg-white p-6 shadow-sm border-l-4 border-black">
+            <div className="bg-white p-6 shadow-sm border-l-4 border-gray-400">
               <div className="flex items-center justify-center gap-2 mb-3">
                 <Mail size={16} />
                 <h4 className="font-medium text-black">Email Support</h4>
@@ -431,7 +393,7 @@ const Support = () => {
               <p className="text-sm text-gray-500">Response within 24 hours</p>
             </div>
 
-            <div className="bg-white p-6 shadow-sm border-l-4 border-black">
+            <div className="bg-white p-6 shadow-sm border-l-4 border-gray-400">
               <div className="flex items-center justify-center gap-2 mb-3">
                 <MapPin size={16} />
                 <h4 className="font-medium text-black">Address</h4>

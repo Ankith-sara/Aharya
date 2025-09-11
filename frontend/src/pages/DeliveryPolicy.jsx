@@ -31,8 +31,8 @@ const ShippingDeliveryPolicy = () => {
             {/* International Shipping */}
             <div className="bg-white shadow-lg p-8 border-l-4 border-black hover:shadow-xl transition-shadow">
               <div className="flex items-center gap-4 mb-6">
-                <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-                  <Globe className="text-blue-600" size={24} />
+                <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center">
+                  <Globe size={24} />
                 </div>
                 <h3 className="text-xl font-medium text-black">International Shipping</h3>
               </div>
@@ -40,7 +40,7 @@ const ShippingDeliveryPolicy = () => {
               <div className="space-y-4 text-gray-700 font-light">
                 <p> For our global customers, we ship through registered international courier companies and international speed post services. </p>
                 
-                <div className="bg-blue-50 p-4 rounded-lg">
+                <div className="bg-gray-100 p-4 rounded-lg">
                   <h4 className="font-medium text-black mb-2">Available Services:</h4>
                   <ul className="space-y-1 text-sm">
                     <li>• Registered International Courier Companies</li>
@@ -57,8 +57,8 @@ const ShippingDeliveryPolicy = () => {
             {/* Domestic Shipping */}
             <div className="bg-white shadow-lg p-8 border-l-4 border-black hover:shadow-xl transition-shadow">
               <div className="flex items-center gap-4 mb-6">
-                <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
-                  <MapPin className="text-green-600" size={24} />
+                <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center">
+                  <MapPin size={24} />
                 </div>
                 <h3 className="text-xl font-medium text-black">Domestic Shipping</h3>
               </div>
@@ -66,7 +66,7 @@ const ShippingDeliveryPolicy = () => {
               <div className="space-y-4 text-gray-700 font-light">
                 <p> Within India, we ensure reliable delivery through registered domestic courier companies and speed post services. </p>
                 
-                <div className="bg-green-50 p-4 rounded-lg">
+                <div className="bg-gray-100 p-4 rounded-lg">
                   <h4 className="font-medium text-black mb-2">Available Services:</h4>
                   <ul className="space-y-1 text-sm">
                     <li>• Registered Domestic Courier Companies</li>
@@ -88,8 +88,8 @@ const ShippingDeliveryPolicy = () => {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
             <div className="flex items-center justify-center gap-4 mb-6">
-              <div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center">
-                <Clock className="text-orange-600" size={24} />
+              <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center">
+                <Clock size={24} />
               </div>
               <h2 className="text-2xl font-light tracking-wider text-black">PROCESSING TIME</h2>
             </div>
@@ -98,7 +98,7 @@ const ShippingDeliveryPolicy = () => {
           <div className="bg-gradient-to-r from-gray-100 to-white p-12 border-l-4 border-black">
             <div className="max-w-4xl mx-auto text-center">
               <div className="mb-8">
-                <div className="text-4xl font-light text-orange-600 mb-4">0-7 Days</div>
+                <div className="text-4xl font-light mb-4">0-7 Days</div>
                 <h3 className="text-xl font-medium text-black mb-4">Order Processing & Shipping</h3>
                 <p className="text-gray-700 font-light leading-relaxed">
                   Orders are processed and shipped within 0-7 days from order confirmation, 
@@ -137,35 +137,35 @@ const ShippingDeliveryPolicy = () => {
             <h2 className="text-2xl font-light tracking-wider text-black mb-8 text-center">IMPORTANT NOTICE</h2>
             
             <div className="space-y-6 text-gray-700 font-light leading-relaxed">
-              <div className="bg-red-50 p-6 rounded-lg border border-red-200">
-                <h3 className="font-medium text-red-800 mb-3 flex items-center gap-2">
+              <div className="bg-gray-100 p-6 rounded-lg border border-gray-200">
+                <h3 className="font-medium mb-3 flex items-center gap-2">
                   <Clock size={16} />
                   Delivery Responsibility
                 </h3>
-                <p className="text-red-700">
+                <p>
                   <strong>Aharyas is not liable for any delay in delivery by courier companies or postal authorities.</strong> 
                   We guarantee to hand over the consignment to the courier company or postal authorities within 
                   the specified timeframe from the date of order and payment.
                 </p>
               </div>
 
-              <div className="bg-blue-50 p-6 rounded-lg border border-blue-200">
-                <h3 className="font-medium text-blue-800 mb-3 flex items-center gap-2">
+              <div className="bg-gray-100 p-6 rounded-lg border border-gray-200">
+                <h3 className="font-medium mb-3 flex items-center gap-2">
                   <MapPin size={16} />
                   Delivery Address
                 </h3>
-                <p className="text-blue-700">
+                <p>
                   All orders will be delivered to the address provided by the buyer at the time of order placement. 
                   Please ensure your address is complete and accurate to avoid delivery delays.
                 </p>
               </div>
 
-              <div className="bg-green-50 p-6 rounded-lg border border-green-200">
-                <h3 className="font-medium text-green-800 mb-3 flex items-center gap-2">
+              <div className="bg-gray-100 p-6 rounded-lg border border-gray-200">
+                <h3 className="font-medium mb-3 flex items-center gap-2">
                   <Mail size={16} />
                   Delivery Confirmation
                 </h3>
-                <p className="text-green-700">
+                <p>
                   Delivery confirmation will be sent to your registered email address. 
                   You'll receive tracking information once your order is dispatched.
                 </p>

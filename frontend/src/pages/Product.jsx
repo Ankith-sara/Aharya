@@ -61,6 +61,23 @@ const Product = () => {
     }
   };
 
+  // Share product function
+  const handleShare = () => {
+    const shareData = {
+      title: productData.name,
+      text: `Check out this product: ${productData.name}`,
+      url: window.location.href,
+    };
+
+    if (navigator.share) {
+      navigator.share(shareData).catch((err) => console.log("Share failed:", err));
+    } else {
+      navigator.clipboard.writeText(shareData.url).then(() => {
+        alert("Product link copied to clipboard!");
+      });
+    }
+  };
+
   // Image navigation
   const zoomIn = () => {
     if (zoomLevel < 1.5) setZoomLevel(zoomLevel + 0.1);
@@ -88,7 +105,7 @@ const Product = () => {
 
   // Fixed modal functions
   const openModal = (img) => {
-    console.log('Opening modal with image:', img); // Debug log
+    console.log('Opening modal with image:', img);
     setModalImage(img);
     setModalOpen(true);
     setZoomLevel(1);
@@ -96,18 +113,16 @@ const Product = () => {
     if (modalRef.current) {
       modalRef.current.scrollTop = 0;
     }
-    // Prevent body scroll when modal is open
     document.body.style.overflow = 'hidden';
   };
 
   const closeModal = (e) => {
     e?.preventDefault();
     e?.stopPropagation();
-    console.log('Closing modal'); // Debug log
+    console.log('Closing modal');
     setModalOpen(false);
     setModalImage('');
     setZoomLevel(1);
-    // Restore body scroll
     document.body.style.overflow = 'unset';
   };
 
@@ -115,7 +130,7 @@ const Product = () => {
   const handleImageClick = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    console.log('Image clicked, opening modal'); // Debug log
+    console.log('Image clicked, opening modal');
     openModal(productData.images[currentIndex]);
   };
 
@@ -147,7 +162,7 @@ const Product = () => {
     document.addEventListener('keydown', handleKeyDown);
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
-      document.body.style.overflow = 'unset'; // Cleanup on unmount
+      document.body.style.overflow = 'unset';
     };
   }, [isModalOpen, currentIndex, productData]);
 
@@ -265,7 +280,7 @@ const Product = () => {
                     >
                       <Heart size={16} className={isWishlisted ? 'fill-current' : ''} />
                     </button>
-                    <button className="p-2 border border-gray-300 bg-white text-black hover:border-black transition-all duration-300">
+                    <button onClick={handleShare} className="p-2 border border-gray-300 bg-white text-black hover:border-black transition-all duration-300">
                       <Share2 size={16} />
                     </button>
                   </div>

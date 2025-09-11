@@ -17,34 +17,34 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   // OTP
-  const [otpVerified, setOtpVerified] = useState(false); // New
+  const [otpVerified, setOtpVerified] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
   const [otp, setOtp] = useState('');
   const [otpLoading, setOtpLoading] = useState(false);
   const [otpError, setOtpError] = useState('');
   const [otpTimer, setOtpTimer] = useState(0);
   const [otpDigits, setOtpDigits] = useState(Array(6).fill(''));
-const otpRefs = useRef([]);
+  const otpRefs = useRef([]);
 
-const handleOtpChange = (index, value) => {
-  if (!/^\d?$/.test(value)) return;
+  const handleOtpChange = (index, value) => {
+    if (!/^\d?$/.test(value)) return;
 
-  const updated = [...otpDigits];
-  updated[index] = value;
-  setOtpDigits(updated);
+    const updated = [...otpDigits];
+    updated[index] = value;
+    setOtpDigits(updated);
 
-  if (value && index < 5) {
-    otpRefs.current[index + 1]?.focus();
-  }
+    if (value && index < 5) {
+      otpRefs.current[index + 1]?.focus();
+    }
 
-  setOtp(updated.join(''));
-};
+    setOtp(updated.join(''));
+  };
 
-const handleOtpKeyDown = (index, e) => {
-  if (e.key === 'Backspace' && !otpDigits[index] && index > 0) {
-    otpRefs.current[index - 1]?.focus();
-  }
-};
+  const handleOtpKeyDown = (index, e) => {
+    if (e.key === 'Backspace' && !otpDigits[index] && index > 0) {
+      otpRefs.current[index - 1]?.focus();
+    }
+  };
 
   // OTP Timer effect
   useEffect(() => {
@@ -125,7 +125,7 @@ const handleOtpKeyDown = (index, e) => {
     setIsLoading(false);
   };
 
-  // --- PASSWORD LOGIN/SIGNUP HANDLERS ---
+  // PASSWORD LOGIN/SIGNUP HANDLERS
   const validateForm = () => {
     const newErrors = {};
 
@@ -138,7 +138,6 @@ const handleOtpKeyDown = (index, e) => {
 
     const isFormValid = Object.keys(newErrors).length === 0;
 
-    // Show toast if OTP is not verified after all other validations pass
     if (currentState === 'Sign Up' && isFormValid && !otpVerified) {
       toast.error('Please verify OTP before creating account.');
       return false;
@@ -174,135 +173,169 @@ const handleOtpKeyDown = (index, e) => {
   };
 
   return (
-    <div className="min-h-screen text-white flex items-center justify-center">
-      <div className="w-full flex flex-col md:flex-row">
-        {/* Left Panel - Image with overlay */}
-        <div className="w-full md:w-1/2 relative hidden md:block">
+    <div className="min-h-screen text-black">
+      <div className="flex flex-col lg:flex-row">
+        {/* Left Panel - Image with overlay (same as about page styling) */}
+        <div className="w-full lg:w-1/2 relative min-h-screen">
           <div className="absolute inset-0 bg-black/30 z-10"></div>
           <div className="h-full flex items-center justify-center overflow-hidden">
-            <img src="https://okhai.org/cdn/shop/files/LD25330610_1_Hero_414x650.jpg?v=1745928986" alt="Premium craftsmanship" className="grayscale" />
+            <img 
+              src="https://okhai.org/cdn/shop/files/LD25330610_1_Hero_414x650.jpg?v=1745928986" 
+              alt="Premium craftsmanship" 
+              className="w-full h-full object-cover filter grayscale" 
+            />
           </div>
           <div className="absolute inset-0 z-20 flex items-center justify-center p-10">
-            <div className="border border-white/20 p-6 bg-black/40 backdrop-blur-sm">
-              <h2 className="text-3xl font-light tracking-wider mb-2">ELEVATE YOUR</h2>
-              <h1 className="text-5xl font-bold tracking-tight">EXPERIENCE</h1>
+            <div className="bg-white/95 backdrop-blur-sm p-12 shadow-2xl border-l-4 border-black max-w-md">
+              <h2 className="text-3xl font-light tracking-wider mb-4 text-black">ELEVATE YOUR</h2>
+              <h1 className="text-5xl font-light tracking-tight mb-6 text-black">EXPERIENCE</h1>
+              <div className="w-16 h-0.5 bg-black mb-6"></div>
+              <blockquote className="text-lg font-light text-gray-700 leading-relaxed">
+                "Join a community that believes fashion should honor heritage, empower artisans, and carry stories forward."
+              </blockquote>
             </div>
           </div>
+          {/* Decorative elements */}
+          <div className="absolute top-8 left-8 w-16 h-16 border border-white/20 z-30"></div>
+          <div className="absolute bottom-8 right-8 w-16 h-16 border border-white/20 z-30"></div>
         </div>
 
-        {/* Right Panel - Form */}
-        <div className="w-full md:w-1/2 bg-white flex items-center text-black p-6 md:p-10">
-          <div className="max-w-md mx-auto">
-            <div className="mb-5">
-              <h1 className="text-3xl font-bold tracking-tight mb-2">
+        {/* Right Panel - Form (enhanced styling) */}
+        <div className="w-full lg:w-1/2 bg-gradient-to-b from-white to-stone-50 flex items-center">
+          <div className="w-full max-w-lg mx-auto p-8 lg:p-12">
+            <div className="mb-12">
+              <h1 className="text-4xl font-light tracking-wider mb-4 text-black">
                 {currentState === 'Login' ? 'WELCOME BACK' : 'JOIN US'}
               </h1>
-              <div className="h-1 w-16 bg-black mb-6"></div>
-              <p className="text-gray-600">
+              <div className="w-16 h-0.5 bg-black mb-6"></div>
+              <p className="text-gray-600 font-light text-lg leading-relaxed">
                 {currentState === 'Login'
-                  ? 'Sign in to access your exclusive experience'
-                  : 'Create an account to begin your premium journey'}
+                  ? 'Sign in to access your exclusive experience with conscious luxury'
+                  : 'Create an account to begin your premium journey with handcrafted heritage'}
               </p>
             </div>
 
             {/* FORM */}
-            <form
-              onSubmit={onSubmitHandler}
-              className="space-y-3"
-            >
+            <form onSubmit={onSubmitHandler} className="space-y-8">
               {/* Name (Sign Up only) */}
               {currentState === 'Sign Up' && (
-                <div className="space-y-1">
-                  <label htmlFor="name" className="text-xs uppercase tracking-wider font-medium text-gray-600">
+                <div className="space-y-3">
+                  <label htmlFor="name" className="block text-sm font-light text-gray-700 tracking-wide uppercase">
                     Full Name
                   </label>
-                  <div className="relative">
+                  <div className="relative group">
                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center">
-                      <User size={18} className="text-gray-400" />
+                      <User size={20} className="text-gray-400 group-focus-within:text-black transition-colors duration-300" />
                     </div>
                     <input
                       id="name"
                       type="text"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      className={`w-full pl-12 pr-4 py-3 border-b focus:outline-none transition-all ${errors.name ? 'border-red-500' : 'border-gray-300 focus:border-black'}`}
+                      className={`w-full pl-14 pr-4 py-4 bg-white border-b-2 focus:outline-none transition-all duration-300 font-light text-lg ${
+                        errors.name 
+                          ? 'border-red-400 focus:border-red-500' 
+                          : 'border-gray-200 focus:border-black'
+                      }`}
+                      placeholder="Enter your full name"
                     />
-                    {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
+                    {errors.name && (
+                      <p className="text-red-500 text-sm mt-2 font-light">{errors.name}</p>
+                    )}
                   </div>
                 </div>
               )}
 
               {/* Email */}
-              <div className="space-y-1">
-                <label htmlFor="email" className="text-xs uppercase tracking-wider font-medium text-gray-600">
+              <div className="space-y-3">
+                <label htmlFor="email" className="block text-sm font-light text-gray-700 tracking-wide uppercase">
                   Email Address
                 </label>
-                <div className="relative">
+                <div className="relative group">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center">
-                    <Mail size={18} className="text-gray-400" />
+                    <Mail size={20} className="text-gray-400 group-focus-within:text-black transition-colors duration-300" />
                   </div>
                   <input
                     id="email"
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className={`w-full pl-12 pr-4 py-3 border-b focus:outline-none transition-all ${errors.email ? 'border-red-500' : 'border-gray-300 focus:border-black'}`}
+                    className={`w-full pl-14 pr-4 py-4 bg-white border-b-2 focus:outline-none transition-all duration-300 font-light text-lg ${
+                      errors.email 
+                        ? 'border-red-400 focus:border-red-500' 
+                        : 'border-gray-200 focus:border-black'
+                    }`}
+                    placeholder="Enter your email address"
                     disabled={otpSent && currentState === 'Login'}
                   />
-                  {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
+                  {errors.email && (
+                    <p className="text-red-500 text-sm mt-2 font-light">{errors.email}</p>
+                  )}
                 </div>
               </div>
 
               {/* Password */}
               {(!otpSent || currentState !== 'Login') && (
-                <div className="space-y-1">
-                  <label htmlFor="password" className="text-xs uppercase tracking-wider font-medium text-gray-600">
+                <div className="space-y-3">
+                  <label htmlFor="password" className="block text-sm font-light text-gray-700 tracking-wide uppercase">
                     Password
                   </label>
-                  <div className="relative">
+                  <div className="relative group">
                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center">
-                      <Lock size={18} className="text-gray-400" />
+                      <Lock size={20} className="text-gray-400 group-focus-within:text-black transition-colors duration-300" />
                     </div>
                     <input
                       id="password"
                       type={showPassword ? 'text' : 'password'}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className={`w-full pl-12 pr-12 py-3 border-b focus:outline-none transition-all ${errors.password ? 'border-red-500' : 'border-gray-300 focus:border-black'}`}
+                      className={`w-full pl-14 pr-14 py-4 bg-white border-b-2 focus:outline-none transition-all duration-300 font-light text-lg ${
+                        errors.password 
+                          ? 'border-red-400 focus:border-red-500' 
+                          : 'border-gray-200 focus:border-black'
+                      }`}
+                      placeholder="Enter your password"
                       autoComplete="current-password"
                     />
                     <button
                       type="button"
-                      className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-black"
+                      className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-black transition-colors duration-300"
                       onClick={() => setShowPassword(!showPassword)}
                       aria-label={showPassword ? "Hide password" : "Show password"}
                     >
-                      {showPassword ? <Eye size={18} /> : <EyeOff size={18} />}
+                      {showPassword ? <Eye size={20} /> : <EyeOff size={20} />}
                     </button>
-                    {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>}
+                    {errors.password && (
+                      <p className="text-red-500 text-sm mt-2 font-light">{errors.password}</p>
+                    )}
                   </div>
                 </div>
               )}
 
-              {/* Send OTP */}
+              {/* Send OTP Button */}
               {currentState === 'Sign Up' && !otpSent && (
-                <button
-                  type="button"
-                  onClick={handleSendOtp}
-                  disabled={otpLoading || otpTimer > 0}
-                  className="w-full py-3 bg-black text-white text-sm uppercase font-medium hover:bg-gray-900 transition-colors mt-2"
-                >
-                  {otpLoading ? 'Sending OTP...' : otpTimer > 0 ? `Resend OTP in ${otpTimer}s` : 'Send OTP'}
-                </button>
+                <div className="pt-4">
+                  <button
+                    type="button"
+                    onClick={handleSendOtp}
+                    disabled={otpLoading || otpTimer > 0}
+                    className="w-full py-4 bg-black text-white text-sm uppercase font-light tracking-widest hover:bg-gray-900 transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
+                  >
+                    {otpLoading ? 'Sending...' : otpTimer > 0 ? `Resend in ${otpTimer}s` : 'Send Verification Code'}
+                  </button>
+                </div>
               )}
 
-              {/* Enter OTP */}
+              {/* OTP Verification */}
               {currentState === 'Sign Up' && otpSent && !otpVerified && (
-                <div className="space-y-2">
-                  <label htmlFor="otp" className="text-xs uppercase tracking-wider font-medium text-gray-600">
-                    Enter OTP
-                  </label>
-                  <div className="flex gap-2 justify-between">
+                <div className="space-y-6 pt-4">
+                  <div className="text-center">
+                    <h3 className="text-xl font-light mb-2 text-black tracking-wide">VERIFY YOUR EMAIL</h3>
+                    <div className="w-12 h-0.5 bg-black mx-auto mb-4"></div>
+                    <p className="text-gray-600 font-light">Enter the 6-digit code sent to your email</p>
+                  </div>
+                  
+                  <div className="flex gap-3 justify-center">
                     {Array(6)
                       .fill(0)
                       .map((_, i) => (
@@ -315,38 +348,45 @@ const handleOtpKeyDown = (index, e) => {
                           value={otpDigits[i] || ''}
                           onChange={(e) => handleOtpChange(i, e.target.value)}
                           onKeyDown={(e) => handleOtpKeyDown(i, e)}
-                          className="w-12 h-12 text-center text-lg border border-gray-300 rounded focus:outline-none focus:border-black"
+                          className="w-12 h-12 text-center text-lg font-light border-2 border-gray-200 focus:border-black focus:outline-none transition-all duration-300 bg-white"
                         />
                       ))}
                   </div>
-                  {otpError && <p className="text-red-500 text-xs mt-1">{otpError}</p>}
+                  
+                  {otpError && (
+                    <p className="text-red-500 text-sm text-center font-light">{otpError}</p>
+                  )}
+                  
                   <button
                     type="submit"
                     onClick={handleVerifyOtp}
                     disabled={isLoading}
-                    className="w-full py-4 bg-black text-white text-sm uppercase tracking-wider font-medium hover:bg-gray-900 transition-colors mt-2"
+                    className="w-full py-4 bg-black text-white text-sm uppercase font-light tracking-widest hover:bg-gray-900 transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
                   >
-                    {isLoading ? 'Verifying...' : 'Verify OTP'}
+                    {isLoading ? 'Verifying...' : 'Verify & Create Account'}
                   </button>
                 </div>
               )}
 
+              {/* Login Submit Button */}
               {currentState === 'Login' && !otpSent && (
-                <button
-                  type="submit"
-                  disabled={isLoading}
-                  className="w-full py-4 bg-black text-white text-sm uppercase tracking-wider font-medium hover:bg-gray-900 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black disabled:opacity-70 disabled:cursor-not-allowed"
-                >
-                  {isLoading ? 'Processing...' : 'Sign In'}
-                </button>
+                <div className="pt-4">
+                  <button
+                    type="submit"
+                    disabled={isLoading}
+                    className="w-full py-4 bg-black text-white text-sm uppercase font-light tracking-widest hover:bg-gray-900 transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black"
+                  >
+                    {isLoading ? 'Signing In...' : 'Sign In'}
+                  </button>
+                </div>
               )}
 
               {/* Switch between Login and Sign Up */}
-              <div className="pt-6 border-gray-200">
-                <div className="flex justify-center">
+              <div className="pt-8 border-t border-gray-200">
+                <div className="text-center">
                   {currentState === 'Login' ? (
-                    <p className="text-gray-600 text-sm">
-                      Don't have an account?{' '}
+                    <p className="text-gray-600 font-light">
+                      New to Aharyas?{' '}
                       <button
                         type="button"
                         onClick={() => {
@@ -357,14 +397,14 @@ const handleOtpKeyDown = (index, e) => {
                           setPassword('');
                           setErrors({});
                         }}
-                        className="text-black font-medium hover:underline"
+                        className="text-black font-light hover:font-normal transition-all duration-300 border-b border-transparent hover:border-black pb-0.5 tracking-wide"
                       >
-                        Sign up
+                        Create an account
                       </button>
                     </p>
                   ) : (
-                    <p className="text-gray-600 text-sm">
-                      Already have an account?{' '}
+                    <p className="text-gray-600 font-light">
+                      Already part of our community?{' '}
                       <button
                         type="button"
                         onClick={() => {
@@ -375,9 +415,9 @@ const handleOtpKeyDown = (index, e) => {
                           setPassword('');
                           setErrors({});
                         }}
-                        className="text-black font-medium hover:underline"
+                        className="text-black font-light hover:font-normal transition-all duration-300 border-b border-transparent hover:border-black pb-0.5 tracking-wide"
                       >
-                        Sign in
+                        Sign In
                       </button>
                     </p>
                   )}
