@@ -3,13 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { ShopContext } from '../context/ShopContext';
 import Title from '../components/Title';
 import axios from 'axios';
-import { 
-  ChevronRight, 
-  Truck, 
-  Clock, 
-  Package, 
-  CheckCircle, 
-  RefreshCw, 
+import {
+  ChevronRight,
+  Truck,
+  Clock,
+  Package,
+  CheckCircle,
+  RefreshCw,
   ShoppingBag,
   Calendar,
   CreditCard,
@@ -25,7 +25,7 @@ const Orders = () => {
   const loadOrderData = async () => {
     try {
       if (!token) return;
-      
+
       setLoading(true);
       const response = await axios.post(
         `${backendUrl}/api/order/userorders`,
@@ -137,8 +137,8 @@ const Orders = () => {
                   Your order history is empty. Start exploring our amazing collection and place your first order.
                 </p>
               </div>
-              <button 
-                onClick={() => navigate('/shop/collection')} 
+              <button
+                onClick={() => navigate('/shop/collection')}
                 className="px-8 py-4 bg-black text-white font-medium rounded-lg hover:bg-gray-800 transition-all duration-200 transform hover:scale-105"
               >
                 BROWSE PRODUCTS
@@ -167,7 +167,7 @@ const Orders = () => {
                           <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">Order ID:</span>
                           <span className="font-medium text-gray-900">{item.orderId}</span>
                         </div>
-                        
+
                         <div className="flex items-center gap-2">
                           <Calendar size={14} className="text-gray-400" />
                           <span className="text-sm text-gray-600">{formatDate(item.date)}</span>
@@ -216,21 +216,21 @@ const Orders = () => {
                                 {currency}{item.price}
                               </span>
                             </div>
-                            
+
                             <div className="bg-gray-50 rounded-lg p-3">
                               <span className="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">
                                 Quantity
                               </span>
                               <span className="font-medium text-gray-900">{item.quantity}</span>
                             </div>
-                            
+
                             <div className="bg-gray-50 rounded-lg p-3">
                               <span className="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">
                                 Size
                               </span>
                               <span className="font-medium text-gray-900">{item.size}</span>
                             </div>
-                            
+
                             <div className="bg-gray-50 rounded-lg p-3">
                               <span className="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">
                                 Total
@@ -252,24 +252,14 @@ const Orders = () => {
                         </div>
 
                         {/* Action Buttons */}
-                        <div className="flex lg:flex-col items-center lg:items-end justify-between lg:justify-start gap-4">
-                          <div className="flex flex-col gap-3 w-full lg:w-auto">
-                            <button 
-                              className="flex items-center justify-center gap-2 px-6 py-3 border-2 border-gray-300 text-gray-700 font-medium rounded-lg hover:border-black hover:text-black transition-all duration-200"
-                              onClick={() => navigate(`/trackorder/${item.orderId}`)}
-                            >
-                              <Truck size={16} />
-                              <span>Track Order</span>
-                            </button>
-                            
-                            <button 
-                              className="flex items-center justify-center gap-2 px-6 py-3 bg-black text-white font-medium rounded-lg hover:bg-gray-800 transition-all duration-200 transform hover:scale-[1.02]"
-                              onClick={() => navigate(`/product/${item._id}`)}
-                            >
-                              <RefreshCw size={16} />
-                              <span>Reorder</span>
-                            </button>
-                          </div>
+                        <div className="flex items-center gap-3 w-full lg:w-auto">
+                          <button
+                            className="flex items-center justify-center gap-2 px-6 py-3 border-2 border-gray-300 text-gray-700 font-medium rounded-lg hover:border-black hover:text-black transition-all duration-200"
+                            onClick={() => navigate(`/trackorder/${item.orderId}`)}
+                          >
+                            <Truck size={16} />
+                            <span>Track Order</span>
+                          </button>
                         </div>
                       </div>
                     </div>
@@ -313,8 +303,8 @@ const Orders = () => {
                   </div>
                   <div>
                     <p className="text-2xl font-bold text-gray-900">
-                      {orderData.filter(item => 
-                        item.status?.toLowerCase() !== 'delivered' && 
+                      {orderData.filter(item =>
+                        item.status?.toLowerCase() !== 'delivered' &&
                         item.status?.toLowerCase() !== 'cancelled'
                       ).length}
                     </p>
@@ -329,7 +319,7 @@ const Orders = () => {
               <div className="p-8 text-center">
                 <h3 className="text-xl font-semibold text-gray-900 mb-2">Want to order more?</h3>
                 <p className="text-gray-600 mb-6">Discover new arrivals and trending products</p>
-                <button 
+                <button
                   onClick={() => navigate('/shop/collection')}
                   className="px-8 py-4 bg-black text-white font-medium rounded-lg hover:bg-gray-800 transition-all duration-200 transform hover:scale-105"
                 >
