@@ -311,6 +311,7 @@ const PrivacyPolicy = () => {
                 <h4 className="font-medium text-black">Phone</h4>
               </div>
               <p className="text-lg text-gray-700 mb-1">+91 9063284008</p>
+              <p className="text-lg text-gray-700 mb-1">+91 9121157804</p>
               <p className="text-sm text-gray-500">Mon-Sat: 9 AM - 6 PM</p>
             </div>
             

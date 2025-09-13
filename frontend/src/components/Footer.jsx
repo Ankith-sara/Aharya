@@ -58,10 +58,10 @@ const Footer = () => {
   return (
     <footer className="bg-black text-white">
       {/* Main Footer Content */}
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-20">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
           {/* Brand Section */}
-          <div className="lg:col-span-5 space-y-6 lg:space-y-8">
+          <div className="lg:col-span-5 space-y-4 lg:space-y-6">
             <div>
               <img className="h-10 sm:h-12 mb-4 lg:mb-6" src={assets.logo_white} alt="Aharya Logo" />
               <p className="text-gray-400 leading-relaxed font-light text-sm sm:text-base pr-0 lg:pr-4">
@@ -104,41 +104,33 @@ const Footer = () => {
           <div className="lg:col-span-7 lg:pl-6">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
               {/* Quick Links */}
-              <div className="space-y-4 lg:space-y-6">
+              <div className="space-y-3 lg:space-y-4">
                 <div className="flex items-center">
-                  <div className="w-7 h-7 sm:w-8 sm:h-8 bg-gray-800 rounded-lg flex items-center justify-center mr-2 sm:mr-3 flex-shrink-0">
-                    <Settings size={14} className="text-gray-300" />
-                  </div>
                   <h4 className="text-xs sm:text-sm font-medium tracking-widest uppercase">Quick Links</h4>
                 </div>
                 <ul className="space-y-2 lg:space-y-3">
                   <li>
                     <NavLink to='/about' className="text-gray-400 hover:text-white transition-colors font-light flex items-center group text-sm">
-                      <Info size={12} className="mr-2 opacity-50 group-hover:opacity-100 flex-shrink-0" />
                       About Us
                     </NavLink>
                   </li>
                   <li>
                     <NavLink to='/contact' className="text-gray-400 hover:text-white transition-colors font-light flex items-center group text-sm">
-                      <Mail size={12} className="mr-2 opacity-50 group-hover:opacity-100 flex-shrink-0" />
                       Contact Us
                     </NavLink>
                   </li>
                   <li>
                     <NavLink to='/shop/collection' className="text-gray-400 hover:text-white transition-colors font-light flex items-center group text-sm">
-                      <Search size={12} className="mr-2 opacity-50 group-hover:opacity-100 flex-shrink-0" />
                       Shop Collection
                     </NavLink>
                   </li>
                   <li>
                     <NavLink to='/sell' className="text-gray-400 hover:text-white transition-colors font-light flex items-center group text-sm">
-                      <Heart size={12} className="mr-2 opacity-50 group-hover:opacity-100 flex-shrink-0" />
                       Sell With Us
                     </NavLink>
                   </li>
                   <li>
                     <NavLink to='/blog' className="text-gray-400 hover:text-white transition-colors font-light flex items-center group text-sm">
-                      <FileText size={12} className="mr-2 opacity-50 group-hover:opacity-100 flex-shrink-0" />
                       Blog
                     </NavLink>
                   </li>
@@ -146,35 +138,28 @@ const Footer = () => {
               </div>
 
               {/* Policies & Legal */}
-              <div className="space-y-4 lg:space-y-6">
+              <div className="space-y-3 lg:space-y-4">
                 <div className="flex items-center">
-                  <div className="w-7 h-7 sm:w-8 sm:h-8 bg-gray-800 rounded-lg flex items-center justify-center mr-2 sm:mr-3 flex-shrink-0">
-                    <FileText size={14} className="text-gray-300" />
-                  </div>
                   <h4 className="text-xs sm:text-sm font-medium tracking-widest uppercase">Policies</h4>
                 </div>
                 <ul className="space-y-2 lg:space-y-3">
                   <li>
                     <NavLink to='/shippingpolicy' className="text-gray-400 hover:text-white transition-colors font-light flex items-center group text-sm">
-                      <Truck size={12} className="mr-2 opacity-50 group-hover:opacity-100 flex-shrink-0" />
                       Shipping Policy
                     </NavLink>
                   </li>
                   <li>
                     <NavLink to='/refundpolicy' className="text-gray-400 hover:text-white transition-colors font-light flex items-center group text-sm">
-                      <Shield size={12} className="mr-2 opacity-50 group-hover:opacity-100 flex-shrink-0" />
                       Return Policy
                     </NavLink>
                   </li>
                   <li>
                     <NavLink to='/privacypolicy' className="text-gray-400 hover:text-white transition-colors font-light flex items-center group text-sm">
-                      <Shield size={12} className="mr-2 opacity-50 group-hover:opacity-100 flex-shrink-0" />
                       Privacy Policy
                     </NavLink>
                   </li>
                   <li>
                     <NavLink to='/termsconditions' className="text-gray-400 hover:text-white transition-colors font-light flex items-center group text-sm">
-                      <FileText size={12} className="mr-2 opacity-50 group-hover:opacity-100 flex-shrink-0" />
                       Terms & Conditions
                     </NavLink>
                   </li>
@@ -182,23 +167,18 @@ const Footer = () => {
               </div>
 
               {/* Support & Help */}
-              <div className="space-y-4 lg:space-y-6 sm:col-span-2 lg:col-span-1">
+              <div className="space-y-3 lg:space-y-4 sm:col-span-2 lg:col-span-1">
                 <div className="flex items-center">
-                  <div className="w-7 h-7 sm:w-8 sm:h-8 bg-gray-800 rounded-lg flex items-center justify-center mr-2 sm:mr-3 flex-shrink-0">
-                    <HelpCircle size={14} className="text-gray-300" />
-                  </div>
                   <h4 className="text-xs sm:text-sm font-medium tracking-widest uppercase">Support</h4>
                 </div>
                 <ul className="space-y-2 lg:space-y-3">
                   <li>
                     <NavLink to='/support' className="text-gray-400 hover:text-white transition-colors font-light flex items-center group text-sm">
-                      <HelpCircle size={12} className="mr-2 opacity-50 group-hover:opacity-100 flex-shrink-0" />
                       Get Help
                     </NavLink>
                   </li>
                   <li>
                     <NavLink to='/faqs' className="text-gray-400 hover:text-white transition-colors font-light flex items-center group text-sm">
-                      <HelpCircle size={12} className="mr-2 opacity-50 group-hover:opacity-100 flex-shrink-0" />
                       FAQs
                     </NavLink>
                   </li>

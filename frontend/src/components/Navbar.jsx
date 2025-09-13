@@ -99,7 +99,6 @@ const Navbar = () => {
         { name: 'Tops', path: '/shop/Tops' },
         { name: 'Blazers', path: '/shop/blazers' },
         { name: 'Dresses', path: '/shop/Dresses' },
-        { name: 'Corset tops', path: '/shop/Corset-tops' }
       ]
     },
     {
@@ -110,7 +109,6 @@ const Navbar = () => {
         { name: 'Sleeve Shirts', path: '/shop/Sleeve-Shirts' },
         { name: 'Kurtas', path: '/shop/Kurtas' },
         { name: 'Co-ord Sets', path: '/shop/Co-ord-Sets' },
-        { name: 'Vests', path: '/shop/Vests' },
         { name: 'Trousers', path: '/shop/Trousers' },
       ]
     },

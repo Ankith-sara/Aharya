@@ -90,6 +90,7 @@ const Contact = () => {
                   <div className="space-y-2 text-gray-700 font-light">
                     <p>Customer Service</p>
                     <p className="text-xl font-medium text-black">+91 9063284008</p>
+                    <p className='text-xl font-medium text-black'>+91 91211 57804</p>
                     <p className="text-sm text-gray-500">Mon - Sat: 9 AM - 6 PM</p>
                   </div>
                 </div>

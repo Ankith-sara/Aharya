@@ -61,18 +61,17 @@ const Add = ({ token }) => {
 
   const [companies, setCompanies] = useState([
     'Biba',
-    'Aharyas',
     'Fabindia',
     'Vasudhaa Vastrram Vishram'
   ]);
 
   const categoryData = {
     Men: {
-      subCategories: ["", "Shirts", "Sleeve Shirts", "Kurtas", "Co-ord Sets", "Vests", "Trousers", "Jackets"],
+      subCategories: ["", "Shirts", "Sleeve Shirts", "Kurtas", "Co-ord Sets", "Vests", "Trousers"],
       sizes: ['28', '30', '32', '34', '36', '38', '40', '42', '44', '46']
     },
     Women: {
-      subCategories: ["", "Kurtis", "Kurta Sets", "Tops", "Blazers", "Dresses", "Corset-tops"],
+      subCategories: ["", "Kurtis", "Kurta Sets", "Tops", "Blazers", "Dresses"],
       sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL']
     },
     "Home Furnishing": {

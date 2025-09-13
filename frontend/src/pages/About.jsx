@@ -38,7 +38,7 @@ const About = () => {
               </div>
 
               <div className="space-y-4 text-gray-700 text-lg leading-loose font-light">
-                <p className="first-letter:text-6xl first-letter:font-light first-letter:text-black first-letter:mr-2 first-letter:float-left first-letter:leading-none">
+                <p className="first-letter:text-5xl first-letter:font-light first-letter:text-black first-letter:mr-1 first-letter:float-left first-letter:leading-none">
                   We, at Aharyas, are driven by the potential of handcrafted narratives. We're not creating a brand — we're creating a bridge between India's storied craft heritage and the world of mindful fashion.
                 </p>
 
@@ -95,7 +95,7 @@ const About = () => {
       </section>
 
       {/* What Drives Us */}
-      <section className="py-24 px-4 sm:px-8 md:px-10 lg:px-20">
+      <section className="py-20 px-4 sm:px-8 md:px-10 lg:px-20">
         <div className="max-w-5xl mx-auto text-center">
           <div className="mb-6">
             <div className="text-3xl text-center mb-6">
@@ -105,8 +105,8 @@ const About = () => {
 
           <div className="relative">
             <div className="absolute -top-8 -left-8 text-8xl text-black/10 font-serif">"</div>
-            <div className="bg-gradient-to-r from-gray-50 to-transparent p-16 border-l-4 border-black">
-              <blockquote className="text-2xl md:text-3xl font-light text-black leading-relaxed">
+            <div className="bg-gradient-to-r from-gray-50 to-transparent p-10 border-l-4 border-black">
+              <blockquote className="text-xl md:text-2xl font-light text-black leading-relaxed">
                 A simple belief:
                 <br /><br />
                 <em className="font-light">That fashion should not just look good — it should mean something, honour hands, and carry stories forward.</em>
@@ -118,9 +118,9 @@ const About = () => {
       </section>
 
       {/* Artisan Stories */}
-      <section className="py-24 px-4 sm:px-8 md:px-10 lg:px-20 bg-gradient-to-b from-white to-stone-50">
+      <section className="py-20 px-4 sm:px-8 md:px-10 lg:px-20 bg-gradient-to-b from-white to-stone-50">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-20">
+          <div className="text-center mb-10">
             <div className="text-3xl text-center mb-6">
               <Title text1="ARTISAN" text2="STORIES" />
             </div>
@@ -155,7 +155,7 @@ const About = () => {
                 {!showFullStory ? (
                   <>
                     <div className="text-gray-700 font-light leading-relaxed space-y-6">
-                      <p className="first-letter:text-4xl first-letter:font-light first-letter:text-black first-letter:mr-2 first-letter:float-left first-letter:leading-none">
+                      <p className="first-letter:text-4xl first-letter:font-light first-letter:text-black first-letter:mr-1 first-letter:float-left first-letter:leading-none">
                         From the weaving town of Pochampally, Mallesh Anna has spent over 40 years breathing life into threads. He began as a young boy, watching his parents tie and dye yarn late into the night, slowly learning that every motif held a meaning and every weave, a memory.
                       </p>
                       <p>Today, at 56, he still rises before dawn, preparing yarns with care and weaving with quiet pride. The journey hasn't been easy—rising costs, fewer buyers—but he never let go of the loom that shaped his life.</p>
@@ -199,9 +199,9 @@ const About = () => {
       </section>
 
       {/* The Crafts We Celebrate */}
-      <section className="py-24 px-4 sm:px-8 md:px-10 lg:px-20">
+      <section className="py-20 px-4 sm:px-8 md:px-10 lg:px-20">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-20">
+          <div className="text-center mb-10">
             <div className="text-3xl text-center mb-6">
               <Title text1="THE CRAFTS" text2="WE CELEBRATE" />
             </div>

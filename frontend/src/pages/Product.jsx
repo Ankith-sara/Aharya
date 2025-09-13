@@ -351,20 +351,13 @@ const Product = () => {
                   >
                     ADD TO CART
                   </button>
-
-                  <div className="grid grid-cols-2 gap-2">
-                    <button className="py-2 flex justify-center items-center gap-2 border border-black bg-white text-black font-light hover:bg-gray-50 transition-all duration-300">
-                      <Sliders size={16} />
-                      <span className="text-sm">CUSTOMIZE</span>
-                    </button>
-                    <button
-                      onClick={() => navigate('/try-on', { state: { image: productData.images[currentIndex] } })}
-                      className="py-2 flex justify-center items-center gap-2 border border-black bg-white text-black font-light hover:bg-gray-50 transition-all duration-300"
-                    >
-                      <Camera size={16} />
-                      <span className="text-sm">TRY-ON</span>
-                    </button>
-                  </div>
+                  <button
+                    onClick={() => navigate('/try-on', { state: { image: productData.images[currentIndex] } })}
+                    className="w-full py-3 flex justify-center items-center gap-2 border border-black bg-white text-black font-light hover:bg-gray-50 transition-all duration-300"
+                  >
+                    <Camera size={16} />
+                    <span className="text-sm">TRY-ON</span>
+                  </button>
                 </div>
               </div>
 
