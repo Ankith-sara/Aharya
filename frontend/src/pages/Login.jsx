@@ -176,7 +176,7 @@ const Login = () => {
     <div className="min-h-screen text-black">
       <div className="flex flex-col lg:flex-row">
         {/* Left Panel - Image with overlay (same as about page styling) */}
-        <div className="w-full lg:w-1/2 relative min-h-screen">
+        <div className="hidden lg:block lg:w-1/2 relative min-h-screen">
           <div className="absolute inset-0 bg-black/30 z-10"></div>
           <div className="h-full flex items-center justify-center overflow-hidden">
             <img 
