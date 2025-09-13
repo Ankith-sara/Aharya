@@ -21,31 +21,33 @@ const CompanyProducts = () => {
 
   useEffect(() => {
     if (products && products.length > 0) {
-      // Get all unique companies
-      const companies = [...new Set(products.map(product => 
+      const companies = [...new Set(products.map(product =>
         product.company ? product.company.toLowerCase() : 'aharyas'
       ))];
 
-      // Create data for each company
-      const companiesWithProducts = companies.map(company => {
-        const companyProducts = products
-          .filter(product => 
+      const companiesWithProducts = companies
+        .filter(company => company !== 'independent' && company !== 'aharyas')
+        .map(company => {
+          const companyProducts = products.filter(product =>
             (product.company ? product.company.toLowerCase() : 'aharyas') === company
           );
 
-        return {
-          name: company,
-          displayName: company.charAt(0).toUpperCase() + company.slice(1),
-          products: companyProducts,
-          logo: companyLogos[company] || 'https://via.placeholder.com/200x100/666666/FFFFFF?text=' + company.toUpperCase()
-        };
-      }).filter(company => company.products.length > 0);
+          return {
+            name: company,
+            displayName: company.charAt(0).toUpperCase() + company.slice(1),
+            products: companyProducts,
+            logo: companyLogos[company] || 'https://via.placeholder.com/200x100/666666/FFFFFF?text=' + company.toUpperCase()
+          };
+        })
+        .filter(company => company.products.length > 0);
+
 
       setCompaniesData(companiesWithProducts);
     } else {
       setCompaniesData([]);
     }
   }, [products]);
+
 
   const handleCompanyClick = (company) => {
     setSelectedCompany(company);
@@ -108,7 +110,7 @@ const CompanyProducts = () => {
           </div>
 
           {/* Products Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
             {selectedCompany.products.map((item, index) => (
               <div key={index} className="group">
                 <ProductItem
@@ -125,14 +127,13 @@ const CompanyProducts = () => {
     );
   }
 
-  // Default view: Show only companies
   return (
     <section className="bg-white py-16 px-4 sm:px-6 md:px-10 lg:px-20">
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col items-center mb-10 text-center gap-2">
           <div className="flex items-center justify-center gap-4">
             <div>
-              <Title text1="OUR" text2="BRANDS" />
+              <Title text1="OUR" text2="TRUSTED PARTNERS" />
             </div>
           </div>
           <p className="text-gray-600 max-w-2xl mx-auto">
@@ -141,7 +142,7 @@ const CompanyProducts = () => {
         </div>
 
         {/* Companies Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           {companiesData.map((company, index) => (
             <div
               key={index}
@@ -149,7 +150,7 @@ const CompanyProducts = () => {
               className="group cursor-pointer bg-white border border-gray-200 rounded-lg p-6 hover:shadow-lg transition-all duration-300 hover:border-gray-300"
             >
               {/* Company Logo */}
-              <div className="flex items-center justify-center mb-4 h-20">
+              <div className="flex items-center justify-center mb-4 h-56">
                 <img
                   src={company.logo}
                   alt={`${company.displayName} Logo`}
@@ -159,7 +160,7 @@ const CompanyProducts = () => {
                   }}
                 />
               </div>
-              
+
               {/* Company Info */}
               <div className="text-center">
                 <h3 className="text-lg font-medium text-black mb-2 group-hover:text-gray-700 transition-colors">
@@ -168,7 +169,7 @@ const CompanyProducts = () => {
                 <p className="text-sm text-gray-500 mb-4">
                   {company.products.length} product{company.products.length !== 1 ? 's' : ''} available
                 </p>
-                
+
                 {/* View Products Button */}
                 <div className="flex items-center justify-center gap-2 text-xs font-medium text-gray-600 group-hover:text-black transition-colors">
                   <span>View Products</span>
