@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { ShopContext } from '../context/ShopContext';
 import Title from '../components/Title';
 import CartTotal from '../components/CartTotal';
-import { Minus, Plus, Trash2, ShoppingBag, ArrowRight, Hash, Package } from 'lucide-react';
+import { Trash2, ShoppingBag, Package } from 'lucide-react';
 import RecentlyViewed from '../components/RecentlyViewed';
 import { Link } from 'react-router-dom';
 
@@ -177,29 +177,16 @@ const Cart = () => {
                                     QUANTITY:
                                   </span>
                                   <div className="flex items-center border border-gray-300 bg-white">
-                                    <button
-                                      onClick={() => handleQuantityChange(item._id, item.size, item.quantity - 1)}
-                                      disabled={item.quantity <= 1}
-                                      className="p-2 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                                    >
-                                      <Minus size={16} />
-                                    </button>
                                     <input
                                       onChange={(e) => {
                                         const value = parseInt(e.target.value) || 1;
                                         handleQuantityChange(item._id, item.size, value);
                                       }}
-                                      className="w-16 px-3 py-2 text-center border-x border-gray-300 focus:outline-none focus:bg-gray-50 font-medium"
+                                      className="w-20 px-3 py-2 text-center border-gray-300 focus:outline-none focus:bg-gray-50 font-medium"
                                       type="number"
                                       min={1}
                                       value={item.quantity}
                                     />
-                                    <button
-                                      onClick={() => handleQuantityChange(item._id, item.size, item.quantity + 1)}
-                                      className="p-2 hover:bg-gray-50 transition-colors"
-                                    >
-                                      <Plus size={16} />
-                                    </button>
                                   </div>
                                 </div>
                               </div>
