@@ -13,8 +13,8 @@ const Collections = () => {
 
   const categories = [
     {
-      name: 'Kurtis',
-      imageUrl: 'https://res.cloudinary.com/dfzhqsfp7/image/upload/v1757399772/afrrbr7bqvtxiw1m9azw.webp',
+      name: 'Dresses',
+      imageUrl: 'https://res.cloudinary.com/dfzhqsfp7/image/upload/v1757401935/yyawql2qlmnnhgnde8ld.webp',
       description: 'Elegant, handcrafted designs'
     },
     {

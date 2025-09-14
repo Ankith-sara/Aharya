@@ -158,7 +158,8 @@ const Orders = () => {
       <section className="py-12 px-4 sm:px-8 md:px-10 lg:px-20">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-8">
-            <div className="text-3xl mb-3">
+            <div className="text-3xl mb-3
+            ">
               <Title text1="ORDER" text2="HISTORY" />
             </div>
             {orderData.length > 0 && (
@@ -175,8 +176,6 @@ const Orders = () => {
                 <div className="flex flex-wrap gap-2">
                   {[
                     { key: 'all', label: 'All Orders' },
-                    { key: 'processing', label: 'Processing' },
-                    { key: 'shipped', label: 'Shipped' },
                     { key: 'delivered', label: 'Delivered' }
                   ].map(({ key, label }) => (
                     <button
@@ -352,7 +351,7 @@ const Orders = () => {
                   Discover new arrivals and trending products in our carefully curated collection
                 </p>
                 <button
-                  onClick={() => navigate('/collection')}
+                  onClick={() => navigate('/shop/collection')}
                   className="inline-flex items-center gap-2 px-8 py-3 bg-black text-white font-light tracking-wide hover:bg-gray-800 transition-all duration-300"
                 >
                   <span>CONTINUE SHOPPING</span>

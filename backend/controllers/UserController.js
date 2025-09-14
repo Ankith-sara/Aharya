@@ -8,6 +8,7 @@ import sendWelcomeMail from '../middlewares/sendWelcomeMail.js';
 
 const generateOtp = () => Math.floor(100000 + Math.random() * 900000).toString();
 
+// ---------------- OTP SEND ----------------
 export const sendOtp = async (req, res) => {
     const { email } = req.body;
     if (!email) return res.status(400).json({ success: false, message: 'Email is required' });
@@ -15,7 +16,6 @@ export const sendOtp = async (req, res) => {
     try {
         let user = await userModel.findOne({ email });
         if (!user) {
-            // Optionally, auto-register user here if you want OTP login for new users
             user = new userModel({ email, name: 'User', password: 'dummy-password' });
             await user.save();
         }
@@ -35,8 +35,9 @@ export const sendOtp = async (req, res) => {
     }
 };
 
+// ---------------- OTP VERIFY ----------------
 export const verifyOtp = async (req, res) => {
-    const { email, otp, name, password } = req.body;
+    const { email, otp, name, password, role } = req.body;
     if (!email || !otp) {
         return res.status(400).json({ success: false, message: 'Email and OTP required' });
     }
@@ -48,13 +49,8 @@ export const verifyOtp = async (req, res) => {
             return res.status(400).json({ success: false, message: 'OTP not requested or expired' });
         }
 
-        if (user.otp !== otp) {
-            return res.status(401).json({ success: false, message: 'Invalid OTP' });
-        }
-
-        if (user.otpExpiry < new Date()) {
-            return res.status(401).json({ success: false, message: 'OTP expired' });
-        }
+        if (user.otp !== otp) return res.status(401).json({ success: false, message: 'Invalid OTP' });
+        if (user.otpExpiry < new Date()) return res.status(401).json({ success: false, message: 'OTP expired' });
 
         if (name) user.name = name;
         if (password) {
@@ -64,11 +60,10 @@ export const verifyOtp = async (req, res) => {
             const salt = await bcrypt.genSalt(10);
             user.password = await bcrypt.hash(password, salt);
         }
-        if (req.body.role) {
-            user.role = req.body.role;
-            if (req.body.role === 'admin') {
-                user.isAdmin = true;
-            }
+
+        if (role) {
+            user.role = role;
+            if (role === 'admin') user.isAdmin = true;
         }
 
         user.otp = undefined;
@@ -77,73 +72,64 @@ export const verifyOtp = async (req, res) => {
         await user.save();
         await sendWelcomeMail(email, user.name);
 
-        if (!user.role) {
-            user.role = 'user';
-        }
-
-        if (req.body.role && req.body.role === 'admin') {
-            user.role = 'admin';
-        }
-
-        const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '7d' });
+        const token = jwt.sign(
+            { id: user._id, role: user.role || 'user' },
+            process.env.JWT_SECRET,
+            { expiresIn: '7d' }
+        );
 
         res.json({ success: true, token });
-
     } catch (err) {
         res.status(500).json({ success: false, message: err.message });
     }
 };
 
-const createToken = (id, role = 'user') => {
-    return jwt.sign({ id, role }, process.env.JWT_SECRET, { expiresIn: "7d" });
-};
+// ---------------- UTILS ----------------
+const createToken = (id, role = 'user') =>
+    jwt.sign({ id, role }, process.env.JWT_SECRET, { expiresIn: '7d' });
 
-const loginUser = async (req, res) => {
+// ---------------- LOGIN / REGISTER ----------------
+export const loginUser = async (req, res) => {
     const { email, password } = req.body;
     try {
         const user = await userModel.findOne({ email });
         if (!user) return res.status(404).json({ success: false, message: "User not found" });
+
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) return res.status(401).json({ success: false, message: "Invalid credentials" });
-        const token = createToken(user._id);
+
+        const token = createToken(user._id, user.role);
         res.status(200).json({ success: true, token, name: user.name });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
 };
 
-const registerUser = async (req, res) => {
+export const registerUser = async (req, res) => {
     const { name, email, password } = req.body;
     try {
         const exists = await userModel.findOne({ email });
-        if (exists) {
-            return res.status(400).json({ success: false, message: "User already exists" });
-        }
-        if (!validator.isEmail(email)) {
-            return res.status(400).json({ success: false, message: "Invalid email format" });
-        }
-        if (password.length < 8) {
-            return res.status(400).json({ success: false, message: "Password must be at least 8 characters long" });
-        }
+        if (exists) return res.status(400).json({ success: false, message: "User already exists" });
+
+        if (!validator.isEmail(email)) return res.status(400).json({ success: false, message: "Invalid email format" });
+        if (password.length < 8) return res.status(400).json({ success: false, message: "Password must be at least 8 characters long" });
+
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
+
         const newUser = new userModel({ name, email, password: hashedPassword });
         const user = await newUser.save();
 
         const token = createToken(user._id);
 
-        res.status(201).json({
-            success: true,
-            token,
-            message: `Welcome, ${user.name}! Registration successful.`,
-        });
+        res.status(201).json({ success: true, token, message: `Welcome, ${user.name}! Registration successful.` });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
 };
 
-// Admin login using stored admin user
-const adminLogin = async (req, res) => {
+// ---------------- ADMIN ----------------
+export const adminLogin = async (req, res) => {
     const { email, password } = req.body;
     try {
         const user = await userModel.findOne({ email, role: 'admin' });
@@ -159,57 +145,46 @@ const adminLogin = async (req, res) => {
     }
 };
 
-const registerAdmin = async (req, res) => {
+export const registerAdmin = async (req, res) => {
     const { name, email, password } = req.body;
     try {
         const exists = await userModel.findOne({ email });
-        if (exists) {
-            return res.status(400).json({ success: false, message: 'Admin already exists' });
-        }
+        if (exists) return res.status(400).json({ success: false, message: 'Admin already exists' });
 
-        if (!validator.isEmail(email)) {
-            return res.status(400).json({ success: false, message: 'Invalid email format' });
-        }
-
-        if (password.length < 8) {
-            return res.status(400).json({ success: false, message: 'Password must be at least 8 characters' });
-        }
+        if (!validator.isEmail(email)) return res.status(400).json({ success: false, message: 'Invalid email format' });
+        if (password.length < 8) return res.status(400).json({ success: false, message: 'Password must be at least 8 characters' });
 
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
+
         const newAdmin = new userModel({ name, email, password: hashedPassword, role: 'admin', isAdmin: true });
         const user = await newAdmin.save();
 
         const token = createToken(user._id, 'admin');
 
-        res.status(201).json({
-            success: true,
-            token,
-            message: `Welcome Admin ${user.name}, registration successful.`,
-        });
+        res.status(201).json({ success: true, token, message: `Welcome Admin ${user.name}, registration successful.` });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
 };
 
-const getUserDetails = async (req, res) => {
+// ---------------- USER DETAILS ----------------
+export const getUserDetails = async (req, res) => {
     try {
         const { id } = req.params;
-        if (!id) {
-            return res.status(400).json({ success: false, message: "User ID is required" });
-        }
+        if (!id) return res.status(400).json({ success: false, message: "User ID is required" });
+
         const user = await userModel.findById(id).select('-password');
-        if (!user) {
-            return res.status(404).json({ success: false, message: "User not found" });
-        }
+        if (!user) return res.status(404).json({ success: false, message: "User not found" });
+
         res.json({ success: true, user });
     } catch (error) {
         res.status(500).json({ success: false, message: "Internal server error" });
     }
 };
 
-// Update profile
-const updateUserProfile = async (req, res) => {
+// ---------------- PROFILE ----------------
+export const updateUserProfile = async (req, res) => {
     try {
         const { id } = req.params;
         const { name, email, phone } = req.body;
@@ -231,30 +206,25 @@ const updateUserProfile = async (req, res) => {
             runValidators: true,
         }).select('-password');
 
-        if (!user) {
-            return res.status(404).json({ success: false, message: "User not found" });
-        }
+        if (!user) return res.status(404).json({ success: false, message: "User not found" });
 
         res.json({ success: true, user });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
-        console.error("Error updating profile:", error);
     }
 };
 
-// Add or update address
-const addOrUpdateAddress = async (req, res) => {
+// ---------------- ADDRESS ----------------
+export const addOrUpdateAddress = async (req, res) => {
     try {
         const { id } = req.params;
-        const { addressObj, index } = req.body; // index: if updating, else -1 for add
+        const { addressObj, index } = req.body;
         const user = await userModel.findById(id);
         if (!user) return res.status(404).json({ success: false, message: "User not found" });
 
         if (typeof index === "number" && index >= 0) {
-            // Update existing address
             user.addresses[index] = addressObj;
         } else {
-            // Add new address
             user.addresses.push(addressObj);
         }
         await user.save();
@@ -264,8 +234,7 @@ const addOrUpdateAddress = async (req, res) => {
     }
 };
 
-// Delete address
-const deleteAddress = async (req, res) => {
+export const deleteAddress = async (req, res) => {
     try {
         const { id } = req.params;
         const { index } = req.body;
@@ -280,8 +249,8 @@ const deleteAddress = async (req, res) => {
     }
 };
 
-// Change password
-const changePassword = async (req, res) => {
+// ---------------- PASSWORD ----------------
+export const changePassword = async (req, res) => {
     try {
         const { id } = req.params;
         const { password } = req.body;
@@ -295,13 +264,10 @@ const changePassword = async (req, res) => {
             { password: hashedPassword },
             { new: true }
         );
-        if (!user) {
-            return res.status(404).json({ success: false, message: "User not found" });
-        }
+        if (!user) return res.status(404).json({ success: false, message: "User not found" });
+
         res.json({ success: true, message: "Password updated" });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
 };
-
-export { loginUser, registerUser, adminLogin, registerAdmin, getUserDetails, updateUserProfile, addOrUpdateAddress, deleteAddress, changePassword };

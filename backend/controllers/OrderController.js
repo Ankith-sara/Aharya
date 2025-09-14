@@ -14,8 +14,8 @@ const deliveryCharge = 50
 // gateway initialize
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
 const razorpayInstance = new Razorpay({
-  key_id: 'rzp_test_uM02M9vap07NI8',
-  key_secret: 'NoJ69YK2pyp4aEDnMwmOaqFr',
+  key_id: 'rzp_test_RHQLdXqxNVuLnL',
+  key_secret: 'R1Ug1eYXNjAXq3PSNS4Gj66v',
 });
 
 // Placing orders using COD Method

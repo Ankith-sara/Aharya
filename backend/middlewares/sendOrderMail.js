@@ -55,7 +55,7 @@ const getPaymentBadge = (paymentMethod, isPaid) => {
     if (paymentMethod === 'COD') {
         return '<span style="background: #ff9800; color: white; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: bold;">Cash on Delivery</span>';
     }
-    return isPaid ? 
+    return isPaid ?
         '<span style="background: #4CAF50; color: white; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: bold;">Paid Online</span>' :
         '<span style="background: #f44336; color: white; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: bold;">Payment Pending</span>';
 };
@@ -67,7 +67,7 @@ const sendOrderEmails = async (orderData, user) => {
     // Find product owner (admin) for the first product to determine vendor
     let owner = null;
     try {
-        const product = await productModel.findById(items[0].productId).populate("adminId"); 
+        const product = await productModel.findById(items[0].productId).populate("adminId");
         if (product && product.adminId) {
             owner = product.adminId;
         } else {
@@ -81,7 +81,7 @@ const sendOrderEmails = async (orderData, user) => {
 
     // === CUSTOMER EMAIL ===
     const customerSubject = `🎉 Order Confirmed #${orderId} - Thank you for shopping with Aharyas!`;
-    
+
     const customerHtml = `
         <!DOCTYPE html>
         <html>
@@ -166,10 +166,10 @@ const sendOrderEmails = async (orderData, user) => {
                     <div style="background: #e8f5e8; border-radius: 8px; padding: 20px; text-align: center;">
                         <h3 style="margin: 0 0 10px 0; color: #2e7d32; font-size: 18px;">What's Next? 🚀</h3>
                         <p style="margin: 0; color: #388e3c; line-height: 1.6;">
-                            ${paymentMethod === 'COD' ? 
-                                'Your order will be processed and shipped soon. Please keep the exact amount ready for cash payment.' :
-                                'Your payment has been received. We\'ll process your order and send tracking details soon.'
-                            }
+                            ${paymentMethod === 'COD' ?
+            'Your order will be processed and shipped soon. Please keep the exact amount ready for cash payment.' :
+            'Your payment has been received. We\'ll process your order and send tracking details soon.'
+        }
                         </p>
                     </div>
                 </div>
@@ -188,7 +188,7 @@ const sendOrderEmails = async (orderData, user) => {
 
     // === ADMIN/VENDOR EMAIL ===
     const adminSubject = `🔔 New Order Alert #${orderId} - Aharyas Store`;
-    
+
     const adminHtml = `
         <!DOCTYPE html>
         <html>
@@ -315,17 +315,6 @@ const sendOrderEmails = async (orderData, user) => {
         sendOrderMail(user.email, customerSubject, '', customerHtml),
         sendOrderMail(owner.email, adminSubject, '', adminHtml)
     ]);
-
-    results.forEach((result, index) => {
-        const recipient = index === 0 ? 'customer' : 'admin';
-        if (result.status === 'fulfilled' && result.value) {
-            console.log(`✅ ${recipient} email sent successfully`);
-        } else {
-            console.error(`❌ Failed to send ${recipient} email:`, result.reason);
-        }
-    });
-
-    return results;
 };
 
 export { sendOrderMail, sendOrderEmails };

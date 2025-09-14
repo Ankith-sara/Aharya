@@ -34,6 +34,7 @@ const Login = ({ setToken }) => {
   };
 
   const handleSendOtp = async () => {
+    e.preventDefault();
     if (!email) return toast.error('Please enter a valid email');
     if (!name) return toast.error('Please enter your full name');
     if (!password) return toast.error('Please enter a password');
@@ -131,7 +132,7 @@ const Login = ({ setToken }) => {
         {/* Form Card */}
         <div className="bg-white rounded-b-xl shadow-sm border-x border-b border-gray-200 p-8">
           {!otpSent ? (
-            <form onSubmit={isRegistering ? handleSendOtp : handleLogin} className="space-y-6">
+            <form onSubmit={isRegistering ? (e) => handleSendOtp(e) : handleLogin} className="space-y-6">
               {/* Name Field (Registration only) */}
               {isRegistering && (
                 <div>
