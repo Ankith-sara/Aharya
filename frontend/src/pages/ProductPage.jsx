@@ -3,23 +3,8 @@ import { useLocation } from 'react-router-dom';
 import { ShopContext } from '../context/ShopContext';
 import Title from '../components/Title';
 import ProductItem from '../components/ProductItem';
-import { 
-  Filter, 
-  ShoppingBag, 
-  X, 
-  ChevronDown, 
-  GridIcon, 
-  ListIcon, 
-  Check,
-  Heart,
-  SlidersHorizontal,
-  Eye,
-  TrendingUp,
-  Star,
-  ChevronUp,
-  Palette,
-  Ruler,
-  Tag
+import {
+  ShoppingBag, X, ChevronDown, GridIcon, ListIcon, Check, Heart, SlidersHorizontal, TrendingUp, Star, ChevronUp, Tag
 } from 'lucide-react';
 import RecentlyViewed from '../components/RecentlyViewed';
 
@@ -27,11 +12,11 @@ const ProductPage = () => {
   const location = useLocation();
   const { category } = location.state || {};
 
-  const { 
+  const {
     products = [],
-    selectedSubCategory, 
-    setSelectedSubCategory, 
-    navigate, 
+    selectedSubCategory,
+    setSelectedSubCategory,
+    navigate,
     currency,
     addToWishlist,
     removeFromWishlist,
@@ -133,7 +118,7 @@ const ProductPage = () => {
     setFilteredProducts(updatedProducts);
     setTimeout(() => setIsLoading(false), 300);
   }, [
-    products, selectedSubCategory, category, sortOption, 
+    products, selectedSubCategory, category, sortOption,
     priceRange, showOnSale, showNewArrivals,
   ]);
 
@@ -184,8 +169,8 @@ const ProductPage = () => {
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-medium tracking-wide">FILTERS</h3>
           {activeFiltersCount > 0 && (
-            <button 
-              onClick={clearFilters} 
+            <button
+              onClick={clearFilters}
               className="text-xs uppercase tracking-wider text-gray-500 hover:text-black transition-colors font-light"
             >
               Clear All ({activeFiltersCount})
@@ -269,11 +254,10 @@ const ProductPage = () => {
                   onChange={(e) => setShowOnSale(e.target.checked)}
                   className="sr-only"
                 />
-                <div className={`w-4 h-4 border transition-all duration-300 ${
-                  showOnSale 
-                    ? 'bg-black border-black' 
+                <div className={`w-4 h-4 border transition-all duration-300 ${showOnSale
+                    ? 'bg-black border-black'
                     : 'border-gray-300 group-hover:border-black'
-                }`}>
+                  }`}>
                   {showOnSale && (
                     <Check size={12} className="text-white absolute top-0.5 left-0.5" />
                   )}
@@ -292,11 +276,10 @@ const ProductPage = () => {
                   onChange={(e) => setShowNewArrivals(e.target.checked)}
                   className="sr-only"
                 />
-                <div className={`w-4 h-4 border transition-all duration-300 ${
-                  showNewArrivals 
-                    ? 'bg-black border-black' 
+                <div className={`w-4 h-4 border transition-all duration-300 ${showNewArrivals
+                    ? 'bg-black border-black'
                     : 'border-gray-300 group-hover:border-black'
-                }`}>
+                  }`}>
                   {showNewArrivals && (
                     <Check size={12} className="text-white absolute top-0.5 left-0.5" />
                   )}
@@ -323,7 +306,7 @@ const ProductPage = () => {
             </div>
             {filteredProducts.length > 0 && (
               <p className="text-gray-500 font-light">
-                Discover {filteredProducts.length} carefully curated piece{filteredProducts.length !== 1 ? 's' : ''} 
+                Discover {filteredProducts.length} carefully curated piece{filteredProducts.length !== 1 ? 's' : ''}
                 {selectedSubCategory && ` in ${selectedSubCategory.toLowerCase()}`}
               </p>
             )}
@@ -334,20 +317,18 @@ const ProductPage = () => {
             <div className="flex items-center gap-4">
               {/* View Mode Toggle */}
               <div className="flex items-center border border-gray-300 bg-white overflow-hidden">
-                <button 
-                  onClick={() => setViewMode('grid')} 
-                  className={`p-3 transition-all duration-300 ${
-                    viewMode === 'grid' ? 'bg-black text-white' : 'bg-white text-gray-600 hover:text-black'
-                  }`}
+                <button
+                  onClick={() => setViewMode('grid')}
+                  className={`p-3 transition-all duration-300 ${viewMode === 'grid' ? 'bg-black text-white' : 'bg-white text-gray-600 hover:text-black'
+                    }`}
                   aria-label="Grid view"
                 >
                   <GridIcon size={16} />
                 </button>
-                <button 
-                  onClick={() => setViewMode('list')} 
-                  className={`p-3 transition-all duration-300 ${
-                    viewMode === 'list' ? 'bg-black text-white' : 'bg-white text-gray-600 hover:text-black'
-                  }`}
+                <button
+                  onClick={() => setViewMode('list')}
+                  className={`p-3 transition-all duration-300 ${viewMode === 'list' ? 'bg-black text-white' : 'bg-white text-gray-600 hover:text-black'
+                    }`}
                   aria-label="List view"
                 >
                   <ListIcon size={16} />
@@ -356,8 +337,8 @@ const ProductPage = () => {
 
               {/* Mobile Filter Toggle */}
               <div className="lg:hidden">
-                <button 
-                  onClick={() => setShowFilters(!showFilters)} 
+                <button
+                  onClick={() => setShowFilters(!showFilters)}
                   className="flex items-center gap-2 px-4 py-3 border border-gray-300 bg-white hover:border-black transition-all duration-300 relative"
                 >
                   <SlidersHorizontal size={16} />
@@ -375,8 +356,8 @@ const ProductPage = () => {
             <div className="flex items-center gap-4">
               <span className="text-sm font-light text-gray-500 tracking-wide">SORT BY:</span>
               <div className="relative">
-                <select 
-                  value={sortOption} 
+                <select
+                  value={sortOption}
                   onChange={(e) => setSortOption(e.target.value)}
                   className="appearance-none border border-gray-300 bg-white px-4 py-3 pr-10 font-light tracking-wide focus:border-black focus:outline-none transition-colors"
                 >
@@ -409,14 +390,14 @@ const ProductPage = () => {
               <FilterPanel />
             </div>
             <div className="p-6 border-t border-gray-200 flex gap-3">
-              <button 
-                onClick={clearFilters} 
+              <button
+                onClick={clearFilters}
                 className="flex-1 py-3 border border-gray-300 font-light tracking-wide hover:border-black transition-all duration-300"
               >
                 CLEAR ALL
               </button>
-              <button 
-                onClick={() => setShowFilters(false)} 
+              <button
+                onClick={() => setShowFilters(false)}
                 className="flex-1 py-3 bg-black text-white font-light tracking-wide hover:bg-gray-800 transition-all duration-300"
               >
                 APPLY FILTERS
@@ -469,15 +450,15 @@ const ProductPage = () => {
                   ) : (
                     <div className="space-y-6">
                       {filteredProducts.map((product, index) => (
-                        <div 
-                          key={product._id} 
+                        <div
+                          key={product._id}
                           className="flex flex-col md:flex-row gap-6 p-6 bg-white border border-gray-200 hover:shadow-lg transition-all duration-300 group"
                         >
                           <div className="md:w-1/4 aspect-square overflow-hidden">
-                            <img 
-                              src={product.images[0]} 
-                              alt={product.name} 
-                              className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500" 
+                            <img
+                              src={product.images[0]}
+                              alt={product.name}
+                              className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
                             />
                           </div>
                           <div className="flex-1 flex flex-col justify-between">
@@ -501,31 +482,30 @@ const ProductPage = () => {
                                         addToWishlist(product._id);
                                       }
                                     }}
-                                    className={`p-2 border transition-all duration-300 ${
-                                      wishlist.includes(product._id)
+                                    className={`p-2 border transition-all duration-300 ${wishlist.includes(product._id)
                                         ? 'bg-black text-white border-black'
                                         : 'bg-white text-black border-gray-300 hover:border-black'
-                                    }`}
+                                      }`}
                                   >
                                     <Heart size={14} className={wishlist.includes(product._id) ? 'fill-current' : ''} />
                                   </button>
                                 </div>
                               </div>
-                              
+
                               <div className="text-sm text-gray-500 mb-3 font-light">
                                 {product.category} • {product.subCategory}
                               </div>
-                              
+
                               {product.description && (
                                 <p className="text-gray-600 font-light leading-relaxed mb-4">
-                                  {product.description.length > 200 
-                                    ? product.description.substring(0, 200) + '...' 
+                                  {product.description.length > 200
+                                    ? product.description.substring(0, 200) + '...'
                                     : product.description
                                   }
                                 </p>
                               )}
                             </div>
-                            
+
                             <div className="flex items-center justify-between pt-4 border-t border-gray-100">
                               <div className="flex items-center gap-3">
                                 <div className="flex items-baseline gap-2">
@@ -544,7 +524,7 @@ const ProductPage = () => {
                                   </span>
                                 )}
                               </div>
-                              
+
                               <div className="flex items-center gap-2">
                                 <button
                                   onClick={() => navigate ? navigate(`/product/${product._id}`) : window.location.href = `/product/${product._id}`}
@@ -577,18 +557,18 @@ const ProductPage = () => {
                   <div className="text-center max-w-md">
                     <h3 className="text-2xl font-medium mb-3 tracking-wide">NO PRODUCTS FOUND</h3>
                     <p className="text-gray-600 font-light leading-relaxed mb-6">
-                      We couldn't find any products matching your current filters. 
+                      We couldn't find any products matching your current filters.
                       Try adjusting your search criteria or browse our full collection.
                     </p>
                     <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                      <button 
-                        onClick={clearFilters} 
+                      <button
+                        onClick={clearFilters}
                         className="px-6 py-3 bg-black text-white font-light tracking-wide hover:bg-gray-800 transition-all duration-300"
                       >
                         CLEAR ALL FILTERS
                       </button>
-                      <button 
-                        onClick={() => navigate ? navigate('/') : window.location.href = '/'} 
+                      <button
+                        onClick={() => navigate ? navigate('/') : window.location.href = '/'}
                         className="px-6 py-3 border border-black bg-white text-black font-light tracking-wide hover:bg-black hover:text-white transition-all duration-300"
                       >
                         BROWSE ALL PRODUCTS

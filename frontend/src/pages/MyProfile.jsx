@@ -3,12 +3,7 @@ import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import {
   ChevronRight, Heart, Clock, User, ShoppingBag, Settings, LogOut, Edit2, Trash2,
-  MapPinHouse,
-  X,
-  Camera,
-  Mail,
-  Calendar,
-  Plus
+  MapPinHouse, X, Camera, Mail, Calendar, Plus, ArrowRight, Package
 } from "lucide-react";
 import Title from "../components/Title";
 import ProductItem from "../components/ProductItem";
@@ -175,329 +170,367 @@ const MyProfile = () => {
 
   if (!userData) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black mx-auto mb-4"></div>
-          <span className="text-gray-600">Loading profile...</span>
-        </div>
+      <div className="min-h-screen bg-white text-black mt-20">
+        <section className="py-12 px-4 sm:px-8 md:px-10 lg:px-20">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-8">
+              <div className="text-3xl mb-6">
+                <Title text1="MY" text2="PROFILE" />
+              </div>
+            </div>
+            <div className="flex items-center justify-center py-20">
+              <div className="text-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black mx-auto mb-4"></div>
+                <span className="text-gray-600 font-light">Loading profile...</span>
+              </div>
+            </div>
+          </div>
+        </section>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 mt-20 px-4 sm:px-6 md:px-10 lg:px-20 py-10">
-      <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-8">
-          <Title text1="MY" text2="PROFILE" />
-        </div>
-
-        <div className="grid xl:grid-cols-[1fr_2fr] gap-8">
-          {/* Profile Card */}
-          <div className="space-y-6">
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-              <div className="bg-black text-white p-6">
-                <div className="flex items-center gap-3">
-                  <User size={24} className="text-gray-300" />
-                  <h2 className="text-xl font-semibold">Profile Information</h2>
-                </div>
-              </div>
-              
-              <div className="p-6">
-                <div className="flex flex-col items-center mb-6">
-                  <div className="relative group">
-                    <div className="w-24 h-24 rounded-full border-4 border-gray-100 overflow-hidden shadow-sm bg-white">
-                      <img
-                        src={userData.image}
-                        alt="Profile"
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <button
-                      className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 bg-black bg-opacity-60 rounded-full transition-all duration-200"
-                      onClick={() => setActiveSection("Edit Profile")}
-                      title="Edit Photo"
-                    >
-                      <Camera className="text-white" size={18} />
-                    </button>
-                  </div>
-                  
-                  <h3 className="text-xl font-semibold text-gray-900 mt-4 mb-2">{userData.name}</h3>
-                  
-                  <div className="flex items-center gap-2 mb-4">
-                    <div className="w-2 h-2 rounded-full bg-green-400"></div>
-                    <span className="text-sm text-gray-600">Active Member</span>
-                  </div>
-                </div>
-
-                <div className="space-y-4 mb-6">
-                  <div className="bg-gray-50 rounded-lg p-4">
-                    <div className="flex items-center gap-2 mb-1">
-                      <Mail size={14} className="text-gray-400" />
-                      <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">Email</span>
-                    </div>
-                    <p className="text-sm text-gray-900">{userData.email}</p>
-                  </div>
-                  
-                  <div className="bg-gray-50 rounded-lg p-4">
-                    <div className="flex items-center gap-2 mb-1">
-                      <Calendar size={14} className="text-gray-400" />
-                      <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">Member Since</span>
-                    </div>
-                    <p className="text-sm text-gray-900">
-                      {new Date(userData.createdAt).toLocaleDateString('en-US', { 
-                        year: 'numeric', 
-                        month: 'long', 
-                        day: 'numeric' 
-                      })}
-                    </p>
-                  </div>
-                </div>
-
-                <button className="w-full py-3 bg-black text-white font-medium rounded-lg hover:bg-gray-800 transition-all duration-200 transform hover:scale-[1.02]" onClick={() => setActiveSection("Edit Profile")}>
-                  EDIT PROFILE
-                </button>
-              </div>
+    <div className="min-h-screen bg-white text-black mt-20">
+      {/* Header Section */}
+      <section className="py-12 px-4 sm:px-8 md:px-10 lg:px-20">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center">
+            <div className="text-3xl mb-3">
+              <Title text1="MY" text2="PROFILE" />
             </div>
-
-            {/* Sign Out Card */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-              <button 
-                className="w-full flex items-center justify-center gap-3 p-6 text-gray-600 hover:text-red-600 hover:bg-red-50 transition-all duration-200"
-                onClick={() => { 
-                  if (window.confirm("Are you sure you want to log out?")) logout(); 
-                }}
-              >
-                <LogOut size={20} />
-                <span className="font-medium">Sign Out</span>
-              </button>
-            </div>
+            <p className="text-gray-500 font-light">
+              Manage your account and personal preferences
+            </p>
           </div>
+        </div>
+      </section>
 
-          {/* Account Management */}
-          <div className="space-y-8">
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-              <div className="bg-black text-white p-6">
-                <div className="flex items-center gap-3">
-                  <Settings size={24} className="text-gray-300" />
-                  <h3 className="text-xl font-semibold">Account Management</h3>
-                </div>
-              </div>
-              
-              <div className="divide-y divide-gray-200">
-                {menuItems.map((item, index) => {
-                  const content = (
-                    <div
-                      key={index}
-                      className="flex items-center justify-between p-6 hover:bg-gray-50 transition-colors duration-200 cursor-pointer"
-                      onClick={() => !item.link && setActiveSection(item.text)}
-                    >
-                      <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 flex items-center justify-center rounded-lg bg-gray-100 text-gray-600">
-                          {item.icon}
-                        </div>
-                        <div>
-                          <p className="font-medium text-gray-900">{item.text}</p>
-                          <p className="text-sm text-gray-500">{item.description}</p>
-                        </div>
-                      </div>
-                      <ChevronRight size={20} className="text-gray-400" />
-                    </div>
-                  );
-                  
-                  return item.link ? (
-                    <Link to={item.link} key={index}>
-                      {content}
-                    </Link>
-                  ) : (
-                    content
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Recently Viewed Section */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-              <div className="bg-black text-white p-6">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <Clock size={24} className="text-gray-300" />
-                    <h3 className="text-xl font-semibold">Recently Viewed</h3>
+      {/* Profile Content */}
+      <section className="px-4 sm:px-8 md:px-10 lg:px-20 pb-20">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid xl:grid-cols-[1fr_2fr] gap-8">
+            {/* Profile Information Card */}
+            <div className="space-y-6">
+              <div className="bg-white border border-gray-200 shadow-sm">
+                <div className="p-6 border-b border-gray-100 bg-gray-50">
+                  <div className="flex items-center gap-2">
+                    <User size={16} className="text-gray-400" />
+                    <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Profile Information
+                    </span>
                   </div>
                 </div>
-              </div>
-              
-              {recentlyViewed.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-16 px-6">
-                  <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
-                    <Clock size={24} className="text-gray-400" />
-                  </div>
-                  <h4 className="text-lg font-medium text-gray-900 mb-2">No Recent Activity</h4>
-                  <p className="text-gray-600 text-center mb-6 max-w-sm">
-                    Start browsing our amazing collection to see your recently viewed items here
-                  </p>
-                  <button 
-                    onClick={() => navigate('/shop/collection')}
-                    className="px-6 py-3 bg-black text-white font-medium rounded-lg hover:bg-gray-800 transition-all duration-200 transform hover:scale-105"
-                  >
-                    DISCOVER PRODUCTS
-                  </button>
-                </div>
-              ) : (
+
                 <div className="p-6">
-                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-                    {recentlyViewed.slice(0, 8).map((item) => (
-                      <ProductItem
-                        key={item._id}
-                        id={item._id}
-                        name={item.name}
-                        price={item.price}
-                        image={item.images}
-                      />
-                    ))}
-                  </div>
-                  {recentlyViewed.length > 8 && (
-                    <div className="text-center mt-6">
-                      <button className="px-6 py-3 border-2 border-gray-300 text-gray-700 font-medium rounded-lg hover:border-black hover:text-black transition-all duration-200">
-                        VIEW MORE
+                  <div className="flex flex-col items-center mb-6">
+                    <div className="relative group">
+                      <div className="w-32 h-32 overflow-hidden">
+                        <img
+                          src={userData.image}
+                          alt="Profile"
+                          className="w-full h-full object-cover rounded-full"
+                        />
+                      </div>
+                      <button
+                        className="absolute inset-0 flex items-center justify-center opacity-0 rounded-full group-hover:opacity-100 bg-black bg-opacity-20 transition-all duration-200"
+                        onClick={() => setActiveSection("Edit Profile")}
+                        title="Edit Photo"
+                      >
+                        <Camera className="text-white" size={16} />
                       </button>
                     </div>
-                  )}
+
+                    <h3 className="text-xl font-medium text-black mt-4 mb-2 tracking-wide">{userData.name}</h3>
+
+                    <div className="flex items-center gap-2 mb-4">
+                      <div className="w-2 h-2 rounded bg-green-500"></div>
+                      <span className="text-sm text-gray-500 font-light uppercase tracking-wider">Active Member</span>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4 mb-6">
+                    <div className="border border-gray-200 p-4">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Mail size={14} className="text-gray-400" />
+                        <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">Email</span>
+                      </div>
+                      <p className="text-sm text-black font-light">{userData.email}</p>
+                    </div>
+
+                    <div className="border border-gray-200 p-4">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Calendar size={14} className="text-gray-400" />
+                        <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">Member Since</span>
+                      </div>
+                      <p className="text-sm text-black font-light">
+                        {new Date(userData.createdAt).toLocaleDateString('en-US', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric'
+                        })}
+                      </p>
+                    </div>
+                  </div>
+
+                  <button 
+                    className="w-full py-3 bg-black text-white font-light tracking-wide hover:bg-gray-800 transition-all duration-300 uppercase"
+                    onClick={() => setActiveSection("Edit Profile")}
+                  >
+                    Edit Profile
+                  </button>
                 </div>
-              )}
+              </div>
+
+              {/* Sign Out Card */}
+              <div className="bg-white border border-gray-200 shadow-sm">
+                <button
+                  className="w-full flex items-center justify-center gap-3 p-6 text-gray-600 hover:text-red-600 hover:bg-red-50 transition-all duration-300 font-light tracking-wide"
+                  onClick={() => {
+                    if (window.confirm("Are you sure you want to log out?")) logout();
+                  }}
+                >
+                  <LogOut size={18} />
+                  <span className="uppercase">Sign Out</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Account Management */}
+            <div className="space-y-8">
+              <div className="bg-white border border-gray-200 shadow-sm">
+                <div className="p-6 border-b border-gray-100 bg-gray-50">
+                  <div className="flex items-center gap-2">
+                    <Settings size={16} className="text-gray-400" />
+                    <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Account Management
+                    </span>
+                  </div>
+                </div>
+
+                <div className="divide-y divide-gray-100">
+                  {menuItems.map((item, index) => {
+                    const content = (
+                      <div
+                        key={index}
+                        className="flex items-center justify-between p-6 hover:bg-gray-50 transition-colors duration-300 cursor-pointer"
+                        onClick={() => !item.link && setActiveSection(item.text)}
+                      >
+                        <div className="flex items-center gap-4">
+                          <div className="w-10 h-10 flex items-center justify-center border border-gray-200 text-gray-600">
+                            {item.icon}
+                          </div>
+                          <div>
+                            <p className="font-medium text-black tracking-wide">{item.text}</p>
+                            <p className="text-sm text-gray-500 font-light">{item.description}</p>
+                          </div>
+                        </div>
+                        <ChevronRight size={18} className="text-gray-400" />
+                      </div>
+                    );
+
+                    return item.link ? (
+                      <Link to={item.link} key={index}>
+                        {content}
+                      </Link>
+                    ) : (
+                      content
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Recently Viewed Section */}
+              <div className="bg-white border border-gray-200 shadow-sm">
+                <div className="p-6 border-b border-gray-100 bg-gray-50">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Clock size={16} className="text-gray-400" />
+                      <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Recently Viewed
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {recentlyViewed.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center py-16 px-6">
+                    <div className="w-16 h-16 border-2 border-gray-300 flex items-center justify-center mb-6">
+                      <Clock size={24} className="text-gray-400" />
+                    </div>
+                    <div className="text-center max-w-md mb-8">
+                      <h3 className="text-xl font-medium mb-3 tracking-wide uppercase">No Recent Activity</h3>
+                      <p className="text-gray-600 font-light leading-relaxed">
+                        Start browsing our amazing collection to see your recently viewed items here
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => navigate('/collection')}
+                      className="inline-flex items-center gap-2 px-6 py-3 bg-black text-white font-light tracking-wide hover:bg-gray-800 transition-all duration-300"
+                    >
+                      <span>DISCOVER PRODUCTS</span>
+                      <ArrowRight size={16} />
+                    </button>
+                  </div>
+                ) : (
+                  <div className="p-6">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+                      {recentlyViewed.slice(0, 8).map((item) => (
+                        <ProductItem
+                          key={item._id}
+                          id={item._id}
+                          name={item.name}
+                          price={item.price}
+                          image={item.images}
+                        />
+                      ))}
+                    </div>
+                    {recentlyViewed.length > 8 && (
+                      <div className="text-center mt-6">
+                        <button className="px-6 py-3 border border-gray-300 text-black font-light tracking-wide hover:border-black hover:bg-gray-50 transition-all duration-300 uppercase">
+                          View More
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
+      </section>
 
-        {/* Edit Profile Modal */}
-        {activeSection === "Edit Profile" && (
-          <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-xl w-full max-w-md shadow-xl overflow-hidden">
-              {/* Header */}
-              <div className="bg-black text-white p-6 relative">
-                <button 
-                  onClick={() => setActiveSection(null)} 
-                  className="absolute right-4 top-4 p-2 hover:bg-gray-800 rounded-full transition-colors"
-                >
-                  <X size={20} />
-                </button>
-                <div className="flex items-center gap-3">
-                  <User size={24} />
-                  <div>
-                    <h2 className="text-xl font-bold">Edit Profile</h2>
-                    <p className="text-gray-300 text-sm">Update your personal information</p>
-                  </div>
+      {/* Edit Profile Modal */}
+      {activeSection === "Edit Profile" && (
+        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
+          <div className="bg-white w-full max-w-md shadow-xl overflow-hidden">
+            {/* Header */}
+            <div className="p-6 border-b border-gray-100 bg-gray-50 relative">
+              <button
+                onClick={() => setActiveSection(null)}
+                className="absolute right-4 top-4 p-2 hover:bg-gray-200 transition-colors"
+              >
+                <X size={18} />
+              </button>
+              <div className="flex items-center gap-2">
+                <User size={16} className="text-gray-400" />
+                <div>
+                  <h2 className="text-lg font-medium tracking-wide uppercase">Edit Profile</h2>
+                  <p className="text-gray-500 text-sm font-light">Update your personal information</p>
                 </div>
               </div>
-              
-              <form className="p-6 space-y-6" onSubmit={handleEditProfileSubmit}>
-                {/* Profile Image */}
-                <div className="flex flex-col items-center">
-                  <div className="relative">
-                    <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center border-4 border-gray-200 overflow-hidden">
-                      {editProfile.image ? (
-                        <img src={editProfile.image} alt="Profile" className="w-full h-full object-cover" />
-                      ) : (
-                        <User size={28} className="text-gray-400" />
-                      )}
-                    </div>
-                    <label className="absolute -bottom-2 -right-2 bg-black text-white p-2 rounded-full cursor-pointer hover:bg-gray-800 transition-colors shadow-lg">
-                      <Camera size={16} />
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleImageChange}
-                        className="hidden"
-                      />
-                    </label>
-                  </div>
-                  <p className="text-xs text-gray-500 mt-2">Click the camera icon to change photo</p>
-                </div>
-
-                {/* Form Fields */}
-                <div className="space-y-4">
-                  <div>
-                    <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
-                      <User size={14} /> Full Name
-                    </label>
-                    <input
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
-                      value={editProfile.name}
-                      onChange={e => setEditProfile({ ...editProfile, name: e.target.value })}
-                      placeholder="Enter your name"
-                      required
-                    />
-                  </div>
-                  
-                  <div>
-                    <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
-                      <Mail size={14} /> Email Address
-                    </label>
-                    <input
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
-                      value={editProfile.email}
-                      onChange={e => setEditProfile({ ...editProfile, email: e.target.value })}
-                      placeholder="Enter your email"
-                      required
-                    />
-                  </div>
-                </div>
-
-                {/* Action Buttons */}
-                <div className="flex gap-3 pt-2">
-                  <button 
-                    type="submit" 
-                    className="flex-1 bg-black text-white px-6 py-3 rounded-lg hover:bg-gray-800 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 font-medium" 
-                    disabled={loading}
-                  >
-                    {loading ? "Saving..." : "Save Changes"}
-                  </button>
-                  <button 
-                    type="button" 
-                    className="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-lg hover:border-black hover:text-black transition-all duration-200 font-medium" 
-                    onClick={() => setActiveSection(null)}
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </form>
             </div>
-          </div>
-        )}
 
-        {/* Address Management Modal */}
-        {activeSection === "Delivery Address" && (
-          <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-xl w-full max-w-2xl shadow-xl overflow-hidden max-h-[90vh] overflow-y-auto">
-              <div className="bg-black text-white p-6">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <MapPinHouse size={24} />
-                    <div>
-                      <h2 className="text-xl font-bold">Delivery Addresses</h2>
-                      <p className="text-gray-300 text-sm">Manage your delivery locations</p>
-                    </div>
+            <form className="p-6 space-y-6" onSubmit={handleEditProfileSubmit}>
+              {/* Profile Image */}
+              <div className="flex flex-col items-center">
+                <div className="relative">
+                  <div className="w-24 h-24 bg-gray-100 border-2 border-gray-200 overflow-hidden flex items-center justify-center">
+                    {editProfile.image ? (
+                      <img src={editProfile.image} alt="Profile" className="w-full h-full object-cover" />
+                    ) : (
+                      <User size={28} className="text-gray-400" />
+                    )}
                   </div>
-                  <button
-                    onClick={() => setAddressModal({ open: true, address: {}, index: -1 })}
-                    className="flex items-center gap-2 bg-white text-black px-4 py-2 rounded-lg font-medium hover:bg-gray-100 transition-colors"
-                  >
-                    <Plus size={16} />
-                    Add New
-                  </button>
+                  <label className="absolute -bottom-2 -right-2 bg-black text-white p-2 cursor-pointer hover:bg-gray-800 transition-colors shadow-sm">
+                    <Camera size={14} />
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageChange}
+                      className="hidden"
+                    />
+                  </label>
+                </div>
+                <p className="text-xs text-gray-500 mt-2 font-light">Click the camera icon to change photo</p>
+              </div>
+
+              {/* Form Fields */}
+              <div className="space-y-4">
+                <div>
+                  <label className="flex items-center gap-2 text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">
+                    <User size={12} /> Full Name
+                  </label>
+                  <input
+                    className="w-full px-4 py-3 border border-gray-300 bg-white focus:outline-none focus:border-black transition-colors font-light"
+                    value={editProfile.name}
+                    onChange={e => setEditProfile({ ...editProfile, name: e.target.value })}
+                    placeholder="Enter your name"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="flex items-center gap-2 text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">
+                    <Mail size={12} /> Email Address
+                  </label>
+                  <input
+                    className="w-full px-4 py-3 border border-gray-300 bg-white focus:outline-none focus:border-black transition-colors font-light"
+                    value={editProfile.email}
+                    onChange={e => setEditProfile({ ...editProfile, email: e.target.value })}
+                    placeholder="Enter your email"
+                    required
+                  />
                 </div>
               </div>
-              
+
+              {/* Action Buttons */}
+              <div className="flex gap-3 pt-2">
+                <button
+                  type="submit"
+                  className="flex-1 bg-black text-white px-6 py-3 hover:bg-gray-800 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 font-light tracking-wide uppercase"
+                  disabled={loading}
+                >
+                  {loading ? "Saving..." : "Save Changes"}
+                </button>
+                <button
+                  type="button"
+                  className="px-6 py-3 border border-gray-300 text-black hover:border-black hover:bg-gray-50 transition-all duration-300 font-light tracking-wide uppercase"
+                  onClick={() => setActiveSection(null)}
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Address Management Modal */}
+      {activeSection === "Delivery Address" && (
+        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
+          <div className="bg-white w-full max-w-2xl shadow-xl overflow-hidden max-h-[90vh] overflow-y-auto">
+            <div className="p-6 border-b border-gray-100 bg-gray-50">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <MapPinHouse size={16} className="text-gray-400" />
+                  <div>
+                    <h2 className="text-lg font-medium tracking-wide uppercase">Delivery Addresses</h2>
+                    <p className="text-gray-500 text-sm font-light">Manage your delivery locations</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setAddressModal({ open: true, address: {}, index: -1 })}
+                  className="flex items-center gap-2 bg-black text-white px-4 py-2 font-light hover:bg-gray-800 transition-colors uppercase tracking-wide"
+                >
+                  <Plus size={14} />
+                  Add New
+                </button>
+              </div>
+
               <div className="p-6">
                 {(!userData.addresses || userData.addresses.length === 0) ? (
                   <div className="text-center py-12">
-                    <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <div className="w-16 h-16 border-2 border-gray-300 flex items-center justify-center mx-auto mb-6">
                       <MapPinHouse size={24} className="text-gray-400" />
                     </div>
-                    <h3 className="text-lg font-medium text-gray-900 mb-2">No Addresses Found</h3>
-                    <p className="text-gray-600 mb-6">Add your first delivery address to get started</p>
+                    <div className="text-center max-w-md mb-8 mx-auto">
+                      <h3 className="text-xl font-medium text-black mb-3 tracking-wide uppercase">No Addresses Found</h3>
+                      <p className="text-gray-600 font-light leading-relaxed">Add your first delivery address to get started</p>
+                    </div>
                     <button
                       onClick={() => setAddressModal({ open: true, address: {}, index: -1 })}
-                      className="px-6 py-3 bg-black text-white font-medium rounded-lg hover:bg-gray-800 transition-colors"
+                      className="px-6 py-3 bg-black text-white font-light tracking-wide hover:bg-gray-800 transition-colors uppercase"
                     >
                       Add Address
                     </button>
@@ -505,28 +538,28 @@ const MyProfile = () => {
                 ) : (
                   <div className="space-y-4">
                     {userData.addresses.map((addr, idx) => (
-                      <div key={idx} className="border border-gray-200 rounded-lg p-4 hover:shadow-sm transition-shadow">
+                      <div key={idx} className="border border-gray-200 p-4 hover:shadow-sm transition-shadow">
                         <div className="flex justify-between items-start">
                           <div className="flex-1">
-                            <div className="font-medium text-gray-900 mb-1">
+                            <div className="font-medium text-black mb-1 tracking-wide">
                               {addr.label || `Address ${idx + 1}`}
                             </div>
-                            <div className="text-sm text-gray-600">
+                            <div className="text-sm text-gray-600 font-light">
                               {addr.address}, {addr.city}, {addr.state} {addr.zip}, {addr.country}
                             </div>
                           </div>
                           <div className="flex gap-2 ml-4">
-                            <button 
+                            <button
                               onClick={() => setAddressModal({ open: true, address: addr, index: idx })}
-                              className="p-2 text-gray-400 hover:text-black hover:bg-gray-100 rounded-lg transition-colors"
+                              className="p-2 text-gray-400 hover:text-black hover:bg-gray-100 transition-colors"
                             >
-                              <Edit2 size={16} />
+                              <Edit2 size={14} />
                             </button>
-                            <button 
+                            <button
                               onClick={() => deleteAddress(idx)}
-                              className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                              className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors"
                             >
-                              <Trash2 size={16} />
+                              <Trash2 size={14} />
                             </button>
                           </div>
                         </div>
@@ -534,11 +567,11 @@ const MyProfile = () => {
                     ))}
                   </div>
                 )}
-                
+
                 <div className="flex justify-end mt-6 pt-6 border-t border-gray-200">
                   <button
                     onClick={() => setActiveSection(null)}
-                    className="px-6 py-3 border-2 border-gray-300 text-gray-700 font-medium rounded-lg hover:border-black hover:text-black transition-all duration-200"
+                    className="px-6 py-3 border border-gray-300 text-black font-light hover:border-black hover:bg-gray-50 transition-all duration-300 uppercase tracking-wide"
                   >
                     Close
                   </button>
@@ -546,29 +579,29 @@ const MyProfile = () => {
               </div>
             </div>
           </div>
-        )}
+        </div>
+      )}
 
-        {/* Address Form Modal */}
-        {addressModal.open && (
-          <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-[60] p-4">
-            <div className="bg-white rounded-xl w-full max-w-md shadow-xl overflow-hidden">
-              <div className="bg-black text-white p-6">
-                <h2 className="text-xl font-bold">
-                  {addressModal.index >= 0 ? "Edit Address" : "Add New Address"}
-                </h2>
-              </div>
-              <div className="p-6">
-                <AddressForm
-                  initial={addressModal.address}
-                  onSave={(addr) => saveAddress(addr, addressModal.index)}
-                  onCancel={() => setAddressModal({ open: false, address: {}, index: -1 })}
-                  loading={loading}
-                />
-              </div>
+      {/* Address Form Modal */}
+      {addressModal.open && (
+        <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-[60] p-4">
+          <div className="bg-white w-full max-w-md shadow-xl overflow-hidden">
+            <div className="p-6 border-b border-gray-100 bg-gray-50">
+              <h2 className="text-lg font-medium tracking-wide uppercase">
+                {addressModal.index >= 0 ? "Edit Address" : "Add New Address"}
+              </h2>
+            </div>
+            <div className="p-6">
+              <AddressForm
+                initial={addressModal.address}
+                onSave={(addr) => saveAddress(addr, addressModal.index)}
+                onCancel={() => setAddressModal({ open: false, address: {}, index: -1 })}
+                loading={loading}
+              />
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 };
@@ -593,83 +626,83 @@ function AddressForm({ initial, onSave, onCancel, loading }) {
       className="space-y-4"
     >
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">Address Label (Optional)</label>
-        <input 
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent" 
-          value={form.label} 
-          onChange={e => setForm(f => ({ ...f, label: e.target.value }))} 
+        <label className="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Address Label (Optional)</label>
+        <input
+          className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-black transition-colors font-light"
+          value={form.label}
+          onChange={e => setForm(f => ({ ...f, label: e.target.value }))}
           placeholder="e.g., Home, Office"
         />
       </div>
-      
+
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">Street Address</label>
-        <input 
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent" 
-          value={form.address} 
-          onChange={e => setForm(f => ({ ...f, address: e.target.value }))} 
+        <label className="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Street Address</label>
+        <input
+          className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-black transition-colors font-light"
+          value={form.address}
+          onChange={e => setForm(f => ({ ...f, address: e.target.value }))}
           placeholder="Enter your street address"
-          required 
+          required
         />
       </div>
-      
+
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">City</label>
-          <input 
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent" 
-            value={form.city} 
-            onChange={e => setForm(f => ({ ...f, city: e.target.value }))} 
+          <label className="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">City</label>
+          <input
+            className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-black transition-colors font-light"
+            value={form.city}
+            onChange={e => setForm(f => ({ ...f, city: e.target.value }))}
             placeholder="City"
-            required 
+            required
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">State</label>
-          <input 
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent" 
-            value={form.state} 
-            onChange={e => setForm(f => ({ ...f, state: e.target.value }))} 
+          <label className="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">State</label>
+          <input
+            className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-black transition-colors font-light"
+            value={form.state}
+            onChange={e => setForm(f => ({ ...f, state: e.target.value }))}
             placeholder="State"
-            required 
+            required
           />
         </div>
       </div>
-      
+
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">ZIP Code</label>
-          <input 
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent" 
-            value={form.zip} 
-            onChange={e => setForm(f => ({ ...f, zip: e.target.value }))} 
+          <label className="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">ZIP Code</label>
+          <input
+            className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-black transition-colors font-light"
+            value={form.zip}
+            onChange={e => setForm(f => ({ ...f, zip: e.target.value }))}
             placeholder="ZIP"
-            required 
+            required
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Country</label>
-          <input 
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent" 
-            value={form.country} 
-            onChange={e => setForm(f => ({ ...f, country: e.target.value }))} 
+          <label className="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Country</label>
+          <input
+            className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-black transition-colors font-light"
+            value={form.country}
+            onChange={e => setForm(f => ({ ...f, country: e.target.value }))}
             placeholder="Country"
-            required 
+            required
           />
         </div>
       </div>
-      
+
       <div className="flex gap-3 pt-4">
-        <button 
-          type="submit" 
-          className="flex-1 bg-black text-white px-6 py-3 rounded-lg font-medium hover:bg-gray-800 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed" 
+        <button
+          type="submit"
+          className="flex-1 bg-black text-white px-6 py-3 font-light hover:bg-gray-800 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed uppercase tracking-wide"
           disabled={loading}
         >
           {loading ? "Saving..." : "Save Address"}
         </button>
-        <button 
-          type="button" 
-          className="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-lg font-medium hover:border-black hover:text-black transition-all duration-200" 
+        <button
+          type="button"
+          className="px-6 py-3 border border-gray-300 text-black font-light hover:border-black hover:bg-gray-50 transition-all duration-300 uppercase tracking-wide"
           onClick={onCancel}
         >
           Cancel

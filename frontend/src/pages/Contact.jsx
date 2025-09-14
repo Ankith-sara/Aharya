@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import Title from '../components/Title';
 import { assets } from '../assets/frontend_assets/assets';
 import NewsletterBox from '../components/NewsletterBox';
-import { MapPin, Phone, Mail, Briefcase, Clock, Users } from 'lucide-react';
+import { MapPin, Phone, Mail, Briefcase } from 'lucide-react';
 
 const Contact = () => {
   useEffect(() => {

@@ -19,7 +19,7 @@ const BrandCategories = () => {
 
           {/* Aharyas Luxury Section */}
           <div className="group relative overflow-hidden shadow-2xl hover:shadow-3xl transition-all duration-700">
-            <div className="relative h-[70vh] lg:h-[95vh] overflow-hidden">
+            <div className="relative h-[100vh] overflow-hidden">
               <img
                 src="https://okhai.org/cdn/shop/files/3_72f49daf-b043-48ce-85c9-f33d94346c8c.jpg?v=1716982545"
                 alt="Aharyas Luxury Collection"
@@ -67,7 +67,7 @@ const BrandCategories = () => {
 
           {/* Aharyas Economy Section */}
           <div className="group relative overflow-hidden shadow-2xl hover:shadow-3xl transition-all duration-700">
-            <div className="relative h-[70vh] lg:h-[95vh] overflow-hidden">
+            <div className="relative h-[100vh] overflow-hidden">
               <img
                 src="https://okhai.org/cdn/shop/files/OKHAI2024_05_293521-Copy_414x650.jpg?v=1718800303"
                 alt="Aharyas Economy Collection"

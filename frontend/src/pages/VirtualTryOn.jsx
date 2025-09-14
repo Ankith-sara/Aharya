@@ -8,7 +8,7 @@ import { Camera, CameraOff } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import Title from "../components/Title";
 
-const REMOVE_BG_API_KEY = "N3iYWCcZHi7pr7dwqCSjNkVD"; // <-- Put your API key here
+const REMOVE_BG_API_KEY = "N3iYWCcZHi7pr7dwqCSjNkVD"; 
 
 const VirtualTryOn = () => {
   const videoRef = useRef(null);

@@ -3,35 +3,16 @@ import { ShopContext } from '../context/ShopContext';
 import Title from '../components/Title';
 import ProductItem from '../components/ProductItem';
 import RecentlyViewed from '../components/RecentlyViewed';
-import { 
-  ChevronLeft, 
-  ChevronRight, 
-  ChevronDown, 
-  ChevronUp,
-  Filter, 
-  SlidersHorizontal, 
-  X, 
-  ShoppingBag, 
-  GridIcon, 
-  ListIcon, 
-  Check, 
-  Gift, 
-  DollarSign, 
-  Star,
-  Heart,
-  Eye,
-  TrendingUp,
-  Palette,
-  Ruler,
-  Tag
+import {
+  ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Filter, SlidersHorizontal, X, ShoppingBag, GridIcon, ListIcon, Check, Gift, DollarSign, Star, Heart, Eye, TrendingUp, Palette, Ruler, Tag
 } from 'lucide-react';
 
 const Collection = () => {
-  const { 
-    products = [], 
-    search, 
-    showSearch, 
-    navigate, 
+  const {
+    products = [],
+    search,
+    showSearch,
+    navigate,
     currency,
     addToWishlist,
     removeFromWishlist,
@@ -62,7 +43,7 @@ const Collection = () => {
   const productsPerPage = 16;
 
   const categories = [...new Set(products.map(product => product.category).filter(Boolean))];
-  
+
   // Calculate price statistics
   const priceStats = products.length > 0 ? {
     min: Math.min(...products.map(p => p.price)),
@@ -88,15 +69,15 @@ const Collection = () => {
 
   const toggleCategory = (selectedCategory) => {
     let newCategories;
-    
+
     if (category.includes(selectedCategory)) {
       newCategories = category.filter(item => item !== selectedCategory);
     } else {
       newCategories = [...category, selectedCategory];
     }
-    
+
     setCategory(newCategories);
-    
+
     // Clear subcategories that are no longer valid for the new category selection
     if (newCategories.length > 0) {
       const validSubCategories = [...new Set(
@@ -105,7 +86,7 @@ const Collection = () => {
           .map(product => product.subCategory)
           .filter(Boolean)
       )];
-      
+
       setSubCategory(prev => prev.filter(sub => validSubCategories.includes(sub)));
     }
   };
@@ -328,8 +309,8 @@ const Collection = () => {
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-medium tracking-wide">FILTERS</h3>
           {activeFiltersCount > 0 && (
-            <button 
-              onClick={clearFilters} 
+            <button
+              onClick={clearFilters}
               className="text-xs uppercase tracking-wider text-gray-500 hover:text-black transition-colors font-light"
             >
               Clear All ({activeFiltersCount})
@@ -339,7 +320,7 @@ const Collection = () => {
       </div>
 
       <div className="px-6">
-        
+
         {/* Price Range Filter */}
         <FilterSection
           title="PRICE RANGE"
@@ -415,11 +396,10 @@ const Collection = () => {
                     onChange={() => toggleCategory(item)}
                     className="sr-only"
                   />
-                  <div className={`w-4 h-4 border transition-all duration-300 ${
-                    category.includes(item) 
-                      ? 'bg-black border-black' 
+                  <div className={`w-4 h-4 border transition-all duration-300 ${category.includes(item)
+                      ? 'bg-black border-black'
                       : 'border-gray-300 group-hover:border-black'
-                  }`}>
+                    }`}>
                     {category.includes(item) && (
                       <Check size={12} className="text-white absolute top-0.5 left-0.5" />
                     )}
@@ -451,11 +431,10 @@ const Collection = () => {
                       onChange={() => toggleSubCategory(item)}
                       className="sr-only"
                     />
-                    <div className={`w-4 h-4 border transition-all duration-300 ${
-                      subCategory.includes(item) 
-                        ? 'bg-black border-black' 
+                    <div className={`w-4 h-4 border transition-all duration-300 ${subCategory.includes(item)
+                        ? 'bg-black border-black'
                         : 'border-gray-300 group-hover:border-black'
-                    }`}>
+                      }`}>
                       {subCategory.includes(item) && (
                         <Check size={12} className="text-white absolute top-0.5 left-0.5" />
                       )}
@@ -486,11 +465,10 @@ const Collection = () => {
                   onChange={(e) => setGiftingIdea(e.target.checked)}
                   className="sr-only"
                 />
-                <div className={`w-4 h-4 border transition-all duration-300 ${
-                  giftingIdea 
-                    ? 'bg-black border-black' 
+                <div className={`w-4 h-4 border transition-all duration-300 ${giftingIdea
+                    ? 'bg-black border-black'
                     : 'border-gray-300 group-hover:border-black'
-                }`}>
+                  }`}>
                   {giftingIdea && (
                     <Check size={12} className="text-white absolute top-0.5 left-0.5" />
                   )}
@@ -510,11 +488,10 @@ const Collection = () => {
                   onChange={(e) => setBudgetFriendly(e.target.checked)}
                   className="sr-only"
                 />
-                <div className={`w-4 h-4 border transition-all duration-300 ${
-                  budgetFriendly 
-                    ? 'bg-black border-black' 
+                <div className={`w-4 h-4 border transition-all duration-300 ${budgetFriendly
+                    ? 'bg-black border-black'
                     : 'border-gray-300 group-hover:border-black'
-                }`}>
+                  }`}>
                   {budgetFriendly && (
                     <Check size={12} className="text-white absolute top-0.5 left-0.5" />
                   )}
@@ -534,11 +511,10 @@ const Collection = () => {
                   onChange={(e) => setRareItems(e.target.checked)}
                   className="sr-only"
                 />
-                <div className={`w-4 h-4 border transition-all duration-300 ${
-                  rareItems 
-                    ? 'bg-black border-black' 
+                <div className={`w-4 h-4 border transition-all duration-300 ${rareItems
+                    ? 'bg-black border-black'
                     : 'border-gray-300 group-hover:border-black'
-                }`}>
+                  }`}>
                   {rareItems && (
                     <Check size={12} className="text-white absolute top-0.5 left-0.5" />
                   )}
@@ -566,7 +542,7 @@ const Collection = () => {
             </div>
             {filterProducts.length > 0 && (
               <p className="text-gray-500 font-light">
-                Discover {filterProducts.length} carefully curated piece{filterProducts.length !== 1 ? 's' : ''} 
+                Discover {filterProducts.length} carefully curated piece{filterProducts.length !== 1 ? 's' : ''}
                 {showSearch && search && ` matching "${search}"`}
               </p>
             )}
@@ -577,20 +553,18 @@ const Collection = () => {
             <div className="flex items-center gap-4">
               {/* View Mode Toggle */}
               <div className="flex items-center border border-gray-300 bg-white overflow-hidden">
-                <button 
-                  onClick={() => setViewMode('grid')} 
-                  className={`p-3 transition-all duration-300 ${
-                    viewMode === 'grid' ? 'bg-black text-white' : 'bg-white text-gray-600 hover:text-black'
-                  }`}
+                <button
+                  onClick={() => setViewMode('grid')}
+                  className={`p-3 transition-all duration-300 ${viewMode === 'grid' ? 'bg-black text-white' : 'bg-white text-gray-600 hover:text-black'
+                    }`}
                   aria-label="Grid view"
                 >
                   <GridIcon size={16} />
                 </button>
-                <button 
-                  onClick={() => setViewMode('list')} 
-                  className={`p-3 transition-all duration-300 ${
-                    viewMode === 'list' ? 'bg-black text-white' : 'bg-white text-gray-600 hover:text-black'
-                  }`}
+                <button
+                  onClick={() => setViewMode('list')}
+                  className={`p-3 transition-all duration-300 ${viewMode === 'list' ? 'bg-black text-white' : 'bg-white text-gray-600 hover:text-black'
+                    }`}
                   aria-label="List view"
                 >
                   <ListIcon size={16} />
@@ -599,8 +573,8 @@ const Collection = () => {
 
               {/* Mobile Filter Toggle */}
               <div className="lg:hidden">
-                <button 
-                  onClick={() => setShowFilter(!showFilter)} 
+                <button
+                  onClick={() => setShowFilter(!showFilter)}
                   className="flex items-center gap-2 px-4 py-3 border border-gray-300 bg-white hover:border-black transition-all duration-300 relative"
                 >
                   <SlidersHorizontal size={16} />
@@ -618,8 +592,8 @@ const Collection = () => {
             <div className="flex items-center gap-4">
               <span className="text-sm font-light text-gray-500 tracking-wide">SORT BY:</span>
               <div className="relative">
-                <select 
-                  value={sortType} 
+                <select
+                  value={sortType}
                   onChange={(e) => setSortType(e.target.value)}
                   className="appearance-none border border-gray-300 bg-white px-4 py-3 pr-10 font-light tracking-wide focus:border-black focus:outline-none transition-colors"
                 >
@@ -652,14 +626,14 @@ const Collection = () => {
               <FilterPanel />
             </div>
             <div className="p-6 border-t border-gray-200 flex gap-3">
-              <button 
-                onClick={clearFilters} 
+              <button
+                onClick={clearFilters}
                 className="flex-1 py-3 border border-gray-300 font-light tracking-wide hover:border-black transition-all duration-300"
               >
                 CLEAR ALL
               </button>
-              <button 
-                onClick={() => setShowFilter(false)} 
+              <button
+                onClick={() => setShowFilter(false)}
                 className="flex-1 py-3 bg-black text-white font-light tracking-wide hover:bg-gray-800 transition-all duration-300"
               >
                 APPLY FILTERS
@@ -721,15 +695,15 @@ const Collection = () => {
                   ) : (
                     <div className="space-y-6">
                       {currentProducts.map((product, index) => (
-                        <div 
-                          key={product._id} 
+                        <div
+                          key={product._id}
                           className="flex flex-col md:flex-row gap-6 p-6 bg-white border border-gray-200 hover:shadow-lg transition-all duration-300 group"
                         >
                           <div className="md:w-1/4 aspect-square overflow-hidden">
-                            <img 
-                              src={product.images[0]} 
-                              alt={product.name} 
-                              className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500" 
+                            <img
+                              src={product.images[0]}
+                              alt={product.name}
+                              className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
                             />
                           </div>
                           <div className="flex-1 flex flex-col justify-between">
@@ -753,31 +727,30 @@ const Collection = () => {
                                         addToWishlist(product._id);
                                       }
                                     }}
-                                    className={`p-2 border transition-all duration-300 ${
-                                      wishlist.includes(product._id)
+                                    className={`p-2 border transition-all duration-300 ${wishlist.includes(product._id)
                                         ? 'bg-black text-white border-black'
                                         : 'bg-white text-black border-gray-300 hover:border-black'
-                                    }`}
+                                      }`}
                                   >
                                     <Heart size={14} className={wishlist.includes(product._id) ? 'fill-current' : ''} />
                                   </button>
                                 </div>
                               </div>
-                              
+
                               <div className="text-sm text-gray-500 mb-3 font-light">
                                 {product.category} • {product.subCategory}
                               </div>
-                              
+
                               {product.description && (
                                 <p className="text-gray-600 font-light leading-relaxed mb-4">
-                                  {product.description.length > 200 
-                                    ? product.description.substring(0, 200) + '...' 
+                                  {product.description.length > 200
+                                    ? product.description.substring(0, 200) + '...'
                                     : product.description
                                   }
                                 </p>
                               )}
                             </div>
-                            
+
                             <div className="flex items-center justify-between pt-4 border-t border-gray-100">
                               <div className="flex items-center gap-3">
                                 <div className="flex items-baseline gap-2">
@@ -796,7 +769,7 @@ const Collection = () => {
                                   </span>
                                 )}
                               </div>
-                              
+
                               <div className="flex items-center gap-2">
                                 <button
                                   onClick={() => navigate ? navigate(`/product/${product._id}`) : window.location.href = `/product/${product._id}`}
@@ -816,14 +789,13 @@ const Collection = () => {
                   {totalPages > 1 && (
                     <div className="flex justify-center items-center mt-12 mb-4">
                       <div className="flex items-center gap-2">
-                        <button 
-                          onClick={goToPreviousPage} 
-                          disabled={currentPage === 1} 
-                          className={`flex items-center justify-center w-10 h-10 border transition-all duration-300 ${
-                            currentPage === 1 
-                              ? 'border-gray-300 text-gray-300 cursor-not-allowed' 
+                        <button
+                          onClick={goToPreviousPage}
+                          disabled={currentPage === 1}
+                          className={`flex items-center justify-center w-10 h-10 border transition-all duration-300 ${currentPage === 1
+                              ? 'border-gray-300 text-gray-300 cursor-not-allowed'
                               : 'border-gray-800 text-gray-800 hover:bg-black hover:text-white hover:border-black'
-                          }`}
+                            }`}
                         >
                           <ChevronLeft size={16} />
                         </button>
@@ -834,28 +806,26 @@ const Collection = () => {
                               ...
                             </span>
                           ) : (
-                            <button 
-                              key={num} 
-                              onClick={() => goToPage(num)} 
-                              className={`w-10 h-10 border transition-all duration-300 font-light tracking-wide ${
-                                currentPage === num 
-                                  ? 'bg-black text-white border-black' 
+                            <button
+                              key={num}
+                              onClick={() => goToPage(num)}
+                              className={`w-10 h-10 border transition-all duration-300 font-light tracking-wide ${currentPage === num
+                                  ? 'bg-black text-white border-black'
                                   : 'border-gray-800 text-gray-800 hover:bg-black hover:text-white hover:border-black'
-                              }`}
+                                }`}
                             >
                               {num}
                             </button>
                           )
                         ))}
 
-                        <button 
-                          onClick={goToNextPage} 
-                          disabled={currentPage === totalPages} 
-                          className={`flex items-center justify-center w-10 h-10 border transition-all duration-300 ${
-                            currentPage === totalPages 
-                              ? 'border-gray-300 text-gray-300 cursor-not-allowed' 
+                        <button
+                          onClick={goToNextPage}
+                          disabled={currentPage === totalPages}
+                          className={`flex items-center justify-center w-10 h-10 border transition-all duration-300 ${currentPage === totalPages
+                              ? 'border-gray-300 text-gray-300 cursor-not-allowed'
                               : 'border-gray-800 text-gray-800 hover:bg-black hover:text-white hover:border-black'
-                          }`}
+                            }`}
                         >
                           <ChevronRight size={16} />
                         </button>
@@ -871,18 +841,18 @@ const Collection = () => {
                   <div className="text-center max-w-md">
                     <h3 className="text-2xl font-medium mb-3 tracking-wide">NO PRODUCTS FOUND</h3>
                     <p className="text-gray-600 font-light leading-relaxed mb-6">
-                      We couldn't find any products matching your current filters. 
+                      We couldn't find any products matching your current filters.
                       Try adjusting your search criteria or browse our full collection.
                     </p>
                     <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                      <button 
-                        onClick={clearFilters} 
+                      <button
+                        onClick={clearFilters}
                         className="px-6 py-3 bg-black text-white font-light tracking-wide hover:bg-gray-800 transition-all duration-300"
                       >
                         CLEAR ALL FILTERS
                       </button>
-                      <button 
-                        onClick={() => navigate ? navigate('/') : window.location.href = '/'} 
+                      <button
+                        onClick={() => navigate ? navigate('/') : window.location.href = '/'}
                         className="px-6 py-3 border border-black bg-white text-black font-light tracking-wide hover:bg-black hover:text-white transition-all duration-300"
                       >
                         BROWSE ALL PRODUCTS

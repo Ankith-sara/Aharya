@@ -1,10 +1,7 @@
 import React, { useEffect } from 'react';
 import Title from '../components/Title';
 import { 
-  Home, ShoppingBag, User, FileText, HelpCircle, 
-  Package, Info, Zap, Settings, Globe, 
-  Heart, ShoppingCart, Truck, MapPin, Search,
-  Building, Users, Newspaper, Leaf, Award, DollarSign
+  Home, ShoppingBag, User, FileText, HelpCircle, Info, Zap,  Search,
 } from 'lucide-react';
 
 const Sitemap = () => {
