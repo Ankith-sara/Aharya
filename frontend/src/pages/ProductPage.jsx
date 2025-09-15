@@ -1,15 +1,16 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import { ShopContext } from '../context/ShopContext';
 import Title from '../components/Title';
 import ProductItem from '../components/ProductItem';
 import {
-  ShoppingBag, X, ChevronDown, GridIcon, ListIcon, Check, Heart, SlidersHorizontal, TrendingUp, Star, ChevronUp, Tag
+  ShoppingBag, X, ChevronDown, GridIcon, ListIcon, Check, Heart, SlidersHorizontal, TrendingUp, Star, ChevronUp, Tag, Building2, ArrowLeft
 } from 'lucide-react';
 import RecentlyViewed from '../components/RecentlyViewed';
 
 const ProductPage = () => {
   const location = useLocation();
+  const { subcategory, company } = useParams(); // Get both subcategory and company from URL params
   const { category } = location.state || {};
 
   const {
@@ -39,6 +40,25 @@ const ProductPage = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
 
+  // Company data mapping
+  const companyLogos = {
+    'biba': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQYq3HEWU4nP1xdaWDzOr7YNmV-q8yg_IJjkcrGl4El207-C31gBbfwEcPBwBiry52hQPE&usqp=CAU',
+    'fabindia': 'https://logos-world.net/wp-content/uploads/2021/02/FabIndia-Logo.png',
+    'vasudhaa vastrram vishram': 'https://brownliving.in/cdn/shop/collections/vasudhaa-vastrram-2557117.jpg?v=1755537249'
+  };
+
+  const getCompanyDisplayName = (companyName) => {
+    return companyName ? companyName.split(' ').map(word => 
+      word.charAt(0).toUpperCase() + word.slice(1)
+    ).join(' ') : '';
+  };
+
+  // Determine if this is a company page
+  const isCompanyPage = !!company;
+  const companyDisplayName = getCompanyDisplayName(company);
+  const companyLogo = company ? (companyLogos[company.toLowerCase()] || 
+    `https://via.placeholder.com/200x100/666666/FFFFFF?text=${companyDisplayName.split(' ').map(w => w[0]).join('')}`) : null;
+
   // Calculate price statistics
   const priceStats = products.length > 0 ? {
     min: Math.min(...products.map(p => p.price)),
@@ -57,18 +77,32 @@ const ProductPage = () => {
   }, [priceRange, sortOption, showOnSale, showNewArrivals, priceStats]);
 
   useEffect(() => {
-    document.title = `${getCollectionTitle()} | Aharyas`;
-  }, [selectedSubCategory]);
+    if (isCompanyPage) {
+      document.title = `${companyDisplayName} Collection | Aharyas`;
+    } else {
+      document.title = `${getCollectionTitle()} | Aharyas`;
+    }
+  }, [selectedSubCategory, company, companyDisplayName, isCompanyPage]);
 
   // Enhanced filtering logic
   useEffect(() => {
     setIsLoading(true);
     let updatedProducts = [...products];
 
-    // Subcategory filter
-    if (selectedSubCategory) {
+    // Company filter (takes precedence over subcategory)
+    if (isCompanyPage && company) {
       updatedProducts = updatedProducts.filter(
-        (product) => product.subCategory === selectedSubCategory
+        (product) => {
+          const productCompany = product.company ? product.company.toLowerCase() : '';
+          return productCompany === company.toLowerCase();
+        }
+      );
+    }
+    // Subcategory filter (only if not filtering by company)
+    else if (subcategory || selectedSubCategory) {
+      const targetSubCategory = subcategory || selectedSubCategory;
+      updatedProducts = updatedProducts.filter(
+        (product) => product.subCategory === targetSubCategory
       );
     }
 
@@ -118,8 +152,8 @@ const ProductPage = () => {
     setFilteredProducts(updatedProducts);
     setTimeout(() => setIsLoading(false), 300);
   }, [
-    products, selectedSubCategory, category, sortOption,
-    priceRange, showOnSale, showNewArrivals,
+    products, selectedSubCategory, subcategory, company, category, sortOption,
+    priceRange, showOnSale, showNewArrivals, isCompanyPage
   ]);
 
   const clearFilters = () => {
@@ -130,9 +164,22 @@ const ProductPage = () => {
   };
 
   const getCollectionTitle = () => {
+    if (isCompanyPage && companyDisplayName) {
+      return companyDisplayName.toUpperCase();
+    }
+    if (subcategory) return subcategory.toUpperCase();
     if (selectedSubCategory) return selectedSubCategory.toUpperCase();
     if (category) return category.toUpperCase();
     return "AHARYAS";
+  };
+
+  const getCollectionSubtitle = () => {
+    if (isCompanyPage) {
+      return `Discover ${filteredProducts.length} carefully curated piece${filteredProducts.length !== 1 ? 's' : ''} from ${companyDisplayName}`;
+    }
+    return `Discover ${filteredProducts.length} carefully curated piece${filteredProducts.length !== 1 ? 's' : ''}${
+      (subcategory || selectedSubCategory) ? ` in ${(subcategory || selectedSubCategory).toLowerCase()}` : ''
+    }`;
   };
 
   const toggleFilterSection = (section) => {
@@ -302,12 +349,14 @@ const ProductPage = () => {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-8">
             <div className="text-3xl mb-2">
-              <Title text1={getCollectionTitle()} text2="COLLECTION" />
+              <Title 
+                text1={isCompanyPage ? companyDisplayName.toUpperCase() : getCollectionTitle()} 
+                text2="COLLECTION" 
+              />
             </div>
             {filteredProducts.length > 0 && (
               <p className="text-gray-500 font-light">
-                Discover {filteredProducts.length} carefully curated piece{filteredProducts.length !== 1 ? 's' : ''}
-                {selectedSubCategory && ` in ${selectedSubCategory.toLowerCase()}`}
+                {getCollectionSubtitle()}
               </p>
             )}
           </div>
@@ -315,7 +364,6 @@ const ProductPage = () => {
           {/* Controls Bar */}
           <div className="flex flex-col md:flex-row justify-between items-start lg:items-center gap-4 pb-6 border-b border-gray-200">
             <div className="flex items-center gap-4">
-              {/* View Mode Toggle */}
               <div className="flex items-center border border-gray-300 bg-white overflow-hidden">
                 <button
                   onClick={() => setViewMode('grid')}
@@ -411,14 +459,12 @@ const ProductPage = () => {
       <section className="px-4 sm:px-8 md:px-10 lg:px-20 pb-20">
         <div className="max-w-7xl mx-auto">
           <div className="flex gap-8">
-            {/* Desktop Filter Sidebar */}
             <div className="hidden lg:block w-80 flex-shrink-0">
               <div className="sticky top-24">
                 <FilterPanel />
               </div>
             </div>
 
-            {/* Products Grid */}
             <div className="flex-1">
               {isLoading ? (
                 <div className="flex items-center justify-center py-20">
@@ -540,7 +586,6 @@ const ProductPage = () => {
                     </div>
                   )}
 
-                  {/* Load More Button */}
                   {filteredProducts.length > 20 && (
                     <div className="text-center mt-12">
                       <button className="px-8 py-3 border border-black bg-white text-black font-light tracking-wide hover:bg-black hover:text-white transition-all duration-300">
@@ -552,13 +597,15 @@ const ProductPage = () => {
               ) : (
                 <div className="flex flex-col items-center justify-center py-20 bg-white border border-gray-200 shadow-sm">
                   <div className="w-16 h-16 border-2 border-gray-300 rounded-full flex items-center justify-center mb-6">
-                    <ShoppingBag size={32} className="text-gray-400" />
+                    {isCompanyPage ? <Building2 size={32} className="text-gray-400" /> : <ShoppingBag size={32} className="text-gray-400" />}
                   </div>
                   <div className="text-center max-w-md">
                     <h3 className="text-2xl font-medium mb-3 tracking-wide">NO PRODUCTS FOUND</h3>
                     <p className="text-gray-600 font-light leading-relaxed mb-6">
-                      We couldn't find any products matching your current filters.
-                      Try adjusting your search criteria or browse our full collection.
+                      {isCompanyPage 
+                        ? `We couldn't find any products from ${companyDisplayName}. Check back soon for new arrivals.`
+                        : "We couldn't find any products matching your current filters. Try adjusting your search criteria or browse our full collection."
+                      }
                     </p>
                     <div className="flex flex-col sm:flex-row gap-3 justify-center">
                       <button

@@ -36,7 +36,7 @@ const App = () => {
   const location = useLocation();
   const hideNavAndFooter = location.pathname === '/login';
   const hideChatIcon = location.pathname === '/aa-chatbot';
-  
+ 
   return (
     <div>
       <ToastContainer />
@@ -50,6 +50,7 @@ const App = () => {
         <Route path='/contact' element={<Contact />} />
         <Route path='/product/:productId' element={<Product />} />
         <Route path='/shop/:subcategory' element={<ProductPage />} />
+        <Route path='/shop/company/:company' element={<ProductPage />} />
         <Route path='/cart' element={<Cart />} />
         <Route path='/login' element={<Login />} />
         <Route path='/place-order' element={<PlaceOrder />} />
