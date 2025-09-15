@@ -199,7 +199,6 @@ const PlaceOrder = () => {
 
   return (
     <div className="min-h-screen bg-white text-black mt-20">
-      {/* Header Section */}
       <section className="py-12 px-4 sm:px-8 md:px-10 lg:px-20">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-8">
@@ -217,7 +216,6 @@ const PlaceOrder = () => {
       <section className="px-4 sm:px-8 md:px-10 lg:px-20 pb-20">
         <div className="max-w-7xl mx-auto">
           <form onSubmit={onSubmitHandler} className="grid xl:grid-cols-[2fr_1fr] gap-8">
-            {/* Forms */}
             <div className="space-y-6">
               {/* Delivery Information */}
               <div className="bg-white border border-gray-200 shadow-sm">

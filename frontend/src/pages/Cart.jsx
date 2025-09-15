@@ -2,12 +2,13 @@ import React, { useContext, useEffect, useState } from 'react';
 import { ShopContext } from '../context/ShopContext';
 import Title from '../components/Title';
 import CartTotal from '../components/CartTotal';
-import { Trash2, ShoppingBag, Package } from 'lucide-react';
+import { Trash2, ShoppingBag, Package, Lock } from 'lucide-react';
 import RecentlyViewed from '../components/RecentlyViewed';
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const Cart = () => {
-  const { products, currency, cartItems, updateQuantity, navigate } = useContext(ShopContext);
+  const { products, currency, cartItems, updateQuantity, navigate, token } = useContext(ShopContext);
   const [cartData, setCartData] = useState([]);
 
   useEffect(() => {
@@ -38,13 +39,22 @@ const Cart = () => {
     }
   };
 
+  // Handle checkout with login check
+  const handleCheckout = () => {
+    if (!token) {
+      toast.error('Please login to proceed with checkout');
+      navigate('/login');
+      return;
+    }
+    navigate('/place-order');
+  };
+
   useEffect(() => {
     document.title = 'Cart | Aharyas'
   })
 
   return (
     <div className="min-h-screen bg-white text-black mt-20">
-      {/* Header Section */}
       <section className="py-12 px-4 sm:px-8 md:px-10 lg:px-20">
         <div className="max-w-7xl mx-auto">
           <div className="text-center">
@@ -87,7 +97,6 @@ const Cart = () => {
               {/* Cart Items */}
               <div className="space-y-6">
                 <div className="bg-white border border-gray-200 shadow-sm">
-                  {/* Header */}
                   <div className="p-6 border-b border-gray-100 bg-gray-50">
                     <div className="flex items-center gap-4">
                       <div className="flex items-center gap-2">
@@ -100,7 +109,6 @@ const Cart = () => {
                     </div>
                   </div>
 
-                  {/* Cart Items List */}
                   <div className="divide-y divide-gray-100">
                     {cartData.map((item, index) => {
                       const productData = products.find(
@@ -119,7 +127,6 @@ const Cart = () => {
                       return (
                         <div key={index} className="p-6 hover:bg-gray-50 transition-colors duration-300">
                           <div className="flex flex-col lg:flex-row gap-6">
-                            {/* Product Image */}
                             <div className="flex-shrink-0">
                               <div className="w-full h-48 sm:w-32 sm:h-32 lg:w-40 lg:h-40">
                                 <img
@@ -130,7 +137,6 @@ const Cart = () => {
                               </div>
                             </div>
 
-                            {/* Product Details */}
                             <div className="flex-grow flex flex-col lg:flex-row justify-between gap-6">
                               <div className="flex-grow space-y-4">
                                 <div>
@@ -171,7 +177,6 @@ const Cart = () => {
                                   </div>
                                 </div>
 
-                                {/* Quantity Controls */}
                                 <div className="flex items-center gap-4">
                                   <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     QUANTITY:
@@ -191,7 +196,6 @@ const Cart = () => {
                                 </div>
                               </div>
 
-                              {/* Delete Button */}
                               <div className="flex lg:flex-col items-center lg:items-end justify-end lg:justify-start">
                                 <button
                                   onClick={() => handleDelete(item._id, item.size)}
@@ -213,7 +217,6 @@ const Cart = () => {
               {/* Order Summary */}
               <div className="space-y-6">
                 <div className="bg-white border border-gray-200 shadow-sm sticky top-6">
-                  {/* Summary Header */}
                   <div className="p-6 border-b border-gray-100 bg-gray-50">
                     <h3 className="text-xl font-medium text-black tracking-wide uppercase">Order Summary</h3>
                   </div>
@@ -221,12 +224,28 @@ const Cart = () => {
                   <div className="p-6 space-y-6">
                     <CartTotal />
 
+                    {!token && (
+                      <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4">
+                        <div className="flex items-center gap-2 mb-2">
+                          <Lock size={16}  />
+                          <span className="text-sm font-medium text-gray-800">Login Required</span>
+                        </div>
+                        <p className="text-sm text-gray-700">
+                          Please login to your account to proceed with checkout
+                        </p>
+                      </div>
+                    )}
+
                     <div className="space-y-3">
                       <button
-                        onClick={() => navigate('/place-order')}
-                        className="w-full py-4 bg-black text-white font-light tracking-wide hover:bg-gray-800 transition-all duration-300 uppercase"
+                        onClick={handleCheckout}
+                        className={`w-full py-4 font-light tracking-wide transition-all duration-300 uppercase ${
+                          token 
+                            ? 'bg-black text-white hover:bg-gray-800'
+                            : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                        }`}
                       >
-                        PROCEED TO CHECKOUT
+                        {token ? 'PROCEED TO CHECKOUT' : 'LOGIN TO CHECKOUT'}
                       </button>
 
                       <button
@@ -236,8 +255,6 @@ const Cart = () => {
                         CONTINUE SHOPPING
                       </button>
                     </div>
-
-                    {/* Security Notice */}
                     <div className="pt-4 border-t border-gray-100">
                       <div className="flex items-center justify-center gap-2 text-xs text-gray-500 font-light">
                         <span className="w-2 h-2 bg-green-500 rounded-full"></span>

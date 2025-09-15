@@ -113,23 +113,14 @@ const Navbar = () => {
       ]
     },
     {
-      name: 'Home Furnishing',
+      name: 'Handmade Toys',
       id: 'home',
       subcategories: [
         { name: 'Home Décor', path: '/shop/home-decor' },
-        { name: 'Handmade Toys', path: '/shop/handmade-toys' },
+        { name: 'Bonthapally Toys', path: '/shop/Bonthapally Toys' },
         { name: 'Baskets', path: '/shop/baskets' },
         { name: 'Bags and Pouches', path: '/shop/bags&pouches' },
-        { name: 'Stationery', path: '/shop/stationery' },
         { name: 'Wall Decor', path: '/shop/wall-decor' }
-      ]
-    },
-    {
-      name: 'Kitchenware',
-      id: 'kitchen',
-      subcategories: [
-        { name: 'Brass Bowls', path: '/shop/brass' },
-        { name: 'Wooden Spoons', path: '/shop/wooden-spoons' }
       ]
     },
     {
@@ -149,7 +140,6 @@ const Navbar = () => {
       {/* Navbar */}
       <nav className={`fixed top-0 left-0 right-0 px-4 sm:px-6 md:px-10 lg:px-20 z-50 transition-all duration-300 ${getNavbarBackground()}`}>
         <div className="flex items-center justify-between text-white py-4">
-          {/* Logo */}
           <Link to='/' onClick={() => window.location.href = '/'} className="flex-shrink-0 group">
             <img
               src={assets.logo_white}
@@ -160,7 +150,6 @@ const Navbar = () => {
 
           {/* Action Icons */}
           <div className="flex items-center">
-            {/* Search Button */}
             <button
               onClick={() => { setShowSearch(true); navigate('/shop/collection') }}
               className="p-3 transition-all duration-200 group"
@@ -169,7 +158,6 @@ const Navbar = () => {
               <Search size={20} className="group-hover:scale-110 transition-transform duration-200" />
             </button>
 
-            {/* Profile Dropdown */}
             <div className="relative group">
               <button
                 onClick={() => token ? null : navigate('/login')}
@@ -213,7 +201,6 @@ const Navbar = () => {
               )}
             </div>
 
-            {/* Cart Button */}
             <Link to='/cart' className='relative group'>
               <button className="p-3 transition-all duration-200" aria-label="Cart">
                 <ShoppingBagIcon size={20} className="group-hover:scale-110 transition-transform duration-200" />
@@ -240,7 +227,6 @@ const Navbar = () => {
 
       {/* Sidebar Menu */}
       <div ref={menuRef} className={`fixed top-0 right-0 bottom-0 h-full w-full sm:w-96 md:w-96 lg:w-96 bg-white shadow-2xl overflow-y-auto transition-transform duration-300 z-50 ${menuVisible ? 'translate-x-0' : 'translate-x-full'}`}>
-        {/* Menu Header */}
         <div className="bg-black text-white p-6">
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-semibold">Menu</h2>
@@ -255,7 +241,6 @@ const Navbar = () => {
         </div>
 
         <div className="divide-y divide-gray-100">
-          {/* Home Link */}
           <NavLink
             to="/"
             onClick={() => setMenuVisible(false)}
@@ -264,7 +249,6 @@ const Navbar = () => {
             Home
           </NavLink>
 
-          {/* Shop Categories Section */}
           <div className="py-2">
             <div className="px-6 py-4 bg-gray-50">
               <h3 className="text-gray-600 uppercase text-sm font-semibold tracking-wider">
@@ -305,7 +289,6 @@ const Navbar = () => {
             ))}
           </div>
 
-          {/* My Account Section */}
           <div className="py-2">
             <div className="px-6 py-4 bg-gray-50">
               <h3 className="text-gray-600 uppercase text-sm font-semibold tracking-wider">
