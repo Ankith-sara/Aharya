@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const transporter = nodemailer.createTransporter({
+const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
     user: process.env.EMAIL_USER,
@@ -23,7 +23,7 @@ const sendOtpMail = async (email, otp) => {
   const mailOptions = {
     from: `"Aharyas" <${process.env.EMAIL_USER}>`,
     to: email,
-    subject: 'Your Verification Code - Aharyas Admin',
+    subject: '🔐 Your Verification Code - Aharyas Admin',
     html: `
       <!DOCTYPE html>
       <html>
@@ -69,7 +69,7 @@ const sendOtpMail = async (email, otp) => {
 
                   <!-- Security Notice -->
                   <div style="background: #fff8e1; border-radius: 8px; padding: 20px; margin: 25px 0; text-align: left; border-left: 4px solid #ffb74d;">
-                      <h4 style="margin: 0 0 10px 0; color: #f57c00; font-size: 16px;">Security Notice</h4>
+                      <h4 style="margin: 0 0 10px 0; color: #f57c00; font-size: 16px;">🛡️ Security Notice</h4>
                       <ul style="color: #666; margin: 0; padding-left: 20px; font-size: 14px; line-height: 1.6;">
                           <li>Never share this code with anyone</li>
                           <li>Our team will never ask for your verification code</li>
@@ -80,7 +80,7 @@ const sendOtpMail = async (email, otp) => {
 
                   <!-- Instructions -->
                   <div style="background: #e8f5e8; border-radius: 8px; padding: 20px; margin: 25px 0;">
-                      <h4 style="margin: 0 0 10px 0; color: #2e7d32; font-size: 16px;">What to do next:</h4>
+                      <h4 style="margin: 0 0 10px 0; color: #2e7d32; font-size: 16px;">📝 What to do next:</h4>
                       <p style="color: #388e3c; margin: 0; font-size: 14px; line-height: 1.6;">
                           1. Return to the admin registration page<br>
                           2. Enter the 6-digit code above<br>
@@ -110,7 +110,6 @@ const sendOtpMail = async (email, otp) => {
   } catch (error) {
     return false;
   }
-
 };
 
 export default sendOtpMail;

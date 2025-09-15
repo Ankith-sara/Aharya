@@ -5,7 +5,7 @@ import Stripe from 'stripe'
 import Razorpay from 'razorpay';
 import crypto from 'crypto';
 import dotenv from 'dotenv';
-import { sendOrderEmails } from "../middlewares/sendOrderMail.js"; // Updated import
+import { sendOrderEmails } from "../middlewares/sendOrderMail.js";
 dotenv.config();
 
 const currency = 'inr'
@@ -23,7 +23,6 @@ const placeOrder = async (req, res) => {
   try {
     const { userId, items, amount, address } = req.body;
 
-    // Validate required fields
     if (!userId || !items || !amount || !address) {
       return res.status(400).json({
         success: false,
@@ -44,22 +43,18 @@ const placeOrder = async (req, res) => {
     const newOrder = new orderModel(orderData);
     await newOrder.save();
 
-    // Clear user cart
     await userModel.findByIdAndUpdate(userId, { cartData: {} });
 
-    // Fetch user details for email
     const user = await userModel.findById(userId);
     if (!user) {
       console.error('User not found for email notification');
       return res.status(404).json({ success: false, message: 'User not found' });
     }
 
-    // Send emails to both customer and admin
     try {
       await sendOrderEmails(newOrder, user);
     } catch (emailError) {
-      console.error('Email sending failed:', emailError);
-      // Don't fail the order if email fails, just log it
+      console.error('Email sending failed:', emailError)
     }
 
     res.status(201).json({
@@ -80,7 +75,6 @@ const placeOrderStripe = async (req, res) => {
     const { userId, items, amount, address } = req.body;
     const { origin } = req.headers;
 
-    // Validate required fields
     if (!userId || !items || !amount || !address) {
       return res.status(400).json({
         success: false,
@@ -143,12 +137,10 @@ const verifyStripe = async (req, res) => {
 
   try {
     if (!success) {
-      // Delete failed order
       await orderModel.findByIdAndDelete(orderId);
       return res.json({ success: false, message: "Payment not successful" });
     }
 
-    // Fetch order and user details
     const order = await orderModel.findById(orderId);
     const user = await userModel.findById(userId);
 
@@ -157,11 +149,9 @@ const verifyStripe = async (req, res) => {
       return res.json({ success: false, message: "Invalid order or user" });
     }
 
-    // Update order status & clear user cart
     await orderModel.findByIdAndUpdate(orderId, { payment: true });
     await userModel.findByIdAndUpdate(userId, { cartData: {} });
 
-    // Send emails to both customer and admin
     try {
       await sendOrderEmails(order, user);
     } catch (emailError) {
@@ -247,7 +237,6 @@ const verifyRazorpay = async (req, res) => {
 
     await userModel.findByIdAndUpdate(userId, { cartData: {} });
 
-    // Send emails to both customer and admin
     try {
       await sendOrderEmails(newOrder, user);
     } catch (emailError) {

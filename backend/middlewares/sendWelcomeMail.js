@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const transporter = nodemailer.createTransporter({
+const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
     user: process.env.EMAIL_USER,
@@ -32,7 +32,7 @@ const sendWelcomeMail = async (email, name = 'Admin') => {
   const mailOptions = {
     from: `"Aharyas" <${process.env.EMAIL_USER}>`,
     to: email,
-    subject: `Welcome to Aharyas Admin Portal - ${name}!`,
+    subject: `🎉 Welcome to Aharyas Admin Portal - ${name}!`,
     html: `
       <!DOCTYPE html>
       <html>
@@ -97,7 +97,7 @@ const sendWelcomeMail = async (email, name = 'Admin') => {
 
                   <!-- Quick Start Guide -->
                   <div style="background: #e8f5e8; border-radius: 12px; padding: 25px; margin-bottom: 30px;">
-                      <h4 style="margin: 0 0 20px 0; color: #2e7d32; font-size: 18px;">Quick Start Guide</h4>
+                      <h4 style="margin: 0 0 20px 0; color: #2e7d32; font-size: 18px;">🚀 Quick Start Guide</h4>
                       <div style="space-y: 15px;">
                           <div style="display: flex; align-items: flex-start; margin-bottom: 15px;">
                               <div style="width: 30px; height: 30px; background: #4CAF50; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px; flex-shrink: 0;">
@@ -133,7 +133,7 @@ const sendWelcomeMail = async (email, name = 'Admin') => {
 
                   <!-- Admin Features -->
                   <div style="background: #fff3e0; border-radius: 12px; padding: 25px; margin-bottom: 30px;">
-                      <h4 style="margin: 0 0 20px 0; color: #f57c00; font-size: 18px;">Admin Features Available</h4>
+                      <h4 style="margin: 0 0 20px 0; color: #f57c00; font-size: 18px;">⭐ Admin Features Available</h4>
                       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                           <div style="display: flex; align-items: center;">
                               <span style="margin-right: 10px;">📦</span>

@@ -23,7 +23,7 @@ const Collections = () => {
       description: 'Classic and trendy for every occasion'
     },
     {
-      name: 'Wall Decor',
+      name: ' Bonthapally Toys',
       imageUrl: 'https://okhai.org/cdn/shop/files/7_e28f8fae-bd02-4f11-9917-a8fc4a4fd462.jpg?v=1716982545',
       description: 'Artful pieces for your space'
     },
