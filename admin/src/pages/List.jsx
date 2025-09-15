@@ -153,8 +153,8 @@ const List = ({ token }) => {
       subCategories: ["", "Kurtis", "Kurta Sets", "Tops", "Blazers", "Dresses", "Corset-tops"],
       sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL']
     },
-    "Home Furnishing": {
-      subCategories: ["", "Home Décor", "Handmade Toys", "Baskets", "Bags and Pouches", "Stationery", "Wall Decor"],
+    "Handmade Toys": {
+      subCategories: ["", "Home Décor", "Bonthapally Toys", "Baskets", "Bags and Pouches", "Wall Decor"],
       sizes: []
     },
     Kitchenware: {

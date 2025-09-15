@@ -33,20 +33,29 @@ const Login = ({ setToken }) => {
     }
   };
 
-  const handleSendOtp = async () => {
+  const handleSendOtp = async (e) => { // Fixed: added 'e' parameter
     e.preventDefault();
     if (!email) return toast.error('Please enter a valid email');
     if (!name) return toast.error('Please enter your full name');
     if (!password) return toast.error('Please enter a password');
-    
+    if (password.length < 8) return toast.error('Password must be at least 8 characters');
+
     setLoading(true);
     try {
-      const res = await axios.post(`${backendUrl}/api/user/send-otp`, { email });
+      // Send name and password along with email
+      const res = await axios.post(`${backendUrl}/api/user/send-otp`, {
+        email,
+        name,
+        password
+      });
+
       if (res.data.success) {
         setOtpSent(true);
         setOtpTimer(60);
         toast.success('OTP sent to your email');
-      } else toast.error(res.data.message);
+      } else {
+        toast.error(res.data.message);
+      }
     } catch (err) {
       toast.error(err.response?.data?.message || 'Failed to send OTP');
     } finally {
@@ -57,17 +66,17 @@ const Login = ({ setToken }) => {
   const handleVerifyOtp = async (e) => {
     e.preventDefault();
     if (!otp || otp.length < 6) return toast.error('Enter the complete 6-digit OTP');
-    
+
     setLoading(true);
     try {
+      // Only send email and otp - user details are already stored
       const res = await axios.post(`${backendUrl}/api/user/verify-otp`, {
-        name,
         email,
-        password,
-        otp,
-        role: 'admin'
+        otp
       });
+
       if (res.data.success) {
+        toast.success(res.data.message || 'Admin registration successful');
         setToken(res.data.token);
         localStorage.setItem('token', res.data.token);
       } else {
@@ -117,7 +126,7 @@ const Login = ({ setToken }) => {
   }, [otpTimer]);
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+    <div className="min--+h-screen bg-gray-50 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         {/* Header Card */}
         <div className="bg-white rounded-t-xl shadow-sm border border-gray-200 p-8 text-center">

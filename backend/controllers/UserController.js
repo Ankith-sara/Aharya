@@ -10,14 +10,43 @@ const generateOtp = () => Math.floor(100000 + Math.random() * 900000).toString()
 
 // ---------------- OTP SEND ----------------
 export const sendOtp = async (req, res) => {
-    const { email } = req.body;
+    const { email, name, password } = req.body; // Accept name and password too
+    
     if (!email) return res.status(400).json({ success: false, message: 'Email is required' });
+    if (!name) return res.status(400).json({ success: false, message: 'Name is required' });
+    if (!password) return res.status(400).json({ success: false, message: 'Password is required' });
+    
+    // Validate password length
+    if (password.length < 8) {
+        return res.status(400).json({ success: false, message: 'Password must be at least 8 characters' });
+    }
 
     try {
         let user = await userModel.findOne({ email });
+        
         if (!user) {
-            user = new userModel({ email, name: 'User', password: 'dummy-password' });
+            // Hash the password before storing
+            const salt = await bcrypt.genSalt(10);
+            const hashedPassword = await bcrypt.hash(password, salt);
+            
+            // Create user with actual name and hashed password
+            user = new userModel({ 
+                email, 
+                name, 
+                password: hashedPassword,
+                role: 'admin', // Since this is admin registration
+                isAdmin: true
+            });
             await user.save();
+        } else {
+            // User exists, update their details for OTP verification
+            const salt = await bcrypt.genSalt(10);
+            const hashedPassword = await bcrypt.hash(password, salt);
+            
+            user.name = name;
+            user.password = hashedPassword;
+            user.role = 'admin';
+            user.isAdmin = true;
         }
 
         const otp = generateOtp();
@@ -37,7 +66,8 @@ export const sendOtp = async (req, res) => {
 
 // ---------------- OTP VERIFY ----------------
 export const verifyOtp = async (req, res) => {
-    const { email, otp, name, password, role } = req.body;
+    const { email, otp } = req.body; // Only need email and otp now
+    
     if (!email || !otp) {
         return res.status(400).json({ success: false, message: 'Email and OTP required' });
     }
@@ -52,33 +82,22 @@ export const verifyOtp = async (req, res) => {
         if (user.otp !== otp) return res.status(401).json({ success: false, message: 'Invalid OTP' });
         if (user.otpExpiry < new Date()) return res.status(401).json({ success: false, message: 'OTP expired' });
 
-        if (name) user.name = name;
-        if (password) {
-            if (password.length < 8) {
-                return res.status(400).json({ success: false, message: 'Password must be at least 8 characters' });
-            }
-            const salt = await bcrypt.genSalt(10);
-            user.password = await bcrypt.hash(password, salt);
-        }
-
-        if (role) {
-            user.role = role;
-            if (role === 'admin') user.isAdmin = true;
-        }
-
+        // Clear OTP fields after successful verification
         user.otp = undefined;
         user.otpExpiry = undefined;
-
         await user.save();
+        
+        // Send welcome email
         await sendWelcomeMail(email, user.name);
 
+        // Generate token
         const token = jwt.sign(
-            { id: user._id, role: user.role || 'user' },
+            { id: user._id, role: user.role || 'admin' },
             process.env.JWT_SECRET,
             { expiresIn: '7d' }
         );
 
-        res.json({ success: true, token });
+        res.json({ success: true, token, message: `Welcome Admin ${user.name}! Registration successful.` });
     } catch (err) {
         res.status(500).json({ success: false, message: err.message });
     }
