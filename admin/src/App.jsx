@@ -1,5 +1,4 @@
 import React from 'react'
-import Navbar from './components/Navbar'
 import Sidebar from './components/Sidebar'
 import { Routes, Route } from 'react-router-dom'
 import Add from './pages/Add'
@@ -31,8 +30,6 @@ const App = () => {
       {token === ""
         ? <Login setToken={setToken} />
         : <>
-          {/* <Navbar setToken={setToken} /> */}
-          <hr />
           <div className='flex w-full'>
             <Sidebar setToken={setToken} />
             <div className='w-full text-gray-600 text-base'>

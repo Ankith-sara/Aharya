@@ -10,7 +10,7 @@ import RecentlyViewed from '../components/RecentlyViewed';
 
 const ProductPage = () => {
   const location = useLocation();
-  const { subcategory, company } = useParams(); // Get both subcategory and company from URL params
+  const { subcategory, company } = useParams(); 
   const { category } = location.state || {};
 
   const {
@@ -586,13 +586,7 @@ const ProductPage = () => {
                     </div>
                   )}
 
-                  {filteredProducts.length > 20 && (
-                    <div className="text-center mt-12">
-                      <button className="px-8 py-3 border border-black bg-white text-black font-light tracking-wide hover:bg-black hover:text-white transition-all duration-300">
-                        VIEW MORE PRODUCTS
-                      </button>
-                    </div>
-                  )}
+
                 </>
               ) : (
                 <div className="flex flex-col items-center justify-center py-20 bg-white border border-gray-200 shadow-sm">

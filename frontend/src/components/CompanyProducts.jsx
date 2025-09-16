@@ -51,7 +51,15 @@ const CompanyProducts = () => {
   return (
     <section className="bg-white py-10 px-4 sm:px-6 md:px-10 lg:px-20">
       <div className="max-w-7xl mx-auto">
-        {/* Main Container with Left Logo and Right Products */}
+        <div className="flex flex-col mb-10 items-center text-center gap-2">
+          <div>
+            <Title text1="OUR" text2="TRUSTED PARTNERS" />
+          </div>
+          <NavLink to={`/shop/company/${companyData.name}`} className="mt-4 md:mt-0 group flex items-center text-xs font-medium hover:text-gray-700 transition-colors">
+            View all products
+            <ChevronRight size={16} className="ml-1 transition-transform group-hover:translate-x-1" />
+          </NavLink>
+        </div>
         <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
           <div className="lg:w-1/4 flex flex-col items-center lg:items-start">
             <div className="sticky top-8">
@@ -67,7 +75,7 @@ const CompanyProducts = () => {
                     }}
                   />
                 </div>
-                
+
                 {/* Company Info */}
                 <div className="text-center lg:text-left">
                   <h2 className="text-xl font-medium text-black mb-2">
@@ -76,34 +84,12 @@ const CompanyProducts = () => {
                   <p className="text-sm text-gray-600 mb-3">
                     {companyData.description}
                   </p>
-                  <p className="text-xs text-gray-500">
-                    {companyProducts.length} product{companyProducts.length !== 1 ? 's' : ''} available
-                  </p>
                 </div>
               </div>
-
-              {/* View All Products Link */}
-              <NavLink 
-                to={`/shop/company/${companyData.name}`} 
-                className="group flex items-center text-xs font-medium hover:text-gray-700 transition-colors justify-center lg:justify-start"
-              >
-                View all products
-                <ChevronRight size={16} className="ml-1 transition-transform group-hover:translate-x-1" />
-              </NavLink>
             </div>
           </div>
 
           <div className="lg:w-3/4">
-            {/* Title Section */}
-            <div className="flex flex-col mb-10 items-center lg:items-start text-center lg:text-left gap-2">
-              <div>
-                <Title text1="OUR" text2="TRUSTED PARTNERS" />
-              </div>
-              <p className="text-gray-600 max-w-2xl">
-                Discover our curated selection from {companyData.displayName}
-              </p>
-            </div>
-
             {/* Products Grid */}
             <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-8 md:gap-6">
               {companyProducts.map((item, index) => (
@@ -125,17 +111,7 @@ const CompanyProducts = () => {
               ))}
             </div>
 
-            {companyProducts.length >= 10 && (
-              <div className="flex justify-center mt-10">
-                <NavLink 
-                  to={`/shop/company/${companyData.name}`}
-                  className="bg-black text-white px-8 py-3 text-sm font-medium hover:bg-gray-800 transition-colors flex items-center gap-2"
-                >
-                  View More Products
-                  <ChevronRight size={16} />
-                </NavLink>
-              </div>
-            )}
+
           </div>
         </div>
       </div>
