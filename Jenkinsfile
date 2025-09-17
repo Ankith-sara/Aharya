@@ -1,6 +1,9 @@
 pipeline {
     agent {
-        docker { image 'node:20-alpine' } // pick Node version you need
+        dockerContainer('node:20-alpine') {
+            // Optional: reuse container for multiple stages
+            args '-v /var/run/docker.sock:/var/run/docker.sock'
+        }
     }
 
     environment {
