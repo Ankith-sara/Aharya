@@ -1,5 +1,7 @@
 pipeline {
-    agent any
+    agent {
+        docker { image 'node:20-alpine' } // pick Node version you need
+    }
 
     environment {
         BACKEND_IMAGE = "ankith1807/backend:latest"
