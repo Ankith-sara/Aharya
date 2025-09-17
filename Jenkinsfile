@@ -1,7 +1,7 @@
 pipeline {
     agent {
-        dockerContainer('node:20-alpine') {
-            // Optional: reuse container for multiple stages
+        docker {
+            image 'node:20-alpine'
             args '-v /var/run/docker.sock:/var/run/docker.sock'
         }
     }
@@ -13,11 +13,10 @@ pipeline {
     }
 
     stages {
-
         stage('Checkout') {
             steps {
-               git branch: 'main', url: 'https://github.com/Ankith-sara/Aharya.git'
-             }  
+                git branch: 'main', url: 'https://github.com/Ankith-sara/Aharya.git'
+            }
         }
 
         stage('Install Backend Dependencies') {
@@ -40,7 +39,6 @@ pipeline {
             steps {
                 dir('backend') {
                     sh 'npx jasmine tests/contract/contract.test.js'
-                    // or use Dredd: sh 'dredd ../openapi.yaml http://localhost:4000'
                 }
             }
         }
@@ -70,14 +68,13 @@ pipeline {
 
         stage('Push Docker Images') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'docker-hub', usernameVariable: 'ankith1807', passwordVariable: 'DockerAKS@123')]) {
+                withCredentials([usernamePassword(credentialsId: 'docker-hub', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
                     sh 'docker login -u $USER -p $PASS'
                     sh "docker push $BACKEND_IMAGE"
                     sh "docker push $FRONTEND_IMAGE"
                 }
             }
         }
-
     }
 
     post {
