@@ -16,9 +16,9 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/Ankith-sara/Aharya.git'
-            }
-        }
+               git branch: 'main', url: 'https://github.com/Ankith-sara/Aharya.git'
+             }  
+              }
 
         stage('Install Backend Dependencies') {
             steps {
@@ -31,7 +31,7 @@ pipeline {
         stage('Run Backend Unit Tests') {
             steps {
                 dir('backend') {
-                    sh 'npm run test:unit'
+                    sh 'npm run test:unit '
                 }
             }
         }
@@ -40,7 +40,7 @@ pipeline {
             steps {
                 dir('backend') {
                     sh 'npx jasmine tests/contract/contract.test.js'
-                    // or: sh 'dredd ../openapi.yaml http://localhost:4000'
+                    // or use Dredd: sh 'dredd ../openapi.yaml http://localhost:4000'
                 }
             }
         }
@@ -70,12 +70,8 @@ pipeline {
 
         stage('Push Docker Images') {
             steps {
-                withCredentials([usernamePassword(
-                    credentialsId: 'docker-hub', 
-                    usernameVariable: 'DOCKER_USER', 
-                    passwordVariable: 'DOCKER_PASS'
-                )]) {
-                    sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
+                withCredentials([usernamePassword(credentialsId: 'docker-hub', usernameVariable: 'ankith1807', passwordVariable: 'DockerAKS@123')]) {
+                    sh 'docker login -u $USER -p $PASS'
                     sh "docker push $BACKEND_IMAGE"
                     sh "docker push $FRONTEND_IMAGE"
                 }
