@@ -5,27 +5,35 @@
   "type": "module",
   "scripts": {
     "start": "nodemon server.js",
-    "server": "nodemon server.js"
+    "server": "nodemon server.js",
+    "test:unit": "jasmine",
+    "test": "npm run test:unit"
   },
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "chai": "^6.0.1",
     "cloudinary": "^2.5.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
+    "dredd": "^11.2.0",
     "express": "^4.21.2",
     "express-validator": "^7.2.0",
+    "jasmine": "^5.10.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.8.4",
     "multer": "^1.4.5-lts.1",
     "nodemailer": "^7.0.4",
     "razorpay": "^2.9.5",
     "stripe": "^17.4.0",
+    "supertest": "^7.1.4",
     "validator": "^13.12.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.10"
+    "@apidevtools/swagger-parser": "^12.0.0",
+    "nodemon": "^3.1.10",
+    "openapi-response-validator": "^12.1.3"
   }
 }

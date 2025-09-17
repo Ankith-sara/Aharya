@@ -1,0 +1,9 @@
+replicaCount: 1
+image:
+  tag: dev
+env:
+  NODE_ENV: development
+  DEBUG: "true"
+service:
+  type: ClusterIP
+  port: 80

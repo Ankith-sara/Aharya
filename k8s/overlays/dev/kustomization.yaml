@@ -1,0 +1,11 @@
+resources:
+  - ../../base
+
+namePrefix: dev-
+
+commonLabels:
+  env: dev
+
+patchesStrategicMerge:
+  - replica-patch.yaml
+  - env-patch.yaml
