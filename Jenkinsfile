@@ -11,8 +11,8 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                git 'https://github.com/Ankith-sara/Aharya.git'
-            }
+               git branch: 'main', url: 'https://github.com/Ankith-sara/Aharya.git'
+             }  
         }
 
         stage('Install Backend Dependencies') {
@@ -26,7 +26,7 @@ pipeline {
         stage('Run Backend Unit Tests') {
             steps {
                 dir('backend') {
-                    sh 'npm run test:unit '
+                    sh 'npm run test:unit'
                 }
             }
         }
