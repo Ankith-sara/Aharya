@@ -1,10 +1,11 @@
 pipeline {
     agent {
-        docker {
-            image 'docker:24-dind'           // Docker-in-Docker image
-            args '-v /var/run/docker.sock:/var/run/docker.sock'
-        }
+    docker {
+        image 'docker:24-cli'
+        args '-v /var/run/docker.sock:/var/run/docker.sock'
     }
+    }
+
 
     environment {
         BACKEND_IMAGE = "ankith1807/backend:latest"
