@@ -18,29 +18,8 @@ pipeline {
         stage('Install Backend Dependencies and start backend server') {
             steps {
                 dir('backend') {
-                sh '''
-
-                npm install
-    
-            # Ensure test environment variables are set and start backend on test port
-            nohup npx cross-env JASMINE_TEST=true PORT_TEST=4001 nodemon server.js > backend.log 2>&1 &
-
-            # Wait for server to be ready
-            timeout=30
-            while ! curl -s http://localhost:4001/ > /dev/null; do
-                sleep 1
-                timeout=$((timeout-1))
-                if [ $timeout -le 0 ]; then
-                    echo "Server failed to start on port 4001"
-                    exit 1
-                fi
-            done
-            echo "Backend server is up on port 4001"
-
-            # Run contract tests
-            npx jasmine tests/contract/contract.test.js
-            '''
-        }
+                    sh 'npm install'
+                }
             }
         }
 
@@ -59,15 +38,16 @@ pipeline {
         dir('backend') {
             sh '''
             # Start backend on test port in background
-            nohup npm run startport > backend.log 2>&1 &
+            nohup npx cross-env JASMINE_TEST=true PORT_TEST=4001 node server.js > backend.log 2>&1 &
 
-            # Wait for server to be up
+            # Wait for server to be ready (max 30s)
             timeout=30
             while ! curl -s http://localhost:4001/ > /dev/null; do
                 sleep 1
                 timeout=$((timeout-1))
                 if [ $timeout -le 0 ]; then
                     echo "Server failed to start on port 4001"
+                    cat backend.log
                     exit 1
                 fi
             done
@@ -75,8 +55,6 @@ pipeline {
 
             # Run contract tests
             npx jasmine tests/contract/contract.test.js
-            # Optional: Use Dredd instead
-            # dredd ../openapi.yaml http://localhost:4001
             '''
         }
     }
