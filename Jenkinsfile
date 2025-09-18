@@ -25,7 +25,6 @@ pipeline {
                    '''
                 }
                 }
-            }
         }
 
         stage('Run Backend Unit Tests') {
