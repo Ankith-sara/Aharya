@@ -16,28 +16,33 @@ pipeline {
               }
 
         stage('Install Backend Dependencies and start backend server') {
-           steps {
-           dir('backend') {
-            sh '''
-            npm install
-            # Start server in background
-            nohup npm start > backend.log 2>&1 &
-            
-            # Wait for port 4000 to be ready (max 30s)
+            steps {
+                dir('backend') {
+                sh '''
+
+                npm install
+    
+            # Ensure test environment variables are set and start backend on test port
+            nohup npx cross-env JASMINE_TEST=true PORT_TEST=4001 nodemon server.js > backend.log 2>&1 &
+
+            # Wait for server to be ready
             timeout=30
-            while ! curl -s http://localhost:4000/ > /dev/null; do
+            while ! curl -s http://localhost:4001/ > /dev/null; do
                 sleep 1
                 timeout=$((timeout-1))
                 if [ $timeout -le 0 ]; then
-                    echo "Server failed to start on port 4000"
+                    echo "Server failed to start on port 4001"
                     exit 1
                 fi
             done
-            echo "Backend server is up on port 4000"
+            echo "Backend server is up on port 4001"
+
+            # Run contract tests
+            npx jasmine tests/contract/contract.test.js
             '''
+        }
             }
         }
-       }
 
         stage('Run Backend Unit Tests') {
             steps {
@@ -50,13 +55,33 @@ pipeline {
         }
 
         stage('Run Contract Tests') {
-            steps {
-                dir('backend') {
-                    sh 'npx jasmine tests/contract/contract.test.js'
-                    // or use Dredd: sh 'dredd ../openapi.yaml http://localhost:4000'
-                }
-            }
+    steps {
+        dir('backend') {
+            sh '''
+            # Start backend on test port in background
+            nohup npm run startport > backend.log 2>&1 &
+
+            # Wait for server to be up
+            timeout=30
+            while ! curl -s http://localhost:4001/ > /dev/null; do
+                sleep 1
+                timeout=$((timeout-1))
+                if [ $timeout -le 0 ]; then
+                    echo "Server failed to start on port 4001"
+                    exit 1
+                fi
+            done
+            echo "Backend server is up on port 4001"
+
+            # Run contract tests
+            npx jasmine tests/contract/contract.test.js
+            # Optional: Use Dredd instead
+            # dredd ../openapi.yaml http://localhost:4001
+            '''
         }
+    }
+}
+
 
         stage('Build Backend Docker') {
             steps {
