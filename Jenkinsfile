@@ -74,15 +74,16 @@ pipeline {
         }
 
         stage('Scan Docker Images') {
-            steps {
-                sh "docker scan $BACKEND_IMAGE || echo 'Scan backend image skipped/fail-safe'"
-                sh "docker scan $FRONTEND_IMAGE || echo 'Scan frontend image skipped/fail-safe'"
-            }
-        }
+    steps {
+        sh 'docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image ankith1807/backend:latest'
+        sh 'docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image ankith1807/frontend:latest'
+    }
+}
+
 
         stage('Push Docker Images') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'docker-hub', usernameVariable: 'ankith1807', passwordVariable: 'DockerAKS@123')]) {
+                withCredentials([usernamePassword(credentialsId: 'docker-hub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
                     sh 'docker login -u $USER -p $PASS'
                     sh "docker push $BACKEND_IMAGE"
                     sh "docker push $FRONTEND_IMAGE"
