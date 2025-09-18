@@ -41,6 +41,8 @@ app.use((err, req, res, next) => {
     res.status(500).send("Something went wrong!");
 });
 
+
 app.listen(port, () => console.log(`Server started on PORT: ${port}`));
+
 
 export default app;
