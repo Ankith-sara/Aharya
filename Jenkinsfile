@@ -38,15 +38,30 @@ pipeline {
         dir('backend') {
             sh '''
             # Start backend in background
-            nohup npx cross-env JASMINE_TEST=true PORT_TEST=4001 node server.js > backend.log 2>&1 &
+            # Start server in background
+nohup npx cross-env JASMINE_TEST=true PORT_TEST=4001 node server.js > backend.log 2>&1 &
 
-            # Wait 3-5 seconds to let server start
-            sleep 5
+# Wait until server responds
+timeout=30  # max wait 30s
+until curl -s http://localhost:4001/ > /dev/null || [ $timeout -le 0 ]; do
+  sleep 1
+  timeout=$((timeout-1))
+done
 
-            echo "Backend server assumed up on port 4001"
+if [ $timeout -le 0 ]; then
+  echo "Server failed to start. Dumping logs:"
+  cat backend.log
+  exit 1
+fi
 
-            # Run contract tests
-            npx jasmine tests/contract/contract.test.js
+echo "Backend server ready on port 4001"
+
+# Run contract tests
+npx jasmine tests/contract/contract.test.js
+
+# Kill background server
+pkill -f "node server.js"
+
             '''
         }
     }
