@@ -5,7 +5,7 @@ import SwaggerParser from '@apidevtools/swagger-parser';
 import OpenAPIResponseValidatorPkg from 'openapi-response-validator';
 const OpenAPIResponseValidator = OpenAPIResponseValidatorPkg.default || OpenAPIResponseValidatorPkg;
 
-const API_BASE = 'http://localhost:4000/api';
+const API_BASE = 'http://localhost:4001/api';
 const OPENAPI_FILE = './openapi.yml';
 
 let apiSpec;
