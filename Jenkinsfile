@@ -27,6 +27,7 @@ pipeline {
             steps {
                 dir('backend') {
                     sh 'chmod +x ./node_modules/.bin/jasmine'
+                    sh 'chmod +x ./node_modules/.bin/cross-env || true'
                     sh 'npm run test:unit'
                 }
             }
