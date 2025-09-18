@@ -6,7 +6,7 @@
   "scripts": {
     "start": "nodemon server.js",
     "server": "nodemon server.js",
-    "test:unit": "jasmine",
+    "test:unit": "npx jasmine",
     "test": "npm run test:unit"
   },
   "author": "",
