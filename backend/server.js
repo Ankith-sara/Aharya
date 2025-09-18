@@ -41,10 +41,6 @@ app.use((err, req, res, next) => {
     res.status(500).send("Something went wrong!");
 });
 
-// Only start server if NOT in test mode
-if (!process.env.JASMINE_TEST) {
-    app.listen(port, () => console.log(`Server started on PORT: ${port}`));
-}
-
+app.listen(port, () => console.log(`Server started on PORT: ${port}`));
 
 export default app;
