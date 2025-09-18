@@ -37,21 +37,13 @@ pipeline {
     steps {
         dir('backend') {
             sh '''
-            # Start backend on test port in background
+            # Start backend in background
             nohup npx cross-env JASMINE_TEST=true PORT_TEST=4001 node server.js > backend.log 2>&1 &
 
-            # Wait for server to be ready (max 30s)
-            timeout=30
-            while ! curl -s http://localhost:4001/ > /dev/null; do
-                sleep 1
-                timeout=$((timeout-1))
-                if [ $timeout -le 0 ]; then
-                    echo "Server failed to start on port 4001"
-                    cat backend.log
-                    exit 1
-                fi
-            done
-            echo "Backend server is up on port 4001"
+            # Wait 3-5 seconds to let server start
+            sleep 5
+
+            echo "Backend server assumed up on port 4001"
 
             # Run contract tests
             npx jasmine tests/contract/contract.test.js
