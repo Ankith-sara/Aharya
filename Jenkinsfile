@@ -25,7 +25,7 @@ pipeline {
             
             # Wait for port 4000 to be ready (max 30s)
             timeout=30
-            while ! nc -z localhost 4000; do
+            while ! curl -s http://localhost:4000/ > /dev/null; do
                 sleep 1
                 timeout=$((timeout-1))
                 if [ $timeout -le 0 ]; then
