@@ -1,11 +1,20 @@
 resources:
   - ../../base
 
+namespace: dev-ecommerce
+
 namePrefix: dev-
 
 commonLabels:
   env: dev
 
+images:
+- name: ankith1807/backend
+  newTag: latest
+- name: ankith1807/frontend
+  newTag: latest
+- name: ankith1807/admin
+  newTag: latest
+
 patchesStrategicMerge:
   - replica-patch.yaml
-  - env-patch.yaml

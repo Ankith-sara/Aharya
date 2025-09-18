@@ -1,11 +1,21 @@
 resources:
   - ../../base
 
+namespace: prod-ecommerce
+
 namePrefix: prod-
 
 commonLabels:
   env: prod
 
+images:
+- name: ankith1807/backend
+  newTag: 1.0.0
+- name: ankith1807/frontend
+  newTag: 1.0.0
+- name: ankith1807/admin
+  newTag: 1.0.0
+
 patchesStrategicMerge:
   - replica-patch.yaml
-  - env-patch.yaml
+  - ingress-patch.yaml

@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ecommerce-api
+  name: backend
   namespace: ecommerce
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: ecommerce-api
+      app: backend
   template:
     metadata:
       labels:
-        app: ecommerce-api
+        app: backend
     spec:
       containers:
-      - name: api
-        image: your-dockerhub-user/ecommerce-api:2.0.1
+      - name: backend
+        image: ankith1807/backend:latest
         ports:
           - containerPort: 8080
         env:

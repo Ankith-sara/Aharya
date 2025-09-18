@@ -1,0 +1,163 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20'
+
+    - name: Install backend dependencies
+      run: npm install
+      working-directory: ./backend
+
+    - name: Run backend unit tests
+      run: npm run test:unit
+      working-directory: ./backend
+
+    - name: Run contract tests
+      run: |
+        nohup node server.js > backend.log 2>&1 &
+        npx wait-on http://localhost:4001
+        npx jasmine tests/contract/contract.test.js
+      working-directory: ./backend
+      env:
+        PORT_TEST: 4001
+
+  build_and_push:
+    runs-on: ubuntu-latest
+    needs: test
+    outputs:
+      short_sha: ${{ steps.vars.outputs.short_sha }}
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_USER }}
+        password: ${{ secrets.DOCKER_PASS }}
+
+    - name: Get short SHA
+      id: vars
+      run: echo "short_sha=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
+    - name: Build and push backend image
+      uses: docker/build-push-action@v4
+      with:
+        context: ./backend
+        push: true
+        tags: |
+          ankith1807/backend:latest
+          ankith1807/backend:${{ steps.vars.outputs.short_sha }}
+
+    - name: Build and push frontend image
+      uses: docker/build-push-action@v4
+      with:
+        context: ./frontend
+        push: true
+        tags: |
+          ankith1807/frontend:latest
+          ankith1807/frontend:${{ steps.vars.outputs.short_sha }}
+
+    - name: Build and push admin image
+      uses: docker/build-push-action@v4
+      with:
+        context: ./admin
+        push: true
+        tags: |
+          ankith1807/admin:latest
+          ankith1807/admin:${{ steps.vars.outputs.short_sha }}
+
+  deploy_dev:
+    runs-on: ubuntu-latest
+    needs: build_and_push
+    environment: dev
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Authenticate with GCP
+      uses: google-github-actions/auth@v1
+      with:
+        credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+    - name: Set up GKE credentials
+      uses: google-github-actions/get-gke-credentials@v1
+      with:
+        cluster_name: ${{ secrets.GKE_CLUSTER_NAME }}
+        location: ${{ secrets.GKE_ZONE }}
+        project_id: ${{ secrets.GCP_PROJECT_ID }}
+
+    - name: Set up Kustomize
+      run: |
+        curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash
+        sudo mv kustomize /usr/local/bin/
+
+    - name: Deploy to GKE
+      run: |
+        kustomize build k8s/overlays/dev | kubectl apply -f -
+
+    - name: Verify deployment
+      run: |
+        kubectl get pods -n dev-ecommerce
+        kubectl get services -n dev-ecommerce
+        kubectl get ingress -n dev-ecommerce
+
+  deploy_prod:
+    runs-on: ubuntu-latest
+    needs: [build_and_push, deploy_dev]
+    environment: production
+    if: github.event_name == 'workflow_dispatch'
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Authenticate with GCP
+      uses: google-github-actions/auth@v1
+      with:
+        credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+    - name: Set up GKE credentials
+      uses: google-github-actions/get-gke-credentials@v1
+      with:
+        cluster_name: ${{ secrets.GKE_CLUSTER_NAME }}
+        location: ${{ secrets.GKE_ZONE }}
+        project_id: ${{ secrets.GCP_PROJECT_ID }}
+
+    - name: Set up Kustomize
+      run: |
+        curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash
+        sudo mv kustomize /usr/local/bin/
+
+    - name: Update image tags for prod
+      run: |
+        cd k8s/overlays/prod
+        kustomize edit set image ankith1807/backend:${{ needs.build_and_push.outputs.short_sha }}
+        kustomize edit set image ankith1807/frontend:${{ needs.build_and_push.outputs.short_sha }}
+        kustomize edit set image ankith1807/admin:${{ needs.build_and_push.outputs.short_sha }}
+        cd ../../..
+
+    - name: Deploy to GKE
+      run: |
+        kustomize build k8s/overlays/prod | kubectl apply -f -
+
+    - name: Verify deployment
+      run: |
+        kubectl get pods -n prod-ecommerce
+        kubectl get services -n prod-ecommerce
+        kubectl get ingress -n prod-ecommerce
