@@ -15,10 +15,15 @@ pipeline {
              }  
               }
 
-        stage('Install Backend Dependencies') {
+        stage('Install Backend Dependencies and start backend server') {
             steps {
                 dir('backend') {
-                    sh 'npm install'
+                   sh '''
+                   npm install
+                   nohup npm start > backend.log 2>&1 &
+                   sleep 5
+                   '''
+                }
                 }
             }
         }
