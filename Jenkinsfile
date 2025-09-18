@@ -1,11 +1,5 @@
 pipeline {
-    agent {
-    docker {
-        image 'docker:24-cli'
-        args '-v /var/run/docker.sock:/var/run/docker.sock'
-    }
-    }
-
+    agent any
 
     environment {
         BACKEND_IMAGE = "ankith1807/backend:latest"
