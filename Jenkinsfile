@@ -27,7 +27,7 @@ pipeline {
             steps {
                 dir('backend') {
                     sh 'chmod +x ./node_modules/.bin/jasmine'
-                    sh 'npx jasmine'
+                    sh 'npm run test:unit'
                 }
             }
         }

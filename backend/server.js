@@ -10,7 +10,7 @@ import orderRouter from './routes/OrderRoute.js';
 
 // App Config
 const app = express();
-const port = process.env.PORT || 4000;
+const port = process.env.PORT_TEST || process.env.PORT || 4000;
 
 app.use(cors({
   origin: "*", // your frontend
@@ -41,6 +41,10 @@ app.use((err, req, res, next) => {
     res.status(500).send("Something went wrong!");
 });
 
-app.listen(port, () => console.log(`Server started on PORT: ${port}`));
+// Only start server if NOT in test mode
+if (!process.env.JASMINE_TEST) {
+    app.listen(port, () => console.log(`Server started on PORT: ${port}`));
+}
+
 
 export default app;
