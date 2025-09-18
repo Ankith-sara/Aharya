@@ -15,18 +15,10 @@ pipeline {
              }  
               }
 
-        stage('Install Backend Dependencies and start backend server') {
+        stage('Install Backend Dependencies') {
             steps {
                 dir('backend') {
                     sh 'npm install'
-                }
-            }
-        }
-
-stage('start backend server') {
-            steps {
-                dir('backend') {
-                    sh 'node server.js'
                 }
             }
         }
