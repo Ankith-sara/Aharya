@@ -23,7 +23,7 @@ pipeline {
             }
         }
 
-stage('Install Backend Dependencies and start backend server') {
+stage('start backend server') {
             steps {
                 dir('backend') {
                     sh 'npm start'
