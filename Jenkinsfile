@@ -16,16 +16,28 @@ pipeline {
               }
 
         stage('Install Backend Dependencies and start backend server') {
-            steps {
-                dir('backend') {
-                   sh '''
-                   npm install
-                   nohup npm start > backend.log 2>&1 &
-                   sleep 5
-                   '''
-                }
-                }
+           steps {
+           dir('backend') {
+            sh '''
+            npm install
+            # Start server in background
+            nohup npm start > backend.log 2>&1 &
+            
+            # Wait for port 4000 to be ready (max 30s)
+            timeout=30
+            while ! nc -z localhost 4000; do
+                sleep 1
+                timeout=$((timeout-1))
+                if [ $timeout -le 0 ]; then
+                    echo "Server failed to start on port 4000"
+                    exit 1
+                fi
+            done
+            echo "Backend server is up on port 4000"
+            '''
+            }
         }
+       }
 
         stage('Run Backend Unit Tests') {
             steps {
