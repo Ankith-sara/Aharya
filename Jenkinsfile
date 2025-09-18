@@ -23,6 +23,15 @@ pipeline {
             }
         }
 
+stage('Install Backend Dependencies and start backend server') {
+            steps {
+                dir('backend') {
+                    sh 'npm start'
+                }
+            }
+        }
+
+
         stage('Run Backend Unit Tests') {
             steps {
                 dir('backend') {
@@ -34,27 +43,27 @@ pipeline {
         }
 
         stage('Run Contract Tests') {
-    steps {
+        steps {
         dir('backend') {
             sh '''
             # Start server in background
-nohup npx cross-env JASMINE_TEST=true PORT_TEST=4001 node server.js > backend.log 2>&1 &
+            nohup npx cross-env JASMINE_TEST=true PORT_TEST=4001 node server.js > backend.log 2>&1 &
 
-# Wait for port to be ready
-npx wait-port localhost:4001 -t 30000
+            # Give a small buffer to let node start
+            sleep 2
 
-# Now run contract tests
-npx jasmine tests/contract/contract.test.js
+            # Wait for port to be ready
+            npx wait-port localhost:4001 -t 30000
 
-# Kill server
-pkill -f "node server.js"
+            # Run contract tests
+            npx jasmine tests/contract/contract.test.js
 
-
+            # Kill background server
+            pkill -f "node server.js"
             '''
         }
     }
 }
-
 
         stage('Build Backend Docker') {
             steps {
