@@ -26,7 +26,7 @@ pipeline {
 stage('start backend server') {
             steps {
                 dir('backend') {
-                    sh 'npm start'
+                    sh 'node server.js'
                 }
             }
         }
