@@ -1,5 +1,5 @@
 pipeline {
-    
+
     agent any
 
     environment {
@@ -7,6 +7,7 @@ pipeline {
         FRONTEND_IMAGE = "ankith1807/frontend:latest"
         K8S_NAMESPACE = "dev"
     }
+
 
     stages {
 
@@ -35,6 +36,7 @@ pipeline {
             }
         }
 
+
         stage('Run Contract Tests') {
         steps {
         dir('backend') {
@@ -56,7 +58,7 @@ pipeline {
             '''
         }
     }
-}
+    }
 
         stage('Build Backend Docker') {
             steps {
