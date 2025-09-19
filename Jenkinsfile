@@ -5,7 +5,7 @@ pipeline {
     environment {
         BACKEND_IMAGE = "ankith1807/backend:latest"
         FRONTEND_IMAGE = "ankith1807/frontend:latest"
-        K8S_NAMESPACE = "dev"
+        K8S_NAMESPACE = "default"
     }
 
 
@@ -94,6 +94,20 @@ pipeline {
                     sh "docker push $FRONTEND_IMAGE"
                 }
             }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                sh '''
+                  kubectl apply -n $K8S_NAMESPACE -f admin-deployment.yaml
+                  kubectl apply -n $K8S_NAMESPACE -f admin-service.yaml
+                  kubectl apply -n $K8S_NAMESPACE -f backend-deployment.yaml
+                  kubectl apply -n $K8S_NAMESPACE -f backend-service.yaml
+                  kubectl apply -n $K8S_NAMESPACE -f frontend-deployment.yaml
+                  kubectl apply -n $K8S_NAMESPACE -f frontend-service.yaml
+                  kubectl apply -n $K8S_NAMESPACE -f ingress.yaml
+                '''
+            }
+        }
         }
 
     }
