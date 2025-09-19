@@ -77,6 +77,14 @@ pipeline {
             }
         }
 
+
+        
+        stage('Scan Docker Images') {
+    steps {
+        sh 'docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image ankith1807/backend:latest'
+        sh 'docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image ankith1807/frontend:latest'
+    }
+    }
         
 
 
@@ -88,20 +96,6 @@ pipeline {
                     sh "docker push $BACKEND_IMAGE"
                     sh "docker push $FRONTEND_IMAGE"
                 }
-            }
-        }
-
-         stage('Deploy to Kubernetes') {
-            steps {
-                sh '''
-                  kubectl apply -n $K8S_NAMESPACE -f admin-deployment.yaml
-                  kubectl apply -n $K8S_NAMESPACE -f admin-service.yaml
-                  kubectl apply -n $K8S_NAMESPACE -f backend-deployment.yaml
-                  kubectl apply -n $K8S_NAMESPACE -f backend-service.yaml
-                  kubectl apply -n $K8S_NAMESPACE -f frontend-deployment.yaml
-                  kubectl apply -n $K8S_NAMESPACE -f frontend-service.yaml
-                  kubectl apply -n $K8S_NAMESPACE -f ingress.yaml
-                '''
             }
         }
 
