@@ -5,9 +5,9 @@ const userSchema = new mongoose.Schema(
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    image: { 
-      type: String, 
-      default: "https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png" 
+    image: {
+      type: String,
+      default: "https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png"
     },
     addresses: [
       {
@@ -17,6 +17,7 @@ const userSchema = new mongoose.Schema(
         state: String,
         zip: String,
         country: String,
+        phone: String,
       }
     ],
     cartData: { type: Object, default: {} },

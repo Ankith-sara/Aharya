@@ -29,7 +29,7 @@ const Collections = () => {
     },
     {
       name: 'Bags',
-      imageUrl: 'https://res.cloudinary.com/dfzhqsfp7/image/upload/v1744127544/igwttafu4fgj6pwb54yw.webp',
+      imageUrl: 'https://res.cloudinary.com/dfzhqsfp7/image/upload/v1757762609/zghzsufllegtx8qc2ci1.webp',
       description: 'Handcrafted with care'
     },
   ];

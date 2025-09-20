@@ -54,9 +54,22 @@ const Login = () => {
     }
   }, [otpTimer]);
 
+  // Handle redirect after login
+  const handlePostLoginRedirect = () => {
+    const returnUrl = sessionStorage.getItem('returnUrl');
+    if (returnUrl) {
+      sessionStorage.removeItem('returnUrl'); // Clean up
+      navigate(returnUrl);
+    } else {
+      navigate('/'); // Default redirect
+    }
+  };
+
   // Redirect if logged in
   useEffect(() => {
-    if (token) navigate('/');
+    if (token) {
+      handlePostLoginRedirect();
+    }
   }, [token, navigate]);
 
   useEffect(() => {
@@ -115,7 +128,7 @@ const Login = () => {
         toast.success('Account created successfully!');
         setToken(res.data.token);
         localStorage.setItem('token', res.data.token);
-        navigate('/');
+        // Redirect will be handled by the useEffect above when token changes
       } else {
         setOtpError(res.data.message || 'Invalid OTP');
       }
@@ -158,6 +171,7 @@ const Login = () => {
         toast.success(currentState === 'Sign Up' ? 'Account created successfully!' : `Welcome back, ${response.data.name}!`);
         setToken(response.data.token);
         localStorage.setItem('token', response.data.token);
+        // Redirect will be handled by the useEffect above when token changes
       } else {
         toast.error(response.data.message);
       }

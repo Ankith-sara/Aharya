@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { ShopContext } from '../context/ShopContext';
 import Title from '../components/Title';
 import CartTotal from '../components/CartTotal';
-import { Trash2, ShoppingBag, Package, Lock } from 'lucide-react';
+import { Trash2, ShoppingBag, Package } from 'lucide-react';
 import RecentlyViewed from '../components/RecentlyViewed';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -39,10 +39,11 @@ const Cart = () => {
     }
   };
 
-  // Handle checkout with login check
+  // Handle checkout with login check - redirect to login with return URL
   const handleCheckout = () => {
     if (!token) {
-      toast.error('Please login to proceed with checkout');
+      // Store current cart page as return URL
+      sessionStorage.setItem('returnUrl', '/cart');
       navigate('/login');
       return;
     }
@@ -224,28 +225,12 @@ const Cart = () => {
                   <div className="p-6 space-y-6">
                     <CartTotal />
 
-                    {!token && (
-                      <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4">
-                        <div className="flex items-center gap-2 mb-2">
-                          <Lock size={16}  />
-                          <span className="text-sm font-medium text-gray-800">Login Required</span>
-                        </div>
-                        <p className="text-sm text-gray-700">
-                          Please login to your account to proceed with checkout
-                        </p>
-                      </div>
-                    )}
-
                     <div className="space-y-3">
                       <button
                         onClick={handleCheckout}
-                        className={`w-full py-4 font-light tracking-wide transition-all duration-300 uppercase ${
-                          token 
-                            ? 'bg-black text-white hover:bg-gray-800'
-                            : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                        }`}
+                        className="w-full py-4 bg-black text-white font-light tracking-wide hover:bg-gray-800 transition-all duration-300 uppercase"
                       >
-                        {token ? 'PROCEED TO CHECKOUT' : 'LOGIN TO CHECKOUT'}
+                        PROCEED TO CHECKOUT
                       </button>
 
                       <button

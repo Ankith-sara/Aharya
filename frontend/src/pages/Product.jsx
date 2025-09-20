@@ -211,7 +211,7 @@ const Product = () => {
                     src={productData.images[currentIndex]}
                     alt={productData.name}
                     onClick={handleImageClick}
-                    className="w-full h-full object-contain transition-all duration-500 hover:scale-105"
+                    className="w-full h-[80vh] object-contain transition-all duration-500 hover:scale-105"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
 
@@ -486,14 +486,14 @@ const Product = () => {
             <img
               src={modalImage}
               alt="Product Detail View"
-              className="max-w-full max-h-[100vh] object-contain transition-transform duration-200 shadow-2xl"
+              className="max-w-full max-h-[95vh] object-contain transition-transform duration-200 shadow-2xl"
               style={{ transform: `scale(${zoomLevel})` }}
             />
           </div>
 
           {/* Modal Controls */}
           <button
-            className="absolute top-4 right-4 bg-white text-black p-3 rounded-xl shadow-md hover:bg-gray-100 transition-colors z-10"
+            className="absolute top-4 right-4 text-white z-10"
             onClick={closeModal}
             aria-label="Close modal"
           >

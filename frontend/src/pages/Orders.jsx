@@ -224,7 +224,7 @@ const Orders = () => {
                 </p>
               </div>
               <button
-                onClick={() => navigate('/collection')}
+                onClick={() => navigate('/shop/collection')}
                 className="px-8 py-3 bg-black text-white font-light tracking-wide hover:bg-gray-800 transition-all duration-300"
               >
                 BROWSE PRODUCTS

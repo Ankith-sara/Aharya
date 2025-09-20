@@ -3,7 +3,7 @@ import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import {
   ChevronRight, Heart, Clock, User, ShoppingBag, Settings, LogOut, Edit2, Trash2,
-  MapPinHouse, X, Camera, Mail, Calendar, Plus, ArrowRight, Package
+  MapPinHouse, X, Camera, Mail, Calendar, Plus, ArrowRight, Package, Phone
 } from "lucide-react";
 import Title from "../components/Title";
 import ProductItem from "../components/ProductItem";
@@ -42,7 +42,6 @@ const MyProfile = () => {
           setEditProfile({
             name: res.data.user.name,
             email: res.data.user.email,
-            phone: res.data.user.phone,
             image: res.data.user.image || "",
           });
         } else {
@@ -403,37 +402,31 @@ const MyProfile = () => {
       {/* Edit Profile Modal */}
       {activeSection === "Edit Profile" && (
         <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
-          <div className="bg-white w-full max-w-md shadow-xl overflow-hidden">
+          <div className="bg-white w-full max-w-sm shadow-xl overflow-hidden">
             {/* Header */}
-            <div className="p-6 border-b border-gray-100 bg-gray-50 relative">
+            <div className="px-4 py-3 border-b border-gray-200 flex items-center justify-between">
+              <h2 className="text-sm font-medium tracking-wide uppercase">Edit Profile</h2>
               <button
                 onClick={() => setActiveSection(null)}
-                className="absolute right-4 top-4 p-2 hover:bg-gray-200 transition-colors"
+                className="p-1 hover:bg-gray-100 transition-colors"
               >
-                <X size={18} />
+                <X size={16} />
               </button>
-              <div className="flex items-center gap-2">
-                <User size={16} className="text-gray-400" />
-                <div>
-                  <h2 className="text-lg font-medium tracking-wide uppercase">Edit Profile</h2>
-                  <p className="text-gray-500 text-sm font-light">Update your personal information</p>
-                </div>
-              </div>
             </div>
 
-            <form className="p-6 space-y-6" onSubmit={handleEditProfileSubmit}>
+            <form className="p-4 space-y-4" onSubmit={handleEditProfileSubmit}>
               {/* Profile Image */}
-              <div className="flex flex-col items-center">
+              <div className="flex items-center gap-3">
                 <div className="relative">
-                  <div className="w-24 h-24 bg-gray-100 border-2 border-gray-200 overflow-hidden flex items-center justify-center">
+                  <div className="w-16 h-16 bg-gray-100 border border-gray-200 overflow-hidden flex items-center justify-center">
                     {editProfile.image ? (
                       <img src={editProfile.image} alt="Profile" className="w-full h-full object-cover" />
                     ) : (
-                      <User size={28} className="text-gray-400" />
+                      <User size={20} className="text-gray-400" />
                     )}
                   </div>
-                  <label className="absolute -bottom-2 -right-2 bg-black text-white p-2 cursor-pointer hover:bg-gray-800 transition-colors shadow-sm">
-                    <Camera size={14} />
+                  <label className="absolute -bottom-1 -right-1 bg-black text-white p-1 cursor-pointer hover:bg-gray-800 transition-colors">
+                    <Camera size={10} />
                     <input
                       type="file"
                       accept="image/*"
@@ -442,17 +435,17 @@ const MyProfile = () => {
                     />
                   </label>
                 </div>
-                <p className="text-xs text-gray-500 mt-2 font-light">Click the camera icon to change photo</p>
+                <p className="text-xs text-gray-500 font-light">Click camera to change photo</p>
               </div>
 
               {/* Form Fields */}
-              <div className="space-y-4">
+              <div className="space-y-3">
                 <div>
-                  <label className="flex items-center gap-2 text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">
-                    <User size={12} /> Full Name
+                  <label className="block text-xs text-gray-500 uppercase tracking-wider mb-1">
+                    Full Name
                   </label>
                   <input
-                    className="w-full px-4 py-3 border border-gray-300 bg-white focus:outline-none focus:border-black transition-colors font-light"
+                    className="w-full px-3 py-2 border border-gray-300 bg-white focus:outline-none focus:border-black transition-colors font-light text-sm"
                     value={editProfile.name}
                     onChange={e => setEditProfile({ ...editProfile, name: e.target.value })}
                     placeholder="Enter your name"
@@ -461,11 +454,11 @@ const MyProfile = () => {
                 </div>
 
                 <div>
-                  <label className="flex items-center gap-2 text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">
-                    <Mail size={12} /> Email Address
+                  <label className="block text-xs text-gray-500 uppercase tracking-wider mb-1">
+                    Email Address
                   </label>
                   <input
-                    className="w-full px-4 py-3 border border-gray-300 bg-white focus:outline-none focus:border-black transition-colors font-light"
+                    className="w-full px-3 py-2 border border-gray-300 bg-white focus:outline-none focus:border-black transition-colors font-light text-sm"
                     value={editProfile.email}
                     onChange={e => setEditProfile({ ...editProfile, email: e.target.value })}
                     placeholder="Enter your email"
@@ -475,17 +468,17 @@ const MyProfile = () => {
               </div>
 
               {/* Action Buttons */}
-              <div className="flex gap-3 pt-2">
+              <div className="flex gap-2 pt-2">
                 <button
                   type="submit"
-                  className="flex-1 bg-black text-white px-6 py-3 hover:bg-gray-800 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 font-light tracking-wide uppercase"
+                  className="flex-1 bg-black text-white px-4 py-2 hover:bg-gray-800 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-xs font-light tracking-wide uppercase"
                   disabled={loading}
                 >
-                  {loading ? "Saving..." : "Save Changes"}
+                  {loading ? "Saving..." : "Save"}
                 </button>
                 <button
                   type="button"
-                  className="px-6 py-3 border border-gray-300 text-black hover:border-black hover:bg-gray-50 transition-all duration-300 font-light tracking-wide uppercase"
+                  className="px-4 py-2 border border-gray-300 text-black hover:border-black hover:bg-gray-50 transition-all duration-300 text-xs font-light tracking-wide uppercase"
                   onClick={() => setActiveSection(null)}
                 >
                   Cancel
@@ -546,6 +539,9 @@ const MyProfile = () => {
                             </div>
                             <div className="text-sm text-gray-600 font-light">
                               {addr.address}, {addr.city}, {addr.state} {addr.zip}, {addr.country}
+                              {addr.phone && (
+                                <><br />Phone: {addr.phone}</>
+                              )}
                             </div>
                           </div>
                           <div className="flex gap-2 ml-4">
@@ -615,6 +611,7 @@ function AddressForm({ initial, onSave, onCancel, loading }) {
     zip: initial.zip || "",
     country: initial.country || "",
     label: initial.label || "",
+    phone: initial.phone || "",
   });
 
   return (
@@ -690,6 +687,17 @@ function AddressForm({ initial, onSave, onCancel, loading }) {
             required
           />
         </div>
+      </div>
+
+      <div>
+        <label className="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Phone Number</label>
+        <input
+          type="tel"
+          className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-black transition-colors font-light"
+          value={form.phone}
+          onChange={e => setForm(f => ({ ...f, phone: e.target.value }))}
+          placeholder="Enter phone number for this address"
+        />
       </div>
 
       <div className="flex gap-3 pt-4">
