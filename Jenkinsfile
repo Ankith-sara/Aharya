@@ -77,12 +77,15 @@ pipeline {
             }
         }
 
+
+        
         stage('Scan Docker Images') {
     steps {
         sh 'docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image ankith1807/backend:latest'
         sh 'docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image ankith1807/frontend:latest'
     }
     }
+        
 
 
         stage('Push Docker Images') {
