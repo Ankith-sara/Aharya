@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ecommerce-admin
+  namespace: ecommerce
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ecommerce-admin
+  template:
+    metadata:
+      labels:
+        app: ecommerce-admin
+    spec:
+      containers:
+      - name: admin
+        image: your-dockerhub-user/ecommerce-admin:1.0.0
+        ports:
+          - containerPort: 80
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "200m"
+            memory: "256Mi"

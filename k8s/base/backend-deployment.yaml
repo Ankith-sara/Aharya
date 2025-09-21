@@ -17,7 +17,7 @@ spec:
       - name: api
         image: your-dockerhub-user/ecommerce-api:2.0.1
         ports:
-          - containerPort: 8080
+          - containerPort: 4000
         env:
           - name: NODE_ENV
             value: "production"
@@ -36,12 +36,12 @@ spec:
         livenessProbe:
           httpGet:
             path: /healthz
-            port: 8080
+            port: 4000
           initialDelaySeconds: 20
           periodSeconds: 10
         readinessProbe:
           httpGet:
             path: /ready
-            port: 8080
+            port: 4000
           initialDelaySeconds: 10
           periodSeconds: 5

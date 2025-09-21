@@ -5,7 +5,7 @@ import Stripe from 'stripe'
 import Razorpay from 'razorpay';
 import crypto from 'crypto';
 import dotenv from 'dotenv';
-import { sendOrderEmails } from "../middlewares/sendOrderMail.js";
+import sendOrderEmails from "../middlewares/sendOrderMail.js";
 dotenv.config();
 
 const currency = 'inr'

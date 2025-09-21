@@ -45,7 +45,7 @@ const PlaceOrder = () => {
         const userId = decoded.id;
 
         const res = await axios.get(`${backendUrl}/api/user/profile/${userId}`, {
-          headers: { token }
+          headers: { Authorization: `Bearer ${token}` }
         });
 
         if (res.data.success) {
@@ -96,7 +96,7 @@ const PlaceOrder = () => {
             items: orderItems,
             amount: totalAmount,
             address: formData
-          }, { headers: { token } });
+          }, { headers: { Authorization: `Bearer ${token}` } });
 
           if (verifyRes.data.success) {
             setCartItems({});
@@ -161,7 +161,7 @@ const PlaceOrder = () => {
 
       switch (method) {
         case 'cod':
-          const response = await axios.post(`${backendUrl}/api/order/place`, orderData, { headers: { token } });
+          const response = await axios.post(`${backendUrl}/api/order/place`, orderData, { headers: { Authorization: `Bearer ${token}` } });
           if (response.data.success) {
             setCartItems({});
             navigate('/orders');
@@ -171,7 +171,7 @@ const PlaceOrder = () => {
           break;
 
         case 'stripe':
-          const responseStripe = await axios.post(`${backendUrl}/api/order/stripe`, orderData, { headers: { token } });
+          const responseStripe = await axios.post(`${backendUrl}/api/order/stripe`, orderData, { headers: { Authorization: `Bearer ${token}` } });
           if (responseStripe.data.success) {
             const { session_url } = responseStripe.data;
             window.location.replace(session_url);
@@ -181,7 +181,7 @@ const PlaceOrder = () => {
           break;
 
         case 'razorpay':
-          const responseRazorpay = await axios.post(`${backendUrl}/api/order/razorpay`, orderData, { headers: { token } });
+          const responseRazorpay = await axios.post(`${backendUrl}/api/order/razorpay`, orderData, { headers: { Authorization: `Bearer ${token}` } });
           if (responseRazorpay.data.success) {
             initPay(responseRazorpay.data.order, decoded.id, orderItems, orderData.amount);
           } else {
