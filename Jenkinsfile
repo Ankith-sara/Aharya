@@ -104,7 +104,7 @@ pipeline {
 
           stage('Deploy to Kubernetes') {
           steps {
-            dir('k8/base') { // switch to the folder containing the YAML files
+            dir('k8s/base') { // switch to the folder containing the YAML files
             sh '''
                 kubectl apply -n $K8S_NAMESPACE -f admin-deployment.yaml
                 kubectl apply -n $K8S_NAMESPACE -f admin-service.yaml
