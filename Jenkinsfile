@@ -1,5 +1,4 @@
 pipeline {
-    
     agent any
 
     environment {
@@ -14,7 +13,7 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                // Clone the repo into workspace
+                // Clone the repo
                 git branch: "${GIT_BRANCH}", url: "${REPO_URL}"
             }
         }
@@ -22,7 +21,7 @@ pipeline {
         stage('Install Backend Dependencies') {
             steps {
                 dir('backend') {
-                    sh 'npm install'
+                    bat 'npm install'
                 }
             }
         }
@@ -30,11 +29,7 @@ pipeline {
         stage('Run Backend Unit Tests') {
             steps {
                 dir('backend') {
-                    sh '''
-                        chmod +x ./node_modules/.bin/jasmine || true
-                        chmod +x ./node_modules/.bin/cross-env || true
-                        npm run test:unit
-                    '''
+                    bat 'npm run test:unit'
                 }
             }
         }
@@ -42,13 +37,13 @@ pipeline {
         stage('Run Contract Tests') {
             steps {
                 dir('backend') {
-                    sh '''
-                        # Start server in background
-                        nohup npx cross-env JASMINE_TEST=true PORT_TEST=4001 node server.js > backend.log 2>&1 &
-                        sleep 2
+                    // Windows alternative for nohup + pkill
+                    bat '''
+                        start /B cmd /c "set JASMINE_TEST=true && set PORT_TEST=4001 && node server.js"
+                        timeout /t 5
                         npx wait-port localhost:4001 -t 30000
                         npx jasmine tests/contract/contract.test.js
-                        pkill -f "node server.js"
+                        taskkill /IM node.exe /F
                     '''
                 }
             }
@@ -57,7 +52,7 @@ pipeline {
         stage('Build Backend Docker') {
             steps {
                 dir('backend') {
-                    sh "docker build -t $BACKEND_IMAGE ."
+                    bat "docker build -t %BACKEND_IMAGE% ."
                 }
             }
         }
@@ -65,25 +60,25 @@ pipeline {
         stage('Build Frontend Docker') {
             steps {
                 dir('frontend') {
-                    sh "docker build -t $FRONTEND_IMAGE ."
+                    bat "docker build -t %FRONTEND_IMAGE% ."
                 }
             }
         }
 
         stage('Scan Docker Images') {
             steps {
-                // Ensure Trivy is installed on Jenkins agent
-                sh "docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image $BACKEND_IMAGE"
-                sh "docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image $FRONTEND_IMAGE"
+                // Using Docker to run Trivy
+                bat "docker run --rm -v //var/run/docker.sock:/var/run/docker.sock aquasec/trivy image %BACKEND_IMAGE%"
+                bat "docker run --rm -v //var/run/docker.sock:/var/run/docker.sock aquasec/trivy image %FRONTEND_IMAGE%"
             }
         }
 
         stage('Push Docker Images') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'docker-hub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-                    sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
-                    sh "docker push $BACKEND_IMAGE"
-                    sh "docker push $FRONTEND_IMAGE"
+                    bat 'echo %DOCKER_PASS% | docker login -u %DOCKER_USER% --password-stdin'
+                    bat "docker push %BACKEND_IMAGE%"
+                    bat "docker push %FRONTEND_IMAGE%"
                 }
             }
         }
@@ -91,15 +86,13 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
                 dir('k8s/base') {
-                    sh '''
-                        kubectl apply -n $K8S_NAMESPACE -f admin-deployment.yaml
-                        kubectl apply -n $K8S_NAMESPACE -f admin-service.yaml
-                        kubectl apply -n $K8S_NAMESPACE -f backend-deployment.yaml
-                        kubectl apply -n $K8S_NAMESPACE -f backend-service.yaml
-                        kubectl apply -n $K8S_NAMESPACE -f frontend-deployment.yaml
-                        kubectl apply -n $K8S_NAMESPACE -f frontend-service.yaml
-                        kubectl apply -n $K8S_NAMESPACE -f ingress.yaml
-                    '''
+                    bat """
+                        kubectl apply -n %K8S_NAMESPACE% -f backend-deployment.yaml
+                        kubectl apply -n %K8S_NAMESPACE% -f backend-service.yaml
+                        kubectl apply -n %K8S_NAMESPACE% -f frontend-deployment.yaml
+                        kubectl apply -n %K8S_NAMESPACE% -f frontend-service.yaml
+                        kubectl apply -n %K8S_NAMESPACE% -f ingress.yaml
+                    """
                 }
             }
         }
