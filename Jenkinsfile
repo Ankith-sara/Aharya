@@ -13,7 +13,7 @@ pipeline {
 
         stage('Checkout') {
             steps {
-               git branch: 'main', url: 'https://github.com/Ankith-sara/Aharya.git'
+               git branch: 'main', url: 'https://github.com/Ankith-sara/Aharya'
              }  
               }
 
