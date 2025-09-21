@@ -97,7 +97,6 @@ pipeline {
                     sh "docker push $FRONTEND_IMAGE"
                 }
             }
-
       
         }
 
