@@ -14,8 +14,9 @@ spec:
         app: ecommerce-api
     spec:
       containers:
-      - name: api
-        image: your-dockerhub-user/ecommerce-api:2.0.1
+      - name: backend
+        image: ankith1807/backend:latest
+        imagePullPolicy: Always
         ports:
           - containerPort: 4000
         env:
