@@ -103,18 +103,20 @@ pipeline {
 
 
           stage('Deploy to Kubernetes') {
-            steps {
-                sh '''
-                  kubectl apply -n $K8S_NAMESPACE -f admin-deployment.yaml
-                  kubectl apply -n $K8S_NAMESPACE -f admin-service.yaml
-                  kubectl apply -n $K8S_NAMESPACE -f backend-deployment.yaml
-                  kubectl apply -n $K8S_NAMESPACE -f backend-service.yaml
-                  kubectl apply -n $K8S_NAMESPACE -f frontend-deployment.yaml
-                  kubectl apply -n $K8S_NAMESPACE -f frontend-service.yaml
-                  kubectl apply -n $K8S_NAMESPACE -f ingress.yaml
-                '''
+          steps {
+            dir('k8/base') { // switch to the folder containing the YAML files
+            sh '''
+                kubectl apply -n $K8S_NAMESPACE -f admin-deployment.yaml
+                kubectl apply -n $K8S_NAMESPACE -f admin-service.yaml
+                kubectl apply -n $K8S_NAMESPACE -f backend-deployment.yaml
+                kubectl apply -n $K8S_NAMESPACE -f backend-service.yaml
+                kubectl apply -n $K8S_NAMESPACE -f frontend-deployment.yaml
+                kubectl apply -n $K8S_NAMESPACE -f frontend-service.yaml
+                kubectl apply -n $K8S_NAMESPACE -f ingress.yaml
+            '''
             }
         }
+    }
 
     }
 
