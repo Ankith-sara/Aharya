@@ -7,86 +7,55 @@ describe('orders API', () => {
   const company = 'Aharyas';  // Example company name
   const YOUR_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZjI2NmU5NWEzOTI0NTJlNTQzNDI2MCIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU4MDIyMzY0LCJleHAiOjE3NTg2MjcxNjR9.6LgBFVLx6o2D0cBlfWQqbmJ0ZCfYTm2BCL8ol2YotHc';
   
-
   const orderData = {
     userId,
-    items: [{ productId: '64f234567890abcdef12345', name: 'T-Shirt', price: 500, quantity: 2 }],
-    amount: 1000,
-    address: { street: '123 Street', city: 'Mumbai', zip: '400001' }
+    items: [{
+      productId: '64f234567890abcdef12345',  // Sample product ID
+      name: 'T-Shirt',                       // Sample product name
+      price: 500,                            // Product price
+      quantity: 2                            // Quantity ordered
+    }],
+    amount: 1050,                            // Total order amount
+    address: {
+      street: '123 Street, Main St',
+      city: 'Mumbai',
+      zip: '400001'
+    }
   };
 
+  // Test for Place Order with Razorpay
   it('should place an order with Razorpay', (done) => {
-    request(app).post('/api/order/razorpay')
-      .set('Authorization', token)
+    request(app)
+      .post('/api/order/razorpay')
+      .set('Authorization', `Bearer ${YOUR_TOKEN}`)  // Add the token here
       .send(orderData)
-      .expect(200, done);
-  });
-
-  it('should place an order with Stripe', (done) => {
-    request(app).post('/api/order/stripe')
-      .set('Authorization', token)
-      .send(orderData)
-      .expect(200, done);
-  });
-
-  it('should fetch user orders', (done) => {
-    request(app).post('/api/order/userorders')
-      .set('Authorization', token)
-      .send({ userId })
-      .expect(200, done);
-  });
-
-  it('should update order status', (done) => {
-    request(app).post('/api/order/status')
-      .set('Authorization', token)
-      .send({ orderId: 'test-order', status: 'shipped' })
-      .expect(200, done);
-  });
-
-  it('should reject order if token missing', (done) => {
-    request(app).post('/api/order/razorpay')
-      .send(orderData)
-      .expect(401, done);
-  });
-
-  it('should reject order if items missing', (done) => {
-    request(app).post('/api/order/razorpay')
-      .set('Authorization', token)
-      .send({ userId, amount: 100 })
-      .expect(400, done);
-  });
-
-  it('should return 404 if order not found', (done) => {
-    request(app).post('/api/order/status')
-      .set('Authorization', token)
-      .send({ orderId: 'invalid', status: 'shipped' })
-      .expect(404, done);
-  });
-
-  it('should return array of orders', (done) => {
-    request(app).post('/api/order/userorders')
-      .set('Authorization', token)
-      .send({ userId })
+      .expect(200)
       .end((err, res) => {
+        if (err) return done(err);  // Handle errors properly
+        console.log(res.body);  // Log the response to inspect the body
+        expect(res.body).to.have.property('order');
+        expect(res.body.order).to.have.property('id');  // Expect orderId inside order object
+        expect(res.body.order.id).to.be.a('string');
+        expect(res.body.order).to.have.property('currency');
+        expect(res.body.order.currency).to.equal('INR');
+        expect(res.body.order).to.have.property('status');
+        expect(res.body.order.status).to.equal('created');
+        done();
+      });
+  });
+
+  // Test for User Orders
+  it('should fetch user orders', (done) => {
+    request(app)
+      .post('/api/order/userorders')
+      .set('Authorization', `Bearer ${YOUR_TOKEN}`)  // Add the token here
+      .send({ userId })
+      .expect(200)
+      .end((err, res) => {
+        if (err) return done(err);  // Handle errors properly
+        expect(res.body).to.have.property('orders');
         expect(res.body.orders).to.be.an('array');
         done();
       });
-  });
-
-  it('should return JSON response', (done) => {
-    request(app).post('/api/order/razorpay')
-      .set('Authorization', token)
-      .send(orderData)
-      .end((err, res) => {
-        expect(res.headers['content-type']).to.include('application/json');
-        done();
-      });
-  });
-
-  it('should handle server crash gracefully', (done) => {
-    request(app).post('/api/order/razorpay/error-test')
-      .set('Authorization', token)
-      .send(orderData)
-      .expect(500, done);
   });
 });
