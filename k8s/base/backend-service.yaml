@@ -4,8 +4,9 @@ metadata:
   name: ecommerce-api
   namespace: dev
 spec:
+  type: ClusterIP
   selector:
     app: ecommerce-api
   ports:
-    - port: 80
-      targetPort: 4000
+    - port: 4000       # service port
+      targetPort: 4000 # pod container port
