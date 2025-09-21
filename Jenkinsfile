@@ -83,6 +83,14 @@ pipeline {
             }
         }
 
+        stage('Test Kubectl') {
+            steps {
+                withEnv(["KUBECONFIG=C:\\Users\\sarav\\.kube\\config"]) {
+                    bat 'kubectl get nodes'
+                }
+            }
+        }
+
         stage('Deploy to Kubernetes') {
             steps {
                 dir('k8s/base') {
