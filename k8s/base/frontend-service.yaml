@@ -8,6 +8,6 @@ spec:
   selector:
     app: frontend
   ports:
-    - port: 3000       # service port
-      targetPort: 80   # container port
+    - port: 3000
+      targetPort: 3000   # <--- fix here
       nodePort: 30080
