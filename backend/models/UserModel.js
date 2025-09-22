@@ -20,6 +20,11 @@ const userSchema = new mongoose.Schema(
         phone: String,
       }
     ],
+    wishlist: [{ 
+        type: String, 
+        ref: 'product',
+        default: [] 
+    }],
     cartData: { type: Object, default: {} },
     role: { type: String, default: 'user', enum: ['user', 'admin'] },
     isAdmin: { type: Boolean, default: false },

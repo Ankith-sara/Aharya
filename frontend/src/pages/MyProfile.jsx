@@ -163,7 +163,7 @@ const MyProfile = () => {
   const menuItems = [
     { icon: <MapPinHouse size={18} />, text: "Delivery Address", description: "Manage your delivery locations" },
     { icon: <ShoppingBag size={18} />, text: "Order History", link: "/orders", description: "View your past orders" },
-    { icon: <Heart size={18} />, text: "Wishlist", description: "Items you've saved for later" },
+    { icon: <Heart size={18} />, text: "Wishlist", link: "/wishlist", description: "Items you've saved for later" },
     { icon: <Settings size={18} />, text: "Account Settings", description: "Notifications, password, privacy" },
   ];
 
@@ -406,12 +406,6 @@ const MyProfile = () => {
             {/* Header */}
             <div className="px-4 py-3 border-b border-gray-200 flex items-center justify-between">
               <h2 className="text-sm font-medium tracking-wide uppercase">Edit Profile</h2>
-              <button
-                onClick={() => setActiveSection(null)}
-                className="p-1 hover:bg-gray-100 transition-colors"
-              >
-                <X size={16} />
-              </button>
             </div>
 
             <form className="p-4 space-y-4" onSubmit={handleEditProfileSubmit}>
@@ -623,9 +617,9 @@ function AddressForm({ initial, onSave, onCancel, loading }) {
       className="space-y-4"
     >
       <div>
-        <label className="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Address Label (Optional)</label>
+        <label className="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">Address Label (Optional)</label>
         <input
-          className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-black transition-colors font-light"
+          className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:border-black transition-colors font-light"
           value={form.label}
           onChange={e => setForm(f => ({ ...f, label: e.target.value }))}
           placeholder="e.g., Home, Office"
@@ -633,9 +627,9 @@ function AddressForm({ initial, onSave, onCancel, loading }) {
       </div>
 
       <div>
-        <label className="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Street Address</label>
+        <label className="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">Street Address</label>
         <input
-          className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-black transition-colors font-light"
+          className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:border-black transition-colors font-light"
           value={form.address}
           onChange={e => setForm(f => ({ ...f, address: e.target.value }))}
           placeholder="Enter your street address"
@@ -645,9 +639,9 @@ function AddressForm({ initial, onSave, onCancel, loading }) {
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">City</label>
+          <label className="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">City</label>
           <input
-            className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-black transition-colors font-light"
+            className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:border-black transition-colors font-light"
             value={form.city}
             onChange={e => setForm(f => ({ ...f, city: e.target.value }))}
             placeholder="City"
@@ -655,9 +649,9 @@ function AddressForm({ initial, onSave, onCancel, loading }) {
           />
         </div>
         <div>
-          <label className="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">State</label>
+          <label className="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">State</label>
           <input
-            className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-black transition-colors font-light"
+            className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:border-black transition-colors font-light"
             value={form.state}
             onChange={e => setForm(f => ({ ...f, state: e.target.value }))}
             placeholder="State"
@@ -668,9 +662,9 @@ function AddressForm({ initial, onSave, onCancel, loading }) {
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">ZIP Code</label>
+          <label className="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">ZIP Code</label>
           <input
-            className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-black transition-colors font-light"
+            className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:border-black transition-colors font-light"
             value={form.zip}
             onChange={e => setForm(f => ({ ...f, zip: e.target.value }))}
             placeholder="ZIP"
@@ -678,9 +672,9 @@ function AddressForm({ initial, onSave, onCancel, loading }) {
           />
         </div>
         <div>
-          <label className="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Country</label>
+          <label className="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">Country</label>
           <input
-            className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-black transition-colors font-light"
+            className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:border-black transition-colors font-light"
             value={form.country}
             onChange={e => setForm(f => ({ ...f, country: e.target.value }))}
             placeholder="Country"
@@ -690,10 +684,10 @@ function AddressForm({ initial, onSave, onCancel, loading }) {
       </div>
 
       <div>
-        <label className="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Phone Number</label>
+        <label className="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">Phone Number</label>
         <input
           type="tel"
-          className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-black transition-colors font-light"
+          className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:border-black transition-colors font-light"
           value={form.phone}
           onChange={e => setForm(f => ({ ...f, phone: e.target.value }))}
           placeholder="Enter phone number for this address"

@@ -31,6 +31,7 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import FAQs from './pages/FAQs';
 import Support from './pages/Support';
 import Sitemap from './pages/Sitemaps';
+import Wishlist from './pages/wishlist';
 
 const App = () => {
   const location = useLocation();
@@ -58,6 +59,7 @@ const App = () => {
         <Route path='/trackorder/:orderId' element={<TrackOrder />} />
         <Route path='/verify' element={<Verify />} />
         <Route path='/profile/:id' element={<MyProfile />} />
+        <Route path='/wishlist' element={<Wishlist />} />
         <Route path='/sell' element={<Sell />} />
         <Route path='/blog' element={<BlogPage />} />
         <Route path='/refundpolicy' element={<CancellationRefundPolicy />} />
