@@ -10,10 +10,10 @@ import orderRouter from './routes/OrderRoute.js';
 
 // App Config
 const app = express();
-const port = process.env.PORT_TEST || process.env.PORT || 4000;
+const port = process.env.PORT || 4000;
 
 app.use(cors({
-  origin: "*", // your frontend
+  origin: "*",
   credentials: true
 }));
 
@@ -30,16 +30,15 @@ app.use('/api/user', userRouter);
 app.use('/api/product', productRouter)
 app.use('/api/cart', cartRouter)
 app.use('/api/order', orderRouter)
-app.use('/api/wishlist', wishlistRouter)
 
 app.get('/', (req, res) => {
-    res.send("API is really working");
+  res.send("API is really working");
 });
 
 // Error Handling Middleware
 app.use((err, req, res, next) => {
-    console.error(err.message);
-    res.status(500).send("Something went wrong!");
+  console.error(err.message);
+  res.status(500).send("Something went wrong!");
 });
 
 
