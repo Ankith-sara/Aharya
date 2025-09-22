@@ -16,6 +16,7 @@ spec:
       containers:
       - name: frontend
         image: ankith1807/frontend:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 3000
 ---

@@ -32,7 +32,7 @@ app.use('/api/cart', cartRouter)
 app.use('/api/order', orderRouter)
 
 app.get('/', (req, res) => {
-    res.send("API working");
+    res.send("API is really working");
 });
 
 // Error Handling Middleware
