@@ -5,7 +5,7 @@ import { expect } from 'chai';
 describe('orders API', () => {
   const userId = '67f266e95a392452e5434260';  // Example user ID
   const company = 'Aharyas';  // Example company name
-  const YOUR_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZjI2NmU5NWEzOTI0NTJlNTQzNDI2MCIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU4MDIyMzY0LCJleHAiOjE3NTg2MjcxNjR9.6LgBFVLx6o2D0cBlfWQqbmJ0ZCfYTm2BCL8ol2YotHc';
+  const YOUR_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZjI2NmU5NWEzOTI0NTJlNTQzNDI2MCIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU4NjI4MzMwLCJleHAiOjE3NTkyMzMxMzB9.R7T4ua4z8fkWHlUGk_8Z_WdkMVZBfenbZRs6JbmeOkM';
   
   const orderData = {
     userId,
