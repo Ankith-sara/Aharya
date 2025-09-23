@@ -25,7 +25,7 @@ const App = () => {
   }, [token]);
 
   return (
-    <div className='bg-text min-h-screen'>
+    <div className='min-h-screen'>
       <ToastContainer />
       {token === ""
         ? <Login setToken={setToken} />

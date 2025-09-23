@@ -21,7 +21,7 @@ const userSchema = new mongoose.Schema(
       }
     ],
     wishlist: [{ 
-        type: [String],
+        type: String,
         default: [] 
     }],
     cartData: { type: Object, default: {} },
