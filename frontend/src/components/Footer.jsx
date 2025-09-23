@@ -2,58 +2,11 @@ import React from 'react';
 import { assets } from '../assets/frontend_assets/assets';
 import { NavLink } from 'react-router-dom';
 import {
-  Instagram,
-  Linkedin,
-  Twitter,
-  Mail,
-  Phone,
-  MapPin,
-  ShoppingBag,
-  FileText,
-  HelpCircle,
-  User,
-  Home,
-  Info,
-  Settings,
-  Shield,
-  Truck,
-  Heart,
-  Search,
-  Globe,
-  Users,
-  Leaf,
-  Target
+  Instagram, Linkedin, Twitter, Mail, Phone, Shield, Truck, Heart
 } from 'lucide-react';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
-
-  const sdgGoals = [
-    {
-      number: "1",
-      title: "No Poverty",
-      description: "Supporting artisan livelihoods and creating sustainable income opportunities",
-      icon: <Users size={16} />
-    },
-    {
-      number: "5",
-      title: "Gender Equality",
-      description: "Empowering women artisans and promoting inclusive economic growth",
-      icon: <Heart size={16} />
-    },
-    {
-      number: "8",
-      title: "Decent Work",
-      description: "Providing fair employment and economic opportunities for craftspeople",
-      icon: <Target size={16} />
-    },
-    {
-      number: "12",
-      title: "Responsible Consumption",
-      description: "Promoting sustainable production and conscious consumption patterns",
-      icon: <Leaf size={16} />
-    }
-  ];
 
   return (
     <footer className="bg-black text-white">

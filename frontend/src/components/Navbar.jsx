@@ -2,12 +2,12 @@ import React, { useState, useEffect, useContext, useRef } from 'react';
 import { assets } from '../assets/frontend_assets/assets';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { ShopContext } from '../context/ShopContext';
-import { ChevronDown, ChevronRight, X, Search, User, ShoppingCart, Menu, LogOut, ShoppingBagIcon, ShoppingCartIcon } from 'lucide-react';
+import { ChevronDown, ChevronRight, X, Search, User, ShoppingCart, Menu, LogOut, ShoppingBagIcon, ShoppingCartIcon, Heart } from 'lucide-react';
 import { jwtDecode } from "jwt-decode";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
-  const { setShowSearch, getCartCount, navigate, token, setToken, setCartItems, setSelectedSubCategory } = useContext(ShopContext);
+  const { setShowSearch, getWishlistCount, getCartCount, navigate, token, setToken, setCartItems, setSelectedSubCategory } = useContext(ShopContext);
   const [menuVisible, setMenuVisible] = useState(false);
   const [expandedCategory, setExpandedCategory] = useState(null);
   const location = useLocation();
@@ -134,7 +134,6 @@ const Navbar = () => {
 
   return (
     <>
-      {/* Overlay for when menu is open */}
       <div className={`fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm transition-all duration-300 z-40 ${menuVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'}`} onClick={() => setMenuVisible(false)} />
 
       {/* Navbar */}
@@ -143,7 +142,7 @@ const Navbar = () => {
           <Link to='/' onClick={() => window.location.href = '/'} className="flex-shrink-0 group">
             <img
               src={assets.logo_white}
-              className="w-36"
+              className="w-28 md:w-36"
               alt="Logo"
             />
           </Link>
@@ -152,16 +151,16 @@ const Navbar = () => {
           <div className="flex items-center">
             <button
               onClick={() => { setShowSearch(true); navigate('/shop/collection') }}
-              className="p-3 transition-all duration-200 group"
+              className="p-2.5 transition-all duration-200 group"
               aria-label="Search"
             >
               <Search size={20} className="group-hover:scale-110 transition-transform duration-200" />
             </button>
 
-            <div className="relative group">
+            <div className="relative group hidden md:block">
               <button
                 onClick={() => token ? null : navigate('/login')}
-                className="p-3 transition-all duration-200 group/profile"
+                className="p-2.5 transition-all duration-200 group/profile"
                 aria-label="Profile"
               >
                 <User size={20} className="group-hover/profile:scale-110 transition-transform duration-200" />
@@ -201,8 +200,22 @@ const Navbar = () => {
               )}
             </div>
 
+            <Link to='/wishlist' className='relative group '>
+              <button
+                className="p-2.5 transition-all duration-200 group relative"
+                aria-label="Wishlist"
+              >
+                <Heart size={20} className="group-hover:scale-110 transition-transform duration-200" />
+                {getWishlistCount() > 0 && (
+                  <span className={`absolute -top-1 -right-1 min-w-[20px] h-5 flex items-center justify-center rounded-full text-xs font-medium transition-all duration-200 ${isHomePage && !isScrolled ? 'bg-white text-black' : 'bg-white text-black'} shadow-md`}>
+                    {getWishlistCount()}
+                  </span>
+                )}
+              </button>
+            </Link>
+
             <Link to='/cart' className='relative group'>
-              <button className="p-3 transition-all duration-200" aria-label="Cart">
+              <button className="p-2.5 transition-all duration-200" aria-label="Cart">
                 <ShoppingBagIcon size={20} className="group-hover:scale-110 transition-transform duration-200" />
                 {getCartCount() > 0 && (
                   <div className={`absolute -top-1 -right-1 min-w-[20px] h-5 flex items-center justify-center rounded-full text-xs font-medium transition-all duration-200 ${isHomePage && !isScrolled ? 'bg-white text-black' : 'bg-white text-black'} shadow-md`}>
@@ -216,7 +229,7 @@ const Navbar = () => {
             <button
               id="menu-toggle-button"
               onClick={() => setMenuVisible(true)}
-              className="p-3 transition-all duration-200 group"
+              className="p-2.5 transition-all duration-200 group"
               aria-label="Menu"
             >
               <Menu size={20} className="group-hover:scale-110 transition-transform duration-200" />

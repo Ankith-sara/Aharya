@@ -4,7 +4,7 @@ import { ShopContext } from '../context/ShopContext';
 import Title from '../components/Title';
 import axios from 'axios';
 import {
-  Truck, Package, CheckCircle, RefreshCw, ShoppingBag, Calendar, CreditCard, Hash, ArrowRight
+  Truck, Package, CheckCircle, RefreshCw, ShoppingBag, Calendar, CreditCard, Hash
 } from 'lucide-react';
 
 const Orders = () => {
@@ -355,7 +355,6 @@ const Orders = () => {
                   className="inline-flex items-center gap-2 px-8 py-3 bg-black text-white font-light tracking-wide hover:bg-gray-800 transition-all duration-300"
                 >
                   <span>CONTINUE SHOPPING</span>
-                  <ArrowRight size={16} />
                 </button>
               </div>
             </div>
