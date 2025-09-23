@@ -239,7 +239,7 @@ const Product = () => {
                 </div>
               </div>
 
-              <div className="flex gap-3 overflow-x-auto p-2 bg-gray-50">
+              <div className="flex gap-3 overflow-x-auto p-2 bg-gray-100">
                 {productData.images.map((img, index) => (
                   <div
                     key={index}
