@@ -8,7 +8,17 @@ import Title from '../components/Title';
 
 const Product = () => {
   const { productId } = useParams();
-  const { products, currency, addToCart, navigate, addProductToRecentlyViewed } = useContext(ShopContext) || {};
+  const { 
+    products, 
+    currency, 
+    addToCart, 
+    navigate, 
+    addProductToRecentlyViewed,
+    toggleWishlist,
+    isInWishlist,
+    token
+  } = useContext(ShopContext) || {};
+
   const [productData, setProductData] = useState(null);
   const [size, setSize] = useState('');
   const [quantity, setQuantity] = useState(1);
@@ -20,6 +30,8 @@ const Product = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [startY, setStartY] = useState(0);
   const [scrollTop, setScrollTop] = useState(0);
+
+  // Wishlist state - check if current product is in wishlist
   const [isWishlisted, setIsWishlisted] = useState(false);
 
   // Dropdown state management
@@ -61,6 +73,20 @@ const Product = () => {
     }
   };
 
+  // Wishlist handler
+  const handleWishlistToggle = async () => {
+    if (!token) {
+      // If not logged in, show a message and redirect to login
+      navigate('/login');
+      return;
+    }
+    
+    const wasAdded = await toggleWishlist(productId);
+    if (wasAdded !== undefined) {
+      setIsWishlisted(wasAdded);
+    }
+  };
+
   // Share product function
   const handleShare = () => {
     const shareData = {
@@ -70,7 +96,7 @@ const Product = () => {
     };
 
     if (navigator.share) {
-      navigator.share(shareData).catch((err) => console.log("Share failed:", err));
+      navigator.share(shareData).catch((err));
     } else {
       navigator.clipboard.writeText(shareData.url).then(() => {
         alert("Product link copied to clipboard!");
@@ -105,7 +131,6 @@ const Product = () => {
 
   // Fixed modal functions
   const openModal = (img) => {
-    console.log('Opening modal with image:', img);
     setModalImage(img);
     setModalOpen(true);
     setZoomLevel(1);
@@ -119,7 +144,6 @@ const Product = () => {
   const closeModal = (e) => {
     e?.preventDefault();
     e?.stopPropagation();
-    console.log('Closing modal');
     setModalOpen(false);
     setModalImage('');
     setZoomLevel(1);
@@ -130,7 +154,6 @@ const Product = () => {
   const handleImageClick = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    console.log('Image clicked, opening modal');
     openModal(productData.images[currentIndex]);
   };
 
@@ -171,14 +194,23 @@ const Product = () => {
     if (product) {
       setProductData(product);
       addProductToRecentlyViewed(product);
+      // Check if product is in wishlist
+      setIsWishlisted(isInWishlist(productId));
     }
-  }, [productId, products, addProductToRecentlyViewed]);
+  }, [productId, products, addProductToRecentlyViewed, isInWishlist]);
 
   useEffect(() => {
     if (productData?.name) {
       document.title = `${productData.name} | Aharyas`;
     }
   }, [productData?.name]);
+
+  // Update wishlist state when wishlist changes
+  useEffect(() => {
+    if (productId) {
+      setIsWishlisted(isInWishlist(productId));
+    }
+  }, [productId, isInWishlist]);
 
   if (!productData) {
     return (
@@ -266,15 +298,25 @@ const Product = () => {
                   <h1 className="text-2xl tracking-wide text-black">{productData.name}</h1>
                   <div className="flex items-center gap-2">
                     <button
-                      onClick={() => setIsWishlisted(!isWishlisted)}
+                      onClick={handleWishlistToggle}
                       className={`p-2 border transition-all duration-300 ${isWishlisted
                         ? 'bg-black text-white border-black'
                         : 'bg-white text-black border-gray-300 hover:border-black'
                         }`}
+                      title={isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
                     >
-                      <Heart size={16} className={isWishlisted ? 'fill-current' : ''} />
+                      <Heart
+    size={16}
+    className={isWishlisted ? 'text-white' : 'text-black'}
+    fill={isWishlisted ? 'currentColor' : 'none'}   // <- key fix
+    stroke="currentColor"
+  />
                     </button>
-                    <button onClick={handleShare} className="p-2 border border-gray-300 bg-white text-black hover:border-black transition-all duration-300">
+                    <button 
+                      onClick={handleShare} 
+                      className="p-2 border border-gray-300 bg-white text-black hover:border-black transition-all duration-300"
+                      title="Share product"
+                    >
                       <Share2 size={16} />
                     </button>
                   </div>

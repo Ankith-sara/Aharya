@@ -12,13 +12,14 @@ const ShopContextProvider = (props) => {
     const [search, setSearch] = useState('');
     const [showSearch, setShowSearch] = useState(false);
     const [cartItems, setCartItems] = useState({});
+    const [wishlistItems, setWishlistItems] = useState([]);
     const [products, setProducts] = useState([]);
     const [token, setToken] = useState('')
     const navigate = useNavigate();
     const [selectedSubCategory, setSelectedSubCategory] = useState('');
 
     // Add to cart
-    const addToCart = async (itemId, size) => {
+    const addToCart = async (itemId, size, quantity = 1) => {
         if (!size) {
             toast.error('Please select Product size');
             return;
@@ -28,13 +29,13 @@ const ShopContextProvider = (props) => {
 
         if (cartData[itemId]) {
             if (cartData[itemId][size]) {
-                cartData[itemId][size] += 1;
+                cartData[itemId][size] += quantity;
             } else {
-                cartData[itemId][size] = 1;
+                cartData[itemId][size] = quantity;
             }
         } else {
             cartData[itemId] = {};
-            cartData[itemId][size] = 1;
+            cartData[itemId][size] = quantity;
         }
 
         setCartItems(cartData);
@@ -50,6 +51,106 @@ const ShopContextProvider = (props) => {
         }
     };
 
+    // Wishlist Functions
+    const addToWishlist = async (itemId) => {
+        if (!token) {
+            toast.error('Please login to add items to wishlist');
+            return;
+        }
+
+        try {
+            const response = await axios.post(
+                backendUrl + '/api/wishlist/add', 
+                { itemId }, 
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+
+            if (response.data.success) {
+                setWishlistItems(response.data.wishlist);
+                toast.success('Item added to wishlist');
+            }
+        } catch (error) {
+            console.log(error);
+            if (error.response?.data?.message === "Item already in wishlist") {
+                toast.info('Item already in wishlist');
+            } else {
+                toast.error(error.response?.data?.message || 'Failed to add to wishlist');
+            }
+        }
+    };
+
+    const removeFromWishlist = async (itemId) => {
+        if (!token) {
+            toast.error('Please login to manage wishlist');
+            return;
+        }
+
+        try {
+            const response = await axios.post(
+                backendUrl + '/api/wishlist/remove', 
+                { itemId }, 
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+
+            if (response.data.success) {
+                setWishlistItems(response.data.wishlist);
+                toast.success('Item removed from wishlist');
+            }
+        } catch (error) {
+            console.log(error);
+            toast.error(error.response?.data?.message || 'Failed to remove from wishlist');
+        }
+    };
+
+    const toggleWishlist = async (itemId) => {
+        if (!token) {
+            toast.error('Please login to manage wishlist');
+            return;
+        }
+
+        try {
+            const response = await axios.post(
+                backendUrl + '/api/wishlist/toggle', 
+                { itemId }, 
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+
+            if (response.data.success) {
+                setWishlistItems(response.data.wishlist);
+                toast.success(response.data.message);
+                return response.data.isAdded;
+            }
+        } catch (error) {
+            console.log(error);
+            toast.error(error.response?.data?.message || 'Failed to update wishlist');
+            return false;
+        }
+    };
+
+    const isInWishlist = (itemId) => {
+        return wishlistItems.includes(itemId);
+    };
+
+    const getWishlistCount = () => {
+        return wishlistItems.length;
+    };
+
+    const getUserWishlist = async (token) => {
+        try {
+            const response = await axios.post(
+                backendUrl + '/api/wishlist/get', 
+                {}, 
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+
+            if (response.data.success) {
+                setWishlistItems(response.data.wishlist);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     // Get cart count
     const getCartCount = () => {
         let totalCount = 0;
@@ -60,7 +161,7 @@ const ShopContextProvider = (props) => {
                         totalCount += cartItems[items][item];
                     }
                 } catch (error) {
-
+                    // Handle error silently
                 }
             }
         }
@@ -187,15 +288,27 @@ const ShopContextProvider = (props) => {
     useEffect(() => {
         if (!token && localStorage.getItem('token')) {
             setToken(localStorage.getItem('token'));
-            getUserCart(localStorage.getItem('token'))
+            getUserCart(localStorage.getItem('token'));
+            getUserWishlist(localStorage.getItem('token'));
         }
     }, [])
+
+    // Load wishlist when token is available
+    useEffect(() => {
+        if (token) {
+            getUserWishlist(token);
+        } else {
+            setWishlistItems([]);
+        }
+    }, [token]);
 
     const value = {
         products, currency, delivery_fee, search, setSearch, showSearch, setShowSearch,
         cartItems, addToCart, setCartItems, getCartCount, updateQuantity, getCartAmount,
         navigate, backendUrl, setToken, token, selectedSubCategory, setSelectedSubCategory,
-        addProductToRecentlyViewed, getRecentlyViewed
+        addProductToRecentlyViewed, getRecentlyViewed,
+        // Wishlist functions
+        wishlistItems, addToWishlist, removeFromWishlist, toggleWishlist, isInWishlist, getWishlistCount
     };
 
     return (

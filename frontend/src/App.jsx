@@ -31,6 +31,7 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import FAQs from './pages/FAQs';
 import Support from './pages/Support';
 import Sitemap from './pages/Sitemaps';
+import Wishlist from './pages/Wishlist';
 
 const App = () => {
   const location = useLocation();
@@ -52,6 +53,7 @@ const App = () => {
         <Route path='/shop/:subcategory' element={<ProductPage />} />
         <Route path='/shop/company/:company' element={<ProductPage />} />
         <Route path='/cart' element={<Cart />} />
+        <Route path='/wishlist' element={<Wishlist />} />
         <Route path='/login' element={<Login />} />
         <Route path='/place-order' element={<PlaceOrder />} />
         <Route path='/orders' element={<Orders />} />
