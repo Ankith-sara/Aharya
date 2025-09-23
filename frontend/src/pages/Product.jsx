@@ -192,16 +192,10 @@ const Product = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white text-black mt-20">
+    <div className="min-h-screen mt-20">
       {/* Product Section */}
       <section className="py-12 px-4 sm:px-8 md:px-10 lg:px-20">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-8">
-            <div className="text-3xl mb-6">
-              <Title text1="PRODUCT" text2="DETAILS" />
-            </div>
-          </div>
-
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.2fr] gap-6 items-start">
             {/* Image Gallery */}
             <div className="space-y-4">
@@ -245,12 +239,12 @@ const Product = () => {
                 </div>
               </div>
 
-              <div className="flex gap-3 overflow-x-auto py-2">
+              <div className="flex gap-3 overflow-x-auto p-2 bg-gray-50">
                 {productData.images.map((img, index) => (
                   <div
                     key={index}
                     onClick={() => handleThumbnailClick(index)}
-                    className={`flex-shrink-0 w-20 h-20 overflow-hidden cursor-pointer transition-all duration-300 ${currentIndex === index
+                    className={`flex-shrink-0 w-20 overflow-hidden cursor-pointer transition-all duration-300 ${currentIndex === index
                       ? 'shadow-lg border-2 border-black'
                       : 'shadow-md border border-gray-200 hover:border-gray-400'
                       }`}

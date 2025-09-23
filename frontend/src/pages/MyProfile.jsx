@@ -163,7 +163,7 @@ const MyProfile = () => {
   const menuItems = [
     { icon: <MapPinHouse size={18} />, text: "Delivery Address", description: "Manage your delivery locations" },
     { icon: <ShoppingBag size={18} />, text: "Order History", link: "/orders", description: "View your past orders" },
-    { icon: <Heart size={18} />, text: "Wishlist", link: "/wishlist", description: "Items you've saved for later" },
+    { icon: <Heart size={18} />, text: "Wishlist", description: "Items you've saved for later" },
     { icon: <Settings size={18} />, text: "Account Settings", description: "Notifications, password, privacy" },
   ];
 
