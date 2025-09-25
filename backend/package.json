@@ -4,7 +4,7 @@
   "main": "server.js",
   "type": "module",
   "scripts": {
-    "start": "nodemon server.js",
+    "start": "node server.js",
     "server": "nodemon server.js",
     "test:unit": "cross-env JASMINE_TEST=true PORT_TEST=4001 npx jasmine"
   },
