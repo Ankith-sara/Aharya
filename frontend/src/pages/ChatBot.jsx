@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Send, Image, X, BotMessageSquare, ShoppingBag, Heart, User, Truck, RefreshCw, HelpCircle } from "lucide-react";
+import Title from "../components/Title";
 
 const ChatBot = () => {
   const [question, setQuestion] = useState("");
@@ -310,7 +311,7 @@ Respond in a warm, knowledgeable tone, celebrating Indian heritage and conscious
                 value={question}
                 onChange={(e) => setQuestion(e.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder="Ask about heritage fashion, traditional crafts, website navigation, or Aharyas services..."
+                placeholder="Ask about heritage fashion, traditional crafts, or Aharyas services..."
                 className="w-full px-6 py-4 pr-24 border border-gray-300 focus:outline-none focus:border-black transition-all font-light tracking-wide"
               />
               <div className="absolute right-3 flex items-center space-x-2">
@@ -329,13 +330,9 @@ Respond in a warm, knowledgeable tone, celebrating Indian heritage and conscious
         <div className="min-h-screen flex items-center justify-center px-4 sm:px-8 md:px-10 lg:px-20 py-32">
           <div className="w-full max-w-5xl">
             <div className="text-center mb-16">
-              <h1 className="text-5xl font-light mb-6 tracking-[0.15em] text-black">
-                AHARYAS <span className="font-medium">FASHION ADVISOR</span>
-              </h1>
-              <div className="w-24 h-0.5 bg-black mx-auto mb-8"></div>
-              <p className="text-xl text-gray-600 max-w-2xl mx-auto font-light leading-relaxed mb-12">
-                Your specialized guide to conscious luxury fashion, traditional Indian crafts, website navigation, and Aharyas heritage collections.
-              </p>
+              <div>
+                <Title text1="AHARYAS" text2="FASHION ADVISOR" />
+              </div>
             </div>
 
             {/* Image Upload Section */}
@@ -360,7 +357,7 @@ Respond in a warm, knowledgeable tone, celebrating Indian heritage and conscious
                 value={question}
                 onChange={(e) => setQuestion(e.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder="Ask about heritage fashion, traditional crafts, website navigation, or Aharyas services..."
+                placeholder="Ask about heritage fashion, traditional crafts, or Aharyas services..."
                 className="w-full px-8 py-6 pr-28 border border-gray-300 focus:outline-none focus:border-black transition-all font-light tracking-wide shadow-lg text-lg"
               />
               <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center space-x-3">

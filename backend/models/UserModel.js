@@ -27,6 +27,7 @@ const userSchema = new mongoose.Schema(
     cartData: { type: Object, default: {} },
     role: { type: String, default: 'user', enum: ['user', 'admin'] },
     isAdmin: { type: Boolean, default: false },
+    isVerified: { type: Boolean, default: false },
     createdAt: { type: Date, default: Date.now },
     otp: { type: String },
     otpExpiry: { type: Date },

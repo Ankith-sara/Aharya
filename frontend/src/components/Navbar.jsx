@@ -189,7 +189,7 @@ const Navbar = () => {
                       </NavLink>
                       <button
                         onClick={() => { if (window.confirm("Are you sure you want to log out?")) logout(); }}
-                        className="w-full flex items-center px-4 py-3 text-left text-gray-700 hover:bg-red-50 hover:text-red-600 font-medium transition-all duration-200"
+                        className="w-full flex items-center px-4 py-3 text-left text-gray-700 hover:text-red-600 font-medium transition-all duration-200"
                       >
                         <LogOut size={16} className="mr-3" />
                         Logout

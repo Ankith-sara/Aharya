@@ -32,7 +32,7 @@ const sendWelcomeMail = async (email, name = 'Admin') => {
   const mailOptions = {
     from: `"Aharyas" <${process.env.EMAIL_USER}>`,
     to: email,
-    subject: `🎉 Welcome to Aharyas Admin Portal - ${name}!`,
+    subject: `🎉 Welcome to Aharyas - ${name}!`,
     html: `
       <!DOCTYPE html>
       <html>

@@ -14,16 +14,21 @@ const transporter = nodemailer.createTransport({
   maxMessages: 100,
 });
 
-const sendOtpMail = async (email, otp) => {
+const sendOtpMail = async (email, otp, role = 'user') => {
   if (!email || !otp) {
     console.error('Missing email or OTP for verification mail');
     return false;
   }
 
+  const isAdmin = role === 'admin';
+  const portalType = isAdmin ? 'Admin Portal' : 'Customer Account';
+  const registrationType = isAdmin ? 'admin registration' : 'account registration';
+  const messageType = isAdmin ? 'admin account verification' : 'account verification';
+
   const mailOptions = {
     from: `"Aharyas" <${process.env.EMAIL_USER}>`,
     to: email,
-    subject: '🔐 Your Verification Code - Aharyas Admin',
+    subject: `🔐 Your Verification Code - Aharyas ${isAdmin ? 'Admin' : 'Account'}`,
     html: `
       <!DOCTYPE html>
       <html>
@@ -38,13 +43,13 @@ const sendOtpMail = async (email, otp) => {
               <!-- Header -->
               <div style="background: linear-gradient(135deg, #8B4513 0%, #D2B48C 100%); padding: 30px 20px; text-align: center;">
                   <h1 style="color: white; margin: 0; font-size: 28px; font-weight: 300;">AHARYAS</h1>
-                  <p style="color: rgba(255,255,255,0.9); margin: 8px 0 0 0; font-size: 14px;">Admin Portal Access</p>
+                  <p style="color: rgba(255,255,255,0.9); margin: 8px 0 0 0; font-size: 14px;">${portalType} Access</p>
               </div>
 
               <!-- Main Content -->
               <div style="padding: 40px 30px; text-align: center;">
                   <!-- Security Icon -->
-                  <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; margin: 0 auto 25px; display: flex; align-items: center; justify-content: center;">
+                  <div style="width: 80px; height: 80px; background: linear-gradient(135deg, ${isAdmin ? '#FF6B35' : '#667eea'} 0%, ${isAdmin ? '#F7931E' : '#764ba2'} 100%); border-radius: 50%; margin: 0 auto 25px; display: flex; align-items: center; justify-content: center;">
                       <div style="width: 40px; height: 40px; border: 3px solid white; border-radius: 50%; position: relative;">
                           <div style="width: 12px; height: 8px; background: white; border-radius: 2px; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -60%);"></div>
                       </div>
@@ -52,7 +57,7 @@ const sendOtpMail = async (email, otp) => {
 
                   <h2 style="color: #333; margin: 0 0 15px 0; font-size: 24px;">Email Verification Required</h2>
                   <p style="color: #666; margin: 0 0 30px 0; font-size: 16px; line-height: 1.5;">
-                      We've sent you a verification code to complete your admin registration. 
+                      We've sent you a verification code to complete your ${registrationType}. 
                       Please enter the code below to verify your email address.
                   </p>
 
@@ -79,12 +84,34 @@ const sendOtpMail = async (email, otp) => {
                   </div>
 
                   <!-- Instructions -->
-                  <div style="background: #e8f5e8; border-radius: 8px; padding: 20px; margin: 25px 0;">
-                      <h4 style="margin: 0 0 10px 0; color: #2e7d32; font-size: 16px;">📝 What to do next:</h4>
-                      <p style="color: #388e3c; margin: 0; font-size: 14px; line-height: 1.6;">
-                          1. Return to the admin registration page<br>
+                  <div style="background: ${isAdmin ? '#fff3e0' : '#e8f5e8'}; border-radius: 8px; padding: 20px; margin: 25px 0;">
+                      <h4 style="margin: 0 0 10px 0; color: ${isAdmin ? '#f57c00' : '#2e7d32'}; font-size: 16px;">📝 What to do next:</h4>
+                      <p style="color: ${isAdmin ? '#ef6c00' : '#388e3c'}; margin: 0; font-size: 14px; line-height: 1.6;">
+                          1. Return to the ${isAdmin ? 'admin ' : ''}registration page<br>
                           2. Enter the 6-digit code above<br>
                           3. Click "Verify & Create Account" to complete your registration
+                      </p>
+                  </div>
+
+                  ${isAdmin ? `
+                  <!-- Admin Specific Notice -->
+                  <div style="background: #ffebee; border-radius: 8px; padding: 20px; margin: 25px 0; text-align: left; border-left: 4px solid #f44336;">
+                      <h4 style="margin: 0 0 10px 0; color: #c62828; font-size: 16px;">⚠️ Admin Access Notice</h4>
+                      <p style="color: #d32f2f; margin: 0; font-size: 14px; line-height: 1.6;">
+                          This verification is for administrative access to the Aharyas platform. 
+                          Only authorized personnel should complete this verification process.
+                      </p>
+                  </div>
+                  ` : ''}
+
+                  <!-- Trouble with verification -->
+                  <div style="margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 8px;">
+                      <h4 style="margin: 0 0 10px 0; color: #333; font-size: 16px;">Having trouble?</h4>
+                      <p style="color: #666; margin: 0; font-size: 14px; line-height: 1.6;">
+                          • Make sure you're entering the code exactly as shown<br>
+                          • Check if the code has expired (valid for 5 minutes)<br>
+                          • Try requesting a new verification code<br>
+                          • Contact support if the issue persists
                       </p>
                   </div>
               </div>
@@ -92,7 +119,7 @@ const sendOtpMail = async (email, otp) => {
               <!-- Footer -->
               <div style="background: #f8f9fa; padding: 25px 20px; text-align: center; border-top: 1px solid #eee;">
                   <p style="margin: 0 0 10px 0; color: #666; font-size: 14px;">
-                      This is an automated message for admin account verification
+                      This is an automated message for ${messageType}
                   </p>
                   <p style="margin: 0; color: #999; font-size: 12px;">
                       Need help? Contact us at <a href="mailto:support@aharyas.com" style="color: #667eea; text-decoration: none;">support@aharyas.com</a>
@@ -106,8 +133,10 @@ const sendOtpMail = async (email, otp) => {
 
   try {
     await transporter.sendMail(mailOptions);
+    console.log(`OTP email sent successfully for ${role} registration to ${email}`);
     return true;
   } catch (error) {
+    console.error('Failed to send OTP email:', error.message);
     return false;
   }
 };
