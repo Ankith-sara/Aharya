@@ -11,7 +11,7 @@ import wishlistRouter from './routes/WishlistRoute.js';
 
 // App Config
 const app = express();
-const port = process.env.PORT_TEST || process.env.PORT || 4000;
+const port = process.env.PORT || 4000;
 
 app.use(cors({
   origin: "*",
