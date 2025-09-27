@@ -533,7 +533,6 @@ const Collection = () => {
 
   return (
     <div className="min-h-screen bg-white text-black mt-20">
-      {/* Header Section */}
       <section className="py-12 px-4 sm:px-8 md:px-10 lg:px-20">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-8">

@@ -6,7 +6,7 @@ import { assets } from '../assets/frontend_assets/assets';
 import { ShopContext } from '../context/ShopContext';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { CreditCard, Truck, Home, Shield, ArrowLeft, MapPin, Phone, Mail, User, Package } from 'lucide-react';
+import { CreditCard, Home, Shield, ArrowLeft, MapPin, Phone, Mail, User, Package } from 'lucide-react';
 import { useEffect } from 'react';
 
 const PlaceOrder = () => {

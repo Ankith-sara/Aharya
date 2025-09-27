@@ -5,7 +5,6 @@ import CartTotal from '../components/CartTotal';
 import { Trash2, ShoppingBag, Package } from 'lucide-react';
 import RecentlyViewed from '../components/RecentlyViewed';
 import { Link } from 'react-router-dom';
-import { toast } from 'react-toastify';
 
 const Cart = () => {
   const { products, currency, cartItems, updateQuantity, navigate, token } = useContext(ShopContext);
@@ -39,10 +38,9 @@ const Cart = () => {
     }
   };
 
-  // Handle checkout with login check - redirect to login with return URL
+  // Handle checkout with login check
   const handleCheckout = () => {
     if (!token) {
-      // Store current cart page as return URL
       sessionStorage.setItem('returnUrl', '/cart');
       navigate('/login');
       return;

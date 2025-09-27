@@ -51,7 +51,7 @@ const Contact = () => {
         </div>
       </section>
 
-      {/* Contact Information - Elevated Design */}
+      {/* Contact Information */}
       <section className="relative py-16">
         <div className="absolute inset-0 bg-gradient-to-r from-gray-100 to-gray-50"></div>
         <div className="relative px-4 sm:px-8 md:px-10 lg:px-20">
