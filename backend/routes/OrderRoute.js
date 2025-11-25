@@ -1,6 +1,6 @@
 import express from 'express';
 import authUser from '../middlewares/Auth.js';
-import adminAuth from '../middlewares/adminAuth.js';
+import adminAuth from '../middlewares/AdminAuth.js';
 import {
     placeOrder, placeOrderRazorpay, verifyRazorpay, verifyCOD, allOrders, userOrders, updateStatus, orderStatus
 } from '../controllers/OrderController.js';
