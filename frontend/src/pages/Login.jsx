@@ -222,8 +222,6 @@ const Login = () => {
               </blockquote>
             </div>
           </div>
-          <div className="absolute top-8 left-8 w-16 h-16 border border-white/20 z-30"></div>
-          <div className="absolute bottom-8 right-8 w-16 h-16 border border-white/20 z-30"></div>
         </div>
 
         {/* Right Panel - Form */}

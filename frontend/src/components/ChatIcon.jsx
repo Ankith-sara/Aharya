@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { assets } from '../assets/frontend_assets/assets';
+import { assets } from '../assets/assets';
 import { BotMessageSquare } from 'lucide-react';
 
 const ChatIcon = () => {

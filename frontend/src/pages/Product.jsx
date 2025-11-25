@@ -4,7 +4,6 @@ import { ShopContext } from '../context/ShopContext';
 import { Camera, ChevronDown, ChevronUp, Minus, Plus, Heart, Share2, Ruler } from 'lucide-react';
 import RelatedProducts from '../components/RelatedProducts';
 import RecentlyViewed from '../components/RecentlyViewed';
-import { assets } from '../assets/frontend_assets/assets';
 import SizeChartModal from '../components/SizeChartModal';
 
 const Product = () => {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { assets } from '../assets/frontend_assets/assets';
+import { assets } from '../assets/assets';
 import NewsletterBox from '../components/NewsletterBox';
 import OurPolicy from '../components/OurPolicy';
 import Title from '../components/Title';

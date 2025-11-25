@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
-import { assets } from '../assets/frontend_assets/assets';
+import { assets } from '../assets/assets';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { ShopContext } from '../context/ShopContext';
 import { ChevronDown, ChevronRight, X, Search, User, Menu, LogOut, ShoppingBagIcon, ShoppingCartIcon, Heart } from 'lucide-react';
