@@ -28,11 +28,6 @@ const SearchBar = () => {
                 onChange={(e) => setSearch?.(e.target.value)} 
                 placeholder="Search for products..." 
                 aria-label="Search" />
-                <button 
-                type="button" 
-                className="focus:outline-none hover:scale-110 transition-transform duration-300">
-                    <img className="w-5 h-5" src={assets.search_icon} alt="Search Icon" />
-                </button>
                 <button onClick={() => setShowSearch?.(false)} >
                     <img className="w-4 h-4" src={assets.cross_icon} alt="Close Icon" />
                 </button>
