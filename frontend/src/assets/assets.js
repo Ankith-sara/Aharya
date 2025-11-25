@@ -4,7 +4,6 @@ import logo from './logo.png'
 import logo_white from './logo_white.png'
 import cart_icon from './cart_icon.png'
 import search_icon from './search_icon.png'
-import hero_vid from './hero.mp4'
 import about_img from './about_img.jpg'
 import contact_img from './contact_img.jpg'
 import razorpay_logo from './razorpay_logo.png'
@@ -14,7 +13,6 @@ import mallesh_img from './mallesh.jpg'
 export const assets = {
     logo,
     logo_white,
-    hero_vid,
     cart_icon,
     search_icon,
     about_img,
