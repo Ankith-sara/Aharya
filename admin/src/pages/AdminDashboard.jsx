@@ -26,7 +26,7 @@ const AdminPanel = ({ token, setToken }) => {
         const fetchAdminData = async () => {
             try {
                 const decoded = jwtDecode(token);
-                // ✅ FIXED: Use proper Authorization header
+                // Use proper Authorization header
                 const res = await axios.get(`${backendUrl}/api/user/profile/${decoded.id}`, {
                     headers: { 
                         'Authorization': `Bearer ${token}` 
@@ -114,7 +114,7 @@ const AdminDashboard = ({ token, adminData }) => {
 
     const fetchOrders = async () => {
         try {
-            // ✅ FIXED: Changed POST to GET and added proper Authorization header
+            // Changed POST to GET and added proper Authorization header
             const response = await axios.get(`${backendUrl}/api/order/list`, {
                 headers: { 
                     'Authorization': `Bearer ${token}` 
@@ -138,7 +138,7 @@ const AdminDashboard = ({ token, adminData }) => {
 
     const fetchProducts = async () => {
         try {
-            // ✅ FIXED: Added proper Authorization header
+            // Added proper Authorization header
             const response = await axios.get(`${backendUrl}/api/product/list`, {
                 headers: { 
                     'Authorization': `Bearer ${token}` 
@@ -428,7 +428,7 @@ const AdminProfile = ({ token, adminData, setAdminData }) => {
         }
 
         try {
-            // ✅ FIXED: Added proper Authorization header
+            // Added proper Authorization header
             const res = await axios.put(`${backendUrl}/api/user/profile/${adminData._id}`, formData, {
                 headers: { 
                     'Authorization': `Bearer ${token}`,
