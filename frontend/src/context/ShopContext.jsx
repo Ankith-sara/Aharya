@@ -40,19 +40,29 @@ const ShopContextProvider = (props) => {
         }
 
         try {
+            // Ensure we're working with strings
+            const productId = String(itemId);
+            const productSize = String(size);
+
             let cartData = structuredClone(cartItems);
 
-            if (cartData[itemId]) {
-                cartData[itemId][size] = (cartData[itemId][size] || 0) + quantity;
+            if (cartData[productId]) {
+                cartData[productId][productSize] = (cartData[productId][productSize] || 0) + quantity;
             } else {
-                cartData[itemId] = { [size]: quantity };
+                cartData[productId] = { [productSize]: quantity };
             }
 
             setCartItems(cartData);
             toast.success('Added to cart successfully');
 
             if (token) {
-                await axios.post(`${backendUrl}/api/cart/add`, { itemId, size, quantity });
+                const userId = localStorage.getItem('userId'); // Make sure you store userId
+                await axios.post(`${backendUrl}/api/cart/add`, {
+                    userId,
+                    itemId: productId,
+                    size: productSize,
+                    quantity
+                });
             }
 
             return true;
@@ -67,21 +77,39 @@ const ShopContextProvider = (props) => {
         if (quantity < 0) return;
 
         try {
+            // Ensure we're working with strings
+            const productId = String(itemId);
+            const productSize = String(size);
+
             let cartData = structuredClone(cartItems);
 
             if (quantity === 0) {
-                delete cartData[itemId][size];
-                if (Object.keys(cartData[itemId]).length === 0) {
-                    delete cartData[itemId];
+                // Remove the size from the product
+                if (cartData[productId]) {
+                    delete cartData[productId][productSize];
+                    // If no sizes left for this product, remove the product entirely
+                    if (Object.keys(cartData[productId]).length === 0) {
+                        delete cartData[productId];
+                    }
                 }
             } else {
-                cartData[itemId][size] = quantity;
+                // Update or add the quantity
+                if (!cartData[productId]) {
+                    cartData[productId] = {};
+                }
+                cartData[productId][productSize] = quantity;
             }
 
             setCartItems(cartData);
 
             if (token) {
-                await axios.post(`${backendUrl}/api/cart/update`, { itemId, size, quantity });
+                const userId = localStorage.getItem('userId');
+                await axios.post(`${backendUrl}/api/cart/update`, {
+                    userId,
+                    itemId: productId,
+                    size: productSize,
+                    quantity
+                });
             }
         } catch (error) {
             console.error('Update quantity error:', error);
@@ -91,12 +119,16 @@ const ShopContextProvider = (props) => {
 
     const removeFromCart = useCallback(async (itemId, size) => {
         try {
+            // Ensure we're working with strings
+            const productId = String(itemId);
+            const productSize = String(size);
+
             let cartData = structuredClone(cartItems);
 
-            if (cartData[itemId]) {
-                delete cartData[itemId][size];
-                if (Object.keys(cartData[itemId]).length === 0) {
-                    delete cartData[itemId];
+            if (cartData[productId]) {
+                delete cartData[productId][productSize];
+                if (Object.keys(cartData[productId]).length === 0) {
+                    delete cartData[productId];
                 }
             }
 
@@ -104,7 +136,12 @@ const ShopContextProvider = (props) => {
             toast.success('Item removed from cart');
 
             if (token) {
-                await axios.post(`${backendUrl}/api/cart/remove`, { itemId, size });
+                const userId = localStorage.getItem('userId');
+                await axios.post(`${backendUrl}/api/cart/remove`, {
+                    userId,
+                    itemId: productId,
+                    size: productSize
+                });
             }
         } catch (error) {
             console.error('Remove from cart error:', error);
@@ -117,7 +154,8 @@ const ShopContextProvider = (props) => {
             setCartItems({});
 
             if (token) {
-                await axios.post(`${backendUrl}/api/cart/clear`);
+                const userId = localStorage.getItem('userId');
+                await axios.post(`${backendUrl}/api/cart/clear`, { userId });
             }
 
             toast.success('Cart cleared');
@@ -183,20 +221,24 @@ const ShopContextProvider = (props) => {
 
     const getUserCart = useCallback(async (userToken) => {
         try {
+            const userId = localStorage.getItem('userId');
             const response = await axios.post(
                 `${backendUrl}/api/cart/get`,
-                {},
+                { userId },
                 { headers: { Authorization: `Bearer ${userToken}` } }
             );
 
             if (response.data.success) {
-                setCartItems(response.data.cartData);
+                // Ensure cartData is a proper object
+                const cartData = response.data.cartData || {};
+                setCartItems(cartData);
             }
         } catch (error) {
             console.error('Get user cart error:', error);
             if (error.response?.status === 401) {
                 toast.error("Session expired. Please login again");
                 localStorage.removeItem('token');
+                localStorage.removeItem('userId');
                 setToken('');
             }
         }
