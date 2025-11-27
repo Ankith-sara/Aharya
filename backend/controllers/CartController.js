@@ -15,17 +15,35 @@ const addToCart = async (req, res) => {
             return res.status(404).json({ success: false, message: "User not found" })
         }
 
-        // Use toObject to get a plain JavaScript object
-        let cartData = userData.cartData ? JSON.parse(JSON.stringify(userData.cartData)) : {}
+        // Convert Map to plain object for easier manipulation
+        let cartData = {}
+        if (userData.cartData && userData.cartData.size > 0) {
+            userData.cartData.forEach((sizes, itemId) => {
+                cartData[itemId] = {}
+                sizes.forEach((qty, size) => {
+                    cartData[itemId][size] = qty
+                })
+            })
+        }
 
+        // Add/update item
         if (cartData[itemId]) {
             cartData[itemId][size] = (cartData[itemId][size] || 0) + quantity
         } else {
             cartData[itemId] = { [size]: quantity }
         }
 
-        // Use markModified to ensure Mongoose tracks the change
-        userData.cartData = cartData
+        // Convert back to Map
+        const cartMap = new Map()
+        Object.keys(cartData).forEach(itemId => {
+            const sizeMap = new Map()
+            Object.keys(cartData[itemId]).forEach(size => {
+                sizeMap.set(size, cartData[itemId][size])
+            })
+            cartMap.set(itemId, sizeMap)
+        })
+
+        userData.cartData = cartMap
         userData.markModified('cartData')
         await userData.save()
 
@@ -54,8 +72,16 @@ const updateCart = async (req, res) => {
             return res.status(404).json({ success: false, message: "User not found" })
         }
 
-        // Convert to plain object
-        let cartData = userData.cartData ? JSON.parse(JSON.stringify(userData.cartData)) : {}
+        // Convert Map to plain object
+        let cartData = {}
+        if (userData.cartData && userData.cartData.size > 0) {
+            userData.cartData.forEach((sizes, itemId) => {
+                cartData[itemId] = {}
+                sizes.forEach((qty, size) => {
+                    cartData[itemId][size] = qty
+                })
+            })
+        }
 
         // If quantity is 0, remove the item
         if (quantity === 0) {
@@ -75,8 +101,17 @@ const updateCart = async (req, res) => {
             cartData[itemId][size] = quantity
         }
 
-        // Use markModified to ensure Mongoose tracks the change
-        userData.cartData = cartData
+        // Convert back to Map
+        const cartMap = new Map()
+        Object.keys(cartData).forEach(itemId => {
+            const sizeMap = new Map()
+            Object.keys(cartData[itemId]).forEach(size => {
+                sizeMap.set(size, cartData[itemId][size])
+            })
+            cartMap.set(itemId, sizeMap)
+        })
+
+        userData.cartData = cartMap
         userData.markModified('cartData')
         await userData.save()
 
@@ -105,8 +140,16 @@ const removeFromCart = async (req, res) => {
             return res.status(404).json({ success: false, message: "User not found" })
         }
 
-        // Convert to plain object
-        let cartData = userData.cartData ? JSON.parse(JSON.stringify(userData.cartData)) : {}
+        // Convert Map to plain object
+        let cartData = {}
+        if (userData.cartData && userData.cartData.size > 0) {
+            userData.cartData.forEach((sizes, itemId) => {
+                cartData[itemId] = {}
+                sizes.forEach((qty, size) => {
+                    cartData[itemId][size] = qty
+                })
+            })
+        }
 
         if (cartData[itemId]) {
             delete cartData[itemId][size]
@@ -117,8 +160,17 @@ const removeFromCart = async (req, res) => {
             }
         }
 
-        // Use markModified to ensure Mongoose tracks the change
-        userData.cartData = cartData
+        // Convert back to Map
+        const cartMap = new Map()
+        Object.keys(cartData).forEach(itemId => {
+            const sizeMap = new Map()
+            Object.keys(cartData[itemId]).forEach(size => {
+                sizeMap.set(size, cartData[itemId][size])
+            })
+            cartMap.set(itemId, sizeMap)
+        })
+
+        userData.cartData = cartMap
         userData.markModified('cartData')
         await userData.save()
 
@@ -144,7 +196,7 @@ const clearCart = async (req, res) => {
             return res.status(404).json({ success: false, message: "User not found" })
         }
 
-        userData.cartData = {}
+        userData.cartData = new Map()
         userData.markModified('cartData')
         await userData.save()
 
@@ -170,7 +222,17 @@ const getUserCart = async (req, res) => {
             return res.status(404).json({ success: false, message: "User not found" })
         }
 
-        let cartData = userData.cartData || {}
+        // Convert Map to plain object for response
+        let cartData = {}
+        if (userData.cartData && userData.cartData.size > 0) {
+            userData.cartData.forEach((sizes, itemId) => {
+                cartData[itemId] = {}
+                sizes.forEach((qty, size) => {
+                    cartData[itemId][size] = qty
+                })
+            })
+        }
+
         res.json({ success: true, cartData })
     } catch (error) {
         console.error("Error in getUserCart:", error)

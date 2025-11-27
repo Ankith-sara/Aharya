@@ -82,6 +82,44 @@ const sendOtp = async (req, res) => {
     }
 };
 
+// ============ USER LOGIN ============
+const loginUser = async (req, res) => {
+    const { email, password } = req.body;
+
+    try {
+        const user = await userModel.findOne({ email });
+
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found" });
+        }
+
+        if (!user.isVerified) {
+            return res.status(401).json({
+                success: false,
+                message: "Please complete your registration by verifying your email first."
+            });
+        }
+
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(401).json({ success: false, message: "Invalid credentials" });
+        }
+
+        const token = createToken(user._id, user.role);
+        res.status(200).json({
+            success: true,
+            token,
+            userId: user._id.toString(), // ADD THIS LINE
+            name: user.name,
+            role: user.role,
+            message: `Welcome back, ${user.name}!`
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+// ============ VERIFY OTP (USER REGISTRATION) ============
 const verifyOtp = async (req, res) => {
     const { email, otp } = req.body;
 
@@ -120,6 +158,7 @@ const verifyOtp = async (req, res) => {
         res.json({
             success: true,
             token,
+            userId: user._id.toString(), // ADD THIS LINE
             name: user.name,
             role: user.role,
             message: `Welcome ${user.name}! Registration completed successfully.`
@@ -129,6 +168,7 @@ const verifyOtp = async (req, res) => {
     }
 };
 
+// ============ REGISTER USER (WITHOUT OTP) ============
 const registerUser = async (req, res) => {
     const { name, email, password } = req.body;
 
@@ -178,6 +218,7 @@ const registerUser = async (req, res) => {
         res.status(201).json({
             success: true,
             token,
+            userId: user._id.toString(), // ADD THIS LINE
             name: user.name,
             role: user.role,
             message: `Welcome ${user.name}! Registration successful.`
@@ -187,39 +228,78 @@ const registerUser = async (req, res) => {
     }
 };
 
-// ============ USER LOGIN ============
-const loginUser = async (req, res) => {
+// ============ ADMIN LOGIN ============
+const adminLogin = async (req, res) => {
     const { email, password } = req.body;
+    try {
+        const user = await userModel.findOne({ email, role: 'admin', isVerified: true });
+        if (!user) return res.status(404).json({ success: false, message: 'Admin not found' });
+
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) return res.status(401).json({ success: false, message: 'Invalid credentials' });
+
+        const token = createToken(user._id, 'admin');
+        res.status(200).json({ 
+            success: true, 
+            token,
+            userId: user._id.toString(), // ADD THIS LINE
+            message: 'Admin login successful' 
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+// ============ VERIFY ADMIN OTP ============
+const verifyAdminOtp = async (req, res) => {
+    const { email, otp } = req.body;
+
+    if (!email || !otp) {
+        return res.status(400).json({ success: false, message: 'Email and OTP are required' });
+    }
 
     try {
         const user = await userModel.findOne({ email });
 
         if (!user) {
-            return res.status(404).json({ success: false, message: "User not found" });
+            return res.status(404).json({ success: false, message: 'Admin not found. Please register first.' });
         }
 
-        if (!user.isVerified) {
-            return res.status(401).json({
-                success: false,
-                message: "Please complete your registration by verifying your email first."
-            });
+        if (user.role !== 'admin') {
+            return res.status(403).json({ success: false, message: 'This account is not an admin account.' });
         }
 
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) {
-            return res.status(401).json({ success: false, message: "Invalid credentials" });
+        if (!user.otp || !user.otpExpiry) {
+            return res.status(400).json({ success: false, message: 'OTP not requested. Please request OTP first.' });
         }
 
-        const token = createToken(user._id, user.role);
-        res.status(200).json({
+        if (user.otp !== otp) {
+            return res.status(401).json({ success: false, message: 'Invalid OTP' });
+        }
+
+        if (user.otpExpiry < new Date()) {
+            return res.status(401).json({ success: false, message: 'OTP expired. Please request a new one.' });
+        }
+
+        user.isVerified = true;
+        user.otp = undefined;
+        user.otpExpiry = undefined;
+        await user.save();
+
+        await sendWelcomeMail(email, user.name);
+
+        const token = createToken(user._id, 'admin');
+
+        res.json({
             success: true,
             token,
+            userId: user._id.toString(), // ADD THIS LINE
             name: user.name,
-            role: user.role,
-            message: `Welcome back, ${user.name}!`
+            role: 'admin',
+            message: `Welcome ${user.name}! Admin registration completed successfully.`
         });
-    } catch (error) {
-        res.status(500).json({ success: false, message: error.message });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
     }
 };
 
@@ -294,74 +374,6 @@ const sendAdminOtp = async (req, res) => {
         });
     } catch (err) {
         res.status(500).json({ success: false, message: err.message });
-    }
-};
-
-const verifyAdminOtp = async (req, res) => {
-    const { email, otp } = req.body;
-
-    if (!email || !otp) {
-        return res.status(400).json({ success: false, message: 'Email and OTP are required' });
-    }
-
-    try {
-        const user = await userModel.findOne({ email });
-
-        if (!user) {
-            return res.status(404).json({ success: false, message: 'Admin not found. Please register first.' });
-        }
-
-        if (user.role !== 'admin') {
-            return res.status(403).json({ success: false, message: 'This account is not an admin account.' });
-        }
-
-        if (!user.otp || !user.otpExpiry) {
-            return res.status(400).json({ success: false, message: 'OTP not requested. Please request OTP first.' });
-        }
-
-        if (user.otp !== otp) {
-            return res.status(401).json({ success: false, message: 'Invalid OTP' });
-        }
-
-        if (user.otpExpiry < new Date()) {
-            return res.status(401).json({ success: false, message: 'OTP expired. Please request a new one.' });
-        }
-
-        user.isVerified = true;
-        user.otp = undefined;
-        user.otpExpiry = undefined;
-        await user.save();
-
-        await sendWelcomeMail(email, user.name);
-
-        const token = createToken(user._id, 'admin');
-
-        res.json({
-            success: true,
-            token,
-            name: user.name,
-            role: 'admin',
-            message: `Welcome ${user.name}! Admin registration completed successfully.`
-        });
-    } catch (err) {
-        res.status(500).json({ success: false, message: err.message });
-    }
-};
-
-// ============ ADMIN LOGIN ============
-const adminLogin = async (req, res) => {
-    const { email, password } = req.body;
-    try {
-        const user = await userModel.findOne({ email, role: 'admin', isVerified: true });
-        if (!user) return res.status(404).json({ success: false, message: 'Admin not found' });
-
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) return res.status(401).json({ success: false, message: 'Invalid credentials' });
-
-        const token = createToken(user._id, 'admin');
-        res.status(200).json({ success: true, token, message: 'Admin login successful' });
-    } catch (error) {
-        res.status(500).json({ success: false, message: error.message });
     }
 };
 

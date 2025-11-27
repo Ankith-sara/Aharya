@@ -481,6 +481,7 @@ const ShopContextProvider = (props) => {
     // ============= AUTH & USER FUNCTIONS =============
     const logout = useCallback(() => {
         localStorage.removeItem('token');
+        localStorage.removeItem('userId');
         setToken('');
         setCartItems({});
         setWishlistItems([]);
