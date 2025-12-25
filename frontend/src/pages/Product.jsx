@@ -21,12 +21,41 @@ const Product = () => {
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [isAddedToCart, setIsAddedToCart] = useState(false);
   const [expandedSection, setExpandedSection] = useState('description');
+  const [touchStart, setTouchStart] = useState(null);
+  const [touchEnd, setTouchEnd] = useState(null);
 
   const toggleSection = (section) => {
     if (expandedSection === section) {
       setExpandedSection(null);
     } else {
       setExpandedSection(section);
+    }
+  };
+
+  // Minimum swipe distance (in px)
+  const minSwipeDistance = 50;
+
+  // Touch handlers for swipe
+  const onTouchStart = (e) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+
+    if (isLeftSwipe) {
+      handleNext();
+    } else if (isRightSwipe) {
+      handlePrev();
     }
   };
 
@@ -208,50 +237,62 @@ const Product = () => {
   }
 
   return (
-    <div className="min-h-screen text-black mt-20">
+    <div className="min-h-screen text-black mt-16 sm:mt-20">
       {/* Product Section */}
-      <section className="py-12 px-4 sm:px-8 md:px-10 lg:px-20">
+      <section className="py-4 sm:py-8 lg:py-12 px-4 sm:px-6 lg:px-20">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.2fr] gap-6 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.2fr] gap-4 sm:gap-6 items-start">
             {/* Image Gallery */}
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               <div className="relative group">
-                <div className="relative overflow-hidden">
+                <div 
+                  className="relative overflow-hidden"
+                  onTouchStart={onTouchStart}
+                  onTouchMove={onTouchMove}
+                  onTouchEnd={onTouchEnd}
+                >
                   <img
                     src={productData.images[currentIndex]}
                     alt={productData.name}
                     onClick={handleImageClick}
-                    className="w-full h-[80vh] object-contain transition-all duration-500 hover:scale-105 cursor-pointer filter"
+                    className="w-full h-[50vh] sm:h-[60vh] lg:h-[80vh] object-contain transition-all duration-500 hover:scale-105 cursor-pointer filter select-none"
+                    draggable="false"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
 
                   <div
                     onClick={(e) => { e.stopPropagation(); openModal(productData.images[currentIndex]); }}
-                    className="absolute top-4 right-4 bg-black/70 text-white px-3 py-1.5 text-xs cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-sm">
+                    className="hidden sm:block absolute top-4 right-4 bg-black/70 text-white px-3 py-1.5 text-xs cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-sm">
                     Click to zoom
                   </div>
 
+                  {/* Mobile Navigation Buttons - Always Visible */}
                   <button
-                    className="absolute top-1/2 left-4 transform -translate-y-1/2 w-10 h-10 flex items-center justify-center bg-white/90 text-black shadow-md opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-white"
+                    className="hidden sm:flex absolute top-1/2 left-2 sm:left-4 transform -translate-y-1/2 w-8 h-8 sm:w-10 sm:h-10 items-center justify-center bg-white/90 text-black shadow-md opacity-100 sm:opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-white text-sm sm:text-base"
                     onClick={(e) => { e.stopPropagation(); handlePrev(); }}
                   >
                     ◀
                   </button>
                   <button
-                    className="absolute top-1/2 right-4 transform -translate-y-1/2 w-10 h-10 flex items-center justify-center bg-white/90 text-black shadow-md opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-white"
+                    className="hidden sm:flex absolute top-1/2 right-2 sm:right-4 transform -translate-y-1/2 w-8 h-8 sm:w-10 sm:h-10 items-center justify-center bg-white/90 text-black shadow-md opacity-100 sm:opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-white text-sm sm:text-base"
                     onClick={(e) => { e.stopPropagation(); handleNext(); }}
                   >
                     ▶
                   </button>
+
+                  {/* Mobile Image Counter */}
+                  <div className="absolute bottom-3 left-1/2 transform -translate-x-1/2 bg-black/70 text-white px-3 py-1 text-xs backdrop-blur-sm sm:hidden">
+                    {currentIndex + 1} / {productData.images.length}
+                  </div>
                 </div>
               </div>
 
-              <div className="flex gap-3 overflow-x-auto p-2 bg-gray-100">
+              <div className="flex gap-2 sm:gap-3 overflow-x-auto p-2 bg-gray-100 scrollbar-hide">
                 {productData.images.map((img, index) => (
                   <div
                     key={index}
                     onClick={() => handleThumbnailClick(index)}
-                    className={`flex-shrink-0 w-20 h-20 overflow-hidden cursor-pointer transition-all duration-300 ${currentIndex === index ? 'shadow-lg border-2 border-black' : 'shadow-md border border-gray-200 hover:border-gray-400'}`}
+                    className={`flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 overflow-hidden cursor-pointer transition-all duration-300 ${currentIndex === index ? 'shadow-lg border-2 border-black' : 'shadow-md border border-gray-200 hover:border-gray-400'}`}
                   >
                     <img
                       src={img}
@@ -265,10 +306,10 @@ const Product = () => {
 
             {/* Product Details */}
             <div className="bg-white border border-gray-200 shadow-lg">
-              <div className="p-6 border-b border-gray-200">
-                <div className="flex items-center justify-between mb-4">
-                  <h1 className="text-2xl tracking-wide text-black font-light">{productData.name}</h1>
-                  <div className="flex items-center gap-2">
+              <div className="p-4 sm:p-6 border-b border-gray-200">
+                <div className="flex items-start justify-between mb-4 gap-3">
+                  <h1 className="text-xl sm:text-2xl tracking-wide text-black font-light flex-1">{productData.name}</h1>
+                  <div className="flex items-center gap-2 flex-shrink-0">
                     <button
                       onClick={handleWishlistToggle}
                       className={`p-2 border transition-all duration-300 ${isWishlisted ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-300 hover:border-black'}`}
@@ -290,9 +331,9 @@ const Product = () => {
                   </div>
                 </div>
 
-                <div className="flex items-baseline justify-between mb-6">
-                  <div className="text-xl font-medium text-black">{currency}{productData.price}</div>
-                  <div className="text-sm text-gray-500 font-light">Prices include GST</div>
+                <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between mb-6 gap-2">
+                  <div className="text-xl sm:text-2xl font-medium text-black">{currency}{productData.price}</div>
+                  <div className="text-xs sm:text-sm text-gray-500 font-light">Prices include GST</div>
                 </div>
 
                 {/* Size Selector */}
@@ -303,9 +344,9 @@ const Product = () => {
                     </label>
                     <button
                       onClick={() => setShowSizeChart(true)}
-                      className="flex items-center gap-1.5 text-sm text-black hover:text-gray-600 font-light transition-colors group"
+                      className="flex items-center gap-1.5 text-xs sm:text-sm text-black hover:text-gray-600 font-light transition-colors group"
                     >
-                      <Ruler size={16} className="group-hover:scale-110 transition-transform" />
+                      <Ruler size={14} className="group-hover:scale-110 transition-transform" />
                       <span className="underline">Size Guide</span>
                     </button>
                   </div>
@@ -326,7 +367,7 @@ const Product = () => {
                       <button
                         key={index}
                         onClick={() => setSize(size === s ? '' : s)}
-                        className={`py-2.5 px-4 transition-all duration-300 font-light ${size === s
+                        className={`py-2 sm:py-2.5 px-3 sm:px-4 transition-all duration-300 font-light text-sm sm:text-base ${size === s
                             ? 'bg-black text-white shadow-md'
                             : 'bg-white text-gray-700 border border-gray-300 hover:border-black'
                           }`}
@@ -344,14 +385,14 @@ const Product = () => {
                   <div className="flex items-center border border-gray-300 w-fit">
                     <button
                       onClick={() => handleQuantityChange('decrease')}
-                      className="w-10 h-10 flex items-center justify-center hover:bg-gray-50 transition-colors border-r border-gray-300"
+                      className="w-10 h-10 flex items-center justify-center hover:bg-gray-50 transition-colors border-r border-gray-300 active:bg-gray-100"
                       disabled={quantity <= 1}
                     >
                       <Minus size={16} className={quantity <= 1 ? "text-gray-300" : "text-black"} />
                     </button>
                     <input
                       type="number"
-                      className="w-16 h-10 text-center focus:outline-none bg-white font-light"
+                      className="w-14 sm:w-16 h-10 text-center focus:outline-none bg-white font-light text-sm sm:text-base"
                       value={quantity}
                       min="1"
                       onChange={(e) => {
@@ -363,7 +404,7 @@ const Product = () => {
                     />
                     <button
                       onClick={() => handleQuantityChange('increase')}
-                      className="w-10 h-10 flex items-center justify-center hover:bg-gray-50 transition-colors border-l border-gray-300"
+                      className="w-10 h-10 flex items-center justify-center hover:bg-gray-50 transition-colors border-l border-gray-300 active:bg-gray-100"
                     >
                       <Plus size={16} />
                     </button>
@@ -374,21 +415,21 @@ const Product = () => {
                   {!isAddedToCart ? (
                     <button
                       onClick={handleAddToCart}
-                      className="w-full py-4 bg-black text-white font-light tracking-wide hover:bg-gray-800 transition-all duration-300"
+                      className="w-full py-3 sm:py-4 bg-black text-white font-light tracking-wide hover:bg-gray-800 active:bg-gray-900 transition-all duration-300 text-sm sm:text-base"
                     >
                       ADD TO CART
                     </button>
                   ) : (
                     <button
                       onClick={handleViewCart}
-                      className="w-full py-4 bg-gray-900 text-white font-light tracking-wide hover:bg-gray-800 transition-all duration-300"
+                      className="w-full py-3 sm:py-4 bg-gray-900 text-white font-light tracking-wide hover:bg-gray-800 active:bg-gray-950 transition-all duration-300 text-sm sm:text-base"
                     >
                       VIEW CART
                     </button>
                   )}
                   <button
                     onClick={() => navigate('/try-on', { state: { image: productData.images[currentIndex] } })}
-                    className="w-full py-4 flex justify-center items-center gap-2 border border-black bg-white text-black font-light hover:bg-gray-50 transition-all duration-300"
+                    className="w-full py-3 sm:py-4 flex justify-center items-center gap-2 border border-black bg-white text-black font-light hover:bg-gray-50 active:bg-gray-100 transition-all duration-300 text-sm sm:text-base"
                   >
                     <Camera size={16} />
                     <span>TRY-ON</span>
@@ -399,12 +440,12 @@ const Product = () => {
               {/* Product Information Dropdowns */}
               <div>
                 <div className="border-b border-gray-200">
-                  <button onClick={() => toggleSection('description')} className="w-full py-4 px-6 flex justify-between items-center text-left font-medium transition-colors hover:bg-gray-50">
+                  <button onClick={() => toggleSection('description')} className="w-full py-3 sm:py-4 px-4 sm:px-6 flex justify-between items-center text-left font-medium transition-colors hover:bg-gray-50 active:bg-gray-100 text-sm sm:text-base">
                     DESCRIPTION
-                    {expandedSection === 'description' ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+                    {expandedSection === 'description' ? <ChevronUp size={18} className="flex-shrink-0" /> : <ChevronDown size={18} className="flex-shrink-0" />}
                   </button>
                   {expandedSection === 'description' && (
-                    <div className="p-6 pt-0 text-gray-600 font-light leading-relaxed">
+                    <div className="p-4 sm:p-6 pt-0 text-gray-600 font-light leading-relaxed text-sm sm:text-base">
                       <div className="w-12 h-0.5 bg-black mb-4"></div>
                       <p>{productData.description}</p>
                     </div>
@@ -412,25 +453,25 @@ const Product = () => {
                 </div>
 
                 <div className="border-b border-gray-200">
-                  <button onClick={() => toggleSection('artisan')} className="w-full py-4 px-6 flex justify-between items-center text-left font-medium transition-colors hover:bg-gray-50">
+                  <button onClick={() => toggleSection('artisan')} className="w-full py-3 sm:py-4 px-4 sm:px-6 flex justify-between items-center text-left font-medium transition-colors hover:bg-gray-50 active:bg-gray-100 text-sm sm:text-base">
                     ARTISAN STORY
-                    {expandedSection === 'artisan' ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+                    {expandedSection === 'artisan' ? <ChevronUp size={18} className="flex-shrink-0" /> : <ChevronDown size={18} className="flex-shrink-0" />}
                   </button>
                   {expandedSection === 'artisan' && (
-                    <div className="p-6 pt-0 text-gray-600 font-light">
+                    <div className="p-4 sm:p-6 pt-0 text-gray-600 font-light">
                       <div className="w-12 h-0.5 bg-black mb-4"></div>
-                      <div className="space-y-4">
-                        <div className="border-l-2 border-gray-200 pl-4">
+                      <div className="space-y-4 text-sm sm:text-base">
+                        <div className="border-l-2 border-gray-200 pl-3 sm:pl-4">
                           <h4 className="font-medium text-black mb-2">Master Craftsman: Rajesh Kumar</h4>
                           <p className="text-sm leading-relaxed">With over 25 years of experience, Rajesh Kumar leads a team of skilled artisans in the historic textile region of Varanasi. His workshop has been creating exquisite handwoven pieces for three generations.</p>
                         </div>
 
-                        <div className="border-l-2 border-gray-200 pl-4">
+                        <div className="border-l-2 border-gray-200 pl-3 sm:pl-4">
                           <h4 className="font-medium text-black mb-2">Origin & Technique</h4>
                           <p className="text-sm leading-relaxed">This piece originates from the vibrant looms of Uttar Pradesh, where time-honored weaving traditions meet contemporary design.</p>
                         </div>
 
-                        <div className="border-l-2 border-gray-200 pl-4">
+                        <div className="border-l-2 border-gray-200 pl-3 sm:pl-4">
                           <h4 className="font-medium text-black mb-2">Community Impact</h4>
                           <p className="text-sm leading-relaxed italic">By choosing this piece, you're directly supporting a community of 12 artisan families.</p>
                         </div>
@@ -440,14 +481,14 @@ const Product = () => {
                 </div>
 
                 <div className="border-b border-gray-200">
-                  <button onClick={() => toggleSection('washcare')} className="w-full py-4 px-6 flex justify-between items-center text-left font-medium transition-colors hover:bg-gray-50">
+                  <button onClick={() => toggleSection('washcare')} className="w-full py-3 sm:py-4 px-4 sm:px-6 flex justify-between items-center text-left font-medium transition-colors hover:bg-gray-50 active:bg-gray-100 text-sm sm:text-base">
                     WASH CARE
-                    {expandedSection === 'washcare' ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+                    {expandedSection === 'washcare' ? <ChevronUp size={18} className="flex-shrink-0" /> : <ChevronDown size={18} className="flex-shrink-0" />}
                   </button>
                   {expandedSection === 'washcare' && (
-                    <div className="p-6 pt-0 text-gray-600 font-light">
+                    <div className="p-4 sm:p-6 pt-0 text-gray-600 font-light">
                       <div className="w-12 h-0.5 bg-black mb-4"></div>
-                      <ul className="space-y-2">
+                      <ul className="space-y-2 text-sm sm:text-base">
                         <li>• Dry Clean or Hand Wash with Mild Detergent</li>
                         <li>• Do not Machine Wash</li>
                         <li>• Do not soak</li>
@@ -460,12 +501,12 @@ const Product = () => {
                 </div>
 
                 <div className="border-b border-gray-200">
-                  <button onClick={() => toggleSection('delivery')} className="w-full py-4 px-6 flex justify-between items-center text-left font-medium transition-colors hover:bg-gray-50">
+                  <button onClick={() => toggleSection('delivery')} className="w-full py-3 sm:py-4 px-4 sm:px-6 flex justify-between items-center text-left font-medium transition-colors hover:bg-gray-50 active:bg-gray-100 text-sm sm:text-base">
                     DELIVERY TIMELINE
-                    {expandedSection === 'delivery' ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+                    {expandedSection === 'delivery' ? <ChevronUp size={18} className="flex-shrink-0" /> : <ChevronDown size={18} className="flex-shrink-0" />}
                   </button>
                   {expandedSection === 'delivery' && (
-                    <div className="p-6 pt-0 text-gray-600 font-light">
+                    <div className="p-4 sm:p-6 pt-0 text-gray-600 font-light text-sm sm:text-base">
                       <div className="w-12 h-0.5 bg-black mb-4"></div>
                       <p className="mb-2">Standard delivery: 3-5 business days</p>
                       <p>Express delivery: 1-2 business days (additional charges apply)</p>
@@ -474,12 +515,12 @@ const Product = () => {
                 </div>
 
                 <div className="border-b border-gray-200">
-                  <button onClick={() => toggleSection('manufacturing')} className="w-full py-4 px-6 flex justify-between items-center text-left font-medium transition-colors hover:bg-gray-50">
+                  <button onClick={() => toggleSection('manufacturing')} className="w-full py-3 sm:py-4 px-4 sm:px-6 flex justify-between items-center text-left font-medium transition-colors hover:bg-gray-50 active:bg-gray-100 text-sm sm:text-base">
                     MANUFACTURING DETAILS
-                    {expandedSection === 'manufacturing' ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+                    {expandedSection === 'manufacturing' ? <ChevronUp size={18} className="flex-shrink-0" /> : <ChevronDown size={18} className="flex-shrink-0" />}
                   </button>
                   {expandedSection === 'manufacturing' && (
-                    <div className="p-6 pt-0 text-gray-600 font-light">
+                    <div className="p-4 sm:p-6 pt-0 text-gray-600 font-light text-sm sm:text-base">
                       <div className="w-12 h-0.5 bg-black mb-4"></div>
                       <p className="mb-2">Handcrafted by skilled artisans</p>
                       <p className="mb-2">Made in certified workshops</p>
@@ -490,12 +531,12 @@ const Product = () => {
                 </div>
 
                 <div>
-                  <button onClick={() => toggleSection('returns')} className="w-full py-4 px-6 flex justify-between items-center text-left font-medium transition-colors hover:bg-gray-50">
+                  <button onClick={() => toggleSection('returns')} className="w-full py-3 sm:py-4 px-4 sm:px-6 flex justify-between items-center text-left font-medium transition-colors hover:bg-gray-50 active:bg-gray-100 text-sm sm:text-base">
                     RETURNS & EXCHANGES
-                    {expandedSection === 'returns' ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+                    {expandedSection === 'returns' ? <ChevronUp size={18} className="flex-shrink-0" /> : <ChevronDown size={18} className="flex-shrink-0" />}
                   </button>
                   {expandedSection === 'returns' && (
-                    <div className="p-6 pt-0 text-gray-600 font-light">
+                    <div className="p-4 sm:p-6 pt-0 text-gray-600 font-light text-sm sm:text-base">
                       <div className="w-12 h-0.5 bg-black mb-4"></div>
                       <p className="mb-2">Easy return and exchange policy within 7 days of delivery</p>
                       <p className="mb-2">Items must be unused, unwashed and in original packaging</p>
@@ -520,33 +561,33 @@ const Product = () => {
 
       {/* Image Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-90 backdrop-blur-sm flex items-center justify-center z-50" onClick={closeModal}>
+        <div className="fixed inset-0 bg-black bg-opacity-90 backdrop-blur-sm flex items-center justify-center z-50 p-4" onClick={closeModal}>
           <div className="relative max-w-[90vw] max-h-[90vh] flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
             <img
               src={modalImage}
               alt="Product Detail View"
-              className="max-w-full max-h-[95vh] object-contain transition-transform duration-200 shadow-2xl"
+              className="max-w-full max-h-[85vh] sm:max-h-[95vh] object-contain transition-transform duration-200 shadow-2xl"
               style={{ transform: `scale(${zoomLevel})` }}
             />
           </div>
 
           {/* Modal Controls */}
           <button
-            className="absolute top-4 right-4 text-white bg-black/50 w-10 h-10 flex items-center justify-center hover:bg-black/70 transition-colors z-10"
+            className="absolute top-2 right-2 sm:top-4 sm:right-4 text-white bg-black/50 w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center hover:bg-black/70 transition-colors z-10 text-lg"
             onClick={closeModal}
             aria-label="Close modal"
           >
             ✖
           </button>
           <button
-            className="absolute top-1/2 left-4 -translate-y-1/2 bg-white text-black p-3 shadow-lg hover:bg-gray-100 transition-colors z-10"
+            className="absolute top-1/2 left-2 sm:left-4 -translate-y-1/2 bg-white text-black p-2 sm:p-3 shadow-lg hover:bg-gray-100 transition-colors z-10 w-9 h-9 sm:w-auto sm:h-auto flex items-center justify-center"
             onClick={(e) => { e.stopPropagation(); handlePrev(); }}
             aria-label="Previous image"
           >
             ◀
           </button>
           <button
-            className="absolute top-1/2 right-4 -translate-y-1/2 bg-white text-black p-3 shadow-lg hover:bg-gray-100 transition-colors z-10"
+            className="absolute top-1/2 right-2 sm:right-4 -translate-y-1/2 bg-white text-black p-2 sm:p-3 shadow-lg hover:bg-gray-100 transition-colors z-10 w-9 h-9 sm:w-auto sm:h-auto flex items-center justify-center"
             onClick={(e) => {
               e.stopPropagation();
               handleNext();
@@ -557,16 +598,16 @@ const Product = () => {
           </button>
 
           {/* Zoom Controls */}
-          <div className="absolute bottom-10 right-10 flex gap-2 z-10">
+          <div className="absolute bottom-16 sm:bottom-10 right-4 sm:right-10 flex gap-2 z-10">
             <button
-              className="bg-white text-black p-2 w-10 h-10 flex items-center justify-center shadow-lg hover:bg-gray-100 transition-colors font-bold text-xl"
+              className="bg-white text-black p-2 w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center shadow-lg hover:bg-gray-100 transition-colors font-bold text-lg sm:text-xl"
               onClick={(e) => { e.stopPropagation(); zoomIn(); }}
               aria-label="Zoom in"
             >
               +
             </button>
             <button
-              className="bg-white text-black p-2 w-10 h-10 flex items-center justify-center shadow-lg hover:bg-gray-100 transition-colors font-bold text-xl"
+              className="bg-white text-black p-2 w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center shadow-lg hover:bg-gray-100 transition-colors font-bold text-lg sm:text-xl"
               onClick={(e) => { e.stopPropagation(); zoomOut(); }}
               aria-label="Zoom out"
             >
@@ -575,19 +616,19 @@ const Product = () => {
           </div>
 
           {/* Image Counter */}
-          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-70 text-white px-4 py-2 text-sm backdrop-blur-sm">
+          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-70 text-white px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm backdrop-blur-sm">
             {currentIndex + 1} / {productData.images.length}
           </div>
         </div>
       )}
 
       {/* Related Products */}
-      <section className="px-4 sm:px-8 md:px-10 lg:px-20">
+      <section className="px-4 sm:px-6 lg:px-20">
         <RelatedProducts category={productData.category} subCategory={productData.subCategory} currentProductId={productId} />
       </section>
 
       {/* Recently Viewed */}
-      <section className="px-4 sm:px-8 md:px-10 lg:px-20 mb-20">
+      <section className="px-4 sm:px-6 lg:px-20 mb-12 sm:mb-20">
         <RecentlyViewed />
       </section>
     </div>

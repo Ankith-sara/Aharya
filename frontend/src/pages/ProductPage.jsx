@@ -641,11 +641,7 @@ const ProductPage = () => {
 
                   {/* Pagination */}
                   {totalPages > 1 && (
-                    <div className="mt-12 flex items-center justify-between border-t border-gray-200 pt-8">
-                      <div className="text-sm text-gray-600 font-light">
-                        Page <span className="font-medium text-black">{currentPage}</span> of <span className="font-medium text-black">{totalPages}</span>
-                      </div>
-
+                    <div className="mt-12 flex items-center justify-center border-t border-gray-200 pt-8">
                       <div className="flex items-center gap-2">
                         <button
                           onClick={goToPrevious}
@@ -665,8 +661,8 @@ const ProductPage = () => {
                                 key={page}
                                 onClick={() => goToPage(page)}
                                 className={`px-4 py-2 border transition-all duration-300 ${currentPage === page
-                                    ? 'bg-black text-white border-black'
-                                    : 'border-gray-300 hover:border-black hover:bg-gray-50'
+                                  ? 'bg-black text-white border-black'
+                                  : 'border-gray-300 hover:border-black hover:bg-gray-50'
                                   }`}
                               >
                                 {page}
@@ -683,10 +679,6 @@ const ProductPage = () => {
                         >
                           <ChevronRight size={18} />
                         </button>
-                      </div>
-
-                      <div className="text-sm text-gray-600 font-light">
-                        {filteredProducts.length} total items
                       </div>
                     </div>
                   )}
