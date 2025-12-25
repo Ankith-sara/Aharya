@@ -8,7 +8,7 @@ import { useState, useEffect } from 'react'
 import Login from './components/Login'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import AdminDashboard from './pages/AdminDashboard'
+import AdminPanel from './pages/AdminDashboard'
 
 export const backendUrl = import.meta.env.VITE_BACKEND_URL;
 export const currency = '₹'
@@ -25,20 +25,32 @@ const App = () => {
   }, [token]);
 
   return (
-    <div className='min-h-screen'>
-      <ToastContainer />
+    <div className='min-h-screen bg-white'>
+      <ToastContainer 
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
       {token === ""
         ? <Login setToken={setToken} />
         : <>
-          <div className='flex w-full'>
-            <Sidebar setToken={setToken} />
-            <div className='w-full text-gray-600 text-base'>
-                <Routes>
-                  <Route path='/' element={<AdminDashboard token={token} />} />
-                  <Route path='/add' element={<Add token={token} />} />
-                  <Route path='/list' element={<List token={token} />} />
-                  <Route path='/orders' element={<Orders token={token} />} />
-                </Routes>
+          <div className='flex'>
+            <Sidebar token={token} setToken={setToken} />
+            {/* Main content area with left margin to account for fixed sidebar */}
+            <div className='flex-1 lg:ml-64'>
+              <Routes>
+                <Route path='/' element={<AdminPanel token={token} setToken={setToken} />} />
+                <Route path='/add' element={<Add token={token} />} />
+                <Route path='/list' element={<List token={token} />} />
+                <Route path='/orders' element={<Orders token={token} />} />
+              </Routes>
             </div>
           </div>
         </>

@@ -4,25 +4,16 @@ import { ShopContext } from '../context/ShopContext';
 import Title from '../components/Title';
 import ProductItem from '../components/ProductItem';
 import {
-  ShoppingBag, X, ChevronDown, GridIcon, ListIcon, Check, Heart, SlidersHorizontal, TrendingUp, Star, ChevronUp, Tag, Building2, ArrowLeft
+  ShoppingBag, X, ChevronDown, GridIcon, ListIcon, Check, Heart, SlidersHorizontal, TrendingUp, Star, ChevronUp, Tag, Building2, ArrowLeft, ChevronLeft, ChevronRight
 } from 'lucide-react';
 import RecentlyViewed from '../components/RecentlyViewed';
 
 const ProductPage = () => {
   const location = useLocation();
-  const { subcategory, company } = useParams(); 
+  const { subcategory, company } = useParams();
   const { category } = location.state || {};
 
-  const {
-    products = [],
-    selectedSubCategory,
-    setSelectedSubCategory,
-    navigate,
-    currency,
-    addToWishlist,
-    removeFromWishlist,
-    wishlist = []
-  } = useContext(ShopContext);
+  const { products = [], selectedSubCategory, setSelectedSubCategory, navigate, currency, addToWishlist, removeFromWishlist, wishlist = [] } = useContext(ShopContext);
 
   // Enhanced state management
   const [filteredProducts, setFilteredProducts] = useState([]);
@@ -40,15 +31,17 @@ const ProductPage = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
 
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 16;
+
   // Company data mapping
   const companyLogos = {
-    'biba': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQYq3HEWU4nP1xdaWDzOr7YNmV-q8yg_IJjkcrGl4El207-C31gBbfwEcPBwBiry52hQPE&usqp=CAU',
-    'fabindia': 'https://logos-world.net/wp-content/uploads/2021/02/FabIndia-Logo.png',
     'vasudhaa vastrram vishram': 'https://brownliving.in/cdn/shop/collections/vasudhaa-vastrram-2557117.jpg?v=1755537249'
   };
 
   const getCompanyDisplayName = (companyName) => {
-    return companyName ? companyName.split(' ').map(word => 
+    return companyName ? companyName.split(' ').map(word =>
       word.charAt(0).toUpperCase() + word.slice(1)
     ).join(' ') : '';
   };
@@ -56,7 +49,7 @@ const ProductPage = () => {
   // Determine if this is a company page
   const isCompanyPage = !!company;
   const companyDisplayName = getCompanyDisplayName(company);
-  const companyLogo = company ? (companyLogos[company.toLowerCase()] || 
+  const companyLogo = company ? (companyLogos[company.toLowerCase()] ||
     `https://via.placeholder.com/200x100/666666/FFFFFF?text=${companyDisplayName.split(' ').map(w => w[0]).join('')}`) : null;
 
   // Calculate price statistics
@@ -65,6 +58,64 @@ const ProductPage = () => {
     max: Math.max(...products.map(p => p.price)),
     avg: Math.round(products.reduce((sum, p) => sum + p.price, 0) / products.length)
   } : { min: 0, max: 10000, avg: 5000 };
+
+  // Pagination calculations
+  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentItems = filteredProducts.slice(startIndex, endIndex);
+
+  const goToPage = (page) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const goToPrevious = () => {
+    if (currentPage > 1) {
+      goToPage(currentPage - 1);
+    }
+  };
+
+  const goToNext = () => {
+    if (currentPage < totalPages) {
+      goToPage(currentPage + 1);
+    }
+  };
+
+  const getPageNumbers = () => {
+    const pages = [];
+    const maxPagesToShow = 5;
+
+    if (totalPages <= maxPagesToShow) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      if (currentPage <= 3) {
+        for (let i = 1; i <= 4; i++) {
+          pages.push(i);
+        }
+        pages.push('...');
+        pages.push(totalPages);
+      } else if (currentPage >= totalPages - 2) {
+        pages.push(1);
+        pages.push('...');
+        for (let i = totalPages - 3; i <= totalPages; i++) {
+          pages.push(i);
+        }
+      } else {
+        pages.push(1);
+        pages.push('...');
+        for (let i = currentPage - 1; i <= currentPage + 1; i++) {
+          pages.push(i);
+        }
+        pages.push('...');
+        pages.push(totalPages);
+      }
+    }
+
+    return pages;
+  };
 
   // Count active filters
   useEffect(() => {
@@ -150,6 +201,7 @@ const ProductPage = () => {
     });
 
     setFilteredProducts(updatedProducts);
+    setCurrentPage(1); // Reset to first page when filters change
     setTimeout(() => setIsLoading(false), 300);
   }, [
     products, selectedSubCategory, subcategory, company, category, sortOption,
@@ -177,9 +229,8 @@ const ProductPage = () => {
     if (isCompanyPage) {
       return `Discover ${filteredProducts.length} carefully curated piece${filteredProducts.length !== 1 ? 's' : ''} from ${companyDisplayName}`;
     }
-    return `Discover ${filteredProducts.length} carefully curated piece${filteredProducts.length !== 1 ? 's' : ''}${
-      (subcategory || selectedSubCategory) ? ` in ${(subcategory || selectedSubCategory).toLowerCase()}` : ''
-    }`;
+    return `Discover ${filteredProducts.length} carefully curated piece${filteredProducts.length !== 1 ? 's' : ''}${(subcategory || selectedSubCategory) ? ` in ${(subcategory || selectedSubCategory).toLowerCase()}` : ''
+      }`;
   };
 
   const toggleFilterSection = (section) => {
@@ -302,8 +353,8 @@ const ProductPage = () => {
                   className="sr-only"
                 />
                 <div className={`w-4 h-4 border transition-all duration-300 ${showOnSale
-                    ? 'bg-black border-black'
-                    : 'border-gray-300 group-hover:border-black'
+                  ? 'bg-black border-black'
+                  : 'border-gray-300 group-hover:border-black'
                   }`}>
                   {showOnSale && (
                     <Check size={12} className="text-white absolute top-0.5 left-0.5" />
@@ -324,8 +375,8 @@ const ProductPage = () => {
                   className="sr-only"
                 />
                 <div className={`w-4 h-4 border transition-all duration-300 ${showNewArrivals
-                    ? 'bg-black border-black'
-                    : 'border-gray-300 group-hover:border-black'
+                  ? 'bg-black border-black'
+                  : 'border-gray-300 group-hover:border-black'
                   }`}>
                   {showNewArrivals && (
                     <Check size={12} className="text-white absolute top-0.5 left-0.5" />
@@ -349,9 +400,9 @@ const ProductPage = () => {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-8">
             <div className="text-3xl mb-2">
-              <Title 
-                text1={isCompanyPage ? companyDisplayName.toUpperCase() : getCollectionTitle()} 
-                text2="COLLECTION" 
+              <Title
+                text1={isCompanyPage ? companyDisplayName.toUpperCase() : getCollectionTitle()}
+                text2="COLLECTION"
               />
             </div>
             {filteredProducts.length > 0 && (
@@ -397,6 +448,11 @@ const ProductPage = () => {
                     </span>
                   )}
                 </button>
+              </div>
+
+              {/* Products count */}
+              <div className="text-sm text-gray-600 font-light">
+                Showing {startIndex + 1}-{Math.min(endIndex, filteredProducts.length)} of {filteredProducts.length}
               </div>
             </div>
 
@@ -477,7 +533,7 @@ const ProductPage = () => {
                 <>
                   {viewMode === 'grid' ? (
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                      {filteredProducts.map((product, index) => (
+                      {currentItems.map((product, index) => (
                         <div key={product._id} className="group">
                           <ProductItem
                             name={product.name}
@@ -492,7 +548,7 @@ const ProductPage = () => {
                     </div>
                   ) : (
                     <div className="space-y-6">
-                      {filteredProducts.map((product, index) => (
+                      {currentItems.map((product, index) => (
                         <div
                           key={product._id}
                           className="flex flex-col md:flex-row gap-6 p-6 bg-white border border-gray-200 hover:shadow-lg transition-all duration-300 group"
@@ -526,8 +582,8 @@ const ProductPage = () => {
                                       }
                                     }}
                                     className={`p-2 border transition-all duration-300 ${wishlist.includes(product._id)
-                                        ? 'bg-black text-white border-black'
-                                        : 'bg-white text-black border-gray-300 hover:border-black'
+                                      ? 'bg-black text-white border-black'
+                                      : 'bg-white text-black border-gray-300 hover:border-black'
                                       }`}
                                   >
                                     <Heart size={14} className={wishlist.includes(product._id) ? 'fill-current' : ''} />
@@ -583,7 +639,57 @@ const ProductPage = () => {
                     </div>
                   )}
 
+                  {/* Pagination */}
+                  {totalPages > 1 && (
+                    <div className="mt-12 flex items-center justify-between border-t border-gray-200 pt-8">
+                      <div className="text-sm text-gray-600 font-light">
+                        Page <span className="font-medium text-black">{currentPage}</span> of <span className="font-medium text-black">{totalPages}</span>
+                      </div>
 
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={goToPrevious}
+                          disabled={currentPage === 1}
+                          className="p-2 border border-gray-300 hover:border-black hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:border-gray-300 disabled:hover:bg-white transition-all duration-300"
+                          title="Previous Page"
+                        >
+                          <ChevronLeft size={18} />
+                        </button>
+
+                        <div className="flex gap-1">
+                          {getPageNumbers().map((page, index) => (
+                            page === '...' ? (
+                              <span key={`ellipsis-${index}`} className="px-3 py-2 text-gray-400">...</span>
+                            ) : (
+                              <button
+                                key={page}
+                                onClick={() => goToPage(page)}
+                                className={`px-4 py-2 border transition-all duration-300 ${currentPage === page
+                                    ? 'bg-black text-white border-black'
+                                    : 'border-gray-300 hover:border-black hover:bg-gray-50'
+                                  }`}
+                              >
+                                {page}
+                              </button>
+                            )
+                          ))}
+                        </div>
+
+                        <button
+                          onClick={goToNext}
+                          disabled={currentPage === totalPages}
+                          className="p-2 border border-gray-300 hover:border-black hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:border-gray-300 disabled:hover:bg-white transition-all duration-300"
+                          title="Next Page"
+                        >
+                          <ChevronRight size={18} />
+                        </button>
+                      </div>
+
+                      <div className="text-sm text-gray-600 font-light">
+                        {filteredProducts.length} total items
+                      </div>
+                    </div>
+                  )}
                 </>
               ) : (
                 <div className="flex flex-col items-center justify-center py-20 bg-white border border-gray-200 shadow-sm">
@@ -593,7 +699,7 @@ const ProductPage = () => {
                   <div className="text-center max-w-md">
                     <h3 className="text-2xl font-medium mb-3 tracking-wide">NO PRODUCTS FOUND</h3>
                     <p className="text-gray-600 font-light leading-relaxed mb-6">
-                      {isCompanyPage 
+                      {isCompanyPage
                         ? `We couldn't find any products from ${companyDisplayName}. Check back soon for new arrivals.`
                         : "We couldn't find any products matching your current filters. Try adjusting your search criteria or browse our full collection."
                       }

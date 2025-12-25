@@ -1,27 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import axios from 'axios';
 import { backendUrl, currency } from '../App';
 import { toast } from 'react-toastify';
-import { Upload, Package, Tag, Star, Image as ImageIcon, AlertCircle, CheckCircle2, Trash2, IndianRupee, Building2, Plus } from 'lucide-react';
-import Title from '../components/Title';
+import { Upload, Package, Tag, Star, Image as ImageIcon, CheckCircle2, Trash2, IndianRupee, Building2, Plus, X } from 'lucide-react';
 
 const ImageUpload = ({ id, image, setImage, onRemove, index }) => (
   <div className="relative group">
     <label
       htmlFor={id}
-      className="w-28 h-28 bg-white border border-gray-200 hover:border-gray-400 flex items-center justify-center rounded-xl cursor-pointer overflow-hidden transition-all duration-200 hover:shadow-md"
+      className="w-full h-full bg-white border-2 border-gray-200 hover:border-black flex items-center justify-center cursor-pointer overflow-hidden transition-all duration-300"
     >
       {image ? (
         <>
-          <img src={URL.createObjectURL(image)} alt={`Upload ${id}`} className="object-cover w-full h-full rounded-xl" />
-          <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-200 flex items-center justify-center rounded-xl">
-            <ImageIcon className="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200" size={20} />
+          <img src={URL.createObjectURL(image)} alt={`Upload ${id}`} className="object-cover w-full h-full" />
+          <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-300 flex items-center justify-center">
+            <ImageIcon className="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={24} />
           </div>
         </>
       ) : (
         <div className="flex flex-col items-center justify-center text-gray-400">
-          <Upload size={20} className="mb-1" />
-          <span className="text-xs font-medium">Add Image</span>
+          <Upload size={24} className="mb-2" />
+          <span className="text-xs font-light uppercase tracking-wide">Upload</span>
         </div>
       )}
     </label>
@@ -29,9 +28,9 @@ const ImageUpload = ({ id, image, setImage, onRemove, index }) => (
       <button
         type="button"
         onClick={() => onRemove(index)}
-        className="absolute -top-2 -right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-all duration-200 shadow-lg"
+        className="absolute -top-2 -right-2 bg-black hover:bg-red-600 text-white p-1.5 opacity-0 group-hover:opacity-100 transition-all duration-300"
       >
-        <Trash2 size={12} />
+        <Trash2 size={14} />
       </button>
     )}
     <input
@@ -57,38 +56,109 @@ const Add = ({ token }) => {
   const [bestseller, setBestseller] = useState(false);
   const [sizes, setSizes] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [dragActive, setDragActive] = useState(false);
+  const fileInputRef = useRef(null);
 
   const [companies, setCompanies] = useState([
-    'Biba',
-    'Fabindia',
     'Vasudhaa Vastrram Vishram',
     'Anemone Vinkel'
   ]);
 
   const categoryData = {
     Women: {
-      subCategories: ["", "Kurtis", "Kurta Sets", "Tops", "Blazers", "Dresses", "Women Co-ord Sets", "Corset tops", "Short-tops", "Women Shirts"],
-      sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL']
+      subCategories: ["", "Kurtis", "Kurta Sets", "Tops", "Blazers", "Dresses", "Women Co-ord Sets", "Corset tops", "Short-tops", "Women Shirts", "Sarees"],
+      sizes: {
+        default: ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'],
+        "Sarees": []
+      }
     },
     Men: {
       subCategories: ["", "Men Shirts", "Sleeve Shirts", "Kurtas", "Men Co-ord Sets", "Vests", "Trousers"],
-      sizes: ['28', '30', '32', '34', '36', '38', '40', '42', '44', '46']
+      sizes: {
+        default: ['28', '30', '32', '34', '36', '38', '40', '42', '44', '46']
+      }
     },
     "Handmade Toys": {
       subCategories: ["", "Home Décor", "Bonthapally Toys", "Baskets", "Bags and Pouches", "Wall Decor"],
-      sizes: []
-    },
-    Kitchenware: {
-      subCategories: ["", "Brass Bowls", "Wooden Spoons"],
-      sizes: []
+      sizes: {
+        default: []
+      }
     },
     "Special Product": {
       subCategories: ["", "Bags"],
-      sizes: []
+      sizes: {
+        default: []
+      }
     }
   };
 
-  const currentCategoryData = categoryData[category] || { subCategories: [], sizes: [] };
+  const currentCategoryData = categoryData[category] || { subCategories: [], sizes: { default: [] } };
+  
+  const getCurrentSizes = () => {
+    if (!currentCategoryData.sizes) return [];
+    if (currentCategoryData.sizes[subCategory]) {
+      return currentCategoryData.sizes[subCategory];
+    }
+    return currentCategoryData.sizes.default || [];
+  };
+
+  const handleMultipleFiles = (files) => {
+    const fileArray = Array.from(files);
+    const imageFiles = fileArray.filter(file => file.type.startsWith('image/'));
+    
+    if (imageFiles.length === 0) {
+      toast.error('Please select image files only');
+      return;
+    }
+
+    const newImages = [...images];
+    let emptySlots = newImages.map((img, idx) => img === null ? idx : -1).filter(idx => idx !== -1);
+    
+    imageFiles.forEach((file, idx) => {
+      if (idx < emptySlots.length) {
+        newImages[emptySlots[idx]] = file;
+      }
+    });
+
+    const totalImages = newImages.filter(img => img !== null).length;
+    if (totalImages > 6) {
+      toast.warning('Maximum 6 images allowed. Extra images were not added.');
+      setImages(newImages.slice(0, 6));
+    } else {
+      setImages(newImages);
+      if (imageFiles.length > emptySlots.length) {
+        toast.warning(`Only ${emptySlots.length} images were added. Remove existing images to add more.`);
+      } else {
+        toast.success(`${imageFiles.length} image(s) added successfully`);
+      }
+    }
+  };
+
+  const handleDrag = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === "dragenter" || e.type === "dragover") {
+      setDragActive(true);
+    } else if (e.type === "dragleave") {
+      setDragActive(false);
+    }
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+    
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      handleMultipleFiles(e.dataTransfer.files);
+    }
+  };
+
+  const handleFileSelect = (e) => {
+    if (e.target.files && e.target.files.length > 0) {
+      handleMultipleFiles(e.target.files);
+    }
+  };
 
   const handleAddNewCompany = () => {
     if (newCompanyName.trim() && !companies.includes(newCompanyName.trim())) {
@@ -153,8 +223,6 @@ const Add = ({ token }) => {
       if (error.response) {
         if (error.response.status === 401) {
           toast.error('Session expired. Please login again.');
-          // Optionally redirect to login
-          // window.location.href = '/login';
         } else {
           toast.error(`Server Error: ${error.response.data?.message || 'Unable to process your request.'}`);
         }
@@ -193,83 +261,127 @@ const Add = ({ token }) => {
   };
 
   const uploadedImagesCount = images.filter(img => img !== null).length;
+  const currentSizes = getCurrentSizes();
 
   return (
-    <div className="min-h-screen bg-gray-50 px-4 sm:px-6 md:px-10 lg:px-20 py-10">
+    <div className="min-h-screen bg-white px-4 sm:px-6 md:px-10 lg:px-20 py-10">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-8">
-          <Title text1="ADD NEW" text2="PRODUCT" />
-          <p className="text-gray-600 mt-4 max-w-2xl mx-auto">
+        <div className="mb-12">
+          <h1 className="text-4xl font-light text-black mb-3 tracking-wide uppercase">Add New Product</h1>
+          <div className="w-20 h-0.5 bg-black mb-4"></div>
+          <p className="text-gray-600 font-light tracking-wide">
             Fill in the details below to add a new product to your inventory
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-1">
           {/* Product Images */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-            <div className="bg-black text-white p-6">
-              <div className="flex items-center gap-3">
-                <ImageIcon size={24} className="text-gray-300" />
-                <h2 className="text-xl font-semibold">Product Images ({uploadedImagesCount}/6)</h2>
+          <div className="bg-white border border-gray-200 shadow-sm overflow-hidden">
+            <div className="p-6 border-b border-gray-100 bg-gray-50">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <ImageIcon size={20} className="text-gray-600" />
+                  <h2 className="text-lg font-medium uppercase tracking-wide text-black">Product Images</h2>
+                </div>
+                <span className="text-sm text-gray-600 font-light">
+                  {uploadedImagesCount}/6 Uploaded
+                </span>
               </div>
             </div>
 
             <div className="p-6">
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-7 gap-4 mb-4">
-                {images.map((image, index) => (
-                  <ImageUpload
-                    key={index}
-                    id={`image${index + 1}`}
-                    image={image}
-                    setImage={(img) => setImages(prev => prev.map((val, i) => (i === index ? img : val)))}
-                    onRemove={removeImage}
-                    index={index}
-                  />
-                ))}
+              {/* Drag & Drop Zone */}
+              <div
+                className={`mb-6 border-2 border-dashed p-8 text-center transition-all duration-300 ${
+                  dragActive 
+                    ? 'border-black bg-gray-50' 
+                    : 'border-gray-300 hover:border-gray-400'
+                }`}
+                onDragEnter={handleDrag}
+                onDragLeave={handleDrag}
+                onDragOver={handleDrag}
+                onDrop={handleDrop}
+              >
+                <Upload className="mx-auto mb-4 text-gray-400" size={48} />
+                <h3 className="text-lg font-medium text-black mb-2 uppercase tracking-wide">
+                  Drag & Drop Images Here
+                </h3>
+                <p className="text-sm text-gray-600 font-light mb-4">
+                  or click to browse and select multiple images
+                </p>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  multiple
+                  accept="image/*"
+                  onChange={handleFileSelect}
+                  className="hidden"
+                />
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="px-6 py-3 bg-black text-white font-light uppercase tracking-wide hover:bg-gray-800 transition-all duration-300"
+                >
+                  Select Images
+                </button>
+                <p className="text-xs text-gray-500 mt-4 font-light uppercase tracking-wide">
+                  Maximum 6 images • JPG, PNG, WEBP
+                </p>
               </div>
 
-              {uploadedImagesCount === 0 && (
-                <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
-                  <div className="flex items-center gap-2 text-amber-700">
-                    <AlertCircle size={16} />
-                    <span className="text-sm font-medium">Please upload at least one product image</span>
-                  </div>
+              {/* Image Grid - Only show if images are uploaded */}
+              {uploadedImagesCount > 0 && (
+                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-4 mb-4">
+                  {images.map((image, index) => (
+                    <ImageUpload
+                      key={index}
+                      id={`image${index + 1}`}
+                      image={image}
+                      setImage={(img) => setImages(prev => prev.map((val, i) => (i === index ? img : val)))}
+                      onRemove={removeImage}
+                      index={index}
+                    />
+                  ))}
                 </div>
               )}
             </div>
           </div>
 
           {/* Product Information */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-            <div className="bg-black text-white p-6">
+          <div className="bg-white border border-gray-200 shadow-sm overflow-hidden">
+            <div className="p-6 border-b border-gray-100 bg-gray-50">
               <div className="flex items-center gap-3">
-                <Package size={24} className="text-gray-300" />
-                <h2 className="text-xl font-semibold">Product Information</h2>
+                <Package size={20} className="text-gray-600" />
+                <h2 className="text-lg font-medium uppercase tracking-wide text-black">Product Information</h2>
               </div>
             </div>
 
             <div className="p-6 space-y-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Product Name *</label>
+                <label className="block text-xs font-medium text-gray-500 mb-2 uppercase tracking-wider">
+                  Product Name *
+                </label>
                 <input
                   onChange={(e) => setName(e.target.value)}
                   value={name}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black transition-colors"
+                  className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-black transition-all duration-300"
                   type="text"
-                  placeholder="Enter a descriptive product name"
+                  placeholder="Enter product name"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Product Description *</label>
+                <label className="block text-xs font-medium text-gray-500 mb-2 uppercase tracking-wider">
+                  Product Description *
+                </label>
                 <textarea
                   onChange={(e) => setDescription(e.target.value)}
                   value={description}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black transition-colors resize-none"
-                  rows="4"
-                  placeholder="Describe your product in detail, including features, materials, and benefits"
+                  className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-black transition-all duration-300 resize-none"
+                  rows="5"
+                  placeholder="Describe your product in detail"
                   required
                 />
               </div>
@@ -277,22 +389,24 @@ const Add = ({ token }) => {
           </div>
 
           {/* Company/Brand Section */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-            <div className="bg-black text-white p-6">
+          <div className="bg-white border border-gray-200 shadow-sm overflow-hidden">
+            <div className="p-6 border-b border-gray-100 bg-gray-50">
               <div className="flex items-center gap-3">
-                <Building2 size={24} className="text-gray-300" />
-                <h2 className="text-xl font-semibold">Brand/Company</h2>
+                <Building2 size={20} className="text-gray-600" />
+                <h2 className="text-lg font-medium uppercase tracking-wide text-black">Brand/Company</h2>
               </div>
             </div>
 
             <div className="p-6 space-y-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Company/Brand</label>
+                <label className="block text-xs font-medium text-gray-500 mb-2 uppercase tracking-wider">
+                  Select Company
+                </label>
                 <div className="flex gap-3">
                   <select
                     onChange={(e) => setCompany(e.target.value)}
                     value={company}
-                    className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black transition-colors"
+                    className="flex-1 px-4 py-3 border border-gray-300 focus:outline-none focus:border-black transition-all duration-300"
                   >
                     <option value="Aharyas">Aharyas</option>
                     {companies.map((comp) => (
@@ -302,51 +416,51 @@ const Add = ({ token }) => {
                   <button
                     type="button"
                     onClick={() => setShowAddCompany(true)}
-                    className="px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors flex items-center gap-2 font-medium"
+                    className="px-6 py-3 bg-black hover:bg-gray-800 text-white transition-all duration-300 flex items-center gap-2 font-light uppercase tracking-wide"
                   >
                     <Plus size={16} />
-                    Add New
+                    Add
                   </button>
                 </div>
               </div>
 
-              {/* Add New Company Form */}
               {showAddCompany && (
-                <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-                  <h4 className="font-medium text-gray-900 mb-3">Add New Company</h4>
+                <div className="bg-gray-50 border border-gray-200 p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <h4 className="text-sm font-medium uppercase tracking-wide text-black">Add New Company</h4>
+                    <button
+                      type="button"
+                      onClick={() => { setShowAddCompany(false); setNewCompanyName(''); }}
+                      className="text-gray-400 hover:text-black transition-colors"
+                    >
+                      <X size={18} />
+                    </button>
+                  </div>
                   <div className="flex gap-3">
                     <input
                       type="text"
                       value={newCompanyName}
                       onChange={(e) => setNewCompanyName(e.target.value)}
-                      placeholder="Enter company/brand name"
-                      className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-black transition-colors"
-                      onKeyPress={(e) => e.key === 'Enter' && handleAddNewCompany()}
+                      placeholder="Enter company name"
+                      className="flex-1 px-4 py-3 border border-gray-300 focus:outline-none focus:border-black transition-all duration-300"
+                      onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddNewCompany())}
                     />
                     <button
                       type="button"
                       onClick={handleAddNewCompany}
-                      className="px-4 py-2 bg-black hover:bg-gray-800 text-white rounded-lg transition-colors font-medium"
+                      className="px-6 py-3 bg-black hover:bg-gray-800 text-white transition-all duration-300 font-light uppercase tracking-wide"
                     >
                       Add
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => { setShowAddCompany(false); setNewCompanyName(''); }}
-                      className="px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-700 rounded-lg transition-colors font-medium"
-                    >
-                      Cancel
                     </button>
                   </div>
                 </div>
               )}
 
-              {/* Company Selection Status */}
-              <div className="bg-gray-50 rounded-lg p-3">
+              <div className="bg-gray-50 border border-gray-100 p-4">
                 <div className="flex items-center gap-2 text-gray-700">
                   <Building2 size={16} />
-                  <span className="text-sm font-medium">
-                    {company ? `Selected: ${company}` : 'Product will be listed as Aharyas by default'}
+                  <span className="text-sm font-light">
+                    Selected Brand: <span className="font-medium">{company}</span>
                   </span>
                 </div>
               </div>
@@ -354,22 +468,24 @@ const Add = ({ token }) => {
           </div>
 
           {/* Category & Pricing */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-            <div className="bg-black text-white p-6">
+          <div className="bg-white border border-gray-200 shadow-sm overflow-hidden">
+            <div className="p-6 border-b border-gray-100 bg-gray-50">
               <div className="flex items-center gap-3">
-                <Tag size={24} className="text-gray-300" />
-                <h2 className="text-xl font-semibold">Category & Pricing</h2>
+                <Tag size={20} className="text-gray-600" />
+                <h2 className="text-lg font-medium uppercase tracking-wide text-black">Category & Pricing</h2>
               </div>
             </div>
 
             <div className="p-6">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Category *</label>
+                  <label className="block text-xs font-medium text-gray-500 mb-2 uppercase tracking-wider">
+                    Category *
+                  </label>
                   <select
                     onChange={(e) => { setCategory(e.target.value); setSubCategory(""); setSizes([]); }}
                     value={category}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black transition-colors"
+                    className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-black transition-all duration-300"
                   >
                     {Object.keys(categoryData).map(cat => (
                       <option key={cat} value={cat}>{cat}</option>
@@ -378,11 +494,13 @@ const Add = ({ token }) => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Sub-Category *</label>
+                  <label className="block text-xs font-medium text-gray-500 mb-2 uppercase tracking-wider">
+                    Sub-Category *
+                  </label>
                   <select
-                    onChange={(e) => setSubCategory(e.target.value)}
+                    onChange={(e) => { setSubCategory(e.target.value); setSizes([]); }}
                     value={subCategory}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black transition-colors"
+                    className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-black transition-all duration-300"
                     required
                   >
                     {currentCategoryData.subCategories.map((subCat, index) => (
@@ -392,13 +510,15 @@ const Add = ({ token }) => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Price ({currency}) *</label>
+                  <label className="block text-xs font-medium text-gray-500 mb-2 uppercase tracking-wider">
+                    Price ({currency}) *
+                  </label>
                   <div className="relative">
                     <IndianRupee className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
                     <input
                       onChange={(e) => setPrice(e.target.value)}
                       value={price}
-                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black transition-colors"
+                      className="w-full pl-10 pr-4 py-3 border border-gray-300 focus:outline-none focus:border-black transition-all duration-300"
                       type="number"
                       placeholder="0.00"
                       min="0"
@@ -411,27 +531,28 @@ const Add = ({ token }) => {
             </div>
           </div>
 
-          {/* Sizes (if applicable) */}
-          {currentCategoryData.sizes.length > 0 && (
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-              <div className="bg-black text-white p-6">
+          {/* Sizes */}
+          {currentSizes.length > 0 && (
+            <div className="bg-white border border-gray-200 shadow-sm overflow-hidden">
+              <div className="p-6 border-b border-gray-100 bg-gray-50">
                 <div className="flex items-center gap-3">
-                  <Package size={24} className="text-gray-300" />
-                  <h2 className="text-xl font-semibold">Available Sizes</h2>
+                  <Package size={20} className="text-gray-600" />
+                  <h2 className="text-lg font-medium uppercase tracking-wide text-black">Available Sizes</h2>
                 </div>
               </div>
 
               <div className="p-6">
                 <div className="flex flex-wrap gap-3 mb-4">
-                  {currentCategoryData.sizes.map((size) => (
+                  {currentSizes.map((size) => (
                     <button
                       key={size}
                       type="button"
                       onClick={() => toggleSize(size)}
-                      className={`px-4 py-2 rounded-lg border-2 font-medium transition-all duration-200 ${sizes.includes(size)
-                        ? 'bg-black text-white border-black'
-                        : 'bg-white text-gray-700 border-gray-300 hover:border-gray-400'
-                        }`}
+                      className={`px-6 py-3 border-2 font-light uppercase tracking-wide transition-all duration-300 ${
+                        sizes.includes(size)
+                          ? 'bg-black text-white border-black'
+                          : 'bg-white text-gray-700 border-gray-300 hover:border-black'
+                      }`}
                     >
                       {size}
                     </button>
@@ -439,10 +560,12 @@ const Add = ({ token }) => {
                 </div>
 
                 {sizes.length > 0 && (
-                  <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                  <div className="bg-green-50 border border-green-200 p-4">
                     <div className="flex items-center gap-2 text-green-700">
                       <CheckCircle2 size={16} />
-                      <span className="text-sm font-medium">{sizes.length} size{sizes.length !== 1 ? 's' : ''} selected</span>
+                      <span className="text-sm font-light uppercase tracking-wide">
+                        {sizes.length} size{sizes.length !== 1 ? 's' : ''} selected
+                      </span>
                     </div>
                   </div>
                 )}
@@ -450,39 +573,34 @@ const Add = ({ token }) => {
             </div>
           )}
 
-          {/* Bestseller */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-            <div className="p-6">
-              <div className="flex items-center gap-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+          {/* Bestseller & Submit */}
+          <div className="bg-white border border-gray-200 shadow-sm overflow-hidden">
+            <div className="p-6 space-y-6">
+              <div className="flex items-center gap-4 p-4 bg-gray-50 border border-gray-200">
                 <input
                   type="checkbox"
                   id="bestseller"
                   checked={bestseller}
                   onChange={() => setBestseller(prev => !prev)}
-                  className="w-5 h-5 text-yellow-600 border-yellow-300 rounded focus:ring-yellow-500"
+                  className="w-5 h-5 text-black border-gray-300 focus:ring-black"
                 />
-                <label htmlFor="bestseller" className="cursor-pointer flex items-center gap-2 text-gray-700 font-medium">
-                  <Star className="text-yellow-500" size={18} />
+                <label htmlFor="bestseller" className="cursor-pointer flex items-center gap-2 text-black font-light uppercase tracking-wide">
+                  <Star className="text-gray-600" size={18} />
                   Mark as Bestseller
                 </label>
               </div>
-            </div>
-          </div>
 
-          {/* Submit Buttons */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-            <div className="p-6">
-              <div className="flex flex-col sm:flex-row gap-4 justify-end">
+              <div className="flex flex-col sm:flex-row gap-4 justify-end pt-4 border-t border-gray-100">
                 <button
                   type="button"
                   onClick={resetForm}
-                  className="px-6 py-3 border-2 border-gray-300 text-gray-700 font-medium rounded-lg hover:border-gray-400 hover:text-gray-800 transition-all duration-200"
+                  className="px-8 py-4 border-2 border-gray-300 text-black font-light uppercase tracking-wide hover:border-black transition-all duration-300"
                   disabled={loading}
                 >
                   Reset Form
                 </button>
                 <button
-                  className="px-8 py-3 bg-black text-white font-medium rounded-lg transition-all duration-200 hover:bg-gray-800 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center gap-2 min-w-[140px]"
+                  className="px-8 py-4 bg-black text-white font-light uppercase tracking-wide hover:bg-gray-800 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 min-w-[200px]"
                   type="submit"
                   disabled={loading}
                 >
@@ -494,7 +612,7 @@ const Add = ({ token }) => {
                   ) : (
                     <>
                       <Package size={18} />
-                      Add to Collection
+                      Add Product
                     </>
                   )}
                 </button>

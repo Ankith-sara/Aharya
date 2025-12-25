@@ -97,11 +97,12 @@ const Navbar = () => {
         { name: 'Kurtis', path: '/shop/Kurtis' },
         { name: 'Kurta Sets', path: '/shop/Kurta Sets' },
         { name: 'Tops', path: '/shop/Tops' },
-        { name: 'Blazers', path: '/shop/Blazers' }, 
+        { name: 'Blazers', path: '/shop/Blazers' },
         { name: 'Dresses', path: '/shop/Dresses' },
-        {name: 'Co-ord Sets', path: '/shop/Women Co-ord Sets' },
-        {name: 'Short-tops', path: '/shop/Short-tops' },
-        {name: 'Shirts', path: '/shop/Women Shirts' }
+        { name: 'Co-ord Sets', path: '/shop/Women Co-ord Sets' },
+        { name: 'Short-tops', path: '/shop/Short-tops' },
+        { name: 'Shirts', path: '/shop/Women Shirts' },
+        { name: 'Sarees', path: '/shop/Sarees' }
       ]
     },
     {

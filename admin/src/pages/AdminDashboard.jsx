@@ -1,36 +1,31 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { Line, Bar } from "react-chartjs-2";
-import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, BarElement } from "chart.js";
+import { Line, Doughnut } from "react-chartjs-2";
+import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, BarElement, ArcElement } from "chart.js";
 import { useNavigate } from "react-router-dom";
 import {
     User, ShoppingBag, BarChart2, Edit2, X, Camera, Mail,
     TrendingUp, Package, Users, Calendar, Activity, Shield,
-    Settings, Eye, ArrowUpRight, IndianRupee
+    Eye, IndianRupee, TrendingDown, Clock,
+    CheckCircle, XCircle, AlertCircle, Percent, FileText, Download, Search
 } from "lucide-react";
 import { jwtDecode } from "jwt-decode";
-
-// Register ChartJS components
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, BarElement);
-
 import { backendUrl, currency } from "../App";
+
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, BarElement, ArcElement);
 
 const AdminPanel = ({ token, setToken }) => {
     const [activeTab, setActiveTab] = useState("dashboard");
     const [adminData, setAdminData] = useState(null);
     const navigate = useNavigate();
 
-    // Fetch admin data when component mounts
     useEffect(() => {
         const fetchAdminData = async () => {
             try {
                 const decoded = jwtDecode(token);
-                // Use proper Authorization header
                 const res = await axios.get(`${backendUrl}/api/user/profile/${decoded.id}`, {
-                    headers: { 
-                        'Authorization': `Bearer ${token}` 
-                    }
+                    headers: { 'Authorization': `Bearer ${token}` }
                 });
                 if (res.data.success) {
                     setAdminData(res.data.user);
@@ -48,27 +43,26 @@ const AdminPanel = ({ token, setToken }) => {
     }, [token, navigate]);
 
     return (
-        <div className="min-h-screen bg-gray-50">
-            {/* Header */}
-            <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-40">
+        <div className="min-h-screen bg-white">
+            <header className="bg-white border-b border-gray-200 sticky top-0 z-40">
                 <div className="px-4 sm:px-6 py-4">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4">
-                            <div className="w-10 h-10 bg-black rounded-xl flex items-center justify-center">
-                                <Shield className="text-white" size={20} />
+                            <div className="w-10 h-10 border-2 border-black flex items-center justify-center">
+                                <Shield className="text-black" size={20} />
                             </div>
                             <div>
-                                <h1 className="text-xl font-semibold text-gray-900">Admin Dashboard</h1>
-                                <p className="text-sm text-gray-600">Management Panel</p>
+                                <h1 className="text-xl font-medium text-black uppercase tracking-wide">Admin Dashboard</h1>
+                                <p className="text-xs text-gray-600 uppercase tracking-wider font-light">Management Panel</p>
                             </div>
                         </div>
 
                         <div className="flex items-center gap-2">
                             <button
                                 onClick={() => setActiveTab("dashboard")}
-                                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${activeTab === 'dashboard'
-                                    ? 'bg-black text-white shadow-md'
-                                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                                className={`flex items-center gap-2 px-4 py-2 text-sm font-light uppercase tracking-wide transition-all duration-300 ${activeTab === 'dashboard'
+                                        ? 'bg-black text-white'
+                                        : 'text-gray-600 hover:text-black hover:bg-gray-100'
                                     }`}
                             >
                                 <BarChart2 size={16} />
@@ -77,9 +71,9 @@ const AdminPanel = ({ token, setToken }) => {
 
                             <button
                                 onClick={() => setActiveTab("profile")}
-                                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${activeTab === 'profile'
-                                    ? 'bg-black text-white shadow-md'
-                                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                                className={`flex items-center gap-2 px-4 py-2 text-sm font-light uppercase tracking-wide transition-all duration-300 ${activeTab === 'profile'
+                                        ? 'bg-black text-white'
+                                        : 'text-gray-600 hover:text-black hover:bg-gray-100'
                                     }`}
                             >
                                 <User size={16} />
@@ -90,7 +84,7 @@ const AdminPanel = ({ token, setToken }) => {
                 </div>
             </header>
 
-            <main className="px-4 sm:px-6 md:px-10 lg:px-20 py-8">
+            <main className="px-4 sm:px-6 md:px-10 lg:px-20 py-10">
                 {activeTab === "dashboard" && <AdminDashboard token={token} adminData={adminData} />}
                 {activeTab === "profile" && <AdminProfile token={token} adminData={adminData} setAdminData={setAdminData} />}
             </main>
@@ -98,11 +92,21 @@ const AdminPanel = ({ token, setToken }) => {
     );
 };
 
-// --- Dashboard Component ---
 const AdminDashboard = ({ token, adminData }) => {
     const [orders, setOrders] = useState([]);
     const [products, setProducts] = useState([]);
-    const [stats, setStats] = useState({ totalRevenue: 0, totalOrders: 0, totalProducts: 0 });
+    const [stats, setStats] = useState({
+        totalRevenue: 0,
+        totalOrders: 0,
+        totalProducts: 0,
+        pendingOrders: 0,
+        completedOrders: 0,
+        avgOrderValue: 0,
+        todayRevenue: 0,
+        todayOrders: 0
+    });
+    const [timeFilter, setTimeFilter] = useState('7days');
+    const [searchTerm, setSearchTerm] = useState('');
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -114,17 +118,34 @@ const AdminDashboard = ({ token, adminData }) => {
 
     const fetchOrders = async () => {
         try {
-            // Changed POST to GET and added proper Authorization header
             const response = await axios.get(`${backendUrl}/api/order/list`, {
-                headers: { 
-                    'Authorization': `Bearer ${token}` 
-                }
+                headers: { 'Authorization': `Bearer ${token}` }
             });
             if (response.data.success) {
                 const fetchedOrders = response.data.orders || [];
                 setOrders(fetchedOrders.slice().reverse());
+
                 const totalRevenue = fetchedOrders.reduce((sum, order) => sum + order.amount, 0);
-                setStats(prev => ({ ...prev, totalRevenue, totalOrders: fetchedOrders.length }));
+                const pendingOrders = fetchedOrders.filter(order => !order.payment).length;
+                const completedOrders = fetchedOrders.filter(order => order.payment).length;
+                const avgOrderValue = fetchedOrders.length > 0 ? totalRevenue / fetchedOrders.length : 0;
+
+                const today = new Date().toDateString();
+                const todayOrders = fetchedOrders.filter(order =>
+                    new Date(order.date).toDateString() === today
+                );
+                const todayRevenue = todayOrders.reduce((sum, order) => sum + order.amount, 0);
+
+                setStats(prev => ({
+                    ...prev,
+                    totalRevenue,
+                    totalOrders: fetchedOrders.length,
+                    pendingOrders,
+                    completedOrders,
+                    avgOrderValue,
+                    todayRevenue,
+                    todayOrders: todayOrders.length
+                }));
             }
         } catch (error) {
             console.error('Error fetching orders:', error);
@@ -138,11 +159,8 @@ const AdminDashboard = ({ token, adminData }) => {
 
     const fetchProducts = async () => {
         try {
-            // Added proper Authorization header
             const response = await axios.get(`${backendUrl}/api/product/list`, {
-                headers: { 
-                    'Authorization': `Bearer ${token}` 
-                }
+                headers: { 'Authorization': `Bearer ${token}` }
             });
             if (response.data.success) {
                 const fetchedProducts = response.data.products || [];
@@ -151,62 +169,42 @@ const AdminDashboard = ({ token, adminData }) => {
             }
         } catch (error) {
             console.error('Error fetching products:', error);
-            if (error.response?.status === 401) {
-                toast.error('Session expired. Please login again.');
-                localStorage.removeItem('token');
-                navigate("/login");
-            }
         }
     };
 
-    // Chart configuration
     const chartOptions = {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
-            legend: {
-                display: false
-            },
+            legend: { display: false },
             tooltip: {
-                backgroundColor: '#1f2937',
-                titleColor: '#f9fafb',
-                bodyColor: '#f9fafb',
-                borderColor: '#374151',
+                backgroundColor: '#000000',
+                titleColor: '#ffffff',
+                bodyColor: '#ffffff',
+                borderColor: '#333333',
                 borderWidth: 1
             }
         },
         scales: {
             x: {
-                grid: { 
-                    color: 'rgba(107, 114, 128, 0.1)',
-                    borderColor: 'rgba(107, 114, 128, 0.2)'
-                },
-                ticks: { 
-                    color: '#6b7280',
-                    font: { size: 12 }
-                }
+                grid: { color: 'rgba(0, 0, 0, 0.05)', borderColor: 'rgba(0, 0, 0, 0.1)' },
+                ticks: { color: '#666666', font: { size: 11 } }
             },
             y: {
-                grid: { 
-                    color: 'rgba(107, 114, 128, 0.1)',
-                    borderColor: 'rgba(107, 114, 128, 0.2)'
-                },
-                ticks: { 
-                    color: '#6b7280',
-                    font: { size: 12 }
-                }
+                grid: { color: 'rgba(0, 0, 0, 0.05)', borderColor: 'rgba(0, 0, 0, 0.1)' },
+                ticks: { color: '#666666', font: { size: 11 } }
             }
         }
     };
 
-    const orderDates = orders.map(order => new Date(order.date).toLocaleDateString());
+    const orderDates = orders.map(order => new Date(order.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
     const salesData = orders.map(order => order.amount);
 
     const salesChart = {
-        labels: orderDates.slice(0, 10).reverse(),
+        labels: orderDates.slice(0, 14).reverse(),
         datasets: [{
             label: "Sales Revenue",
-            data: salesData.slice(0, 10).reverse(),
+            data: salesData.slice(0, 14).reverse(),
             borderColor: "#000000",
             backgroundColor: "rgba(0, 0, 0, 0.05)",
             fill: true,
@@ -214,86 +212,163 @@ const AdminDashboard = ({ token, adminData }) => {
             pointBackgroundColor: "#000000",
             pointBorderColor: "#ffffff",
             pointBorderWidth: 2,
-            pointRadius: 4,
+            pointRadius: 3,
         }],
     };
 
     const ordersChart = {
-        labels: orderDates.slice(0, 10).reverse(),
+        labels: orderDates.slice(0, 14).reverse(),
         datasets: [{
-            label: "Items per Order",
-            data: orders.slice(0, 10).reverse().map(o => o.items.length),
+            label: "Orders",
+            data: orders.slice(0, 14).reverse().map(() => 1),
             backgroundColor: "#000000",
-            borderRadius: 4,
+            borderRadius: 2,
         }],
     };
 
+    // Category Distribution
+    const categoryData = products.reduce((acc, product) => {
+        acc[product.category] = (acc[product.category] || 0) + 1;
+        return acc;
+    }, {});
+
+    const doughnutChart = {
+        labels: Object.keys(categoryData),
+        datasets: [{
+            data: Object.values(categoryData),
+            backgroundColor: [
+                '#e34567',
+                '#3e5687',
+                '#3e3e3e',
+                '#999999',
+                '#CCCCCC'
+            ],
+            borderWidth: 2,
+            borderColor: '#ffffff'
+        }]
+    };
+
+    const filteredOrders = orders.filter(order =>
+        order.address?.Name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        order._id?.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
     return (
-        <div className="max-w-8xl mx-auto space-y-8">
-            {/* Stats Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <p className="text-sm font-medium text-gray-600 mb-1">Total Revenue</p>
-                            <p className="text-2xl font-semibold text-gray-900">{currency} {stats.totalRevenue.toFixed(2)}</p>
-                            <div className="flex items-center gap-1 mt-2">
-                                <ArrowUpRight size={14} className="text-green-600" />
-                                <span className="text-sm text-green-600 font-medium">+12.5%</span>
-                                <span className="text-sm text-gray-500">vs last month</span>
-                            </div>
+        <div className="max-w-8xl mx-auto space-y-3">
+            {/* Quick Stats Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-1">
+                <div className="bg-white border border-gray-200 p-6 hover:shadow-sm transition-shadow">
+                    <div className="flex items-center justify-between mb-4">
+                        <div className="w-12 h-12 border-2 border-black flex items-center justify-center">
+                            <IndianRupee className="text-black" size={24} />
                         </div>
-                        <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                            <IndianRupee className="text-green-600" size={24} />
+                        <div className="flex items-center gap-1 text-green-600">
+                            <TrendingUp size={14} />
+                            <span className="text-xs font-medium">+12.5%</span>
                         </div>
                     </div>
+                    <p className="text-xs font-medium text-gray-500 mb-1 uppercase tracking-wider">Total Revenue</p>
+                    <p className="text-2xl font-light text-black">{currency} {stats.totalRevenue.toFixed(2)}</p>
                 </div>
 
-                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <p className="text-sm font-medium text-gray-600 mb-1">Total Orders</p>
-                            <p className="text-2xl font-semibold text-gray-900">{stats.totalOrders}</p>
-                            <div className="flex items-center gap-1 mt-2">
-                                <ArrowUpRight size={14} className="text-blue-600" />
-                                <span className="text-sm text-blue-600 font-medium">+8.2%</span>
-                                <span className="text-sm text-gray-500">vs last month</span>
-                            </div>
+                <div className="bg-white border border-gray-200 p-6 hover:shadow-sm transition-shadow">
+                    <div className="flex items-center justify-between mb-4">
+                        <div className="w-12 h-12 border-2 border-black flex items-center justify-center">
+                            <ShoppingBag className="text-black" size={24} />
                         </div>
-                        <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                            <ShoppingBag className="text-blue-600" size={24} />
+                        <div className="flex items-center gap-1 text-blue-600">
+                            <TrendingUp size={14} />
+                            <span className="text-xs font-medium">+8.2%</span>
                         </div>
                     </div>
+                    <p className="text-xs font-medium text-gray-500 mb-1 uppercase tracking-wider">Total Orders</p>
+                    <p className="text-2xl font-light text-black">{stats.totalOrders}</p>
                 </div>
 
-                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <p className="text-sm font-medium text-gray-600 mb-1">Total Products</p>
-                            <p className="text-2xl font-semibold text-gray-900">{stats.totalProducts}</p>
-                            <div className="flex items-center gap-1 mt-2">
-                                <ArrowUpRight size={14} className="text-orange-600" />
-                                <span className="text-sm text-orange-600 font-medium">+3.1%</span>
-                                <span className="text-sm text-gray-500">vs last month</span>
-                            </div>
+                <div className="bg-white border border-gray-200 p-6 hover:shadow-sm transition-shadow">
+                    <div className="flex items-center justify-between mb-4">
+                        <div className="w-12 h-12 border-2 border-black flex items-center justify-center">
+                            <Package className="text-black" size={24} />
                         </div>
-                        <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
-                            <Package className="text-orange-600" size={24} />
+                        <div className="flex items-center gap-1 text-orange-600">
+                            <TrendingUp size={14} />
+                            <span className="text-xs font-medium">+3.1%</span>
                         </div>
                     </div>
+                    <p className="text-xs font-medium text-gray-500 mb-1 uppercase tracking-wider">Total Products</p>
+                    <p className="text-2xl font-light text-black">{stats.totalProducts}</p>
+                </div>
+
+                <div className="bg-white border border-gray-200 p-6 hover:shadow-sm transition-shadow">
+                    <div className="flex items-center justify-between mb-4">
+                        <div className="w-12 h-12 border-2 border-black flex items-center justify-center">
+                            <IndianRupee className="text-black" size={24} />
+                        </div>
+                        <div className="flex items-center gap-1 text-purple-600">
+                            <TrendingUp size={14} />
+                            <span className="text-xs font-medium">+5.3%</span>
+                        </div>
+                    </div>
+                    <p className="text-xs font-medium text-gray-500 mb-1 uppercase tracking-wider">Avg Order Value</p>
+                    <p className="text-2xl font-light text-black">{currency} {stats.avgOrderValue.toFixed(2)}</p>
                 </div>
             </div>
 
-            {/* Charts */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                    <div className="bg-black text-white p-6">
-                        <div className="flex items-center gap-3">
-                            <TrendingUp size={24} className="text-gray-300" />
-                            <div>
-                                <h3 className="text-xl font-semibold">Sales Revenue</h3>
-                                <p className="text-sm text-gray-300">Recent sales performance</p>
+            {/* Today's Performance */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-1">
+                <div className="bg-black text-white p-6 border border-black">
+                    <div className="flex items-center gap-3 mb-4">
+                        <Clock size={20} />
+                        <h3 className="text-sm font-medium uppercase tracking-wider">Today's Revenue</h3>
+                    </div>
+                    <p className="text-3xl font-light mb-2">{currency} {stats.todayRevenue.toFixed(2)}</p>
+                    <p className="text-xs text-gray-400 uppercase tracking-wide">{stats.todayOrders} orders today</p>
+                </div>
+
+                <div className="bg-white border border-gray-200 p-6">
+                    <div className="flex items-center gap-3 mb-4">
+                        <CheckCircle size={20} className="text-green-600" />
+                        <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wider">Completed</h3>
+                    </div>
+                    <p className="text-3xl font-light text-black mb-2">{stats.completedOrders}</p>
+                    <p className="text-xs text-gray-500 uppercase tracking-wide">
+                        {stats.totalOrders > 0 ? ((stats.completedOrders / stats.totalOrders) * 100).toFixed(1) : 0}% completion rate
+                    </p>
+                </div>
+
+                <div className="bg-white border border-gray-200 p-6">
+                    <div className="flex items-center gap-3 mb-4">
+                        <XCircle size={20} className="text-red-600" />
+                        <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wider">Pending</h3>
+                    </div>
+                    <p className="text-3xl font-light text-black mb-2">{stats.pendingOrders}</p>
+                    <p className="text-xs text-gray-500 uppercase tracking-wide">
+                        {stats.totalOrders > 0 ? ((stats.pendingOrders / stats.totalOrders) * 100).toFixed(1) : 0}% pending
+                    </p>
+                </div>
+            </div>
+
+            {/* Charts Row */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-1">
+                <div className="lg:col-span-2 bg-white border border-gray-200 overflow-hidden">
+                    <div className="p-6 border-b border-gray-100 bg-gray-50">
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                                <TrendingUp size={20} className="text-gray-600" />
+                                <div>
+                                    <h3 className="text-lg font-medium uppercase tracking-wide text-black">Sales Revenue</h3>
+                                    <p className="text-xs text-gray-600 uppercase tracking-wider font-light">Last 14 days performance</p>
+                                </div>
                             </div>
+                            <select
+                                value={timeFilter}
+                                onChange={(e) => setTimeFilter(e.target.value)}
+                                className="px-3 py-2 border border-gray-300 text-xs uppercase tracking-wide focus:outline-none focus:border-black"
+                            >
+                                <option value="7days">7 Days</option>
+                                <option value="14days">14 Days</option>
+                                <option value="30days">30 Days</option>
+                            </select>
                         </div>
                     </div>
                     <div className="p-6">
@@ -303,80 +378,119 @@ const AdminDashboard = ({ token, adminData }) => {
                     </div>
                 </div>
 
-                <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                    <div className="bg-black text-white p-6">
+                <div className="bg-white border border-gray-200 overflow-hidden">
+                    <div className="p-6 border-b border-gray-100 bg-gray-50">
                         <div className="flex items-center gap-3">
-                            <BarChart2 size={24} className="text-gray-300" />
+                            <Package size={20} className="text-gray-600" />
                             <div>
-                                <h3 className="text-xl font-semibold">Order Volume</h3>
-                                <p className="text-sm text-gray-300">Items per order analysis</p>
+                                <h3 className="text-lg font-medium uppercase tracking-wide text-black">Categories</h3>
+                                <p className="text-xs text-gray-600 uppercase tracking-wider font-light">Product distribution</p>
                             </div>
                         </div>
                     </div>
-                    <div className="p-6">
-                        <div className="h-64">
-                            <Bar data={ordersChart} options={chartOptions} />
+                    <div className="p-6 flex items-center justify-center">
+                        <div className="h-64 w-full flex items-center justify-center">
+                            <Doughnut
+                                data={doughnutChart}
+                                options={{
+                                    responsive: true,
+                                    maintainAspectRatio: false,
+                                    plugins: {
+                                        legend: {
+                                            position: 'bottom',
+                                            labels: {
+                                                font: { size: 11 },
+                                                padding: 15,
+                                                color: '#666666'
+                                            }
+                                        }
+                                    }
+                                }}
+                            />
                         </div>
                     </div>
                 </div>
             </div>
 
-            {/* Recent Orders Table */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                <div className="bg-black text-white p-6">
+            {/* Recent Orders */}
+            <div className="bg-white border border-gray-200 overflow-hidden">
+                <div className="p-6 border-b border-gray-100 bg-gray-50">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                            <ShoppingBag size={24} className="text-gray-300" />
+                            <ShoppingBag size={20} className="text-gray-600" />
                             <div>
-                                <h3 className="text-xl font-semibold">Recent Orders</h3>
-                                <p className="text-sm text-gray-300">Latest customer orders</p>
+                                <h3 className="text-lg font-medium uppercase tracking-wide text-black">Recent Orders</h3>
+                                <p className="text-xs text-gray-600 uppercase tracking-wider font-light">Latest customer transactions</p>
                             </div>
                         </div>
-                        <button className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-300 hover:text-white transition-colors bg-white/10 hover:bg-white/20 rounded-lg">
-                            <Eye size={16} />
-                            View All
-                        </button>
+                        <div className="flex items-center gap-3">
+                            <div className="relative">
+                                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+                                <input
+                                    type="text"
+                                    placeholder="Search orders..."
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                    className="pl-10 pr-4 py-2 border border-gray-300 text-sm focus:outline-none focus:border-black"
+                                />
+                            </div>
+                            <button className="flex items-center gap-2 px-4 py-2 text-sm font-light uppercase tracking-wide border border-gray-300 hover:border-black transition-colors">
+                                <Download size={16} />
+                                Export
+                            </button>
+                        </div>
                     </div>
                 </div>
 
                 <div className="overflow-x-auto">
                     <table className="w-full">
-                        <thead className="bg-gray-50">
+                        <thead className="bg-gray-50 border-b border-gray-200">
                             <tr>
                                 <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order ID</th>
                                 <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
+                                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Items</th>
                                 <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
                                 <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                                 <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                                <th className="px-6 py-4 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-gray-200">
-                            {orders.slice(0, 8).map((order, index) => (
+                        <tbody className="divide-y divide-gray-100">
+                            {filteredOrders.slice(0, 10).map((order, index) => (
                                 <tr key={order._id} className="hover:bg-gray-50 transition-colors">
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                        #{(index + 1).toString().padStart(4, '0')}
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-black">
+                                        #{(index + 1).toString().padStart(5, '0')}
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
+                                            <div className="w-8 h-8 border border-gray-200 flex items-center justify-center">
                                                 <User size={14} className="text-gray-600" />
                                             </div>
-                                            <span className="text-sm font-medium text-gray-900">{order.address.Name}</span>
+                                            <span className="text-sm font-medium text-black">{order.address?.Name || 'N/A'}</span>
                                         </div>
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">
-                                        {currency} {order.amount.toFixed(2)}
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        {order.items?.length || 0} items
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-black">
+                                        {currency} {order.amount?.toFixed(2) || '0.00'}
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">
-                                        <span className={`inline-flex items-center px-3 py-1 rounded-lg text-xs font-medium ${order.payment
-                                            ? 'bg-green-100 text-green-800'
-                                            : 'bg-red-100 text-red-800'
+                                        <span className={`inline-flex items-center px-3 py-1 border text-xs font-light uppercase tracking-wide ${order.payment
+                                                ? 'border-green-200 bg-green-50 text-green-700'
+                                                : 'border-red-200 bg-red-50 text-red-700'
                                             }`}>
+                                            {order.payment ? <CheckCircle size={12} className="mr-1" /> : <XCircle size={12} className="mr-1" />}
                                             {order.payment ? "Paid" : "Pending"}
                                         </span>
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-light">
                                         {new Date(order.date).toLocaleDateString()}
+                                    </td>
+                                    <td className="px-6 py-4 text-center">
+                                        <button className="p-2 border border-gray-200 hover:border-black transition-colors">
+                                            <Eye size={14} />
+                                        </button>
                                     </td>
                                 </tr>
                             ))}
@@ -388,12 +502,10 @@ const AdminDashboard = ({ token, adminData }) => {
     );
 };
 
-// --- Admin Profile Component ---
 const AdminProfile = ({ token, adminData, setAdminData }) => {
     const [editModalOpen, setEditModalOpen] = useState(false);
     const [editProfile, setEditProfile] = useState({ name: "", email: "", image: null, imagePreview: "" });
     const [loading, setLoading] = useState(false);
-    const navigate = useNavigate();
 
     useEffect(() => {
         if (adminData) {
@@ -428,11 +540,10 @@ const AdminProfile = ({ token, adminData, setAdminData }) => {
         }
 
         try {
-            // Added proper Authorization header
             const res = await axios.put(`${backendUrl}/api/user/profile/${adminData._id}`, formData, {
-                headers: { 
+                headers: {
                     'Authorization': `Bearer ${token}`,
-                    "Content-Type": "multipart/form-data" 
+                    "Content-Type": "multipart/form-data"
                 }
             });
             if (res.data.success) {
@@ -455,7 +566,7 @@ const AdminProfile = ({ token, adminData, setAdminData }) => {
             <div className="flex items-center justify-center min-h-64">
                 <div className="text-center">
                     <div className="w-12 h-12 border-4 border-gray-300 border-t-black rounded-full animate-spin mx-auto mb-4"></div>
-                    <p className="text-gray-600">Loading profile...</p>
+                    <p className="text-gray-600 font-light uppercase tracking-wide text-sm">Loading profile...</p>
                 </div>
             </div>
         );
@@ -463,91 +574,73 @@ const AdminProfile = ({ token, adminData, setAdminData }) => {
 
     return (
         <div className="max-w-4xl mx-auto">
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                {/* Cover */}
-                <div className="h-32 bg-gradient-to-r from-gray-900 via-black to-gray-900"></div>
+            <div className="bg-white border border-gray-200 overflow-hidden">
+                <div className="h-32 bg-black"></div>
 
-                {/* Profile Content */}
                 <div className="px-6 pb-6 relative">
-                    {/* Profile Image */}
-                    <div className="w-32 h-32 rounded-xl border-4 border-white overflow-hidden -mt-16 mb-6 shadow-lg bg-white">
-                        <img 
-                            src={adminData.image || 'https://via.placeholder.com/150'} 
-                            alt="Admin" 
-                            className="w-full h-full object-cover" 
+                    <div className="w-32 h-32 border-4 border-white overflow-hidden -mt-16 mb-6 shadow-sm bg-white">
+                        <img
+                            src={adminData.image || 'https://via.placeholder.com/150'}
+                            alt="Admin"
+                            className="w-full h-full object-cover"
                         />
                     </div>
 
-                    {/* Profile Info */}
                     <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
                         <div className="flex-1">
                             <div className="mb-4">
-                                <h2 className="text-3xl font-semibold text-gray-900 mb-2">{adminData.name}</h2>
+                                <h2 className="text-3xl font-light text-black mb-2 uppercase tracking-wide">{adminData.name}</h2>
                                 <div className="flex items-center gap-2 text-gray-600 mb-4">
-                                    <Mail size={18} />
-                                    <span className="text-lg">{adminData.email}</span>
+                                    <Mail size={16} />
+                                    <span className="text-sm font-light">{adminData.email}</span>
                                 </div>
                             </div>
 
-                            <div className="flex items-center gap-6 text-sm text-gray-500 mb-6">
+                            <div className="flex items-center gap-6 text-xs text-gray-500 mb-6 uppercase tracking-wider">
                                 <span className="flex items-center gap-2">
-                                    <Calendar size={16} />
+                                    <Calendar size={14} />
                                     Joined {new Date(adminData.createdAt).toLocaleDateString()}
                                 </span>
                                 <span className="flex items-center gap-2">
-                                    <Activity size={16} />
-                                    <span className="w-2 h-2 bg-green-500 rounded-full"></span>
-                                    Online Now
+                                    <Activity size={14} />
+                                    <span className="w-2 h-2 bg-green-500"></span>
+                                    Online
                                 </span>
                             </div>
 
-                            {/* Profile Stats */}
                             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                                <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
+                                <div className="bg-gray-50 border border-gray-100 p-4">
                                     <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                                            <Shield size={20} className="text-green-600" />
+                                        <div className="w-10 h-10 border border-blue-200 flex items-center justify-center">
+                                            <Users size={18} className="text-blue-600" />
                                         </div>
                                         <div>
-                                            <p className="text-sm text-gray-600">Account Status</p>
-                                            <p className="font-semibold text-green-600">Active</p>
+                                            <p className="text-xs text-gray-500 uppercase tracking-wider">Role</p>
+                                            <p className="font-medium text-black text-sm">Admin</p>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
+                                <div className="bg-gray-50 border border-gray-100 p-4">
                                     <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                                            <Users size={20} className="text-blue-600" />
+                                        <div className="w-10 h-10 border border-orange-200 flex items-center justify-center">
+                                            <Calendar size={18} className="text-orange-600" />
                                         </div>
                                         <div>
-                                            <p className="text-sm text-gray-600">Role</p>
-                                            <p className="font-semibold text-gray-900">Administrator</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
-                                            <Calendar size={20} className="text-orange-600" />
-                                        </div>
-                                        <div>
-                                            <p className="text-sm text-gray-600">Last Login</p>
-                                            <p className="font-semibold text-gray-900">{new Date().toLocaleDateString()}</p>
+                                            <p className="text-xs text-gray-500 uppercase tracking-wider">Last Login</p>
+                                            <p className="font-medium text-black text-sm">{new Date().toLocaleDateString()}</p>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        {/* Action Button */}
                         <div className="lg:mt-8">
                             <button
                                 onClick={() => setEditModalOpen(true)}
-                                className="flex items-center gap-2 px-6 py-3 bg-black text-white font-medium rounded-lg hover:bg-gray-800 transition-all duration-200 transform hover:scale-[1.02] shadow-md hover:shadow-lg"
+                                className="flex items-center gap-2 px-6 py-3 bg-black text-white font-light uppercase tracking-wide hover:bg-gray-800 transition-all duration-300 transform hover:scale-[1.02]"
                             >
-                                <Edit2 size={18} />
+                                <Edit2 size={16} />
                                 Edit Profile
                             </button>
                         </div>
@@ -558,12 +651,12 @@ const AdminProfile = ({ token, adminData, setAdminData }) => {
             {/* Edit Profile Modal */}
             {editModalOpen && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-xl w-full max-w-md shadow-2xl border border-gray-200">
-                        <div className="flex justify-between items-center p-6 border-b border-gray-200">
-                            <h3 className="text-xl font-semibold text-gray-900">Edit Profile</h3>
+                    <div className="bg-white w-full max-w-md border border-gray-200">
+                        <div className="flex justify-between items-center p-6 border-b border-gray-200 bg-gray-50">
+                            <h3 className="text-lg font-medium text-black uppercase tracking-wide">Edit Profile</h3>
                             <button
                                 onClick={() => setEditModalOpen(false)}
-                                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                                className="p-2 hover:bg-gray-100 transition-colors"
                             >
                                 <X size={20} className="text-gray-500" />
                             </button>
@@ -575,9 +668,9 @@ const AdminProfile = ({ token, adminData, setAdminData }) => {
                                     <img
                                         src={editProfile.imagePreview || 'https://via.placeholder.com/150'}
                                         alt="Preview"
-                                        className="w-28 h-28 rounded-xl object-cover border-4 border-gray-200"
+                                        className="w-28 h-28 object-cover border-4 border-gray-200"
                                     />
-                                    <label className="absolute -bottom-2 -right-2 bg-black text-white p-2 rounded-lg cursor-pointer hover:bg-gray-800 transition-colors shadow-lg">
+                                    <label className="absolute -bottom-2 -right-2 bg-black text-white p-2 cursor-pointer hover:bg-gray-800 transition-colors">
                                         <Camera size={16} />
                                         <input type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
                                     </label>
@@ -585,9 +678,9 @@ const AdminProfile = ({ token, adminData, setAdminData }) => {
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+                                <label className="block text-xs font-medium text-gray-500 mb-2 uppercase tracking-wider">Full Name</label>
                                 <input
-                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black transition-colors"
+                                    className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-black transition-colors"
                                     value={editProfile.name}
                                     onChange={e => setEditProfile({ ...editProfile, name: e.target.value })}
                                     required
@@ -595,27 +688,27 @@ const AdminProfile = ({ token, adminData, setAdminData }) => {
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+                                <label className="block text-xs font-medium text-gray-500 mb-2 uppercase tracking-wider">Email Address</label>
                                 <input
                                     type="email"
-                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black transition-colors"
+                                    className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-black transition-colors"
                                     value={editProfile.email}
                                     onChange={e => setEditProfile({ ...editProfile, email: e.target.value })}
                                     required
                                 />
                             </div>
 
-                            <div className="flex justify-end gap-3 pt-4">
+                            <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
                                 <button
                                     type="button"
                                     onClick={() => setEditModalOpen(false)}
-                                    className="px-6 py-3 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors"
+                                    className="px-6 py-3 border-2 border-gray-300 text-black font-light uppercase tracking-wide hover:border-black transition-colors"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
-                                    className="px-6 py-3 bg-black text-white rounded-lg font-medium hover:bg-gray-800 disabled:opacity-50 transition-colors shadow-md transform hover:scale-[1.02] disabled:hover:scale-100"
+                                    className="px-6 py-3 bg-black text-white font-light uppercase tracking-wide hover:bg-gray-800 disabled:opacity-50 transition-colors"
                                     disabled={loading}
                                 >
                                     {loading ? (
