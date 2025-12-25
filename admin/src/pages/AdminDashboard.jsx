@@ -240,8 +240,8 @@ const AdminDashboard = ({ token, adminData }) => {
                 '#e34567',
                 '#3e5687',
                 '#3e3e3e',
-                '#999999',
-                '#CCCCCC'
+                '#a4re56',
+                '#rfty67',
             ],
             borderWidth: 2,
             borderColor: '#ffffff'

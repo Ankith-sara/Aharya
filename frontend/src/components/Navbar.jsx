@@ -117,6 +117,13 @@ const Navbar = () => {
       ]
     },
     {
+      name: 'Stationary',
+      id: 'stationary',
+      subcategories: [
+        { name: 'Journals', path: '/shop/Journals' }
+      ]
+    },
+    {
       name: 'Handmade Toys',
       id: 'home',
       subcategories: [

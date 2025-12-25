@@ -78,6 +78,10 @@ const Add = ({ token }) => {
         default: ['28', '30', '32', '34', '36', '38', '40', '42', '44', '46']
       }
     },
+    Stationary: {
+      subCategories: ["", "Journals"],
+      sizes: { default: [] }
+    },
     "Handmade Toys": {
       subCategories: ["", "Home Décor", "Bonthapally Toys", "Baskets", "Bags and Pouches", "Wall Decor"],
       sizes: {
@@ -93,7 +97,7 @@ const Add = ({ token }) => {
   };
 
   const currentCategoryData = categoryData[category] || { subCategories: [], sizes: { default: [] } };
-  
+
   const getCurrentSizes = () => {
     if (!currentCategoryData.sizes) return [];
     if (currentCategoryData.sizes[subCategory]) {
@@ -105,7 +109,7 @@ const Add = ({ token }) => {
   const handleMultipleFiles = (files) => {
     const fileArray = Array.from(files);
     const imageFiles = fileArray.filter(file => file.type.startsWith('image/'));
-    
+
     if (imageFiles.length === 0) {
       toast.error('Please select image files only');
       return;
@@ -113,7 +117,7 @@ const Add = ({ token }) => {
 
     const newImages = [...images];
     let emptySlots = newImages.map((img, idx) => img === null ? idx : -1).filter(idx => idx !== -1);
-    
+
     imageFiles.forEach((file, idx) => {
       if (idx < emptySlots.length) {
         newImages[emptySlots[idx]] = file;
@@ -148,7 +152,7 @@ const Add = ({ token }) => {
     e.preventDefault();
     e.stopPropagation();
     setDragActive(false);
-    
+
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
       handleMultipleFiles(e.dataTransfer.files);
     }
@@ -293,11 +297,10 @@ const Add = ({ token }) => {
             <div className="p-6">
               {/* Drag & Drop Zone */}
               <div
-                className={`mb-6 border-2 border-dashed p-8 text-center transition-all duration-300 ${
-                  dragActive 
-                    ? 'border-black bg-gray-50' 
+                className={`mb-6 border-2 border-dashed p-8 text-center transition-all duration-300 ${dragActive
+                    ? 'border-black bg-gray-50'
                     : 'border-gray-300 hover:border-gray-400'
-                }`}
+                  }`}
                 onDragEnter={handleDrag}
                 onDragLeave={handleDrag}
                 onDragOver={handleDrag}
@@ -548,11 +551,10 @@ const Add = ({ token }) => {
                       key={size}
                       type="button"
                       onClick={() => toggleSize(size)}
-                      className={`px-6 py-3 border-2 font-light uppercase tracking-wide transition-all duration-300 ${
-                        sizes.includes(size)
+                      className={`px-6 py-3 border-2 font-light uppercase tracking-wide transition-all duration-300 ${sizes.includes(size)
                           ? 'bg-black text-white border-black'
                           : 'bg-white text-gray-700 border-gray-300 hover:border-black'
-                      }`}
+                        }`}
                     >
                       {size}
                     </button>

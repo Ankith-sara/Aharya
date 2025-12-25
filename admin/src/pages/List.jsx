@@ -163,6 +163,10 @@ const List = ({ token }) => {
       subCategories: ["", "Home Décor", "Bonthapally Toys", "Baskets", "Bags and Pouches", "Wall Decor"],
       sizes: { default: [] }
     },
+    Stationary: {
+      subCategories: ["", "Journals"],
+      sizes: { default: [] }
+    },
     "Special Product": {
       subCategories: ["", "Bags"],
       sizes: { default: [] }
