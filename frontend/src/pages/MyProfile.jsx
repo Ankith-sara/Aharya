@@ -669,7 +669,7 @@ const MyProfile = () => {
       {activeSection === "Account Settings" && (
         <div className="fixed inset-0 bg-black bg-opacity-60 flex items-end sm:items-center justify-center z-50 p-0 sm:p-4">
           <div className="bg-white w-full sm:max-w-md shadow-xl overflow-hidden sm:rounded-sm max-h-screen overflow-y-auto">
-            <div className="sticky top-0 bg-white z-10 p-4 sm:p-6 border-b border-gray-100 bg-gray-50">
+            <div className="sticky top-0 z-10 p-4 sm:p-6 border-b border-gray-100 bg-gray-50">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 flex-1 min-w-0">
                   <Lock size={16} className="text-gray-400 flex-shrink-0" />
@@ -818,7 +818,7 @@ const MyProfile = () => {
       {activeSection === "Delivery Address" && (
         <div className="fixed inset-0 bg-black bg-opacity-60 flex items-end sm:items-center justify-center z-50 p-0 sm:p-4">
           <div className="bg-white w-full sm:max-w-2xl shadow-xl overflow-hidden sm:rounded-sm max-h-screen overflow-y-auto">
-            <div className="sticky top-0 bg-white z-10 p-4 sm:p-6 border-b border-gray-100 bg-gray-50">
+            <div className="sticky top-0 z-10 p-4 sm:p-6 border-b border-gray-100 bg-gray-50">
               <div className="flex items-start sm:items-center justify-between gap-3">
                 <div className="flex items-center gap-2 flex-1 min-w-0">
                   <MapPinHouse size={16} className="text-gray-400 flex-shrink-0" />
@@ -910,7 +910,7 @@ const MyProfile = () => {
       {addressModal.open && (
         <div className="fixed inset-0 bg-black bg-opacity-70 flex items-end sm:items-center justify-center z-[60] p-0 sm:p-4">
           <div className="bg-white w-full sm:max-w-md shadow-xl overflow-hidden sm:rounded-sm max-h-screen overflow-y-auto">
-            <div className="sticky top-0 bg-white z-10 p-4 sm:p-6 border-b border-gray-100 bg-gray-50">
+            <div className="sticky top-0 z-10 p-4 sm:p-6 border-b border-gray-100 bg-gray-50">
               <div className="flex items-center justify-between">
                 <h2 className="text-base sm:text-lg font-medium tracking-wide uppercase">
                   {addressModal.index >= 0 ? "Edit Address" : "Add New Address"}
