@@ -4,7 +4,7 @@ import { ShopContext } from '../context/ShopContext';
 import Title from '../components/Title';
 import axios from 'axios';
 import {
-  Truck, Package, CheckCircle, RefreshCw, ShoppingBag, Calendar, CreditCard, Hash
+  Truck, Package, CheckCircle, RefreshCw, ShoppingBag, Calendar, CreditCard, Hash, ChevronDown, TrendingUp, Box, ArrowRight, IndianRupee
 } from 'lucide-react';
 
 const Orders = () => {
@@ -67,14 +67,14 @@ const Orders = () => {
   const getStatusIcon = (status) => {
     switch (status?.toLowerCase()) {
       case 'delivered':
-        return <CheckCircle size={16} className="text-green-600" />;
+        return <CheckCircle size={14} className="sm:w-4 sm:h-4 text-green-600" />;
       case 'shipped':
       case 'out for delivery':
-        return <Truck size={16} className="text-blue-600" />;
+        return <Truck size={14} className="sm:w-4 sm:h-4 text-blue-600" />;
       case 'processing':
-        return <RefreshCw size={16} className="text-amber-600" />;
+        return <RefreshCw size={14} className="sm:w-4 sm:h-4 text-amber-600" />;
       default:
-        return <Package size={16} className="text-gray-500" />;
+        return <Package size={14} className="sm:w-4 sm:h-4 text-gray-500" />;
     }
   };
 
@@ -103,7 +103,6 @@ const Orders = () => {
       );
     }
 
-    // Sort orders
     if (sortOrder === 'newest') {
       filtered = filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
     } else if (sortOrder === 'oldest') {
@@ -132,18 +131,18 @@ const Orders = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-white text-black mt-20">
-        <section className="py-12 px-4 sm:px-8 md:px-10 lg:px-20">
+      <div className="min-h-screen bg-white text-black mt-16 sm:mt-20">
+        <section className="py-8 sm:py-12 px-4 sm:px-6 lg:px-20">
           <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-8">
-              <div className="text-3xl mb-6">
+            <div className="text-center mb-6 sm:mb-8">
+              <div className="text-2xl sm:text-3xl mb-4 sm:mb-6">
                 <Title text1="ORDER" text2="HISTORY" />
               </div>
             </div>
-            <div className="flex items-center justify-center py-20">
+            <div className="flex items-center justify-center py-12 sm:py-20">
               <div className="text-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black mx-auto mb-4"></div>
-                <span className="text-gray-600 font-light">Loading your orders...</span>
+                <div className="animate-spin rounded-full h-10 w-10 sm:h-12 sm:w-12 border-b-2 border-black mx-auto mb-3 sm:mb-4"></div>
+                <span className="text-sm sm:text-base text-gray-600 font-light">Loading your orders...</span>
               </div>
             </div>
           </div>
@@ -153,37 +152,74 @@ const Orders = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white text-black mt-20">
-      {/* Header Section */}
-      <section className="py-12 px-4 sm:px-8 md:px-10 lg:px-20">
+    <div className="min-h-screen bg-white text-black mt-16 sm:mt-20">
+      <section className="py-6 sm:py-8 md:py-12 px-4 sm:px-6 lg:px-20">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-8">
-            <div className="text-3xl mb-3
-            ">
+          <div className="text-center mb-6 sm:mb-8">
+            <div className="text-2xl sm:text-3xl mb-2 sm:mb-3">
               <Title text1="ORDER" text2="HISTORY" />
             </div>
             {orderData.length > 0 && (
-              <p className="text-gray-500 font-light">
+              <p className="text-xs sm:text-sm md:text-base text-gray-500 font-light">
                 Track and manage your {orderData.length} order{orderData.length !== 1 ? 's' : ''}
               </p>
             )}
           </div>
 
+          {/* Order Stats Cards */}
+          {orderData.length > 0 && (
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
+              <div className="bg-gradient-to-br from-gray-50 to-white border border-gray-200 p-3 sm:p-4 md:p-6 hover:shadow-lg transition-all duration-300">
+                <div className="flex items-center justify-between mb-2 sm:mb-3">
+                  <Box size={16} className="sm:w-5 sm:h-5 text-gray-600" />
+                  <span className="text-lg sm:text-2xl md:text-3xl font-medium text-black">{stats.total}</span>
+                </div>
+                <p className="text-xs sm:text-sm text-gray-600 font-light uppercase tracking-wider">Total Orders</p>
+              </div>
+
+              <div className="bg-gradient-to-br from-green-50 to-white border border-gray-200 p-3 sm:p-4 md:p-6 hover:shadow-lg transition-all duration-300">
+                <div className="flex items-center justify-between mb-2 sm:mb-3">
+                  <CheckCircle size={16} className="sm:w-5 sm:h-5 text-gray-600" />
+                  <span className="text-lg sm:text-2xl md:text-3xl font-medium text-gray-700">{stats.delivered}</span>
+                </div>
+                <p className="text-xs sm:text-sm text-gray-600 font-light uppercase tracking-wider">Delivered</p>
+              </div>
+
+              <div className="bg-gradient-to-br from-blue-50 to-white border border-gray-200 p-3 sm:p-4 md:p-6 hover:shadow-lg transition-all duration-300">
+                <div className="flex items-center justify-between mb-2 sm:mb-3">
+                  <TrendingUp size={16} className="sm:w-5 sm:h-5 text-gray-600" />
+                  <span className="text-lg sm:text-2xl md:text-3xl font-medium text-gray-700">{stats.processing}</span>
+                </div>
+                <p className="text-xs sm:text-sm text-gray-600 font-light uppercase tracking-wider">In Transit</p>
+              </div>
+
+              <div className="bg-gradient-to-br from-amber-50 to-white border border-gray-200 p-3 sm:p-4 md:p-6 hover:shadow-lg transition-all duration-300">
+                <div className="flex items-center justify-between mb-2 sm:mb-3">
+                  <IndianRupee size={16} className="sm:w-5 sm:h-5 text-gray-600" />
+                  <span className="text-base sm:text-xl md:text-2xl font-medium text-gray-700">{currency}{stats.totalSpent}</span>
+                </div>
+                <p className="text-xs sm:text-sm text-gray-600 font-light uppercase tracking-wider">Total Spent</p>
+              </div>
+            </div>
+          )}
+
           {orderData.length > 0 && (
             <>
               {/* Filters and Sort */}
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-6 border-b border-gray-200">
+              <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 sm:gap-4 pb-4 sm:pb-6 border-b border-gray-200">
                 <div className="flex flex-wrap gap-2">
                   {[
                     { key: 'all', label: 'All Orders' },
-                    { key: 'delivered', label: 'Delivered' }
+                    { key: 'delivered', label: 'Delivered' },
+                    { key: 'processing', label: 'Processing' },
+                    { key: 'shipped', label: 'Shipped' }
                   ].map(({ key, label }) => (
                     <button
                       key={key}
                       onClick={() => setFilterStatus(key)}
-                      className={`px-4 py-2 text-sm font-light tracking-wide border transition-all duration-300 ${filterStatus === key
-                          ? 'bg-black text-white border-black'
-                          : 'bg-white text-gray-600 border-gray-300 hover:border-black hover:text-black'
+                      className={`px-3 sm:px-4 py-2 text-xs sm:text-sm font-light tracking-wide border transition-all duration-300 ${filterStatus === key
+                        ? 'bg-black text-white border-black'
+                        : 'bg-white text-gray-600 border-gray-300 hover:border-black hover:text-black active:bg-gray-50'
                         }`}
                     >
                       {label}
@@ -191,16 +227,19 @@ const Orders = () => {
                   ))}
                 </div>
 
-                <div className="flex items-center gap-4">
-                  <span className="text-sm font-light text-gray-500 tracking-wide">SORT BY:</span>
-                  <select
-                    value={sortOrder}
-                    onChange={(e) => setSortOrder(e.target.value)}
-                    className="appearance-none border border-gray-300 bg-white px-4 py-2 pr-8 font-light tracking-wide focus:border-black focus:outline-none transition-colors"
-                  >
-                    <option value="newest">Newest First</option>
-                    <option value="oldest">Oldest First</option>
-                  </select>
+                <div className="flex items-center gap-2 sm:gap-4">
+                  <span className="text-xs sm:text-sm font-light text-gray-500 tracking-wide hidden sm:inline">SORT BY:</span>
+                  <div className="relative flex-1 sm:flex-none">
+                    <select
+                      value={sortOrder}
+                      onChange={(e) => setSortOrder(e.target.value)}
+                      className="appearance-none w-full border border-gray-300 bg-white px-3 sm:px-4 py-2 pr-8 sm:pr-10 font-light tracking-wide focus:border-black focus:outline-none transition-colors text-xs sm:text-sm"
+                    >
+                      <option value="newest">Newest First</option>
+                      <option value="oldest">Oldest First</option>
+                    </select>
+                    <ChevronDown size={14} className="sm:w-4 sm:h-4 absolute right-2 sm:right-3 top-1/2 transform -translate-y-1/2 pointer-events-none text-gray-400" />
+                  </div>
                 </div>
               </div>
             </>
@@ -209,70 +248,68 @@ const Orders = () => {
       </section>
 
       {/* Orders Content */}
-      <section className="px-4 sm:px-8 md:px-10 lg:px-20 pb-20">
+      <section className="px-4 sm:px-6 lg:px-20 pb-12 sm:pb-20">
         <div className="max-w-7xl mx-auto">
           {orderData.length === 0 ? (
             // Empty State
-            <div className="flex flex-col items-center justify-center py-20 bg-white border border-gray-200 shadow-sm">
-              <div className="w-16 h-16 border-2 border-gray-300 rounded-full flex items-center justify-center mb-6">
-                <ShoppingBag size={32} className="text-gray-400" />
+            <div className="flex flex-col items-center justify-center py-12 sm:py-20 bg-white border border-gray-200 shadow-sm">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 border-2 border-gray-300 rounded-full flex items-center justify-center mb-4 sm:mb-6">
+                <ShoppingBag size={24} className="sm:w-8 sm:h-8 text-gray-400" />
               </div>
-              <div className="text-center max-w-md mb-8">
-                <h3 className="text-2xl font-medium mb-3 tracking-wide">NO ORDERS YET</h3>
-                <p className="text-gray-600 font-light leading-relaxed">
+              <div className="text-center max-w-md mb-6 sm:mb-8 px-4">
+                <h3 className="text-xl sm:text-2xl font-medium mb-2 sm:mb-3 tracking-wide">NO ORDERS YET</h3>
+                <p className="text-sm sm:text-base text-gray-600 font-light leading-relaxed">
                   Your order history is empty. Start exploring our amazing collection and place your first order.
                 </p>
               </div>
               <button
                 onClick={() => navigate('/shop/collection')}
-                className="px-8 py-3 bg-black text-white font-light tracking-wide hover:bg-gray-800 transition-all duration-300"
+                className="px-6 sm:px-8 py-2.5 sm:py-3 bg-black text-white font-light tracking-wide hover:bg-gray-800 active:bg-gray-900 transition-all duration-300 text-sm sm:text-base"
               >
                 BROWSE PRODUCTS
               </button>
             </div>
           ) : (
             // Orders List
-            <div className="space-y-6">
+            <div className="space-y-4 sm:space-y-6">
               {filteredOrders.map((item, index) => (
                 <div key={index} className="bg-white border border-gray-200 shadow-sm hover:shadow-lg transition-all duration-300 group">
-                  {/* Order Header */}
-                  <div className="p-6 border-b border-gray-100 bg-gray-50">
-                    <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
-                      <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-                        <div className="flex items-center gap-2">
-                          <Hash size={14} className="text-gray-400" />
-                          <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">ORDER ID:</span>
-                          <span className="font-medium text-black tracking-wide">{item.orderId}</span>
+                  <div className="p-3 sm:p-4 md:p-6 border-b border-gray-100 bg-gray-50">
+                    <div className="flex flex-col gap-2 sm:gap-3">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-4">
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+                          <div className="flex items-center gap-1.5 sm:gap-2">
+                            <Hash size={12} className="sm:w-[14px] sm:h-[14px] text-gray-400 flex-shrink-0" />
+                            <span className="text-[10px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider">ORDER ID:</span>
+                            <span className="font-medium text-black tracking-wide text-xs sm:text-sm truncate">{item.orderId}</span>
+                          </div>
+
+                          <div className="flex items-center gap-1.5 sm:gap-2">
+                            <Calendar size={12} className="sm:w-[14px] sm:h-[14px] text-gray-400 flex-shrink-0" />
+                            <span className="text-xs sm:text-sm text-gray-600 font-light">{formatDate(item.date)}</span>
+                          </div>
                         </div>
 
-                        <div className="flex items-center gap-2">
-                          <Calendar size={14} className="text-gray-400" />
-                          <span className="text-sm text-gray-600 font-light">{formatDate(item.date)}</span>
-                        </div>
-
-                        <div className="flex items-center gap-2">
-                          <CreditCard size={14} className="text-gray-400" />
-                          <span className="text-sm text-gray-600 font-light">{item.paymentMethod}</span>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-3">
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 self-start sm:self-auto">
                           {getStatusIcon(item.status)}
-                          <span className={`px-3 py-1 border text-xs font-medium uppercase tracking-wider ${getStatusColor(item.status)}`}>
+                          <span className={`px-2 sm:px-3 py-1 border text-[10px] sm:text-xs font-medium uppercase tracking-wider ${getStatusColor(item.status)}`}>
                             {item.status || 'Processing'}
                           </span>
                         </div>
+                      </div>
+
+                      <div className="flex items-center gap-1.5 sm:gap-2 sm:hidden">
+                        <CreditCard size={12} className="text-gray-400 flex-shrink-0" />
+                        <span className="text-xs text-gray-600 font-light">{item.paymentMethod}</span>
                       </div>
                     </div>
                   </div>
 
                   {/* Order Content */}
-                  <div className="p-6">
-                    <div className="flex flex-col lg:flex-row gap-2">
-                      {/* Product Image */}
+                  <div className="p-3 sm:p-4 md:p-6">
+                    <div className="flex gap-3 sm:gap-4 md:gap-6">
                       <div className="flex-shrink-0">
-                        <div className="w-full h-24 sm:w-32 sm:h-32 lg:w-40 lg:h-40">
+                        <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32">
                           <img
                             className="w-full h-full object-contain"
                             src={item.image || item.images?.[0]}
@@ -285,56 +322,40 @@ const Orders = () => {
                       </div>
 
                       {/* Order Details */}
-                      <div className="flex-grow flex flex-col lg:flex-row justify-between gap-6">
-                        <div className="flex-grow space-y-4">
+                      <div className="flex-1 min-w-0 flex flex-col justify-between">
+                        <div className="space-y-2 sm:space-y-3">
                           <div>
-                            <h3 className="font-medium text-xl text-black mb-2 tracking-wide group-hover:text-gray-700 transition-colors">
-                              {item.name}
-                            </h3>
+                            <h3 className="font-medium text-sm sm:text-base md:text-lg text-black tracking-wide group-hover:text-gray-700 transition-colors line-clamp-2"> {item.name}</h3>
                           </div>
-
-                          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                            <div className="space-y-1">
-                              <span className="block text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                PRICE
-                              </span>
-                              <span className="font-medium text-black">
-                                {currency}{item.price}
-                              </span>
+                          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
+                            <div className="space-y-0.5">
+                              <span className="block text-[10px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider">PRICE</span>
+                              <span className="font-medium text-black text-xs sm:text-sm">{currency}{item.price}</span>
                             </div>
-
-                            <div className="space-y-1">
-                              <span className="block text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                QUANTITY
-                              </span>
-                              <span className="font-medium text-black">{item.quantity}</span>
+                            <div className="space-y-0.5">
+                              <span className="block text-[10px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider">QTY</span>
+                              <span className="font-medium text-black text-xs sm:text-sm">{item.quantity}</span>
                             </div>
-
-                            <div className="space-y-1">
-                              <span className="block text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                SIZE
-                              </span>
-                              <span className="font-medium text-black">{item.size}</span>
+                            <div className="space-y-0.5">
+                              <span className="block text-[10px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider">SIZE</span>
+                              <span className="font-medium text-black text-xs sm:text-sm">{item.size}</span>
                             </div>
-
-                            <div className="space-y-1">
-                              <span className="block text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                TOTAL
-                              </span>
-                              <span className="font-medium text-black text-lg">
+                            <div className="space-y-0.5">
+                              <span className="block text-[10px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider">TOTAL</span>
+                              <span className="font-medium text-black text-sm sm:text-base">
                                 {currency}{(item.price * item.quantity).toFixed(2)}
                               </span>
                             </div>
                           </div>
                         </div>
 
-                        {/* Action Buttons */}
-                        <div className="flex items-center gap-3 w-full lg:w-auto lg:min-w-[200px]">
+                        {/* Action Button */}
+                        <div className="mt-3 sm:mt-4">
                           <button
-                            className="flex items-center justify-center gap-2 px-6 py-3 bg-black text-white font-light tracking-wide hover:bg-gray-800 transition-all duration-300"
+                            className="w-full sm:w-auto flex items-center justify-center gap-1.5 sm:gap-2 px-4 sm:px-6 py-2 sm:py-2.5 bg-black text-white font-light tracking-wide hover:bg-gray-800 active:bg-gray-900 transition-all duration-300 text-xs sm:text-sm"
                             onClick={() => navigate(`/trackorder/${item.orderId}`)}
                           >
-                            <Truck size={16} />
+                            <Truck size={14} className="sm:w-4 sm:h-4" />
                             <span>TRACK ORDER</span>
                           </button>
                         </div>
@@ -345,16 +366,17 @@ const Orders = () => {
               ))}
 
               {/* Continue Shopping Section */}
-              <div className="mt-12 bg-gray-50 border border-gray-200 p-8 text-center">
-                <h3 className="text-2xl font-medium text-black mb-3 tracking-wide">WANT TO ORDER MORE?</h3>
-                <p className="text-gray-600 font-light leading-relaxed mb-6 max-w-md mx-auto">
+              <div className="mt-8 sm:mt-12 bg-gradient-to-br from-gray-50 to-white border border-gray-200 p-6 sm:p-8 text-center">
+                <h3 className="text-xl sm:text-2xl font-medium text-black mb-2 sm:mb-3 tracking-wide">WANT TO ORDER MORE?</h3>
+                <p className="text-sm sm:text-base text-gray-600 font-light leading-relaxed mb-4 sm:mb-6 max-w-md mx-auto">
                   Discover new arrivals and trending products in our carefully curated collection
                 </p>
                 <button
                   onClick={() => navigate('/shop/collection')}
-                  className="inline-flex items-center gap-2 px-8 py-3 bg-black text-white font-light tracking-wide hover:bg-gray-800 transition-all duration-300"
+                  className="inline-flex items-center gap-2 px-6 sm:px-8 py-2.5 sm:py-3 bg-black text-white font-light tracking-wide hover:bg-gray-800 active:bg-gray-900 transition-all duration-300 text-sm sm:text-base"
                 >
                   <span>CONTINUE SHOPPING</span>
+                  <ArrowRight size={14} className="sm:w-4 sm:h-4" />
                 </button>
               </div>
             </div>

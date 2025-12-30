@@ -117,7 +117,6 @@ const Verify = () => {
                     </div>
                 ) : (
                     <div className="flex flex-col items-center gap-3">
-                        <div className="text-green-500 text-5xl">✓</div>
                         <p className="text-gray-900 font-semibold text-lg">Verification Complete!</p>
                         <p className="text-gray-600">Redirecting to your orders...</p>
                     </div>
