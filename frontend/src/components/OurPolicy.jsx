@@ -37,7 +37,6 @@ const OurPolicy = () => {
           {principles.map((principle, index) => (
             <div key={index} className="group relative overflow-hidden bg-white hover:border-black transition-all duration-500 hover:shadow-lg">
               <div className="absolute bottom-0 left-0 right-0 h-1 bg-black transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
-              {/* Card Content */}
               <div className="flex flex-col p-8 h-full">
                 <div className="mb-8 relative mx-auto">
                   <div className="w-20 h-20 rounded-full bg-gray-100 group-hover:bg-black transition-colors duration-500 flex items-center justify-center">
@@ -52,7 +51,6 @@ const OurPolicy = () => {
           ))}
         </div>
 
-        {/* Closing Statement */}
         <div className="mt-8 text-center">
           <p className="text-lg text-gray-700 italic">
             We craft clothing that <em>breathes, belongs,</em> and becomes a part of you.

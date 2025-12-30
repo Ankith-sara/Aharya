@@ -52,34 +52,22 @@ const NewsletterBox = () => {
     <div className="bg-gradient-to-br from-stone-50 via-white to-stone-50 py-8 sm:py-12 md:py-16 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl w-full mx-auto">
         <div className="bg-white p-6 sm:p-8 md:p-12 lg:p-16 shadow-lg border border-stone-100">
-
-          {/* Icon */}
           <div className="flex justify-center mb-6 sm:mb-8">
             <div className="w-16 h-16 sm:w-20 sm:h-20 bg-black flex items-center justify-center">
               <Mail size={24} className="sm:w-8 sm:h-8 text-white" />
             </div>
           </div>
-
-          {/* Title */}
           <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light tracking-[0.15em] sm:tracking-[0.2em] text-black mb-3 sm:mb-4 text-center px-2">
             JOIN THE <span className="font-medium">AHARYAS</span> COMMUNITY
           </h1>
-
-          {/* Divider */}
           <div className="w-16 sm:w-24 h-0.5 bg-black mx-auto mb-6 sm:mb-8"></div>
-
-          {/* Description */}
           <p className="text-gray-700 text-sm sm:text-base md:text-lg font-light leading-relaxed mb-8 sm:mb-10 md:mb-12 max-w-3xl mx-auto text-center px-2">
             Be the first to explore handcrafted collections, exclusive artisan
             stories, and meaningful initiatives. Join a community that celebrates
             heritage, sustainability, and conscious fashion.
           </p>
-
-          {/* Newsletter Form */}
           <form onSubmit={onSubmitHandler} className="max-w-2xl mx-auto mb-6 sm:mb-8">
             <div className="flex flex-col sm:flex-row gap-3 items-stretch">
-
-              {/* Email Input */}
               <div className="flex-1 relative group">
                 <div className="absolute inset-y-0 left-0 pl-3 sm:pl-4 flex items-center pointer-events-none">
                   <Mail
@@ -97,8 +85,7 @@ const NewsletterBox = () => {
                   disabled={isSubmitting}
                 />
               </div>
-
-              {/* Subscribe Button */}
+            
               <button
                 type="submit"
                 disabled={isSubmitting}
@@ -115,7 +102,6 @@ const NewsletterBox = () => {
               </button>
             </div>
 
-            {/* Success/Error Message */}
             {message.text && (
               <div
                 className={`mt-4 sm:mt-6 p-4 sm:p-5 text-center border-l-4 animate-slideIn ${
@@ -154,7 +140,6 @@ const NewsletterBox = () => {
             )}
           </form>
 
-          {/* Privacy text */}
           <div className="space-y-2 sm:space-y-3 text-center px-2">
             <p className="text-gray-600 font-light text-xs sm:text-sm md:text-base">
               By subscribing, you agree to our{" "}
