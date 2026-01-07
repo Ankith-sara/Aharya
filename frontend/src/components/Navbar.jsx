@@ -128,7 +128,8 @@ const Navbar = () => {
       id: 'home',
       subcategories: [
         { name: 'Home Décor', path: '/shop/home-decor' },
-        { name: 'Bonthapally Toys', path: '/shop/Bonthapally Toys' },
+        { name: ' Kondapalli Bommalu', path: '/shop/ Kondapalli Bommalu' },
+        { name: 'Paintings', path: '/shop/Paintings' },
         { name: 'Baskets', path: '/shop/baskets' },
         { name: 'Bags and Pouches', path: '/shop/bags&pouches' },
         { name: 'Wall Decor', path: '/shop/wall-decor' }

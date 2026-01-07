@@ -83,7 +83,7 @@ const Add = ({ token }) => {
       sizes: { default: [] }
     },
     "Handmade Toys": {
-      subCategories: ["", "Home Décor", "Bonthapally Toys", "Baskets", "Bags and Pouches", "Wall Decor"],
+      subCategories: ["", "Home Décor", " Kondapalli Bommalu", "Baskets", "Paintings", "Bags and Pouches", "Wall Decor"],
       sizes: {
         default: []
       }
