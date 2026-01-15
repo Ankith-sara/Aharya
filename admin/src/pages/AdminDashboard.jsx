@@ -237,11 +237,11 @@ const AdminDashboard = ({ token, adminData }) => {
         datasets: [{
             data: Object.values(categoryData),
             backgroundColor: [
-                '#e34567',
-                '#3e5687',
-                '#3e3e3e',
-                '#a4re56',
-                '#rfty67',
+                '#e100ff',
+                '#4841a4',
+                '#5dc4c6',
+                '#75b771',
+                '#eeff00',
             ],
             borderWidth: 2,
             borderColor: '#ffffff'

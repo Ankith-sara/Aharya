@@ -78,15 +78,15 @@ const Add = ({ token }) => {
         default: ['28', '30', '32', '34', '36', '38', '40', '42', '44', '46']
       }
     },
-    Stationary: {
-      subCategories: ["", "Journals"],
-      sizes: { default: [] }
-    },
     "Handmade Toys": {
-      subCategories: ["", "Home Décor", " Kondapalli Bommalu", "Baskets", "Paintings", "Bags and Pouches", "Wall Decor"],
+      subCategories: ["", "Kondapalli Bommalu", "Paintings", "Cheriyal Masks", "Bird houses"],
       sizes: {
         default: []
       }
+    },
+    Stationary: {
+      subCategories: ["", "Journals"],
+      sizes: { default: [] }
     },
     "Special Product": {
       subCategories: ["", "Bags"],
@@ -298,8 +298,8 @@ const Add = ({ token }) => {
               {/* Drag & Drop Zone */}
               <div
                 className={`mb-6 border-2 border-dashed p-8 text-center transition-all duration-300 ${dragActive
-                    ? 'border-black bg-gray-50'
-                    : 'border-gray-300 hover:border-gray-400'
+                  ? 'border-black bg-gray-50'
+                  : 'border-gray-300 hover:border-gray-400'
                   }`}
                 onDragEnter={handleDrag}
                 onDragLeave={handleDrag}
@@ -552,8 +552,8 @@ const Add = ({ token }) => {
                       type="button"
                       onClick={() => toggleSize(size)}
                       className={`px-6 py-3 border-2 font-light uppercase tracking-wide transition-all duration-300 ${sizes.includes(size)
-                          ? 'bg-black text-white border-black'
-                          : 'bg-white text-gray-700 border-gray-300 hover:border-black'
+                        ? 'bg-black text-white border-black'
+                        : 'bg-white text-gray-700 border-gray-300 hover:border-black'
                         }`}
                     >
                       {size}

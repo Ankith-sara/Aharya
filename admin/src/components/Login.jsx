@@ -124,7 +124,7 @@ const Login = ({ setToken }) => {
   }, [otpTimer]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 flex items-center justify-center p-4 relative overflow-hidden">
+    <div className="min-h-screen bg-gray-900 flex items-center justify-center p-4 relative overflow-hidden">
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-white/5 rounded-full blur-3xl animate-pulse"></div>
@@ -137,19 +137,19 @@ const Login = ({ setToken }) => {
 
       <div className="w-full max-w-md relative z-10">
         {/* Floating Header */}
-        <div className="text-center mb-8">
+        <div className="text-center flex flex-row justify-center gap-5 mb-8">
           <div className="inline-flex items-center justify-center w-20 h-20 bg-white rounded-2xl shadow-2xl mb-6 transform hover:scale-110 transition-transform duration-300">
             <Shield className="text-black" size={36} />
           </div>
-          <h1 className="text-4xl font-bold text-white mb-3 tracking-tight">
-            Aharyas Admin
-          </h1>
-          <div className="flex items-center justify-center gap-2 text-gray-400">
-            <Sparkles size={16} className="animate-pulse" />
-            <p className="text-sm">
-              {isRegistering ? 'Create your secure account' : 'Welcome back to the command center'}
-            </p>
-            <Sparkles size={16} className="animate-pulse" />
+          <div>
+            <h1 className="text-4xl font-bold text-white mb-3 tracking-tight">
+              Aharyas Admin
+            </h1>
+            <div className="flex items-center justify-center gap-2 text-gray-400">
+              <p className="text-sm">
+                {isRegistering ? 'Create your secure account' : 'Welcome back to the command center'}
+              </p>
+            </div>
           </div>
         </div>
 
@@ -162,22 +162,20 @@ const Login = ({ setToken }) => {
                 <button
                   type="button"
                   onClick={() => !isRegistering && toggleFormMode()}
-                  className={`flex-1 py-3 px-4 rounded-lg text-sm font-semibold transition-all duration-300 ${
-                    isRegistering 
-                      ? 'bg-white text-black shadow-lg' 
+                  className={`flex-1 py-3 px-4 rounded-lg text-sm font-semibold transition-all duration-300 ${isRegistering
+                      ? 'bg-white text-black shadow-lg'
                       : 'text-gray-400 hover:text-white'
-                  }`}
+                    }`}
                 >
                   Register
                 </button>
                 <button
                   type="button"
                   onClick={() => isRegistering && toggleFormMode()}
-                  className={`flex-1 py-3 px-4 rounded-lg text-sm font-semibold transition-all duration-300 ${
-                    !isRegistering 
-                      ? 'bg-white text-black shadow-lg' 
+                  className={`flex-1 py-3 px-4 rounded-lg text-sm font-semibold transition-all duration-300 ${!isRegistering
+                      ? 'bg-white text-black shadow-lg'
                       : 'text-gray-400 hover:text-white'
-                  }`}
+                    }`}
                 >
                   Sign In
                 </button>
@@ -256,8 +254,7 @@ const Login = ({ setToken }) => {
                   <div className="w-6 h-6 border-3 border-black border-t-transparent rounded-full animate-spin"></div>
                 ) : (
                   <>
-                    <span>{isRegistering ? 'Send Verification Code' : 'Sign In to Dashboard'}</span>
-                    <ArrowRight size={20} />
+                    <span>{isRegistering ? 'Send Verification Code' : 'Sign In'}</span>
                   </>
                 )}
               </button>
@@ -344,7 +341,7 @@ const Login = ({ setToken }) => {
                 onClick={() => setOtpSent(false)}
                 className="w-full text-gray-400 hover:text-white py-3 text-sm font-semibold transition-colors flex items-center justify-center gap-2"
               >
-                ← Back to Registration
+                Back to Registration
               </button>
             </form>
           )}

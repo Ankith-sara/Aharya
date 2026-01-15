@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import { ShopContext } from '../context/ShopContext';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { Eye, EyeOff, Mail, User, Lock } from 'lucide-react';
+import { Eye, EyeOff, Mail, User, Lock, ArrowRight } from 'lucide-react';
 
 const Login = () => {
   const [currentState, setCurrentState] = useState('Login');
@@ -93,12 +93,12 @@ const Login = () => {
     setOtpError('');
     setErrors({});
 
-    // Basic validation before sending OTP
     const newErrors = {};
     if (!name.trim()) newErrors.name = 'Name is required';
     if (!email) newErrors.email = 'Email is required';
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) newErrors.email = 'Enter a valid email';
     if (!password) newErrors.password = 'Password is required';
+    else if (password.length < 8) newErrors.password = 'Password must be at least 8 characters';
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -117,10 +117,14 @@ const Login = () => {
         setOtpTimer(60);
         toast.success('OTP sent to your email');
       } else {
-        setOtpError(res.data.message || 'Failed to send OTP');
+        const errorMsg = res.data.message || 'Failed to send OTP';
+        setOtpError(errorMsg);
+        toast.error(errorMsg);
       }
     } catch (err) {
-      setOtpError(err.response?.data?.message || 'Error sending OTP');
+      const errorMsg = err.response?.data?.message || 'Error sending OTP';
+      setOtpError(errorMsg);
+      toast.error(errorMsg);
     }
     setOtpLoading(false);
   };
@@ -130,17 +134,15 @@ const Login = () => {
     event.preventDefault();
     setOtpError('');
 
-    if (!otp) {
-      setOtpError('Please enter the OTP');
+    if (!otp || otp.length !== 6) {
+      setOtpError('Please enter a valid 6-digit OTP');
       return;
     }
 
     setIsLoading(true);
     try {
       const res = await axios.post(`${backendUrl}/api/user/verify-otp`, {
-        name,
         email,
-        password,
         otp,
       });
 
@@ -148,12 +150,14 @@ const Login = () => {
         toast.success('Account created successfully!');
         setToken(res.data.token);
         localStorage.setItem('token', res.data.token);
-        // Redirect will be handled by useEffect when token changes
+        localStorage.setItem('userId', res.data.userId);
       } else {
         setOtpError(res.data.message || 'Invalid OTP');
       }
     } catch (err) {
-      setOtpError(err.response?.data?.message || 'Error verifying OTP');
+      const errorMsg = err.response?.data?.message || 'Error verifying OTP';
+      setOtpError(errorMsg);
+      toast.error(errorMsg);
     }
     setIsLoading(false);
   };
@@ -162,7 +166,6 @@ const Login = () => {
   const handleLogin = async (event) => {
     event.preventDefault();
     
-    // Validate login form
     const newErrors = {};
     if (!email) newErrors.email = 'Email is required';
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) newErrors.email = 'Enter a valid email';
@@ -181,10 +184,10 @@ const Login = () => {
       });
       
       if (response.data.success) {
-        toast.success(`Welcome back, ${response.data.name}!`);
+        toast.success('Welcome back!');
         setToken(response.data.token);
         localStorage.setItem('token', response.data.token);
-        // Redirect will be handled by useEffect when token changes
+        localStorage.setItem('userId', response.data.userId);
       } else {
         toast.error(response.data.message);
       }
@@ -200,312 +203,304 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen text-black">
-      <div className="flex flex-col lg:flex-row">
-        {/* Left Panel - Image with overlay */}
-        <div className="hidden lg:block lg:w-1/2 relative min-h-screen">
-          <div className="absolute inset-0 bg-black/30 z-10"></div>
-          <div className="h-full flex items-center justify-center overflow-hidden">
-            <img 
-              src="https://okhai.org/cdn/shop/files/LD25330610_1_Hero_414x650.jpg?v=1745928986" 
-              alt="Premium craftsmanship" 
-              className="w-full h-full object-cover filter grayscale" 
-            />
-          </div>
-          <div className="absolute inset-0 z-20 flex items-center justify-center p-10">
-            <div className="bg-white/95 backdrop-blur-sm p-12 shadow-2xl border-l-4 border-black max-w-md">
-              <h2 className="text-3xl font-light tracking-wider mb-4 text-black">ELEVATE YOUR</h2>
-              <h1 className="text-5xl font-light tracking-tight mb-6 text-black">EXPERIENCE</h1>
-              <div className="w-16 h-0.5 bg-black mb-6"></div>
-              <blockquote className="text-lg font-light text-gray-700 leading-relaxed">
-                "Join a community that believes fashion should honor heritage, empower artisans, and carry stories forward."
+    <div className="h-screen overflow-hidden bg-white">
+      <div className="flex h-full">
+        {/* Left Panel - Image with Premium Overlay */}
+        <div className="hidden lg:block lg:w-1/2 relative h-full">
+          {/* Background Image */}
+          <img 
+            src="https://okhai.org/cdn/shop/files/LD25330610_1_Hero_414x650.jpg?v=1745928986" 
+            alt="Aharyas Heritage" 
+            className="w-full h-full object-cover filter grayscale"
+          />
+          
+          {/* Gradient Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-black/40"></div>
+          
+          {/* Decorative Elements */}
+          <div className="absolute top-12 left-12 w-16 h-16 border border-white/20"></div>
+          <div className="absolute bottom-12 right-12 w-16 h-16 border border-white/20"></div>
+          
+          {/* Content */}
+          <div className="absolute inset-0 flex items-center justify-center p-16">
+            <div className="text-white max-w-lg">
+              <h1 className="text-5xl md:text-6xl font-light mb-6 tracking-[0.15em]">
+                AHARYAS
+              </h1>
+              <div className="w-20 h-0.5 bg-white mb-8"></div>
+              <p className="text-xl font-light leading-relaxed opacity-90">
+                Where heritage meets high design, rooted deeply in culture, craft, and community.
+              </p>
+              <blockquote className="mt-12 border-l-2 border-white/40 pl-6 italic text-lg font-light opacity-80">
+                "Fashion should honor hands and carry stories forward."
               </blockquote>
             </div>
           </div>
         </div>
 
         {/* Right Panel - Form */}
-        <div className="w-full lg:w-1/2 bg-gradient-to-b from-white to-stone-50 flex items-center">
-          <div className="w-full max-w-lg mx-auto p-8 lg:p-12">
-            <div className="mb-12">
-              <h1 className="text-4xl font-light tracking-wider mb-4 text-black">
-                {currentState === 'Login' ? 'WELCOME BACK' : 'JOIN US'}
-              </h1>
-              <div className="w-16 h-0.5 bg-black mb-6"></div>
-              <p className="text-gray-600 font-light text-lg leading-relaxed">
-                {currentState === 'Login'
-                  ? 'Sign in to access your exclusive experience with conscious luxury'
-                  : 'Create an account to begin your premium journey with handcrafted heritage'}
-              </p>
-            </div>
+        <div className="w-full lg:w-1/2 h-full overflow-y-auto">
+          <div className="min-h-full flex items-center justify-center px-6 py-12 sm:px-8 lg:px-12">
+            <div className="w-full max-w-md">
+              {/* Logo for Mobile */}
+              <div className="lg:hidden text-center mb-12">
+                <h1 className="text-4xl font-light tracking-[0.2em] mb-2">AHARYAS</h1>
+                <div className="w-16 h-0.5 bg-black mx-auto"></div>
+              </div>
 
-            {/* LOGIN FORM */}
-            {currentState === 'Login' && (
-              <form onSubmit={handleLogin} className="space-y-8">
-                <div className="space-y-3">
-                  <label htmlFor="email" className="block text-sm font-light text-gray-700 tracking-wide uppercase">
-                    Email Address
-                  </label>
-                  <div className="relative group">
-                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center">
-                      <Mail size={20} className="text-gray-400 group-focus-within:text-black transition-colors duration-300" />
+              {/* Header */}
+              <div className="mb-10">
+                <h2 className="text-3xl md:text-4xl font-light tracking-wider mb-3">
+                  {currentState === 'Login' ? 'WELCOME BACK' : otpSent ? 'VERIFY EMAIL' : 'JOIN US'}
+                </h2>
+                <div className="w-16 h-0.5 bg-black mb-6"></div>
+                <p className="text-gray-600 font-light leading-relaxed">
+                  {currentState === 'Login' 
+                    ? 'Sign in to continue your journey with conscious luxury' 
+                    : otpSent 
+                    ? 'Enter the 6-digit code sent to your email'
+                    : 'Create an account to begin your journey with handcrafted heritage'}
+                </p>
+              </div>
+
+              {/* LOGIN FORM */}
+              {currentState === 'Login' && (
+                <form onSubmit={handleLogin} className="space-y-6">
+                  <div>
+                    <label className="block text-xs uppercase tracking-widest text-gray-700 mb-3 font-light">
+                      Email Address
+                    </label>
+                    <div className="relative group">
+                      <Mail size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-black transition-colors" />
+                      <input
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className={`w-full pl-12 pr-4 py-3.5 border-b-2 bg-transparent ${
+                          errors.email ? 'border-red-400' : 'border-gray-200 focus:border-black'
+                        } focus:outline-none transition-colors font-light text-base`}
+                        placeholder="your@email.com"
+                      />
                     </div>
-                    <input
-                      id="email"
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className={`w-full pl-14 pr-4 py-4 bg-white border-b-2 focus:outline-none transition-all duration-300 font-light text-lg ${
-                        errors.email 
-                          ? 'border-red-400 focus:border-red-500' 
-                          : 'border-gray-200 focus:border-black'
-                      }`}
-                      placeholder="Enter your email address"
-                    />
-                    {errors.email && (
-                      <p className="text-red-500 text-sm mt-2 font-light">{errors.email}</p>
-                    )}
+                    {errors.email && <p className="text-red-500 text-xs mt-2 font-light">{errors.email}</p>}
                   </div>
-                </div>
 
-                <div className="space-y-3">
-                  <label htmlFor="password" className="block text-sm font-light text-gray-700 tracking-wide uppercase">
-                    Password
-                  </label>
-                  <div className="relative group">
-                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center">
-                      <Lock size={20} className="text-gray-400 group-focus-within:text-black transition-colors duration-300" />
+                  <div>
+                    <label className="block text-xs uppercase tracking-widest text-gray-700 mb-3 font-light">
+                      Password
+                    </label>
+                    <div className="relative group">
+                      <Lock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-black transition-colors" />
+                      <input
+                        type={showPassword ? 'text' : 'password'}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        className={`w-full pl-12 pr-12 py-3.5 border-b-2 bg-transparent ${
+                          errors.password ? 'border-red-400' : 'border-gray-200 focus:border-black'
+                        } focus:outline-none transition-colors font-light text-base`}
+                        placeholder="Enter your password"
+                        autoComplete="current-password"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black transition-colors"
+                      >
+                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                      </button>
                     </div>
-                    <input
-                      id="password"
-                      type={showPassword ? 'text' : 'password'}
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      className={`w-full pl-14 pr-14 py-4 bg-white border-b-2 focus:outline-none transition-all duration-300 font-light text-lg ${
-                        errors.password 
-                          ? 'border-red-400 focus:border-red-500' 
-                          : 'border-gray-200 focus:border-black'
-                      }`}
-                      placeholder="Enter your password"
-                      autoComplete="current-password"
-                    />
-                    <button
-                      type="button"
-                      className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-black transition-colors duration-300"
-                      onClick={() => setShowPassword(!showPassword)}
-                      aria-label={showPassword ? "Hide password" : "Show password"}
-                    >
-                      {showPassword ? <Eye size={20} /> : <EyeOff size={20} />}
-                    </button>
-                    {errors.password && (
-                      <p className="text-red-500 text-sm mt-2 font-light">{errors.password}</p>
-                    )}
+                    {errors.password && <p className="text-red-500 text-xs mt-2 font-light">{errors.password}</p>}
                   </div>
-                </div>
 
-                <div className="pt-4">
                   <button
                     type="submit"
                     disabled={isLoading}
-                    className="w-full py-4 bg-black text-white text-sm uppercase font-light tracking-widest hover:bg-gray-900 transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black"
+                    className="w-full mt-8 py-4 bg-black text-white font-light tracking-[0.2em] text-sm hover:bg-gray-800 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl flex items-center justify-center gap-3 group"
                   >
-                    {isLoading ? 'Signing In...' : 'Sign In'}
+                    {isLoading ? 'SIGNING IN...' : 'SIGN IN'}
+                    {!isLoading && <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />}
+                  </button>
+                </form>
+              )}
+
+              {/* SIGNUP FORM */}
+              {currentState === 'Sign Up' && !otpSent && (
+                <div className="space-y-6">
+                  <div>
+                    <label className="block text-xs uppercase tracking-widest text-gray-700 mb-3 font-light">
+                      Full Name
+                    </label>
+                    <div className="relative group">
+                      <User size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-black transition-colors" />
+                      <input
+                        type="text"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        className={`w-full pl-12 pr-4 py-3.5 border-b-2 bg-transparent ${
+                          errors.name ? 'border-red-400' : 'border-gray-200 focus:border-black'
+                        } focus:outline-none transition-colors font-light text-base`}
+                        placeholder="Your full name"
+                      />
+                    </div>
+                    {errors.name && <p className="text-red-500 text-xs mt-2 font-light">{errors.name}</p>}
+                  </div>
+
+                  <div>
+                    <label className="block text-xs uppercase tracking-widest text-gray-700 mb-3 font-light">
+                      Email Address
+                    </label>
+                    <div className="relative group">
+                      <Mail size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-black transition-colors" />
+                      <input
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className={`w-full pl-12 pr-4 py-3.5 border-b-2 bg-transparent ${
+                          errors.email ? 'border-red-400' : 'border-gray-200 focus:border-black'
+                        } focus:outline-none transition-colors font-light text-base`}
+                        placeholder="your@email.com"
+                      />
+                    </div>
+                    {errors.email && <p className="text-red-500 text-xs mt-2 font-light">{errors.email}</p>}
+                  </div>
+
+                  <div>
+                    <label className="block text-xs uppercase tracking-widest text-gray-700 mb-3 font-light">
+                      Password
+                    </label>
+                    <div className="relative group">
+                      <Lock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-black transition-colors" />
+                      <input
+                        type={showPassword ? 'text' : 'password'}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        className={`w-full pl-12 pr-12 py-3.5 border-b-2 bg-transparent ${
+                          errors.password ? 'border-red-400' : 'border-gray-200 focus:border-black'
+                        } focus:outline-none transition-colors font-light text-base`}
+                        placeholder="Minimum 8 characters"
+                        autoComplete="new-password"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black transition-colors"
+                      >
+                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                      </button>
+                    </div>
+                    {errors.password && <p className="text-red-500 text-xs mt-2 font-light">{errors.password}</p>}
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={handleSendOtp}
+                    disabled={otpLoading}
+                    className="w-full mt-8 py-4 bg-black text-white font-light tracking-[0.2em] text-sm hover:bg-gray-800 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl flex items-center justify-center gap-3 group"
+                  >
+                    {otpLoading ? 'SENDING...' : 'CONTINUE'}
+                    {!otpLoading && <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />}
                   </button>
                 </div>
-              </form>
-            )}
+              )}
 
-            {/* SIGNUP FORM */}
-            {currentState === 'Sign Up' && (
-              <div className="space-y-8">
-                <div className="space-y-3">
-                  <label htmlFor="name" className="block text-sm font-light text-gray-700 tracking-wide uppercase">
-                    Full Name
-                  </label>
-                  <div className="relative group">
-                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center">
-                      <User size={20} className="text-gray-400 group-focus-within:text-black transition-colors duration-300" />
+              {/* OTP VERIFICATION */}
+              {currentState === 'Sign Up' && otpSent && (
+                <form onSubmit={handleVerifyOtp} className="space-y-8">
+                  <div>
+                    <p className="text-sm text-gray-600 font-light text-center mb-8">
+                      We sent a verification code to<br />
+                      <span className="font-normal text-black">{email}</span>
+                    </p>
+                    
+                    <div className="flex gap-3 justify-center mb-2">
+                      {Array(6).fill(0).map((_, i) => (
+                        <input
+                          key={i}
+                          type="text"
+                          inputMode="numeric"
+                          maxLength="1"
+                          ref={(el) => (otpRefs.current[i] = el)}
+                          value={otpDigits[i] || ''}
+                          onChange={(e) => handleOtpChange(i, e.target.value)}
+                          onKeyDown={(e) => handleOtpKeyDown(i, e)}
+                          className="w-12 h-14 text-center text-lg font-light border-b-2 border-gray-300 focus:border-black focus:outline-none transition-all bg-transparent"
+                        />
+                      ))}
                     </div>
-                    <input
-                      id="name"
-                      type="text"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      className={`w-full pl-14 pr-4 py-4 bg-white border-b-2 focus:outline-none transition-all duration-300 font-light text-lg ${
-                        errors.name 
-                          ? 'border-red-400 focus:border-red-500' 
-                          : 'border-gray-200 focus:border-black'
-                      }`}
-                      placeholder="Enter your full name"
-                      disabled={otpSent}
-                    />
-                    {errors.name && (
-                      <p className="text-red-500 text-sm mt-2 font-light">{errors.name}</p>
-                    )}
                   </div>
-                </div>
-
-                <div className="space-y-3">
-                  <label htmlFor="email" className="block text-sm font-light text-gray-700 tracking-wide uppercase">
-                    Email Address
-                  </label>
-                  <div className="relative group">
-                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center">
-                      <Mail size={20} className="text-gray-400 group-focus-within:text-black transition-colors duration-300" />
+                  
+                  {otpError && (
+                    <div className="bg-red-50 border-l-2 border-red-500 p-3">
+                      <p className="text-red-600 text-sm font-light">{otpError}</p>
                     </div>
-                    <input
-                      id="email"
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className={`w-full pl-14 pr-4 py-4 bg-white border-b-2 focus:outline-none transition-all duration-300 font-light text-lg ${
-                        errors.email 
-                          ? 'border-red-400 focus:border-red-500' 
-                          : 'border-gray-200 focus:border-black'
-                      }`}
-                      placeholder="Enter your email address"
-                      disabled={otpSent}
-                    />
-                    {errors.email && (
-                      <p className="text-red-500 text-sm mt-2 font-light">{errors.email}</p>
-                    )}
-                  </div>
-                </div>
+                  )}
+                  
+                  <button
+                    type="submit"
+                    disabled={isLoading}
+                    className="w-full py-4 bg-black text-white font-light tracking-[0.2em] text-sm hover:bg-gray-800 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
+                  >
+                    {isLoading ? 'VERIFYING...' : 'VERIFY & CREATE ACCOUNT'}
+                  </button>
 
-                <div className="space-y-3">
-                  <label htmlFor="password" className="block text-sm font-light text-gray-700 tracking-wide uppercase">
-                    Password
-                  </label>
-                  <div className="relative group">
-                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center">
-                      <Lock size={20} className="text-gray-400 group-focus-within:text-black transition-colors duration-300" />
-                    </div>
-                    <input
-                      id="password"
-                      type={showPassword ? 'text' : 'password'}
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      className={`w-full pl-14 pr-14 py-4 bg-white border-b-2 focus:outline-none transition-all duration-300 font-light text-lg ${
-                        errors.password 
-                          ? 'border-red-400 focus:border-red-500' 
-                          : 'border-gray-200 focus:border-black'
-                      }`}
-                      placeholder="Enter your password"
-                      autoComplete="new-password"
-                      disabled={otpSent}
-                    />
+                  <div className="flex items-center justify-between">
                     <button
                       type="button"
-                      className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-black transition-colors duration-300"
-                      onClick={() => setShowPassword(!showPassword)}
-                      aria-label={showPassword ? "Hide password" : "Show password"}
+                      onClick={() => {
+                        setOtpSent(false);
+                        setOtp('');
+                        setOtpDigits(Array(6).fill(''));
+                        setOtpError('');
+                      }}
+                      className="text-sm text-gray-600 hover:text-black transition-colors font-light tracking-wide"
                     >
-                      {showPassword ? <Eye size={20} /> : <EyeOff size={20} />}
+                      BACK
                     </button>
-                    {errors.password && (
-                      <p className="text-red-500 text-sm mt-2 font-light">{errors.password}</p>
-                    )}
-                  </div>
-                </div>
-
-                {!otpSent && (
-                  <div className="pt-4">
                     <button
                       type="button"
                       onClick={handleSendOtp}
-                      disabled={otpLoading}
-                      className="w-full py-4 bg-black text-white text-sm uppercase font-light tracking-widest hover:bg-gray-900 transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
+                      disabled={otpLoading || otpTimer > 0}
+                      className="text-sm text-gray-600 hover:text-black transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-light tracking-wide"
                     >
-                      {otpLoading ? 'Sending...' : 'Send Verification Code'}
+                      {otpTimer > 0 ? `RESEND IN ${otpTimer}S` : 'RESEND CODE'}
                     </button>
                   </div>
-                )}
+                </form>
+              )}
 
-                {otpSent && (
-                  <form onSubmit={handleVerifyOtp} className="space-y-6 pt-4">
-                    <div className="text-center">
-                      <h3 className="text-xl font-light mb-2 text-black tracking-wide">VERIFY YOUR EMAIL</h3>
-                      <div className="w-12 h-0.5 bg-black mx-auto mb-4"></div>
-                      <p className="text-gray-600 font-light">Enter the 6-digit code sent to your email</p>
-                    </div>
-                    
-                    <div className="flex gap-3 justify-center">
-                      {Array(6)
-                        .fill(0)
-                        .map((_, i) => (
-                          <input
-                            key={i}
-                            type="text"
-                            inputMode="numeric"
-                            maxLength="1"
-                            ref={(el) => (otpRefs.current[i] = el)}
-                            value={otpDigits[i] || ''}
-                            onChange={(e) => handleOtpChange(i, e.target.value)}
-                            onKeyDown={(e) => handleOtpKeyDown(i, e)}
-                            className="w-12 h-12 text-center text-lg font-light border-2 border-gray-200 focus:border-black focus:outline-none transition-all duration-300 bg-white"
-                          />
-                        ))}
-                    </div>
-                    
-                    {otpError && (
-                      <p className="text-red-500 text-sm text-center font-light">{otpError}</p>
-                    )}
-                    
-                    <button
-                      type="submit"
-                      disabled={isLoading}
-                      className="w-full py-4 bg-black text-white text-sm uppercase font-light tracking-widest hover:bg-gray-900 transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
-                    >
-                      {isLoading ? 'Verifying...' : 'Verify & Create Account'}
-                    </button>
-
-                    <div className="text-center">
+              {/* Toggle Login/Signup */}
+              <div className="mt-12 pt-8 border-t border-gray-200 text-center">
+                <p className="text-sm text-gray-600 font-light">
+                  {currentState === 'Login' ? (
+                    <>
+                      New to Aharyas?{' '}
                       <button
                         type="button"
-                        onClick={handleSendOtp}
-                        disabled={otpLoading || otpTimer > 0}
-                        className="text-sm text-gray-600 hover:text-black transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed font-light"
+                        onClick={() => {
+                          setCurrentState('Sign Up');
+                          resetForm();
+                        }}
+                        className="text-black font-normal hover:underline transition-all tracking-wide"
                       >
-                        {otpTimer > 0 ? `Resend in ${otpTimer}s` : 'Resend Code'}
+                        Create an account
                       </button>
-                    </div>
-                  </form>
-                )}
-              </div>
-            )}
-
-            {/* Switch between Login and Sign Up */}
-            <div className="pt-8 border-t border-gray-200 mt-8">
-              <div className="text-center">
-                {currentState === 'Login' ? (
-                  <p className="text-gray-600 font-light">
-                    New to Aharyas?{' '}
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setCurrentState('Sign Up');
-                        resetForm();
-                      }}
-                      className="text-black font-light hover:font-normal transition-all duration-300 border-b border-transparent hover:border-black pb-0.5 tracking-wide"
-                    >
-                      Create an account
-                    </button>
-                  </p>
-                ) : (
-                  <p className="text-gray-600 font-light">
-                    Already part of our community?{' '}
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setCurrentState('Login');
-                        resetForm();
-                      }}
-                      className="text-black font-light hover:font-normal transition-all duration-300 border-b border-transparent hover:border-black pb-0.5 tracking-wide"
-                    >
-                      Sign In
-                    </button>
-                  </p>
-                )}
+                    </>
+                  ) : (
+                    <>
+                      Already part of our community?{' '}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setCurrentState('Login');
+                          resetForm();
+                        }}
+                        className="text-black font-normal hover:underline transition-all tracking-wide"
+                      >
+                        Sign In
+                      </button>
+                    </>
+                  )}
+                </p>
               </div>
             </div>
           </div>

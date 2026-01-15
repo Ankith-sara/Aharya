@@ -117,22 +117,20 @@ const Navbar = () => {
       ]
     },
     {
+      name: 'Handmade Toys',
+      id: 'home',
+      subcategories: [
+        { name: ' Kondapalli Bommalu', path: '/shop/Kondapalli Bommalu' },
+        { name: 'Paintings', path: '/shop/Paintings' },
+        { name: 'Cheriyal Masks', path: '/shop/Cheriyal Masks' },
+        { name: 'Bird houses', path: '/shop/Bird houses' }
+      ]
+    },
+    {
       name: 'Stationary',
       id: 'stationary',
       subcategories: [
         { name: 'Journals', path: '/shop/Journals' }
-      ]
-    },
-    {
-      name: 'Handmade Toys',
-      id: 'home',
-      subcategories: [
-        { name: 'Home Décor', path: '/shop/home-decor' },
-        { name: ' Kondapalli Bommalu', path: '/shop/ Kondapalli Bommalu' },
-        { name: 'Paintings', path: '/shop/Paintings' },
-        { name: 'Baskets', path: '/shop/baskets' },
-        { name: 'Bags and Pouches', path: '/shop/bags&pouches' },
-        { name: 'Wall Decor', path: '/shop/wall-decor' }
       ]
     },
     {
@@ -149,7 +147,7 @@ const Navbar = () => {
       <div className={`fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm transition-all duration-300 z-40 ${menuVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'}`} onClick={() => setMenuVisible(false)} />
 
       {/* Navbar */}
-      <nav className={`fixed top-0 left-0 right-0 px-4 sm:px-6 md:px-10 lg:px-20 z-50 transition-all duration-300 ${getNavbarBackground()}`}>
+      <nav className={`fixed top-0 left-0 right-0 px-4 sm:px-6 md:px-10 z-50 transition-all duration-300 ${getNavbarBackground()}`}>
         <div className="flex items-center justify-between text-white py-4">
           <Link to='/' onClick={() => window.location.href = '/'} className="flex-shrink-0 group">
             <img

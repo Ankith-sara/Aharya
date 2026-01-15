@@ -160,7 +160,7 @@ const List = ({ token }) => {
       }
     },
     "Handmade Toys": {
-      subCategories: ["", "Home Décor", " Kondapalli Bommalu", "Baskets", "Paintings", "Bags and Pouches", "Wall Decor"],
+      subCategories: ["", "Kondapalli Bommalu", "Paintings", "Cheriyal Masks", "Bird houses"],
       sizes: { default: [] }
     },
     Stationary: {

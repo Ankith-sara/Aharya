@@ -69,15 +69,15 @@ function LatestCollection() {
         const allCategories = [
           {
             name: 'Women',
-            subcategories: ['Kurtis', 'Kurta Sets', 'Dresses']
+            subcategories: ['Kurtis', 'Dresses', 'Sarees']
           },
           {
             name: 'Men',
-            subcategories: ['Shirts', 'Sleeve Shirts', 'Trousers']
-          },
+            subcategories: ['Sleeve Shirts']
+          }, 
           {
-            name: 'Home',
-            subcategories: ['Home', 'Wall Decor', 'Kitchenware']
+            name: 'Handmade Toys',
+            subcategories: ['Kondapalli Bommalu', 'Paintings']
           },
           {
             name: 'Accessories',

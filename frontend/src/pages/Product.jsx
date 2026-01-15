@@ -70,9 +70,15 @@ const Product = () => {
 
   // Enhanced Add to Cart handler
   const handleAddToCart = () => {
-    addToCart(productData._id, size, quantity);
+    // If product has sizes and no size is selected, don't add to cart
+    if (productData.sizes?.length > 0 && !size) {
+      return;
+    }
+
+    // Pass empty string for products without sizes (will be converted to 'N/A' in context)
+    const selectedSize = productData.sizes?.length > 0 ? size : '';
+    addToCart(productData._id, selectedSize, quantity);
     setIsAddedToCart(true);
-    setSize('');
     setQuantity(1);
   };
 
@@ -103,7 +109,7 @@ const Product = () => {
     };
 
     if (navigator.share) {
-      navigator.share(shareData).catch((err));
+      navigator.share(shareData).catch((err) => console.error('Share failed:', err));
     } else {
       navigator.clipboard.writeText(shareData.url).then(() => {
         alert("Product link copied to clipboard!");
@@ -163,10 +169,29 @@ const Product = () => {
     openModal(productData.images[currentIndex]);
   };
 
+  // Check if product has multiple images
+  const hasMultipleImages = productData?.images?.length > 1;
+
   // Handle thumbnail click
   const handleThumbnailClick = (index) => {
     setCurrentIndex(index);
   };
+
+  // Categories that don't need wash care instructions
+  const WASH_CARE_EXCLUDED_SUBCATEGORIES = [
+    'Bags',
+    'bags',
+    'Paintings',
+    'Kondapalli Bommalu',
+    'Cheriyal Masks',
+    'Bird houses',
+    'Journals'
+  ];
+
+  // Check if wash care should be shown
+  const shouldShowWashCare =
+    productData?.subCategory &&
+    !WASH_CARE_EXCLUDED_SUBCATEGORIES.includes(productData.subCategory);
 
   // Keyboard navigation for modal
   useEffect(() => {
@@ -199,6 +224,11 @@ const Product = () => {
     };
   }, [isModalOpen, showSizeChart, currentIndex, productData]);
 
+  // Reset cart button when size changes
+  useEffect(() => {
+    setIsAddedToCart(false);
+  }, [size]);
+
   useEffect(() => {
     const product = products?.find((item) => item._id === productId);
     if (product) {
@@ -223,6 +253,8 @@ const Product = () => {
   // Reset cart button state when product changes
   useEffect(() => {
     setIsAddedToCart(false);
+    setSize('');
+    setQuantity(1);
   }, [productId]);
 
   if (!productData) {
@@ -266,42 +298,49 @@ const Product = () => {
                     Click to zoom
                   </div>
 
-                  {/* Mobile Navigation Buttons - Always Visible */}
-                  <button
-                    className="hidden sm:flex absolute top-1/2 left-2 sm:left-4 transform -translate-y-1/2 w-8 h-8 sm:w-10 sm:h-10 items-center justify-center bg-white/90 text-black shadow-md opacity-100 sm:opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-white text-sm sm:text-base"
-                    onClick={(e) => { e.stopPropagation(); handlePrev(); }}
-                  >
-                    ◀
-                  </button>
-                  <button
-                    className="hidden sm:flex absolute top-1/2 right-2 sm:right-4 transform -translate-y-1/2 w-8 h-8 sm:w-10 sm:h-10 items-center justify-center bg-white/90 text-black shadow-md opacity-100 sm:opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-white text-sm sm:text-base"
-                    onClick={(e) => { e.stopPropagation(); handleNext(); }}
-                  >
-                    ▶
-                  </button>
+                  {/* Navigation Buttons - Only show if multiple images */}
+                  {hasMultipleImages && (
+                    <>
+                      <button
+                        className="hidden sm:flex absolute top-1/2 left-2 sm:left-4 transform -translate-y-1/2 w-8 h-8 sm:w-10 sm:h-10 items-center justify-center bg-white/90 text-black shadow-md opacity-100 sm:opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-white text-sm sm:text-base"
+                        onClick={(e) => { e.stopPropagation(); handlePrev(); }}
+                      >
+                        ◀
+                      </button>
+                      <button
+                        className="hidden sm:flex absolute top-1/2 right-2 sm:right-4 transform -translate-y-1/2 w-8 h-8 sm:w-10 sm:h-10 items-center justify-center bg-white/90 text-black shadow-md opacity-100 sm:opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-white text-sm sm:text-base"
+                        onClick={(e) => { e.stopPropagation(); handleNext(); }}
+                      >
+                        ▶
+                      </button>
 
-                  {/* Mobile Image Counter */}
-                  <div className="absolute bottom-3 left-1/2 transform -translate-x-1/2 bg-black/70 text-white px-3 py-1 text-xs backdrop-blur-sm sm:hidden">
-                    {currentIndex + 1} / {productData.images.length}
-                  </div>
+                      {/* Mobile Image Counter - Only show if multiple images */}
+                      <div className="absolute bottom-3 left-1/2 transform -translate-x-1/2 bg-black/70 text-white px-3 py-1 text-xs backdrop-blur-sm sm:hidden">
+                        {currentIndex + 1} / {productData.images.length}
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
 
-              <div className="flex gap-2 sm:gap-3 overflow-x-auto p-2 bg-gray-100 scrollbar-hide">
-                {productData.images.map((img, index) => (
-                  <div
-                    key={index}
-                    onClick={() => handleThumbnailClick(index)}
-                    className={`flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 overflow-hidden cursor-pointer transition-all duration-300 ${currentIndex === index ? 'shadow-lg border-2 border-black' : 'shadow-md border border-gray-200 hover:border-gray-400'}`}
-                  >
-                    <img
-                      src={img}
-                      alt={`${productData.name} view ${index + 1}`}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                ))}
-              </div>
+              {/* Thumbnails - Only show if multiple images */}
+              {hasMultipleImages && (
+                <div className="flex gap-2 sm:gap-3 overflow-x-auto p-2 bg-gray-100 scrollbar-hide">
+                  {productData.images.map((img, index) => (
+                    <div
+                      key={index}
+                      onClick={() => handleThumbnailClick(index)}
+                      className={`flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 overflow-hidden cursor-pointer transition-all duration-300 ${currentIndex === index ? 'shadow-lg border-2 border-black' : 'shadow-md border border-gray-200 hover:border-gray-400'}`}
+                    >
+                      <img
+                        src={img}
+                        alt={`${productData.name} view ${index + 1}`}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Product Details */}
@@ -336,47 +375,49 @@ const Product = () => {
                   <div className="text-xs sm:text-sm text-gray-500 font-light">Prices include GST</div>
                 </div>
 
-                {/* Size Selector */}
-                <div className="mb-6">
-                  <div className="flex items-center justify-between mb-3">
-                    <label className="block text-xs uppercase tracking-wider text-gray-500 font-light">
-                      Select Size
-                    </label>
-                    <button
-                      onClick={() => setShowSizeChart(true)}
-                      className="flex items-center gap-1.5 text-xs sm:text-sm text-black hover:text-gray-600 font-light transition-colors group"
-                    >
-                      <Ruler size={14} className="group-hover:scale-110 transition-transform" />
-                      <span className="underline">Size Guide</span>
-                    </button>
-                  </div>
-
-                  <div className="flex flex-wrap gap-2">
-                    {[...productData.sizes].sort((a, b) => {
-                      const sizeOrder = { 'XS': 1, 'S': 2, 'M': 3, 'L': 4, 'XL': 5, 'XXL': 6, 'XXXL': 7 };
-                      const aNum = parseInt(a);
-                      const bNum = parseInt(b);
-                      if (!isNaN(aNum) && !isNaN(bNum)) {
-                        return aNum - bNum;
-                      }
-
-                      const aOrder = sizeOrder[a.toUpperCase()] || 999;
-                      const bOrder = sizeOrder[b.toUpperCase()] || 999;
-                      return aOrder - bOrder;
-                    }).map((s, index) => (
+                {/* Size Selector - Only show if product has sizes */}
+                {productData.sizes?.length > 0 && (
+                  <div className="mb-6">
+                    <div className="flex items-center justify-between mb-3">
+                      <label className="block text-xs uppercase tracking-wider text-gray-500 font-light">
+                        Select Size
+                      </label>
                       <button
-                        key={index}
-                        onClick={() => setSize(size === s ? '' : s)}
-                        className={`py-2 sm:py-2.5 px-3 sm:px-4 transition-all duration-300 font-light text-sm sm:text-base ${size === s
-                            ? 'bg-black text-white shadow-md'
-                            : 'bg-white text-gray-700 border border-gray-300 hover:border-black'
-                          }`}
+                        onClick={() => setShowSizeChart(true)}
+                        className="flex items-center gap-1.5 text-xs sm:text-sm text-black hover:text-gray-600 font-light transition-colors group"
                       >
-                        {s}
+                        <Ruler size={14} className="group-hover:scale-110 transition-transform" />
+                        <span className="underline">Size Guide</span>
                       </button>
-                    ))}
+                    </div>
+
+                    <div className="flex flex-wrap gap-2">
+                      {[...productData.sizes].sort((a, b) => {
+                        const sizeOrder = { 'XS': 1, 'S': 2, 'M': 3, 'L': 4, 'XL': 5, 'XXL': 6, 'XXXL': 7 };
+                        const aNum = parseInt(a);
+                        const bNum = parseInt(b);
+                        if (!isNaN(aNum) && !isNaN(bNum)) {
+                          return aNum - bNum;
+                        }
+
+                        const aOrder = sizeOrder[a.toUpperCase()] || 999;
+                        const bOrder = sizeOrder[b.toUpperCase()] || 999;
+                        return aOrder - bOrder;
+                      }).map((s, index) => (
+                        <button
+                          key={index}
+                          onClick={() => setSize(size === s ? '' : s)}
+                          className={`py-2 sm:py-2.5 px-3 sm:px-4 transition-all duration-300 font-light text-sm sm:text-base ${size === s
+                              ? 'bg-black text-white shadow-md'
+                              : 'bg-white text-gray-700 border border-gray-300 hover:border-black'
+                            }`}
+                        >
+                          {s}
+                        </button>
+                      ))}
+                    </div>
                   </div>
-                </div>
+                )}
 
                 <div className="mb-6">
                   <label className="block text-xs uppercase tracking-wider text-gray-500 font-light mb-3">
@@ -415,9 +456,16 @@ const Product = () => {
                   {!isAddedToCart ? (
                     <button
                       onClick={handleAddToCart}
-                      className="w-full py-3 sm:py-4 bg-black text-white font-light tracking-wide hover:bg-gray-800 active:bg-gray-900 transition-all duration-300 text-sm sm:text-base"
+                      disabled={productData.sizes?.length > 0 && !size}
+                      className={`w-full py-3 sm:py-4 font-light tracking-wide transition-all duration-300 text-sm sm:text-base ${
+                        productData.sizes?.length > 0 && !size
+                          ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                          : 'bg-black text-white hover:bg-gray-800 active:bg-gray-900'
+                      }`}
                     >
-                      ADD TO CART
+                      {productData.sizes?.length > 0 && !size
+                        ? 'SELECT SIZE'
+                        : 'ADD TO CART'}
                     </button>
                   ) : (
                     <button
@@ -480,25 +528,28 @@ const Product = () => {
                   )}
                 </div>
 
-                <div className="border-b border-gray-200">
-                  <button onClick={() => toggleSection('washcare')} className="w-full py-3 sm:py-4 px-4 sm:px-6 flex justify-between items-center text-left font-medium transition-colors hover:bg-gray-50 active:bg-gray-100 text-sm sm:text-base">
-                    WASH CARE
-                    {expandedSection === 'washcare' ? <ChevronUp size={18} className="flex-shrink-0" /> : <ChevronDown size={18} className="flex-shrink-0" />}
-                  </button>
-                  {expandedSection === 'washcare' && (
-                    <div className="p-4 sm:p-6 pt-0 text-gray-600 font-light">
-                      <div className="w-12 h-0.5 bg-black mb-4"></div>
-                      <ul className="space-y-2 text-sm sm:text-base">
-                        <li>• Dry Clean or Hand Wash with Mild Detergent</li>
-                        <li>• Do not Machine Wash</li>
-                        <li>• Do not soak</li>
-                        <li>• Wash separately</li>
-                        <li>• Gently Dry Inside Out in shade</li>
-                        <li>• Slight irregularities are a nature of handcrafted products</li>
-                      </ul>
-                    </div>
-                  )}
-                </div>
+                {/* Wash Care - Only show for clothing items */}
+                {shouldShowWashCare && (
+                  <div className="border-b border-gray-200">
+                    <button onClick={() => toggleSection('washcare')} className="w-full py-3 sm:py-4 px-4 sm:px-6 flex justify-between items-center text-left font-medium transition-colors hover:bg-gray-50 active:bg-gray-100 text-sm sm:text-base">
+                      WASH CARE
+                      {expandedSection === 'washcare' ? <ChevronUp size={18} className="flex-shrink-0" /> : <ChevronDown size={18} className="flex-shrink-0" />}
+                    </button>
+                    {expandedSection === 'washcare' && (
+                      <div className="p-4 sm:p-6 pt-0 text-gray-600 font-light">
+                        <div className="w-12 h-0.5 bg-black mb-4"></div>
+                        <ul className="space-y-2 text-sm sm:text-base">
+                          <li>• Dry Clean or Hand Wash with Mild Detergent</li>
+                          <li>• Do not Machine Wash</li>
+                          <li>• Do not soak</li>
+                          <li>• Wash separately</li>
+                          <li>• Gently Dry Inside Out in shade</li>
+                          <li>• Slight irregularities are a nature of handcrafted products</li>
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                )}
 
                 <div className="border-b border-gray-200">
                   <button onClick={() => toggleSection('delivery')} className="w-full py-3 sm:py-4 px-4 sm:px-6 flex justify-between items-center text-left font-medium transition-colors hover:bg-gray-50 active:bg-gray-100 text-sm sm:text-base">
@@ -579,23 +630,29 @@ const Product = () => {
           >
             ✖
           </button>
-          <button
-            className="absolute top-1/2 left-2 sm:left-4 -translate-y-1/2 bg-white text-black p-2 sm:p-3 shadow-lg hover:bg-gray-100 transition-colors z-10 w-9 h-9 sm:w-auto sm:h-auto flex items-center justify-center"
-            onClick={(e) => { e.stopPropagation(); handlePrev(); }}
-            aria-label="Previous image"
-          >
-            ◀
-          </button>
-          <button
-            className="absolute top-1/2 right-2 sm:right-4 -translate-y-1/2 bg-white text-black p-2 sm:p-3 shadow-lg hover:bg-gray-100 transition-colors z-10 w-9 h-9 sm:w-auto sm:h-auto flex items-center justify-center"
-            onClick={(e) => {
-              e.stopPropagation();
-              handleNext();
-            }}
-            aria-label="Next image"
-          >
-            ▶
-          </button>
+
+          {/* Navigation buttons */}
+          {hasMultipleImages && (
+            <>
+              <button
+                className="absolute top-1/2 left-2 sm:left-4 -translate-y-1/2 bg-white text-black p-2 sm:p-3 shadow-lg hover:bg-gray-100 transition-colors z-10 w-9 h-9 sm:w-auto sm:h-auto flex items-center justify-center"
+                onClick={(e) => { e.stopPropagation(); handlePrev(); }}
+                aria-label="Previous image"
+              >
+                ◀
+              </button>
+              <button
+                className="absolute top-1/2 right-2 sm:right-4 -translate-y-1/2 bg-white text-black p-2 sm:p-3 shadow-lg hover:bg-gray-100 transition-colors z-10 w-9 h-9 sm:w-auto sm:h-auto flex items-center justify-center"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleNext();
+                }}
+                aria-label="Next image"
+              >
+                ▶
+              </button>
+            </>
+          )}
 
           {/* Zoom Controls */}
           <div className="absolute bottom-16 sm:bottom-10 right-4 sm:right-10 flex gap-2 z-10">
@@ -616,9 +673,11 @@ const Product = () => {
           </div>
 
           {/* Image Counter */}
-          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-70 text-white px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm backdrop-blur-sm">
-            {currentIndex + 1} / {productData.images.length}
-          </div>
+          {hasMultipleImages && (
+            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-70 text-white px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm backdrop-blur-sm">
+              {currentIndex + 1} / {productData.images.length}
+            </div>
+          )}
         </div>
       )}
 

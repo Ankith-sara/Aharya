@@ -34,15 +34,11 @@ const ShopContextProvider = (props) => {
 
     // ============= CART FUNCTIONS =============
     const addToCart = useCallback(async (itemId, size, quantity = 1) => {
-        if (!size) {
-            toast.error('Please select a product size');
-            return false;
-        }
-
         try {
             // Ensure we're working with strings
             const productId = String(itemId);
-            const productSize = String(size);
+            // Use 'N/A' as default size for products without sizes
+            const productSize = size ? String(size) : 'N/A';
 
             let cartData = structuredClone(cartItems);
 
@@ -53,10 +49,16 @@ const ShopContextProvider = (props) => {
             }
 
             setCartItems(cartData);
+            
+            // Save to localStorage for guest users
+            if (!token) {
+                localStorage.setItem('guestCart', JSON.stringify(cartData));
+            }
+            
             toast.success('Added to cart successfully');
 
             if (token) {
-                const userId = localStorage.getItem('userId'); // Make sure you store userId
+                const userId = localStorage.getItem('userId');
                 await axios.post(`${backendUrl}/api/cart/add`, {
                     userId,
                     itemId: productId,
@@ -101,6 +103,11 @@ const ShopContextProvider = (props) => {
             }
 
             setCartItems(cartData);
+            
+            // Save to localStorage for guest users
+            if (!token) {
+                localStorage.setItem('guestCart', JSON.stringify(cartData));
+            }
 
             if (token) {
                 const userId = localStorage.getItem('userId');
@@ -133,6 +140,12 @@ const ShopContextProvider = (props) => {
             }
 
             setCartItems(cartData);
+            
+            // Save to localStorage for guest users
+            if (!token) {
+                localStorage.setItem('guestCart', JSON.stringify(cartData));
+            }
+            
             toast.success('Item removed from cart');
 
             if (token) {
@@ -152,6 +165,11 @@ const ShopContextProvider = (props) => {
     const clearCart = useCallback(async () => {
         try {
             setCartItems({});
+            
+            // Clear localStorage for guest users
+            if (!token) {
+                localStorage.removeItem('guestCart');
+            }
 
             if (token) {
                 const userId = localStorage.getItem('userId');
@@ -222,6 +240,11 @@ const ShopContextProvider = (props) => {
     const getUserCart = useCallback(async (userToken) => {
         try {
             const userId = localStorage.getItem('userId');
+            if (!userId) {
+                console.log('No userId found in localStorage');
+                return;
+            }
+
             const response = await axios.post(
                 `${backendUrl}/api/cart/get`,
                 { userId },
@@ -229,9 +252,54 @@ const ShopContextProvider = (props) => {
             );
 
             if (response.data.success) {
-                // Ensure cartData is a proper object
-                const cartData = response.data.cartData || {};
-                setCartItems(cartData);
+                const serverCart = response.data.cartData || {};
+                
+                // Check if there's a guest cart to merge
+                const guestCartStr = localStorage.getItem('guestCart');
+                if (guestCartStr) {
+                    try {
+                        const guestCart = JSON.parse(guestCartStr);
+                        
+                        // Merge guest cart with server cart
+                        const mergedCart = { ...serverCart };
+                        
+                        for (const itemId in guestCart) {
+                            if (!mergedCart[itemId]) {
+                                mergedCart[itemId] = guestCart[itemId];
+                            } else {
+                                // Merge sizes
+                                for (const size in guestCart[itemId]) {
+                                    mergedCart[itemId][size] = (mergedCart[itemId][size] || 0) + guestCart[itemId][size];
+                                }
+                            }
+                        }
+                        
+                        // Update server with merged cart
+                        for (const itemId in guestCart) {
+                            for (const size in guestCart[itemId]) {
+                                await axios.post(
+                                    `${backendUrl}/api/cart/add`,
+                                    {
+                                        userId,
+                                        itemId,
+                                        size,
+                                        quantity: guestCart[itemId][size]
+                                    },
+                                    { headers: { Authorization: `Bearer ${userToken}` } }
+                                );
+                            }
+                        }
+                        
+                        // Clear guest cart after merging
+                        localStorage.removeItem('guestCart');
+                        setCartItems(mergedCart);
+                    } catch (error) {
+                        console.error('Error merging guest cart:', error);
+                        setCartItems(serverCart);
+                    }
+                } else {
+                    setCartItems(serverCart);
+                }
             }
         } catch (error) {
             console.error('Get user cart error:', error);
@@ -486,6 +554,7 @@ const ShopContextProvider = (props) => {
         setCartItems({});
         setWishlistItems([]);
         setUserProfile(null);
+        // Don't remove guestCart on logout - cart should persist for guest user
         toast.success('Logged out successfully');
         navigate('/login');
     }, [navigate]);
@@ -512,6 +581,22 @@ const ShopContextProvider = (props) => {
     }, []);
 
     // ============= INITIALIZATION =============
+    // Load guest cart from localStorage on initial load
+    useEffect(() => {
+        if (!token) {
+            const guestCartStr = localStorage.getItem('guestCart');
+            if (guestCartStr) {
+                try {
+                    const guestCart = JSON.parse(guestCartStr);
+                    setCartItems(guestCart);
+                } catch (error) {
+                    console.error('Error loading guest cart:', error);
+                    localStorage.removeItem('guestCart');
+                }
+            }
+        }
+    }, []);
+
     useEffect(() => {
         const storedSubCategory = localStorage.getItem("selectedSubCategory");
         if (storedSubCategory) {
@@ -535,13 +620,14 @@ const ShopContextProvider = (props) => {
 
     useEffect(() => {
         if (token) {
+            getUserCart(token);
             getUserWishlist(token);
             getUserProfile(token);
         } else {
             setWishlistItems([]);
             setUserProfile(null);
         }
-    }, [token, getUserWishlist, getUserProfile]);
+    }, [token, getUserCart, getUserWishlist, getUserProfile]);
 
     // ============= MEMOIZED VALUES =============
     const contextValue = useMemo(() => ({

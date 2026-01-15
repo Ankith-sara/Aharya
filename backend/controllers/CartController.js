@@ -3,10 +3,10 @@ import userModel from "../models/UserModel.js"
 // Add product to cart
 const addToCart = async (req, res) => {
     try {
-        const { userId, itemId, size, quantity = 1 } = req.body
+        const { userId, itemId, size = 'N/A', quantity = 1 } = req.body
 
-        if (!userId || !itemId || !size) {
-            return res.status(400).json({ success: false, message: "userId, itemId, and size are required" })
+        if (!userId || !itemId) {
+            return res.status(400).json({ success: false, message: "userId and itemId are required" })
         }
 
         const userData = await userModel.findById(userId)
@@ -57,12 +57,12 @@ const addToCart = async (req, res) => {
 // Update product quantity in cart
 const updateCart = async (req, res) => {
     try {
-        const { userId, itemId, size, quantity } = req.body
+        const { userId, itemId, size = 'N/A', quantity } = req.body
 
-        if (!userId || !itemId || !size || quantity === undefined) {
+        if (!userId || !itemId || quantity === undefined) {
             return res.status(400).json({ 
                 success: false, 
-                message: "userId, itemId, size and quantity are required" 
+                message: "userId, itemId, and quantity are required" 
             })
         }
 
@@ -125,12 +125,12 @@ const updateCart = async (req, res) => {
 // Remove product from cart
 const removeFromCart = async (req, res) => {
     try {
-        const { userId, itemId, size } = req.body
+        const { userId, itemId, size = 'N/A' } = req.body
 
-        if (!userId || !itemId || !size) {
+        if (!userId || !itemId) {
             return res.status(400).json({ 
                 success: false, 
-                message: "userId, itemId, and size are required" 
+                message: "userId and itemId are required" 
             })
         }
 
