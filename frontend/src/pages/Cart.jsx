@@ -338,7 +338,7 @@ const Cart = () => {
         </div>
       </section>
 
-      {/* Recently Viewed - Only if cart has items */}
+      {/* Recently Viewed */}
       {cartData.length > 0 && (
         <section className="px-4 sm:px-6 lg:px-20 pb-24 lg:pb-12">
           <div className="max-w-7xl mx-auto">
