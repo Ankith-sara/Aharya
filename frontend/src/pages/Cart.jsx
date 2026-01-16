@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { ShopContext } from '../context/ShopContext';
 import Title from '../components/Title';
 import CartTotal from '../components/CartTotal';
-import { Trash2, ShoppingBag, Package, X, Plus, Minus, ArrowRight } from 'lucide-react';
+import { Trash2, ShoppingBag, Package, X, Plus, Minus } from 'lucide-react';
 import RecentlyViewed from '../components/RecentlyViewed';
 import { Link } from 'react-router-dom';
 
@@ -143,7 +143,6 @@ const Cart = () => {
                 className="px-8 py-3 sm:py-4 bg-black text-white font-light tracking-[0.15em] text-xs sm:text-sm hover:bg-gray-800 transition-all duration-300 shadow-lg hover:shadow-xl flex items-center gap-3 group"
               >
                 BROWSE COLLECTION
-                <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
               </button>
             </div>
           ) : (
@@ -332,7 +331,6 @@ const Cart = () => {
                   className="w-full py-4 bg-black text-white font-light tracking-[0.15em] text-sm hover:bg-gray-800 active:bg-gray-900 transition-all duration-300 shadow-lg flex items-center justify-center gap-3 group"
                 >
                   PROCEED TO CHECKOUT
-                  <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
                 </button>
               </div>
             </div>
