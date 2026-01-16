@@ -304,7 +304,6 @@ const Cart = () => {
                         className="w-full py-4 bg-black text-white font-light tracking-[0.15em] text-sm hover:bg-gray-800 active:bg-gray-900 transition-all duration-300 shadow-lg hover:shadow-xl flex items-center justify-center gap-3 group"
                       >
                         PROCEED TO CHECKOUT
-                        <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
                       </button>
 
                       <button
