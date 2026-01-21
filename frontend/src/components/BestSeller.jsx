@@ -10,24 +10,21 @@ const BestSeller = () => {
   const [bestSeller, setBestSeller] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('All');
 
-  // Helper function to get products by category/subcategory
   const getProductsByCategory = (products, categoryName, subcategories) => {
     return products.filter(item => {
       const itemCategory = item.category?.toLowerCase();
       const itemSubCategory = item.subCategory?.toLowerCase();
-      
-      return subcategories.some(sub => 
-        itemCategory?.includes(sub.toLowerCase()) || 
+
+      return subcategories.some(sub =>
+        itemCategory?.includes(sub.toLowerCase()) ||
         itemSubCategory?.includes(sub.toLowerCase())
       );
     });
   };
 
-  // Helper function to select at least minCount products from each subcategory
   const selectBalancedBestsellers = (products, categories, minPerCategory = 1) => {
-    // First filter only bestseller products
     const bestsellerProducts = products.filter(item => item.bestseller);
-    
+
     if (bestsellerProducts.length === 0) {
       return [];
     }
@@ -35,24 +32,21 @@ const BestSeller = () => {
     const selectedProducts = [];
     const usedProductIds = new Set();
 
-    // First pass: ensure minimum products from each category
     categories.forEach(({ name, subcategories }) => {
       const categoryProducts = getProductsByCategory(bestsellerProducts, name, subcategories);
-      
-      // Group by subcategory for more balanced selection
+
       const productsBySubcategory = {};
       subcategories.forEach(sub => {
-        productsBySubcategory[sub] = categoryProducts.filter(item => 
+        productsBySubcategory[sub] = categoryProducts.filter(item =>
           item.category?.toLowerCase().includes(sub.toLowerCase()) ||
           item.subCategory?.toLowerCase().includes(sub.toLowerCase())
         );
       });
 
-      // Select at least minPerCategory from each subcategory if available
       Object.values(productsBySubcategory).forEach(subProducts => {
         const availableProducts = subProducts.filter(p => !usedProductIds.has(p._id));
         const toSelect = Math.min(minPerCategory, availableProducts.length);
-        
+
         for (let i = 0; i < toSelect; i++) {
           selectedProducts.push(availableProducts[i]);
           usedProductIds.add(availableProducts[i]._id);
@@ -60,10 +54,9 @@ const BestSeller = () => {
       });
     });
 
-    // Second pass: fill remaining slots with any unused bestseller products
     const remainingProducts = bestsellerProducts.filter(p => !usedProductIds.has(p._id));
     const remainingSlots = Math.max(0, 10 - selectedProducts.length);
-    
+
     for (let i = 0; i < Math.min(remainingSlots, remainingProducts.length); i++) {
       selectedProducts.push(remainingProducts[i]);
     }
@@ -78,21 +71,29 @@ const BestSeller = () => {
         const allCategories = [
           {
             name: 'Women',
-            subcategories: ['Kurtis', 'Kutra Sets', 'Tops', 'Dresses']
+            subcategories: ['Kurtis', 'Dresses']
           },
           {
             name: 'Men',
-            subcategories: ['Shirts', 'Sleeve Shirts', 'Trousers']
+            subcategories: ['Shirts', 'Sleeve Shirts']
+          },
+          {
+            name: 'Handmade Toys',
+            subcategories: ['Kondapalli Bommalu', 'Paintings']
+          },
+          {
+            name: 'Accessories',
+            subcategories: ['Bags']
           }
         ];
 
         const balancedBestsellers = selectBalancedBestsellers(products, allCategories, 1);
         setBestSeller(balancedBestsellers);
-        
+
       } else {
         // Handle specific category selection
         let categoryConfig = {};
-        
+
         if (selectedCategory === 'Women') {
           categoryConfig = {
             name: 'Women',
@@ -102,6 +103,11 @@ const BestSeller = () => {
           categoryConfig = {
             name: 'Men',
             subcategories: ['Shirts', 'Sleeve Shirts', 'Trousers']
+          };
+        } else if (selectedCategory === 'Handmade Toys') {
+          categoryConfig = {
+            name: 'Handmade Toys',
+            subcategories: ['Kondapalli Bommalu', 'Paintings']
           };
         }
 
@@ -137,10 +143,10 @@ const BestSeller = () => {
             {bestSeller.map((item, index) => (
               <div key={index} className="group">
                 <div className="relative overflow-hidden">
-                  <ProductItem 
-                    id={item._id} 
-                    image={item.images} 
-                    name={item.name} 
+                  <ProductItem
+                    id={item._id}
+                    image={item.images}
+                    name={item.name}
                     price={item.price}
                     company={item.company}
                   />

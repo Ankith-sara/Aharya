@@ -10,7 +10,6 @@ function LatestCollection() {
   const [latestProducts, setLatestProducts] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('All');
 
-  // Helper function to get products by category/subcategory
   const getProductsByCategory = (products, categoryName, subcategories) => {
     return products.filter(item => {
       const itemCategory = item.category?.toLowerCase();
@@ -23,7 +22,6 @@ function LatestCollection() {
     });
   };
 
-  // Helper function to select at least minCount products from each subcategory
   const selectBalancedProducts = (products, categories, minPerCategory = 2) => {
     const selectedProducts = [];
     const usedProductIds = new Set();
@@ -31,7 +29,6 @@ function LatestCollection() {
     categories.forEach(({ name, subcategories }) => {
       const categoryProducts = getProductsByCategory(products, name, subcategories);
 
-      // Group by subcategory for more balanced selection
       const productsBySubcategory = {};
       subcategories.forEach(sub => {
         productsBySubcategory[sub] = categoryProducts.filter(item =>
@@ -40,7 +37,6 @@ function LatestCollection() {
         );
       });
 
-      // Select at least minPerCategory from each subcategory if available
       Object.values(productsBySubcategory).forEach(subProducts => {
         const availableProducts = subProducts.filter(p => !usedProductIds.has(p._id));
         const toSelect = Math.min(minPerCategory, availableProducts.length);
@@ -69,7 +65,7 @@ function LatestCollection() {
         const allCategories = [
           {
             name: 'Women',
-            subcategories: ['Kurtis', 'Dresses', 'Sarees']
+            subcategories: ['Kurtis', 'Dresses']
           },
           {
             name: 'Men',
@@ -81,7 +77,7 @@ function LatestCollection() {
           },
           {
             name: 'Accessories',
-            subcategories: ['Bags', 'Pouches', 'Accessories']
+            subcategories: ['Bags']
           }
         ];
 

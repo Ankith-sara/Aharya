@@ -1,48 +1,29 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from "react";
 
 const Hero = () => {
   const lettersRef = useRef([]);
-  const videoRef = useRef(null);
-  const [videoLoaded, setVideoLoaded] = useState(false);
-
   const brandName = "AHARYAS";
 
   useEffect(() => {
     lettersRef.current.forEach((letter, index) => {
       setTimeout(() => letter?.classList.add("letter-active"), 180 * index);
     });
-
-    if (videoRef.current && videoLoaded) {
-      videoRef.current.playbackRate = 1.15;
-    }
-  }, [videoLoaded]);
+  }, []);
 
   return (
     <div className="relative w-full h-screen overflow-hidden m-0 p-0 bg-black">
+      {/* Background Image */}
       <img
-        src="https://res.cloudinary.com/dfzhqsfp7/video/upload/so_1,f_auto,q_auto,w_1600/v1751705180/hero_nrnwhy.jpg"
-        alt="Hero Poster"
-        className={`absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-700
-        ${videoLoaded ? "opacity-0" : "opacity-100"}`}
+        src="https://i.pinimg.com/736x/58/89/08/588908ca727bc56df82b0538decf2bdc.jpg"
+        alt="AHARYAS Hero Background"
+        loading="eager"
+        className="absolute top-0 left-0 w-full h-full object-cover"
       />
 
-      <video
-        ref={videoRef}
-        onLoadedData={() => setVideoLoaded(true)}
-        autoPlay
-        loop
-        muted
-        playsInline
-        preload="none"
-        className={`absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-700
-        ${videoLoaded ? "opacity-100" : "opacity-0"}`}
-      >
-        <source
-          src="https://res.cloudinary.com/dfzhqsfp7/video/upload/f_auto,q_auto:good,vc_auto,w_1600/hero_nrnwhy.mp4"
-          type="video/mp4"
-        />
-      </video>
+      {/* Overlay */}
+      <div className="absolute inset-0 bg-black/40" />
 
+      {/* Content */}
       <div className="absolute inset-0 flex flex-col justify-center items-center text-gray-200 z-10">
         <div className="relative overflow-hidden">
           <div className="flex overflow-hidden">
@@ -56,10 +37,11 @@ const Hero = () => {
               </span>
             ))}
           </div>
-          <div className="h-1 bg-white w-0 mx-auto line-animation"></div>
+
+          <div className="h-1 bg-white w-0 mx-auto line-animation" />
         </div>
 
-        <p className="text-[1rem] md:[1.3rem] lg:text-[1.5rem] mt-6 opacity-0 tagline-animation noto-serif-thai">
+        <p className="text-[1rem] md:text-[1.3rem] lg:text-[1.5rem] mt-6 opacity-0 tagline-animation noto-serif-thai">
           "A Global Market Place for Artisans"
         </p>
 
@@ -68,6 +50,7 @@ const Hero = () => {
         </p>
       </div>
 
+      {/* Animations */}
       <style>{`
         .letter-animation {
           transition: transform .8s cubic-bezier(0.77, 0, 0.175, 1),
@@ -82,12 +65,27 @@ const Hero = () => {
           -webkit-background-clip: text;
           background-clip: text;
         }
-        .line-animation { animation: lineExpand 1.5s cubic-bezier(0.19,1,0.22,1) forwards; animation-delay: 1.2s; }
-        .tagline-animation { animation: fadeIn 1.2s ease forwards; animation-delay: 1.8s; }
+        .line-animation {
+          animation: lineExpand 1.5s cubic-bezier(0.19,1,0.22,1) forwards;
+          animation-delay: 1.2s;
+        }
+        .tagline-animation {
+          animation: fadeIn 1.2s ease forwards;
+          animation-delay: 1.8s;
+        }
 
-        @keyframes lineExpand { 0% { width:0 } 100% { width:100% } }
-        @keyframes fadeIn { 0% { opacity:0 } 100% { opacity:1 } }
-        @keyframes shimmer { 0%{background-position:-100% 0} 100%{background-position:100% 0}}
+        @keyframes lineExpand {
+          0% { width: 0 }
+          100% { width: 100% }
+        }
+        @keyframes fadeIn {
+          0% { opacity: 0 }
+          100% { opacity: 1 }
+        }
+        @keyframes shimmer {
+          0% { background-position: -100% 0 }
+          100% { background-position: 100% 0 }
+        }
       `}</style>
     </div>
   );
