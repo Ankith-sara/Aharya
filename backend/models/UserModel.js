@@ -2,28 +2,32 @@ import mongoose from 'mongoose';
 
 const userSchema = new mongoose.Schema(
   {
-    name: { 
-      type: String, 
+    name: {
+      type: String,
       required: [true, 'Name is required'],
-      trim: true 
+      trim: true
     },
-    email: { 
-      type: String, 
-      required: [true, 'Email is required'], 
+    email: {
+      type: String,
+      required: [true, 'Email is required'],
       unique: true,  // This automatically creates an index
       lowercase: true,
       trim: true,
       validate: {
-        validator: function(v) {
+        validator: function (v) {
           return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
         },
         message: 'Please enter a valid email address'
       }
     },
-    password: { 
-      type: String, 
+    password: {
+      type: String,
       required: [true, 'Password is required'],
       minlength: [6, 'Password must be at least 6 characters']
+    },
+    tempPassword: {
+      type: String,
+      select: false
     },
     image: {
       type: String,
@@ -41,54 +45,54 @@ const userSchema = new mongoose.Schema(
         isDefault: { type: Boolean, default: false }
       }
     ],
-    wishlist: { 
+    wishlist: {
       type: [String],
       default: []
     },
-    cartData: { 
+    cartData: {
       type: Map,
       of: Map,
       default: new Map()
     },
-    role: { 
-      type: String, 
-      default: 'user', 
+    role: {
+      type: String,
+      default: 'user',
       enum: {
         values: ['user', 'admin'],
         message: 'Role must be either user or admin'
       }
     },
-    isAdmin: { 
-      type: Boolean, 
-      default: false 
+    isAdmin: {
+      type: Boolean,
+      default: false
     },
-    isVerified: { 
-      type: Boolean, 
-      default: false 
+    isVerified: {
+      type: Boolean,
+      default: false
     },
-    otp: { 
+    otp: {
       type: String,
       select: false  // Don't return OTP by default in queries
     },
-    otpExpiry: { 
+    otpExpiry: {
       type: Date,
       select: false  // Don't return OTP expiry by default
     }
   },
-  { 
+  {
     timestamps: true,  // This already adds createdAt and updatedAt
     minimize: false,
-    toJSON: { 
+    toJSON: {
       virtuals: true,
-      transform: function(doc, ret) {
+      transform: function (doc, ret) {
         delete ret.password;  // Never send password in JSON responses
         delete ret.otp;       // Never send OTP in JSON responses
         delete ret.otpExpiry;
         return ret;
       }
     },
-    toObject: { 
-      virtuals: true 
+    toObject: {
+      virtuals: true
     }
   }
 );
@@ -99,7 +103,7 @@ userSchema.index({ role: 1 });
 userSchema.index({ isVerified: 1 });
 
 // Virtual for full cart items count
-userSchema.virtual('cartItemCount').get(function() {
+userSchema.virtual('cartItemCount').get(function () {
   if (!this.cartData) return 0;
   let count = 0;
   for (const [itemId, sizes] of this.cartData.entries()) {
@@ -111,44 +115,44 @@ userSchema.virtual('cartItemCount').get(function() {
 });
 
 // Instance method to check if user has admin privileges
-userSchema.methods.hasAdminAccess = function() {
+userSchema.methods.hasAdminAccess = function () {
   return this.isAdmin || this.role === 'admin';
 };
 
 // Instance method to add item to cart
-userSchema.methods.addToCart = function(itemId, size, quantity = 1) {
+userSchema.methods.addToCart = function (itemId, size, quantity = 1) {
   const itemIdStr = String(itemId);
   const sizeStr = String(size);
-  
+
   if (!this.cartData) {
     this.cartData = new Map();
   }
-  
+
   if (!this.cartData.has(itemIdStr)) {
     this.cartData.set(itemIdStr, new Map());
   }
-  
+
   const currentQty = this.cartData.get(itemIdStr).get(sizeStr) || 0;
   this.cartData.get(itemIdStr).set(sizeStr, currentQty + quantity);
-  
+
   this.markModified('cartData');
   return this.cartData;
 };
 
 // Instance method to update cart item quantity
-userSchema.methods.updateCartItem = function(itemId, size, quantity) {
+userSchema.methods.updateCartItem = function (itemId, size, quantity) {
   const itemIdStr = String(itemId);
   const sizeStr = String(size);
-  
+
   if (!this.cartData) {
     this.cartData = new Map();
   }
-  
+
   if (quantity === 0) {
     // Remove the item
     if (this.cartData.has(itemIdStr)) {
       this.cartData.get(itemIdStr).delete(sizeStr);
-      
+
       // If no sizes left, remove the item entirely
       if (this.cartData.get(itemIdStr).size === 0) {
         this.cartData.delete(itemIdStr);
@@ -161,20 +165,20 @@ userSchema.methods.updateCartItem = function(itemId, size, quantity) {
     }
     this.cartData.get(itemIdStr).set(sizeStr, quantity);
   }
-  
+
   this.markModified('cartData');
   return this.cartData;
 };
 
 // Instance method to clear cart
-userSchema.methods.clearCart = function() {
+userSchema.methods.clearCart = function () {
   this.cartData = new Map();
   this.markModified('cartData');
   return this.cartData;
 };
 
 // Pre-save middleware to sync isAdmin with role
-userSchema.pre('save', function(next) {
+userSchema.pre('save', function (next) {
   if (this.role === 'admin') {
     this.isAdmin = true;
   }

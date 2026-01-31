@@ -115,7 +115,6 @@ const BestSeller = () => {
           const balancedBestsellers = selectBalancedBestsellers(products, [categoryConfig], 1);
           setBestSeller(balancedBestsellers);
         } else {
-          // Fallback to original logic
           const bestProduct = products.filter((item) => item.bestseller);
           setBestSeller(bestProduct.slice(0, 5));
         }

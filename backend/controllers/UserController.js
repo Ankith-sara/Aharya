@@ -57,8 +57,8 @@ const sendOtp = async (req, res) => {
             // Update existing unverified user
             user.name = name;
             user.password = hashedPassword;
-            user.role = 'user'; 
-            user.isAdmin = false; 
+            user.role = 'user';
+            user.isAdmin = false;
             user.otp = otp;
             user.otpExpiry = otpExpiry;
             user.isVerified = false;
@@ -102,9 +102,9 @@ const loginUser = async (req, res) => {
 
         // Check if user is trying to login as admin through user login
         if (user.role === 'admin') {
-            return res.status(403).json({ 
-                success: false, 
-                message: "Please use admin login portal for admin accounts" 
+            return res.status(403).json({
+                success: false,
+                message: "Please use admin login portal for admin accounts"
             });
         }
 
@@ -153,24 +153,24 @@ const verifyOtp = async (req, res) => {
 
         // Check if user is already verified
         if (user.isVerified) {
-            return res.status(400).json({ 
-                success: false, 
-                message: 'Account already verified. Please login instead.' 
+            return res.status(400).json({
+                success: false,
+                message: 'Account already verified. Please login instead.'
             });
         }
 
         // Ensure this is not an admin account trying to verify through user flow
         if (user.role === 'admin') {
-            return res.status(403).json({ 
-                success: false, 
-                message: 'Please use admin verification portal' 
+            return res.status(403).json({
+                success: false,
+                message: 'Please use admin verification portal'
             });
         }
 
         if (!user.otp || !user.otpExpiry) {
-            return res.status(400).json({ 
-                success: false, 
-                message: 'OTP not requested. Please request OTP first.' 
+            return res.status(400).json({
+                success: false,
+                message: 'OTP not requested. Please request OTP first.'
             });
         }
 
@@ -179,9 +179,9 @@ const verifyOtp = async (req, res) => {
         }
 
         if (user.otpExpiry < new Date()) {
-            return res.status(401).json({ 
-                success: false, 
-                message: 'OTP expired. Please request a new one.' 
+            return res.status(401).json({
+                success: false,
+                message: 'OTP expired. Please request a new one.'
             });
         }
 
@@ -248,7 +248,7 @@ const registerUser = async (req, res) => {
             name,
             email,
             password: hashedPassword,
-            role: 'user', 
+            role: 'user',
             isAdmin: false,
             isVerified: true
         });
@@ -276,15 +276,15 @@ const registerUser = async (req, res) => {
 // ============ ADMIN LOGIN ============
 const adminLogin = async (req, res) => {
     const { email, password } = req.body;
-    
+
     try {
         // Find user with admin role only
         const user = await userModel.findOne({ email, role: 'admin' });
-        
+
         if (!user) {
-            return res.status(404).json({ 
-                success: false, 
-                message: 'Admin account not found' 
+            return res.status(404).json({
+                success: false,
+                message: 'Admin account not found'
             });
         }
 
@@ -297,21 +297,21 @@ const adminLogin = async (req, res) => {
 
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return res.status(401).json({ 
-                success: false, 
-                message: 'Invalid credentials' 
+            return res.status(401).json({
+                success: false,
+                message: 'Invalid credentials'
             });
         }
 
         const token = createToken(user._id, 'admin');
-        
-        res.status(200).json({ 
-            success: true, 
+
+        res.status(200).json({
+            success: true,
             token,
             userId: user._id.toString(),
             name: user.name,
             role: 'admin',
-            message: 'Admin login successful' 
+            message: 'Admin login successful'
         });
     } catch (error) {
         console.error('Admin login error:', error);
@@ -325,9 +325,9 @@ const sendAdminOtp = async (req, res) => {
 
     // SECURITY: Require admin secret key for admin registration
     if (!adminSecret || adminSecret !== process.env.ADMIN_REGISTRATION_SECRET) {
-        return res.status(403).json({ 
-            success: false, 
-            message: 'Unauthorized admin registration attempt' 
+        return res.status(403).json({
+            success: false,
+            message: 'Unauthorized admin registration attempt'
         });
     }
 
@@ -457,6 +457,141 @@ const verifyAdminOtp = async (req, res) => {
     }
 };
 
+// ============ FORGOT PASSWORD - SEND OTP ============
+const sendForgotPasswordOtp = async (req, res) => {
+    const { email, newPassword } = req.body;
+
+    if (!email) {
+        return res.status(400).json({ success: false, message: 'Email is required' });
+    }
+
+    if (!newPassword) {
+        return res.status(400).json({ success: false, message: 'New password is required' });
+    }
+
+    if (!validator.isEmail(email)) {
+        return res.status(400).json({ success: false, message: 'Invalid email format' });
+    }
+
+    if (newPassword.length < 8) {
+        return res.status(400).json({ success: false, message: 'Password must be at least 8 characters' });
+    }
+
+    try {
+        const user = await userModel.findOne({ email });
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: 'No account found with this email address'
+            });
+        }
+
+        if (!user.isVerified) {
+            return res.status(400).json({
+                success: false,
+                message: 'Please complete your registration first before resetting password.'
+            });
+        }
+
+        // Check if OTP was recently sent
+        if (user.otpExpiry && user.otpExpiry > new Date()) {
+            const timeLeft = Math.ceil((user.otpExpiry - new Date()) / 1000);
+            return res.status(400).json({
+                success: false,
+                message: `OTP already sent. Please wait ${timeLeft} seconds before requesting again.`
+            });
+        }
+
+        const otp = generateOtp();
+        const otpExpiry = new Date(Date.now() + 5 * 60 * 1000);
+
+        // Hash the new password and store temporarily
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+        // Store the new hashed password in a temporary field
+        user.tempPassword = hashedPassword;
+        user.otp = otp;
+        user.otpExpiry = otpExpiry;
+        await user.save();
+
+        await sendOtpMail(email, otp);
+
+        res.json({
+            success: true,
+            message: 'Password reset OTP sent to your email. Please verify to complete password reset.'
+        });
+    } catch (err) {
+        console.error('Send forgot password OTP error:', err);
+        res.status(500).json({ success: false, message: err.message });
+    }
+};
+
+// ============ RESET PASSWORD - VERIFY OTP ============
+const resetPassword = async (req, res) => {
+    const { email, otp } = req.body;
+
+    if (!email || !otp) {
+        return res.status(400).json({ success: false, message: 'Email and OTP are required' });
+    }
+
+    try {
+        const user = await userModel.findOne({ email }).select('+otp +otpExpiry +tempPassword');
+
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found.' });
+        }
+
+        if (!user.isVerified) {
+            return res.status(400).json({
+                success: false,
+                message: 'Please complete your registration first.'
+            });
+        }
+
+        if (!user.otp || !user.otpExpiry) {
+            return res.status(400).json({
+                success: false,
+                message: 'OTP not requested. Please request a password reset first.'
+            });
+        }
+
+        if (user.otp !== otp) {
+            return res.status(401).json({ success: false, message: 'Invalid OTP' });
+        }
+
+        if (user.otpExpiry < new Date()) {
+            return res.status(401).json({
+                success: false,
+                message: 'OTP expired. Please request a new one.'
+            });
+        }
+
+        if (!user.tempPassword) {
+            return res.status(400).json({
+                success: false,
+                message: 'No password reset in progress. Please request a new password reset.'
+            });
+        }
+
+        // Update password with the temporary password
+        user.password = user.tempPassword;
+        user.tempPassword = undefined;
+        user.otp = undefined;
+        user.otpExpiry = undefined;
+        await user.save();
+
+        res.json({
+            success: true,
+            message: 'Password reset successful. You can now login with your new password.'
+        });
+    } catch (err) {
+        console.error('Reset password error:', err);
+        res.status(500).json({ success: false, message: err.message });
+    }
+};
+
 // ============ OTHER FUNCTIONS ============
 const getUserProfile = async (req, res) => {
     try {
@@ -470,7 +605,7 @@ const getUserProfile = async (req, res) => {
             });
         }
 
-        const user = await userModel.findById(userId).select('-password -otp -otpExpiry');
+        const user = await userModel.findById(userId).select('-password -otp -otpExpiry -tempPassword');
 
         if (!user) {
             return res.status(404).json({
@@ -633,4 +768,7 @@ const subscribeNewsletter = async (req, res) => {
     }
 };
 
-export {  sendOtp,  verifyOtp,  registerUser,  loginUser,  sendAdminOtp,  verifyAdminOtp,  adminLogin,  getUserDetails,  getUserProfile,  updateUserProfile,  addOrUpdateAddress,  deleteAddress,  changePassword,  subscribeNewsletter };
+export {
+    sendOtp, verifyOtp, registerUser, loginUser, sendAdminOtp, verifyAdminOtp, adminLogin, sendForgotPasswordOtp, resetPassword, getUserDetails,
+    getUserProfile, updateUserProfile, addOrUpdateAddress, deleteAddress, changePassword, subscribeNewsletter
+};

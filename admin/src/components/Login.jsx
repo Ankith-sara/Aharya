@@ -1,15 +1,18 @@
 import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { Shield, Mail, Lock, User, Eye, EyeOff, ArrowRight, Sparkles, ChevronRight } from 'lucide-react';
+import { Shield, Mail, Lock, User, Eye, EyeOff, ArrowRight, Sparkles, ChevronRight, KeyRound } from 'lucide-react';
 import { backendUrl } from '../App';
 
 const Login = ({ setToken }) => {
   const [isRegistering, setIsRegistering] = useState(false);
+  const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
   const [otp, setOtp] = useState('');
   const [otpTimer, setOtpTimer] = useState(0);
@@ -36,17 +39,26 @@ const Login = ({ setToken }) => {
   const handleSendOtp = async (e) => {
     e.preventDefault();
     if (!email) return toast.error('Please enter a valid email');
-    if (!name) return toast.error('Please enter your full name');
+    if (!name && !isForgotPassword) return toast.error('Please enter your full name');
     if (!password) return toast.error('Please enter a password');
     if (password.length < 8) return toast.error('Password must be at least 8 characters');
+    
+    if (isForgotPassword) {
+      if (!confirmPassword) return toast.error('Please confirm your password');
+      if (password !== confirmPassword) return toast.error('Passwords do not match');
+    }
 
     setLoading(true);
     try {
-      const res = await axios.post(`${backendUrl}/api/user/send-admin-otp`, {
-        email,
-        name,
-        password
-      });
+      const endpoint = isForgotPassword 
+        ? `${backendUrl}/api/user/forgot-password-otp`
+        : `${backendUrl}/api/user/send-admin-otp`;
+      
+      const payload = isForgotPassword 
+        ? { email, newPassword: password }
+        : { email, name, password };
+
+      const res = await axios.post(endpoint, payload);
 
       if (res.data.success) {
         setOtpSent(true);
@@ -68,15 +80,23 @@ const Login = ({ setToken }) => {
 
     setLoading(true);
     try {
-      const res = await axios.post(`${backendUrl}/api/user/verify-admin-otp`, {
-        email,
-        otp
-      });
+      const endpoint = isForgotPassword
+        ? `${backendUrl}/api/user/reset-password`
+        : `${backendUrl}/api/user/verify-admin-otp`;
+      
+      const res = await axios.post(endpoint, { email, otp });
 
       if (res.data.success) {
-        toast.success(res.data.message || 'Admin registration successful');
-        setToken(res.data.token);
-        localStorage.setItem('token', res.data.token);
+        toast.success(res.data.message || (isForgotPassword ? 'Password reset successful' : 'Admin registration successful'));
+        
+        if (!isForgotPassword) {
+          setToken(res.data.token);
+          localStorage.setItem('token', res.data.token);
+        } else {
+          // After password reset, go back to login
+          resetForm();
+          setIsForgotPassword(false);
+        }
       } else {
         toast.error(res.data.message || 'Invalid OTP');
       }
@@ -104,16 +124,33 @@ const Login = ({ setToken }) => {
     }
   };
 
-  const toggleFormMode = () => {
-    setIsRegistering(!isRegistering);
+  const resetForm = () => {
     setName('');
     setEmail('');
     setPassword('');
+    setConfirmPassword('');
     setOtp('');
     setOtpSent(false);
     setOtpDigits(Array(6).fill(''));
     setOtpTimer(0);
     setShowPassword(false);
+    setShowConfirmPassword(false);
+  };
+
+  const toggleFormMode = () => {
+    setIsRegistering(!isRegistering);
+    resetForm();
+  };
+
+  const handleForgotPassword = () => {
+    setIsForgotPassword(true);
+    setIsRegistering(false);
+    resetForm();
+  };
+
+  const handleBackToLogin = () => {
+    setIsForgotPassword(false);
+    resetForm();
   };
 
   useEffect(() => {
@@ -139,7 +176,7 @@ const Login = ({ setToken }) => {
         {/* Floating Header */}
         <div className="text-center flex flex-row justify-center gap-5 mb-8">
           <div className="inline-flex items-center justify-center w-20 h-20 bg-white rounded-2xl shadow-2xl mb-6 transform hover:scale-110 transition-transform duration-300">
-            <Shield className="text-black" size={36} />
+            {isForgotPassword ? <KeyRound className="text-black" size={36} /> : <Shield className="text-black" size={36} />}
           </div>
           <div>
             <h1 className="text-4xl font-bold text-white mb-3 tracking-tight">
@@ -147,7 +184,11 @@ const Login = ({ setToken }) => {
             </h1>
             <div className="flex items-center justify-center gap-2 text-gray-400">
               <p className="text-sm">
-                {isRegistering ? 'Create your secure account' : 'Welcome back to the command center'}
+                {isForgotPassword 
+                  ? 'Reset your password securely'
+                  : isRegistering 
+                    ? 'Create your secure account' 
+                    : 'Welcome back to the command center'}
               </p>
             </div>
           </div>
@@ -156,33 +197,43 @@ const Login = ({ setToken }) => {
         {/* Main Card */}
         <div className="bg-white/10 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 overflow-hidden">
           {!otpSent ? (
-            <form onSubmit={isRegistering ? handleSendOtp : handleLogin} className="p-8 space-y-6">
-              {/* Tab Switcher */}
-              <div className="flex bg-black/20 p-1.5 rounded-xl mb-8">
-                <button
-                  type="button"
-                  onClick={() => !isRegistering && toggleFormMode()}
-                  className={`flex-1 py-3 px-4 rounded-lg text-sm font-semibold transition-all duration-300 ${isRegistering
-                      ? 'bg-white text-black shadow-lg'
-                      : 'text-gray-400 hover:text-white'
-                    }`}
-                >
-                  Register
-                </button>
-                <button
-                  type="button"
-                  onClick={() => isRegistering && toggleFormMode()}
-                  className={`flex-1 py-3 px-4 rounded-lg text-sm font-semibold transition-all duration-300 ${!isRegistering
-                      ? 'bg-white text-black shadow-lg'
-                      : 'text-gray-400 hover:text-white'
-                    }`}
-                >
-                  Sign In
-                </button>
-              </div>
+            <form onSubmit={isForgotPassword || isRegistering ? handleSendOtp : handleLogin} className="p-8 space-y-6">
+              {/* Tab Switcher - Only show if not in forgot password mode */}
+              {!isForgotPassword && (
+                <div className="flex bg-black/20 p-1.5 rounded-xl mb-8">
+                  <button
+                    type="button"
+                    onClick={() => !isRegistering && toggleFormMode()}
+                    className={`flex-1 py-3 px-4 rounded-lg text-sm font-semibold transition-all duration-300 ${isRegistering
+                        ? 'bg-white text-black shadow-lg'
+                        : 'text-gray-400 hover:text-white'
+                      }`}
+                  >
+                    Register
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => isRegistering && toggleFormMode()}
+                    className={`flex-1 py-3 px-4 rounded-lg text-sm font-semibold transition-all duration-300 ${!isRegistering
+                        ? 'bg-white text-black shadow-lg'
+                        : 'text-gray-400 hover:text-white'
+                      }`}
+                  >
+                    Sign In
+                  </button>
+                </div>
+              )}
+
+              {/* Forgot Password Header */}
+              {isForgotPassword && (
+                <div className="text-center mb-6">
+                  <h3 className="text-2xl font-bold text-white mb-2">Reset Password</h3>
+                  <p className="text-gray-400 text-sm">Enter your email and new password</p>
+                </div>
+              )}
 
               {/* Name Field (Registration only) */}
-              {isRegistering && (
+              {isRegistering && !isForgotPassword && (
                 <div className="group">
                   <label className="block text-sm font-semibold text-white mb-2.5 ml-1">
                     Full Name
@@ -222,7 +273,7 @@ const Login = ({ setToken }) => {
               {/* Password Field */}
               <div className="group">
                 <label className="block text-sm font-semibold text-white mb-2.5 ml-1">
-                  Password
+                  {isForgotPassword ? 'New Password' : 'Password'}
                 </label>
                 <div className="relative">
                   <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 group-hover:text-white transition-colors" size={20} />
@@ -244,6 +295,46 @@ const Login = ({ setToken }) => {
                 </div>
               </div>
 
+              {/* Confirm Password Field (Forgot Password only) */}
+              {isForgotPassword && (
+                <div className="group">
+                  <label className="block text-sm font-semibold text-white mb-2.5 ml-1">
+                    Confirm New Password
+                  </label>
+                  <div className="relative">
+                    <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 group-hover:text-white transition-colors" size={20} />
+                    <input
+                      type={showConfirmPassword ? "text" : "password"}
+                      placeholder="••••••••"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      className="w-full pl-12 pr-14 py-4 bg-white/5 border-2 border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-white focus:bg-white/10 transition-all duration-300"
+                      required
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+                    >
+                      {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Forgot Password Link - Show only on login form */}
+              {!isRegistering && !isForgotPassword && (
+                <div className="flex justify-end -mt-2">
+                  <button
+                    type="button"
+                    onClick={handleForgotPassword}
+                    className="text-sm text-gray-400 hover:text-white transition-colors"
+                  >
+                    Forgot password?
+                  </button>
+                </div>
+              )}
+
               {/* Submit Button */}
               <button
                 type="submit"
@@ -254,13 +345,30 @@ const Login = ({ setToken }) => {
                   <div className="w-6 h-6 border-3 border-black border-t-transparent rounded-full animate-spin"></div>
                 ) : (
                   <>
-                    <span>{isRegistering ? 'Send Verification Code' : 'Sign In'}</span>
+                    <span>
+                      {isForgotPassword 
+                        ? 'Send Reset Code' 
+                        : isRegistering 
+                          ? 'Send Verification Code' 
+                          : 'Sign In'}
+                    </span>
                   </>
                 )}
               </button>
 
+              {/* Back to Login - Show only on forgot password form */}
+              {isForgotPassword && (
+                <button
+                  type="button"
+                  onClick={handleBackToLogin}
+                  className="w-full text-gray-400 hover:text-white py-3 text-sm font-semibold transition-colors flex items-center justify-center gap-2"
+                >
+                  Back to Sign In
+                </button>
+              )}
+
               {/* Helper Text */}
-              {!isRegistering && (
+              {!isRegistering && !isForgotPassword && (
                 <p className="text-center text-sm text-gray-400 mt-4">
                   Secure admin access with encrypted authentication
                 </p>
@@ -273,7 +381,9 @@ const Login = ({ setToken }) => {
                 <div className="inline-flex items-center justify-center w-20 h-20 bg-white/10 backdrop-blur-sm rounded-2xl mb-6 border border-white/20">
                   <Mail className="text-white" size={32} />
                 </div>
-                <h3 className="text-2xl font-bold text-white mb-3">Verify Your Email</h3>
+                <h3 className="text-2xl font-bold text-white mb-3">
+                  {isForgotPassword ? 'Verify Reset Code' : 'Verify Your Email'}
+                </h3>
                 <p className="text-gray-300 text-sm leading-relaxed">
                   We've sent a 6-digit verification code to
                 </p>
@@ -329,7 +439,9 @@ const Login = ({ setToken }) => {
                   <div className="w-6 h-6 border-3 border-black border-t-transparent rounded-full animate-spin"></div>
                 ) : (
                   <>
-                    <span>Verify & Create Account</span>
+                    <span>
+                      {isForgotPassword ? 'Reset Password' : 'Verify & Create Account'}
+                    </span>
                     <ArrowRight size={20} />
                   </>
                 )}
@@ -341,7 +453,7 @@ const Login = ({ setToken }) => {
                 onClick={() => setOtpSent(false)}
                 className="w-full text-gray-400 hover:text-white py-3 text-sm font-semibold transition-colors flex items-center justify-center gap-2"
               >
-                Back to Registration
+                {isForgotPassword ? 'Back to Reset Form' : 'Back to Registration'}
               </button>
             </form>
           )}
