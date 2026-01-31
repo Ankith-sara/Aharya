@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import { ShopContext } from '../context/ShopContext';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { Eye, EyeOff, Mail, User, Lock, ArrowRight } from 'lucide-react';
+import { Eye, EyeOff, Mail, User, Lock } from 'lucide-react';
 
 const Login = () => {
   const [currentState, setCurrentState] = useState('Login');
@@ -318,7 +318,6 @@ const Login = () => {
                     className="w-full mt-8 py-4 bg-black text-white font-light tracking-[0.2em] text-sm hover:bg-gray-800 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl flex items-center justify-center gap-3 group"
                   >
                     {isLoading ? 'SIGNING IN...' : 'SIGN IN'}
-                    {!isLoading && <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />}
                   </button>
                 </form>
               )}
@@ -398,7 +397,6 @@ const Login = () => {
                     className="w-full mt-8 py-4 bg-black text-white font-light tracking-[0.2em] text-sm hover:bg-gray-800 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl flex items-center justify-center gap-3 group"
                   >
                     {otpLoading ? 'SENDING...' : 'CONTINUE'}
-                    {!otpLoading && <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />}
                   </button>
                 </div>
               )}
