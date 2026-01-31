@@ -17,13 +17,41 @@ const port = process.env.PORT || 4000;
 connectDB();
 connectCloudinary();
 
-// SIMPLE CORS - Allow all origins
-app.use(cors({
-  origin: '*',
+// CORS Configuration - FIXED
+const allowedOrigins = [
+  'http://localhost:5173',           // Local frontend development
+  'http://localhost:5174',           // Alternative local port
+  'http://localhost:3000',           // Alternative local port
+  'https://admin.aharyas.com',       // Production admin frontend
+  'https://www.admin.aharyas.com',   // Production admin with www
+  'https://aharyas.com',             // Production user frontend
+  'https://www.aharyas.com',         // Production user with www
+];
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps, Postman, curl)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      console.log('Blocked by CORS:', origin);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  exposedHeaders: ['Content-Range', 'X-Content-Range'],
+  maxAge: 86400, // 24 hours
+};
+
+// Apply CORS middleware ONCE
+app.use(cors(corsOptions));
+
+// Handle preflight requests
+app.options('*', cors(corsOptions));
 
 // Middleware
 app.use(express.json());
