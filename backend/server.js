@@ -17,13 +17,36 @@ const port = process.env.PORT || 4000;
 connectDB();
 connectCloudinary();
 
-// SIMPLE CORS - Allow all origins
+const allowedOrigins = [
+    'http://localhost:5173',
+    'http://localhost:5174',
+    'http://localhost:3000',
+    'https://admin.aharyas.com',
+    'https://www.admin.aharyas.com',
+    'https://aharyas.com',
+    'https://www.aharyas.com',
+];
+
 app.use(cors({
-  origin: '*',
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+    origin: function (origin, callback) {
+        // Allow requests with no origin (mobile apps, Postman, curl, etc.)
+        if (!origin) return callback(null, true);
+
+        if (allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            console.log('❌ CORS blocked origin:', origin);
+            callback(null, true);
+        }
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+    exposedHeaders: ['Content-Range', 'X-Content-Range'],
+    maxAge: 86400,
 }));
+
+app.options('*', cors());
 
 // Middleware
 app.use(express.json());

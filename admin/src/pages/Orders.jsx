@@ -57,14 +57,14 @@ const PaymentBadge = ({ payment, paymentMethod }) => (
   </div>
 );
 
-const OrderCard = ({ order, index, onStatusChange }) => (
+const OrderCard = ({ order, orderNumber, onStatusChange }) => (
   <div className="bg-white border border-gray-200 shadow-sm overflow-hidden hover:shadow-md transition-all duration-300">
     <div className="bg-gray-50 border-b border-gray-200 p-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <ShoppingBag size={20} className="text-gray-600" />
           <div>
-            <h3 className="text-lg font-medium uppercase tracking-wide text-black">Order #{index + 1}</h3>
+            <h3 className="text-lg font-medium uppercase tracking-wide text-black">Order #{orderNumber}</h3>
             <p className="text-gray-600 mt-1 text-xs font-light uppercase tracking-wider">{new Date(order.date).toLocaleDateString('en-US', {
               year: 'numeric',
               month: 'short',
@@ -91,8 +91,12 @@ const OrderCard = ({ order, index, onStatusChange }) => (
           <div className="space-y-3 max-h-48 overflow-y-auto">
             {order.items.map((item, idx) => (
               <div key={idx} className="flex items-center gap-4 p-3 bg-gray-50 border border-gray-100">
-                <div className="w-12 h-12 bg-white border border-gray-200 flex items-center justify-center">
-                  <Package size={16} className="text-gray-600" />
+                <div className="w-20 h-20 flex items-center justify-center">
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    className="max-w-full max-h-full object-contain"
+                  />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="font-medium text-gray-900 truncate text-sm uppercase tracking-wide">{item.name}</p>
@@ -223,16 +227,19 @@ const Orders = ({ token }) => {
     try {
       const response = await axios.get(
         `${backendUrl}/api/order/list`,
-        { 
-          headers: { 
+        {
+          headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'
-          } 
+          }
         }
       );
 
       if (response.data.success) {
-        const ordersData = response.data.orders.reverse();
+        // Sort orders by date in descending order (latest first)
+        const ordersData = response.data.orders.sort((a, b) => {
+          return new Date(b.date) - new Date(a.date);
+        });
         setOrders(ordersData);
         setFilteredOrders(ordersData);
       } else {
@@ -240,7 +247,7 @@ const Orders = ({ token }) => {
       }
     } catch (error) {
       console.error('Error fetching orders:', error);
-      
+
       if (error.response) {
         const status = error.response.status;
         const message = error.response.data?.message;
@@ -275,11 +282,11 @@ const Orders = ({ token }) => {
       const response = await axios.post(
         `${backendUrl}/api/order/status`,
         { orderId, status: event.target.value },
-        { 
-          headers: { 
+        {
+          headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'
-          } 
+          }
         }
       );
 
@@ -325,7 +332,7 @@ const Orders = ({ token }) => {
   const getPageNumbers = () => {
     const pages = [];
     const maxPagesToShow = 5;
-    
+
     if (totalPages <= maxPagesToShow) {
       for (let i = 1; i <= totalPages; i++) {
         pages.push(i);
@@ -353,7 +360,7 @@ const Orders = ({ token }) => {
         pages.push(totalPages);
       }
     }
-    
+
     return pages;
   };
 
@@ -613,7 +620,7 @@ const Orders = ({ token }) => {
                     <OrderCard
                       key={order._id || index}
                       order={order}
-                      index={startIndex + index}
+                      orderNumber={startIndex + index + 1}
                       onStatusChange={statusHandler}
                     />
                   ))}
@@ -625,8 +632,16 @@ const Orders = ({ token }) => {
                     <div className="text-sm text-gray-600 font-light">
                       Page <span className="font-medium text-black">{currentPage}</span> of <span className="font-medium text-black">{totalPages}</span>
                     </div>
-                    
+
                     <div className="flex items-center gap-2">
+                      <button
+                        onClick={goToPrevious}
+                        disabled={currentPage === 1}
+                        className="p-2 border border-gray-300 hover:border-black hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:border-gray-300 disabled:hover:bg-white transition-all duration-300"
+                        title="Previous Page"
+                      >
+                        <ChevronLeft size={18} />
+                      </button>
                       <button
                         onClick={goToNext}
                         disabled={currentPage === totalPages}

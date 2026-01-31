@@ -381,6 +381,66 @@ const Orders = () => {
               </div>
             </div>
           )}
+
+          {/* Contact Information Section */}
+          <div className="mt-8 sm:mt-12 bg-gradient-to-br from-white to-gray-50 border border-gray-200 p-6 sm:p-8">
+            <div className="text-center mb-6">
+              <h3 className="text-xl sm:text-2xl font-medium text-black mb-2 tracking-wide">NEED HELP WITH YOUR ORDER?</h3>
+              <p className="text-sm sm:text-base text-gray-600 font-light leading-relaxed">
+                Our customer service team is here to assist you
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+              {/* Phone Contact */}
+              <div className="bg-white border border-gray-200 p-4 sm:p-6 hover:shadow-lg transition-all duration-300">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-10 h-10 bg-black/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <Package size={20} className="text-black" />
+                  </div>
+                  <h4 className="text-base sm:text-lg font-medium text-black">Call Us</h4>
+                </div>
+                <div className="space-y-2 text-sm sm:text-base text-gray-700 font-light">
+                  <p className="font-medium text-black">+91 9063284008</p>
+                  <p className="font-medium text-black">+91 91211 57804</p>
+                  <p className="text-xs sm:text-sm text-gray-500">Mon - Sat: 9 AM - 6 PM</p>
+                </div>
+              </div>
+
+              {/* Email Contact */}
+              <div className="bg-white border border-gray-200 p-4 sm:p-6 hover:shadow-lg transition-all duration-300">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-10 h-10 bg-black/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <CreditCard size={20} className="text-black" />
+                  </div>
+                  <h4 className="text-base sm:text-lg font-medium text-black">Email Us</h4>
+                </div>
+                <div className="space-y-2 text-sm sm:text-base text-gray-700 font-light">
+                  <p className="font-medium text-black break-all">aharyasofficial@gmail.com</p>
+                  <p className="text-xs sm:text-sm text-gray-500">We respond within 24 hours</p>
+                </div>
+              </div>
+
+              {/* Visit Contact Page */}
+              <div className="bg-white border border-gray-200 p-4 sm:p-6 hover:shadow-lg transition-all duration-300 sm:col-span-2 lg:col-span-1">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-10 h-10 bg-black/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <ArrowRight size={20} className="text-black" />
+                  </div>
+                  <h4 className="text-base sm:text-lg font-medium text-black">Contact Page</h4>
+                </div>
+                <p className="text-sm sm:text-base text-gray-700 font-light mb-4">
+                  Visit our contact page for more ways to reach us
+                </p>
+                <button
+                  onClick={() => navigate('/contact')}
+                  className="w-full px-4 py-2 bg-black text-white font-light tracking-wide hover:bg-gray-800 transition-all duration-300 text-xs sm:text-sm"
+                >
+                  VISIT CONTACT PAGE
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
     </div>

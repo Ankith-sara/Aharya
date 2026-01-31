@@ -12,6 +12,7 @@ orderRouter.post('/razorpay', authUser, placeOrderRazorpay);
 orderRouter.post('/verifyRazorpay', authUser, verifyRazorpay);
 orderRouter.post('/verifyCOD', authUser, verifyCOD);
 orderRouter.post('/userorders', authUser, userOrders); 
+orderRouter.get('/track/:orderId', authUser, orderStatus);
 orderRouter.get('/status/:orderId', orderStatus);
 orderRouter.get('/list', adminAuth, allOrders);
 orderRouter.post('/status', adminAuth, updateStatus);

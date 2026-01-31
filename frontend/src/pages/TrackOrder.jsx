@@ -35,12 +35,15 @@ const TrackOrder = () => {
           throw new Error("Missing backend URL, token, or order ID");
         }
 
+        // FIXED: Use Authorization header instead of custom 'token' header
         const response = await fetch(`${backendUrl}/api/order/track/${orderId}`, {
           method: "GET",
           headers: {
-            token: token
-          }
-        })
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`  // Changed from 'token' to 'Authorization'
+          },
+          credentials: 'include'  // Added for CORS
+        });
 
         const data = await response.json();
 

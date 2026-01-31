@@ -47,7 +47,9 @@ const MyProfile = () => {
       return;
     }
     axios
-      .get(backendUrl + `/api/user/profile/${userId}`, { headers: { token } })
+      .get(backendUrl + `/api/user/profile/${userId}`, { 
+        headers: { Authorization: `Bearer ${token}` } // Changed from 'token' to 'Authorization'
+      })
       .then((res) => {
         if (res.data.success) {
           setUserData(res.data.user);
@@ -61,7 +63,7 @@ const MyProfile = () => {
         }
       })
       .catch(() => navigate("/login"));
-  }, [navigate]);
+  }, [navigate, backendUrl]);
 
   // Fetch recently viewed products
   useEffect(() => {
@@ -106,7 +108,7 @@ const MyProfile = () => {
         formData,
         {
           headers: {
-            token,
+            Authorization: `Bearer ${token}`, // Changed from 'token' to 'Authorization'
             "Content-Type": "multipart/form-data",
           },
         }
@@ -137,9 +139,9 @@ const MyProfile = () => {
     try {
       const token = localStorage.getItem("token");
       const res = await axios.put(
-        `${import.meta.env.VITE_BACKEND_URL}/api/user/address/${userData._id}`,
+        `${backendUrl}/api/user/address/${userData._id}`,
         { addressObj, index },
-        { headers: { token } }
+        { headers: { Authorization: `Bearer ${token}` } } // Changed from 'token' to 'Authorization'
       );
       if (res.data.success) {
         setUserData((prev) => ({ ...prev, addresses: res.data.addresses }));
@@ -159,8 +161,11 @@ const MyProfile = () => {
     try {
       const token = localStorage.getItem("token");
       const res = await axios.delete(
-        `${import.meta.env.VITE_BACKEND_URL}/api/user/address/${userData._id}`,
-        { data: { index }, headers: { token } }
+        `${backendUrl}/api/user/address/${userData._id}`,
+        { 
+          data: { index }, 
+          headers: { Authorization: `Bearer ${token}` } // Changed from 'token' to 'Authorization'
+        }
       );
       if (res.data.success) {
         setUserData((prev) => ({ ...prev, addresses: res.data.addresses }));
@@ -203,7 +208,7 @@ const MyProfile = () => {
       const res = await axios.put(
         `${backendUrl}/api/user/change-password/${userData._id}`,
         { password: passwordForm.newPassword },
-        { headers: { token } }
+        { headers: { Authorization: `Bearer ${token}` } } // Changed from 'token' to 'Authorization'
       );
 
       if (res.data.success) {
