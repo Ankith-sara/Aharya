@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <!-- Main Pages -->
+  <url><loc>https://aharyas.com/</loc><priority>1.0</priority></url>
+  <url><loc>https://aharyas.com/about</loc></url>
+  <url><loc>https://aharyas.com/contact</loc></url>
+  <url><loc>https://aharyas.com/blog</loc></url>
+
+  <!-- Shopping -->
+  <url><loc>https://aharyas.com/shop/collection</loc></url>
+  <url><loc>https://aharyas.com/categories</loc></url>
+  <url><loc>https://aharyas.com/best-sellers</loc></url>
+  <url><loc>https://aharyas.com/sell</loc></url>
+
+  <!-- User -->
+  <url><loc>https://aharyas.com/account</loc></url>
+  <url><loc>https://aharyas.com/orders</loc></url>
+  <url><loc>https://aharyas.com/wishlist</loc></url>
+
+  <!-- Policies -->
+  <url><loc>https://aharyas.com/privacypolicy</loc></url>
+  <url><loc>https://aharyas.com/termsconditions</loc></url>
+  <url><loc>https://aharyas.com/refundpolicy</loc></url>
+  <url><loc>https://aharyas.com/shippingpolicy</loc></url>
+
+  <!-- Categories -->
+  <url><loc>https://aharyas.com/category/fashion</loc></url>
+  <url><loc>https://aharyas.com/category/home-living</loc></url>
+  <url><loc>https://aharyas.com/category/beauty</loc></url>
+
+</urlset>

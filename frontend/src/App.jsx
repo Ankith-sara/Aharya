@@ -30,7 +30,6 @@ import TermsConditions from './pages/TermsConditions';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import FAQs from './pages/FAQs';
 import Support from './pages/Support';
-import Sitemap from './pages/Sitemaps';
 import Wishlist from './pages/Wishlist';
 
 const App = () => {
@@ -68,7 +67,6 @@ const App = () => {
         <Route path='/privacypolicy' element={<PrivacyPolicy />} />
         <Route path='/faqs' element={<FAQs />} />
         <Route path='/support' element={<Support />} />
-        <Route path='/sitemap' element={<Sitemap />} />
         <Route path='/aa-chatbot' element={<ChatBot />} />
         <Route path='/try-on' element={<VirtualTryOn />} />
       </Routes>

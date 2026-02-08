@@ -174,10 +174,6 @@ const Footer = () => {
               <NavLink to="/support" className="text-gray-500 hover:text-white transition-colors duration-300 font-light">
                 Support
               </NavLink>
-              <span className="text-gray-700 hidden sm:inline">|</span>
-              <NavLink to="/sitemap" className="text-gray-500 hover:text-white transition-colors duration-300 font-light">
-                Sitemap
-              </NavLink>
             </div>
 
             {/* Trust Indicators */}

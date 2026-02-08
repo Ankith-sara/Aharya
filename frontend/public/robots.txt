@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+Disallow: /cart
+Disallow: /account
+Disallow: /orders
+
+Sitemap: https://aharyas.com/sitemap.xml
