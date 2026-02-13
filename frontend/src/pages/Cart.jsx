@@ -123,7 +123,7 @@ const Cart = () => {
       </section>
 
       {/* Main Content */}
-      <section className="px-4 sm:px-6 lg:px-20 pb-24 sm:pb-12 md:pb-16">
+      <section className="px-4 sm:px-6 lg:px-20 pb-12 md:pb-16">
         <div className="max-w-7xl mx-auto">
           {cartData.length === 0 ? (
             /* Empty Cart State */
@@ -289,7 +289,7 @@ const Cart = () => {
               </div>
 
               {/* Order Summary */}
-              <div className="hidden lg:block lg:sticky lg:top-24 h-fit">
+              <div className="lg:sticky lg:top-24 h-fit">
                 <div className="bg-white border border-gray-200 shadow-lg">
                   <div className="p-6 border-b border-gray-200 bg-gray-50">
                     <h3 className="text-lg font-medium tracking-wider uppercase">Order Summary</h3>
@@ -323,16 +323,6 @@ const Cart = () => {
                   </div>
                 </div>
               </div>
-
-              {/* Mobile Checkout Button */}
-              <div className="lg:hidden fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-200 shadow-2xl z-40">
-                <button
-                  onClick={handleCheckout}
-                  className="w-full py-4 bg-black text-white font-light tracking-[0.15em] text-sm hover:bg-gray-800 active:bg-gray-900 transition-all duration-300 shadow-lg flex items-center justify-center gap-3 group"
-                >
-                  PROCEED TO CHECKOUT
-                </button>
-              </div>
             </div>
           )}
         </div>
@@ -340,7 +330,7 @@ const Cart = () => {
 
       {/* Recently Viewed */}
       {cartData.length > 0 && (
-        <section className="px-4 sm:px-6 lg:px-20 pb-24 lg:pb-12">
+        <section className="px-4 sm:px-6 lg:px-20 pb-12">
           <div className="max-w-7xl mx-auto">
             <RecentlyViewed />
           </div>

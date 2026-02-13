@@ -9,8 +9,6 @@ const ShopContextProvider = (props) => {
     const currency = '₹';
     const delivery_fee = 50;
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
-
-    // State Management
     const [search, setSearch] = useState('');
     const [showSearch, setShowSearch] = useState(false);
     const [cartItems, setCartItems] = useState({});
@@ -32,12 +30,25 @@ const ShopContextProvider = (props) => {
         }
     }, [token]);
 
+    // ============= COUPON FUNCTIONS =============
+    const getAppliedCoupon = useCallback(() => {
+        try {
+            const savedCoupon = localStorage.getItem('appliedCoupon');
+            return savedCoupon ? JSON.parse(savedCoupon) : null;
+        } catch (error) {
+            console.error('Error getting applied coupon:', error);
+            return null;
+        }
+    }, []);
+
+    const clearCoupon = useCallback(() => {
+        localStorage.removeItem('appliedCoupon');
+    }, []);
+
     // ============= CART FUNCTIONS =============
     const addToCart = useCallback(async (itemId, size, quantity = 1) => {
         try {
-            // Ensure we're working with strings
             const productId = String(itemId);
-            // Use 'N/A' as default size for products without sizes
             const productSize = size ? String(size) : 'N/A';
 
             let cartData = structuredClone(cartItems);
@@ -50,7 +61,6 @@ const ShopContextProvider = (props) => {
 
             setCartItems(cartData);
             
-            // Save to localStorage for guest users
             if (!token) {
                 localStorage.setItem('guestCart', JSON.stringify(cartData));
             }
@@ -79,23 +89,19 @@ const ShopContextProvider = (props) => {
         if (quantity < 0) return;
 
         try {
-            // Ensure we're working with strings
             const productId = String(itemId);
             const productSize = String(size);
 
             let cartData = structuredClone(cartItems);
 
             if (quantity === 0) {
-                // Remove the size from the product
                 if (cartData[productId]) {
                     delete cartData[productId][productSize];
-                    // If no sizes left for this product, remove the product entirely
                     if (Object.keys(cartData[productId]).length === 0) {
                         delete cartData[productId];
                     }
                 }
             } else {
-                // Update or add the quantity
                 if (!cartData[productId]) {
                     cartData[productId] = {};
                 }
@@ -104,7 +110,6 @@ const ShopContextProvider = (props) => {
 
             setCartItems(cartData);
             
-            // Save to localStorage for guest users
             if (!token) {
                 localStorage.setItem('guestCart', JSON.stringify(cartData));
             }
@@ -126,7 +131,6 @@ const ShopContextProvider = (props) => {
 
     const removeFromCart = useCallback(async (itemId, size) => {
         try {
-            // Ensure we're working with strings
             const productId = String(itemId);
             const productSize = String(size);
 
@@ -141,7 +145,6 @@ const ShopContextProvider = (props) => {
 
             setCartItems(cartData);
             
-            // Save to localStorage for guest users
             if (!token) {
                 localStorage.setItem('guestCart', JSON.stringify(cartData));
             }
@@ -166,10 +169,11 @@ const ShopContextProvider = (props) => {
         try {
             setCartItems({});
             
-            // Clear localStorage for guest users
             if (!token) {
                 localStorage.removeItem('guestCart');
             }
+            
+            clearCoupon();
 
             if (token) {
                 const userId = localStorage.getItem('userId');
@@ -181,7 +185,7 @@ const ShopContextProvider = (props) => {
             console.error('Clear cart error:', error);
             toast.error('Failed to clear cart');
         }
-    }, [token, backendUrl]);
+    }, [token, backendUrl, clearCoupon]);
 
     const getCartCount = useCallback(() => {
         let totalCount = 0;
@@ -254,27 +258,23 @@ const ShopContextProvider = (props) => {
             if (response.data.success) {
                 const serverCart = response.data.cartData || {};
                 
-                // Check if there's a guest cart to merge
                 const guestCartStr = localStorage.getItem('guestCart');
                 if (guestCartStr) {
                     try {
                         const guestCart = JSON.parse(guestCartStr);
                         
-                        // Merge guest cart with server cart
                         const mergedCart = { ...serverCart };
                         
                         for (const itemId in guestCart) {
                             if (!mergedCart[itemId]) {
                                 mergedCart[itemId] = guestCart[itemId];
                             } else {
-                                // Merge sizes
                                 for (const size in guestCart[itemId]) {
                                     mergedCart[itemId][size] = (mergedCart[itemId][size] || 0) + guestCart[itemId][size];
                                 }
                             }
                         }
                         
-                        // Update server with merged cart
                         for (const itemId in guestCart) {
                             for (const size in guestCart[itemId]) {
                                 await axios.post(
@@ -290,7 +290,6 @@ const ShopContextProvider = (props) => {
                             }
                         }
                         
-                        // Clear guest cart after merging
                         localStorage.removeItem('guestCart');
                         setCartItems(mergedCart);
                     } catch (error) {
@@ -554,10 +553,10 @@ const ShopContextProvider = (props) => {
         setCartItems({});
         setWishlistItems([]);
         setUserProfile(null);
-        // Don't remove guestCart on logout - cart should persist for guest user
+        clearCoupon();
         toast.success('Logged out successfully');
         navigate('/login');
-    }, [navigate]);
+    }, [navigate, clearCoupon]);
 
     const getUserProfile = useCallback(async (userToken) => {
         try {
@@ -581,7 +580,6 @@ const ShopContextProvider = (props) => {
     }, []);
 
     // ============= INITIALIZATION =============
-    // Load guest cart from localStorage on initial load
     useEffect(() => {
         if (!token) {
             const guestCartStr = localStorage.getItem('guestCart');
@@ -631,38 +629,27 @@ const ShopContextProvider = (props) => {
 
     // ============= MEMOIZED VALUES =============
     const contextValue = useMemo(() => ({
-        // State 
         products, currency, delivery_fee, search, showSearch, cartItems,
         wishlistItems, token, selectedSubCategory, isLoading, userProfile,
-
-        // Setters
         setSearch, setShowSearch, setCartItems,
         setToken, setSelectedSubCategory: setCategory,
-
-        // Cart functions
         addToCart, updateQuantity, removeFromCart, clearCart,
         getCartCount, getCartAmount, getCartItems,
-
-        // Wishlist functions
+        getAppliedCoupon, clearCoupon,
         addToWishlist, removeFromWishlist, toggleWishlist,
         isInWishlist, getWishlistCount, getWishlistProducts,
-
-        // Product functions
         getProductById, searchProducts, filterProducts,
-
-        // Recently viewed
         addProductToRecentlyViewed, getRecentlyViewed, clearRecentlyViewed,
-
-        // Auth & Navigation
         logout, navigate, backendUrl
     }), [
         products, currency, delivery_fee, search, showSearch, cartItems,
         wishlistItems, token, selectedSubCategory, isLoading, userProfile,
         addToCart, updateQuantity, removeFromCart, clearCart, getCartCount,
-        getCartAmount, getCartItems, addToWishlist, removeFromWishlist,
-        toggleWishlist, isInWishlist, getWishlistCount, getWishlistProducts,
-        getProductById, searchProducts, filterProducts, addProductToRecentlyViewed,
-        getRecentlyViewed, clearRecentlyViewed, logout, navigate, backendUrl, setCategory
+        getCartAmount, getCartItems, getAppliedCoupon, clearCoupon,
+        addToWishlist, removeFromWishlist, toggleWishlist, isInWishlist, 
+        getWishlistCount, getWishlistProducts, getProductById, searchProducts, 
+        filterProducts, addProductToRecentlyViewed, getRecentlyViewed, 
+        clearRecentlyViewed, logout, navigate, backendUrl, setCategory
     ]);
 
     return (
