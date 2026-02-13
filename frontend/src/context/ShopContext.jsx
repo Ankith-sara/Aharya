@@ -593,7 +593,7 @@ const ShopContextProvider = (props) => {
                 }
             }
         }
-    }, []);
+    }, [token]);
 
     useEffect(() => {
         const storedSubCategory = localStorage.getItem("selectedSubCategory");

@@ -156,7 +156,9 @@ const PlaceOrder = () => {
         userId: decoded.id,
         address: formData,
         items: orderItems,
-        amount: getCartAmount() + delivery_fee,
+        amount: finalAmount,
+        discount: discount,
+        couponCode: appliedCoupon ? appliedCoupon.code : null
       };
 
       switch (method) {
