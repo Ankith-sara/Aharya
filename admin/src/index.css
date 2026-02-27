@@ -1,0 +1,21 @@
+@import url('https://fonts.googleapis.com/css2?family=Hind+Mysuru:wght@300;400;500;600;700&family=Oswald:wght@200..700&family=Outfit:wght@100..900&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+    font-family: Oswald;
+}
+
+select,
+input,
+textarea {
+    border: 1px solid #c2c2c2;
+    outline-color: #3c2a21;
+    border-radius: 4px;
+}
+
+.active {
+    background-color: #ffebf5;
+    border-color: #3c2a21;
+}

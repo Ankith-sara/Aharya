@@ -1,0 +1,101 @@
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Hind+Mysuru:wght@300;400;500;600;700&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Noto+Serif+Thai:wght@100..900&family=Oswald:wght@200..700&family=Outfit:wght@100..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+body {
+  font-family: 'Montserrat', 'Oswald', Courier, monospace, sans-serif;
+  overflow-x: hidden;
+  color: var(--color-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Hide scrollbar for all browsers but maintain functionality */
+::-webkit-scrollbar {
+  display: none;
+}
+
+.hind-mysuru-light {
+  font-family: "Hind Mysuru", sans-serif;
+  font-weight: 300;
+  font-style: normal;
+}
+
+.hind-mysuru-regular {
+  font-family: "Hind Mysuru", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.hind-mysuru-medium {
+  font-family: "Hind Mysuru", sans-serif;
+  font-weight: 500;
+  font-style: normal;
+}
+
+.hind-mysuru-semibold {
+  font-family: "Hind Mysuru", sans-serif;
+  font-weight: 600;
+  font-style: normal;
+}
+
+.hind-mysuru-bold {
+  font-family: "Hind Mysuru", sans-serif;
+  font-weight: 700;
+  font-style: normal;
+}
+
+.dancing-script {
+  font-family: "Dancing Script", serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+
+.oswald {
+  font-family: "Oswald", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 700;
+  font-style: normal;
+}
+
+.noto-serif-thai {
+  font-family: "Noto Serif Thai", serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  font-variation-settings:
+    "wdth" 100;
+}
+
+.sticky {
+  position: sticky;
+  top: 0;
+  backdrop-filter: blur(8px);
+  transition: var(--transition-standard);
+}
+
+a.active hr {
+  display: block;
+}
+
+@media (max-width: 640px) {
+  a.active {
+    background-color: #000;
+    color: #fff;
+    transition: var(--transition-standard);
+  }
+}
