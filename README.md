@@ -96,9 +96,9 @@ npm run dev
 
 ```
 aharya/
+├── admin/          → admin panel, components, pages
 ├── backend/        → Express API, routes, models, middleware
 ├── frontend/       → React app, components, pages
-├── .env.example    → Required environment variable keys
 └── README.md
 ```
 
