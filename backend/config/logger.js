@@ -1,8 +1,6 @@
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 
-// Simple logger using console with structured output (Winston-compatible interface)
-// Install winston for production: npm install winston
 const levels = { error: 0, warn: 1, info: 2, debug: 3 };
 
 const logger = {

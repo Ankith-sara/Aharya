@@ -1,14 +1,13 @@
 import { v2 as cloudinary } from 'cloudinary';
 import productModel from '../models/ProductModal.js';
-import { searchProducts, optimizeImage } from '../services/ProductService.js';
-import { getSellerAnalytics } from '../services/OrderService.js';
 
-// Add product
+// Function for adding a product
 const addProduct = async (req, res) => {
     try {
-        const { name, description, price, category, subCategory, bestseller, sizes, company, artisanRegion } = req.body;
+        const { name, description, price, category, subCategory, bestseller, sizes, company } = req.body;
         const adminId = req.user.id;
 
+        // Handle images
         const images = [
             req.files?.image1?.[0],
             req.files?.image2?.[0],
@@ -28,6 +27,7 @@ const addProduct = async (req, res) => {
         const parsedSizes = sizes ? JSON.parse(sizes) : [];
         const isBestseller = bestseller === "true" || bestseller === true;
 
+        // Prepare the product data
         const productData = {
             name,
             description,
@@ -38,7 +38,6 @@ const addProduct = async (req, res) => {
             sizes: parsedSizes,
             images: imagesUrl,
             company: company || "Aharyas",
-            artisanRegion: artisanRegion || null,
             adminId,
             date: Date.now(),
         };
@@ -53,12 +52,12 @@ const addProduct = async (req, res) => {
     }
 };
 
-// Edit product
+// Function for editing a product
 const editProduct = async (req, res) => {
     try {
         const { id } = req.params;
         const adminId = req.user.id;
-        const { name, description, price, category, subCategory, bestseller, sizes, company, artisanRegion } = req.body;
+        const { name, description, price, category, subCategory, bestseller, sizes, company } = req.body;
 
         const existingProduct = await productModel.findById(id);
         if (!existingProduct) {
@@ -89,12 +88,23 @@ const editProduct = async (req, res) => {
         }
 
         const updatedImages = newImageUrls.length > 0 ? newImageUrls : existingProduct.images;
+
         const parsedSizes = sizes ? JSON.parse(sizes) : [];
         const isBestseller = bestseller === "true" || bestseller === true;
 
         const updatedProduct = await productModel.findByIdAndUpdate(
             id,
-            { name, description, price: Number(price), category, subCategory, bestseller: isBestseller, sizes: parsedSizes, images: updatedImages, company: company || existingProduct.company, artisanRegion: artisanRegion || existingProduct.artisanRegion },
+            {
+                name,
+                description,
+                price: Number(price),
+                category,
+                subCategory,
+                bestseller: isBestseller,
+                sizes: parsedSizes,
+                images: updatedImages,
+                company: company || existingProduct.company || "Aharyas"
+            },
             { new: true }
         );
 
@@ -105,53 +115,38 @@ const editProduct = async (req, res) => {
     }
 };
 
-// List products per admin
+// Function for listing products (per admin)
 const listProducts = async (req, res) => {
     try {
         const adminId = req.user.id;
-        const { page = 1, limit = 20 } = req.query;
-        const skip = (page - 1) * limit;
-        const [products, total] = await Promise.all([
-            productModel.find({ adminId }).skip(Number(skip)).limit(Number(limit)).lean(),
-            productModel.countDocuments({ adminId })
-        ]);
-        res.json({ success: true, products, total, page: Number(page), pages: Math.ceil(total / limit) });
+        const products = await productModel.find({ adminId });
+        res.json({ success: true, products });
     } catch (error) {
+        console.error(error);
         res.status(500).json({ success: false, message: error.message });
     }
 };
 
-// Public: list all products with search, filter, pagination
+// Public list all products
 const listAllProductsPublic = async (req, res) => {
     try {
-        const { q, category, minPrice, maxPrice, artisanRegion, sort, page = 1, limit = 20 } = req.query;
-        
-        if (q || category || minPrice || maxPrice || artisanRegion || sort) {
-            const result = await searchProducts({ q, category, minPrice, maxPrice, artisanRegion, sort, page, limit });
-            return res.json({ success: true, ...result });
-        }
-        
-        const skip = (Number(page) - 1) * Number(limit);
-        const [products, total] = await Promise.all([
-            productModel.find({}).skip(skip).limit(Number(limit)).lean(),
-            productModel.countDocuments({})
-        ]);
-        res.json({ success: true, products, total, page: Number(page), pages: Math.ceil(total / Number(limit)) });
+        const products = await productModel.find({});
+        res.json({ success: true, products });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
 };
 
-// Get unique companies
+// Get all unique companies
 const getCompanies = async (req, res) => {
     try {
         const companies = await productModel.distinct("company");
-        const sorted = companies.sort((a, b) => {
+        const sortedCompanies = companies.sort((a, b) => {
             if (a === "Independent") return 1;
             if (b === "Independent") return -1;
             return a.localeCompare(b);
         });
-        res.json({ success: true, companies: sorted });
+        res.json({ success: true, companies: sortedCompanies });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
@@ -161,13 +156,8 @@ const getCompanies = async (req, res) => {
 const getProductsByCompany = async (req, res) => {
     try {
         const { company } = req.params;
-        const { page = 1, limit = 20 } = req.query;
-        const skip = (Number(page) - 1) * Number(limit);
-        const [products, total] = await Promise.all([
-            productModel.find({ company }).sort({ date: -1 }).skip(skip).limit(Number(limit)).lean(),
-            productModel.countDocuments({ company })
-        ]);
-        res.json({ success: true, products, company, total, page: Number(page), pages: Math.ceil(total / Number(limit)) });
+        const products = await productModel.find({ company }).sort({ date: -1 });
+        res.json({ success: true, products, company });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
@@ -178,12 +168,14 @@ const removeProduct = async (req, res) => {
     try {
         const { id } = req.params;
         const adminId = req.user.id;
+
         const deletedProduct = await productModel.findOneAndDelete({ _id: id, adminId });
         if (!deletedProduct) {
             return res.status(404).json({ success: false, message: "Product not found or not owned by you" });
         }
         res.json({ success: true, message: "Product removed successfully" });
     } catch (error) {
+        console.error("Error in removeProduct:", error);
         res.status(500).json({ success: false, message: error.message });
     }
 };
@@ -195,12 +187,13 @@ const singleProduct = async (req, res) => {
         if (!productId) {
             return res.status(400).json({ success: false, message: "Product ID is required" });
         }
-        const product = await productModel.findById(productId).lean();
+        const product = await productModel.findById(productId);
         if (!product) {
             return res.status(404).json({ success: false, message: "Product not found" });
         }
         res.json({ success: true, product });
     } catch (error) {
+        console.error("Error in Loading Product:", error);
         res.status(500).json({ success: false, message: error.message });
     }
 };
@@ -208,23 +201,14 @@ const singleProduct = async (req, res) => {
 // Seller analytics dashboard
 const sellerAnalytics = async (req, res) => {
     try {
+        const { getSellerAnalytics } = await import('../services/OrderService.js');
         const adminId = req.user.id;
-        const analytics = await getSellerAnalytics(adminId);
-        res.json({ success: true, ...analytics });
+        const result = await getSellerAnalytics(adminId);
+        res.json({ success: true, analytics: result.analytics });
     } catch (error) {
         console.error("Analytics error:", error);
         res.status(500).json({ success: false, message: error.message });
     }
 };
 
-// Get unique artisan regions
-const getRegions = async (req, res) => {
-    try {
-        const regions = await productModel.distinct("artisanRegion", { artisanRegion: { $ne: null } });
-        res.json({ success: true, regions: regions.sort() });
-    } catch (error) {
-        res.status(500).json({ success: false, message: error.message });
-    }
-};
-
-export { listProducts, addProduct, editProduct, listAllProductsPublic, removeProduct, singleProduct, getCompanies, getProductsByCompany, sellerAnalytics, getRegions };
+export { listProducts, addProduct, editProduct, listAllProductsPublic, removeProduct, singleProduct, getCompanies, getProductsByCompany, sellerAnalytics };

@@ -12,7 +12,6 @@ const CouponSchema = new mongoose.Schema({
     createdBy:     { type: mongoose.Schema.Types.ObjectId, ref: 'user' }
 }, { timestamps: true });
 
-CouponSchema.index({ code: 1 });
 CouponSchema.index({ expiresAt: 1 });
 
 const couponModel = mongoose.models.coupon || mongoose.model('coupon', CouponSchema);

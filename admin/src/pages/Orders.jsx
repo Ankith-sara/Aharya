@@ -189,7 +189,14 @@ const Orders = ({ token }) => {
         headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
       });
       if (response.data.success) {
-        const ordersData = response.data.orders.sort((a, b) => new Date(b.date) - new Date(a.date));
+        // Normalize legacy 'Order placed' (lowercase p) to 'Order Placed' for display consistency
+        const normalize = (o) => ({
+          ...o,
+          status: o.status === 'Order placed' ? 'Order Placed' : o.status
+        });
+        const ordersData = response.data.orders
+          .map(normalize)
+          .sort((a, b) => Number(b.date) - Number(a.date));
         setOrders(ordersData); setFilteredOrders(ordersData);
       } else toast.error(response.data.message || 'Failed to fetch orders');
     } catch (error) {

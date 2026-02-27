@@ -10,10 +10,10 @@ import sendNewsletterMail from '../middlewares/sendNewsletterMail.js';
 const generateOtp = () => Math.floor(100000 + Math.random() * 900000).toString();
 
 const createToken = (id, role = 'user') =>
-    jwt.sign({ id, role }, process.env.JWT_SECRET, { expiresIn: '15m' });
+    jwt.sign({ id, role }, process.env.JWT_SECRET, { expiresIn: '14d' });
 
 const createRefreshToken = (id, role = 'user') =>
-    jwt.sign({ id, role }, process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET, { expiresIn: '7d' });
+    jwt.sign({ id, role }, process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET, { expiresIn: '21d' });
 
 // ============ USER REGISTRATION (OTP-BASED) ============
 const sendOtp = async (req, res) => {

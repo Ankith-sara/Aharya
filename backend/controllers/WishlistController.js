@@ -82,12 +82,10 @@ const toggleWishlist = async (req, res) => {
 
         // Check if item exists in wishlist
         if (wishlist.includes(itemId)) {
-            // Remove from wishlist
             wishlist = wishlist.filter(id => id !== itemId)
             message = "Product removed from wishlist"
             isAdded = false
         } else {
-            // Add to wishlist
             wishlist.push(itemId)
             message = "Product added to wishlist"
             isAdded = true
@@ -142,7 +140,7 @@ const getWishlistWithDetails = async (req, res) => {
         // Populate wishlist with product details
         const userWithWishlist = await userModel.findById(userId).populate({
             path: 'wishlist',
-            model: 'product' // Assuming your product model is named 'product'
+            model: 'product'
         })
 
         const wishlistWithDetails = userWithWishlist.wishlist || []

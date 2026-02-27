@@ -14,7 +14,6 @@ import productRouter from './routes/ProductRoute.js';
 import cartRouter from './routes/CartRoute.js';
 import orderRouter from './routes/OrderRoute.js';
 import wishlistRouter from './routes/WishlistRoute.js';
-import reviewRouter from './routes/ReviewRoute.js';
 import couponRouter from './routes/CouponRoute.js';
 
 // App Config
@@ -97,7 +96,7 @@ app.use('/api/v1/user/admin-login', authLimiter);
 // Core Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(mongoSanitize()); // Prevents NoSQL injection
+app.use(mongoSanitize());
 
 // Request Logging
 app.use(morgan('combined'));
@@ -113,7 +112,6 @@ app.use('/api/v1/product', productRouter);
 app.use('/api/v1/cart', cartRouter);
 app.use('/api/v1/order', orderRouter);
 app.use('/api/v1/wishlist', wishlistRouter);
-app.use('/api/v1/review', reviewRouter);
 app.use('/api/v1/coupon', couponRouter);
 
 // Legacy route aliases (backward compatibility)

@@ -15,7 +15,6 @@ const addToCart = async (req, res) => {
             return res.status(404).json({ success: false, message: "User not found" })
         }
 
-        // Convert Map to plain object for easier manipulation
         let cartData = {}
         if (userData.cartData && userData.cartData.size > 0) {
             userData.cartData.forEach((sizes, itemId) => {
@@ -33,7 +32,6 @@ const addToCart = async (req, res) => {
             cartData[itemId] = { [size]: quantity }
         }
 
-        // Convert back to Map
         const cartMap = new Map()
         Object.keys(cartData).forEach(itemId => {
             const sizeMap = new Map()
@@ -72,7 +70,6 @@ const updateCart = async (req, res) => {
             return res.status(404).json({ success: false, message: "User not found" })
         }
 
-        // Convert Map to plain object
         let cartData = {}
         if (userData.cartData && userData.cartData.size > 0) {
             userData.cartData.forEach((sizes, itemId) => {
@@ -88,20 +85,17 @@ const updateCart = async (req, res) => {
             if (cartData[itemId]) {
                 delete cartData[itemId][size]
                 
-                // If no sizes left for this item, remove the item entirely
                 if (Object.keys(cartData[itemId]).length === 0) {
                     delete cartData[itemId]
                 }
             }
         } else {
-            // Update the quantity
             if (!cartData[itemId]) {
                 cartData[itemId] = {}
             }
             cartData[itemId][size] = quantity
         }
 
-        // Convert back to Map
         const cartMap = new Map()
         Object.keys(cartData).forEach(itemId => {
             const sizeMap = new Map()
@@ -140,7 +134,6 @@ const removeFromCart = async (req, res) => {
             return res.status(404).json({ success: false, message: "User not found" })
         }
 
-        // Convert Map to plain object
         let cartData = {}
         if (userData.cartData && userData.cartData.size > 0) {
             userData.cartData.forEach((sizes, itemId) => {
@@ -154,13 +147,11 @@ const removeFromCart = async (req, res) => {
         if (cartData[itemId]) {
             delete cartData[itemId][size]
             
-            // If no sizes left for this item, remove the item entirely
             if (Object.keys(cartData[itemId]).length === 0) {
                 delete cartData[itemId]
             }
         }
 
-        // Convert back to Map
         const cartMap = new Map()
         Object.keys(cartData).forEach(itemId => {
             const sizeMap = new Map()
@@ -222,7 +213,6 @@ const getUserCart = async (req, res) => {
             return res.status(404).json({ success: false, message: "User not found" })
         }
 
-        // Convert Map to plain object for response
         let cartData = {}
         if (userData.cartData && userData.cartData.size > 0) {
             userData.cartData.forEach((sizes, itemId) => {

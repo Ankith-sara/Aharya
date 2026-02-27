@@ -1,10 +1,10 @@
 import React, { useContext, useState, useEffect } from 'react'
 import { ShopContext } from '../context/ShopContext'
 import Title from './Title';
-import { Tag, X, Check, Sparkles } from 'lucide-react';
+import { Tag, X, Check } from 'lucide-react';
 
 const COUPONS = [
-    { code: 'FLAT500',  discount: 500,  minAmount: 3000, type: 'flat' },
+    { code: 'FLAT500',  discount: 500,  minAmount: 6000, type: 'flat' },
     { code: 'FLAT1000', discount: 1000, minAmount: 6000, type: 'flat' },
 ];
 
@@ -13,6 +13,7 @@ const CartTotal = () => {
     const [appliedCoupon, setAppliedCoupon] = useState(null);
     const [couponInput, setCouponInput]     = useState('');
     const [couponError, setCouponError]     = useState('');
+    const [invalidatedMsg, setInvalidatedMsg] = useState('');
 
     useEffect(() => {
         const saved = getAppliedCoupon ? getAppliedCoupon() : null;
@@ -21,18 +22,27 @@ const CartTotal = () => {
 
     const subtotal = getCartAmount ? getCartAmount() : 0;
 
-    // Find the best coupon user qualifies for (but don't reveal the code)
-    const bestEligible = COUPONS
-        .filter(c => subtotal >= c.minAmount)
-        .sort((a, b) => b.discount - a.discount)[0] || null;
+    // Reactively invalidate applied coupon if cart drops below minAmount
+    useEffect(() => {
+        if (appliedCoupon && subtotal < appliedCoupon.minAmount) {
+            setAppliedCoupon(null);
+            if (clearCoupon) clearCoupon();
+            setInvalidatedMsg(
+                `Coupon removed — cart total dropped below ${currency}${appliedCoupon.minAmount} minimum.`
+            );
+        } else {
+            setInvalidatedMsg('');
+        }
+    }, [subtotal]);
 
-    // Find if they're close to unlocking the next tier
+    // Find next tier the user hasn't unlocked yet
     const nextUnlock = COUPONS
         .filter(c => subtotal < c.minAmount)
         .sort((a, b) => a.minAmount - b.minAmount)[0] || null;
 
     const handleApplyCoupon = () => {
         setCouponError('');
+        setInvalidatedMsg('');
         const inputCode = couponInput.trim().toUpperCase();
 
         if (!inputCode) {
@@ -48,7 +58,7 @@ const CartTotal = () => {
         }
 
         if (subtotal < matched.minAmount) {
-            setCouponError(`Add ${currency}${matched.minAmount - subtotal} more to use this coupon`);
+            setCouponError(`This coupon requires a minimum order of ${currency}${matched.minAmount}.`);
             return;
         }
 
@@ -63,6 +73,7 @@ const CartTotal = () => {
         if (clearCoupon) clearCoupon();
         setCouponInput('');
         setCouponError('');
+        setInvalidatedMsg('');
     };
 
     const discount    = appliedCoupon ? appliedCoupon.discount : 0;
@@ -75,20 +86,6 @@ const CartTotal = () => {
                 <Title text1={'CART'} text2={'TOTAL'} />
             </div>
 
-            {/* Coupon eligibility hint — no codes exposed */}
-            {!appliedCoupon && (bestEligible || nextUnlock) && (
-                <div className={`mb-4 px-4 py-3 flex items-start gap-2.5 border ${bestEligible ? 'border-black bg-gray-50' : 'border-gray-200 bg-white'}`}>
-                    <Sparkles size={14} className={`flex-shrink-0 mt-0.5 ${bestEligible ? 'text-black' : 'text-gray-400'}`} />
-                    <p className='text-xs font-light text-gray-700 leading-relaxed'>
-                        {bestEligible
-                            ? <>You're eligible for a <span className='font-medium text-black'>coupon discount</span> on this order. Apply your coupon below.</>
-                            : <>Add <span className='font-medium text-black'>{currency}{nextUnlock.minAmount - subtotal}</span> more to unlock a coupon discount.</>
-                        }
-                    </p>
-                </div>
-            )}
-
-            {/* Coupon Input / Applied State */}
             <div className='mb-6 border border-gray-200'>
                 <div className='p-3 border-b border-gray-100 bg-gray-50 flex items-center gap-2'>
                     <Tag size={13} className='text-gray-600' />
@@ -124,7 +121,7 @@ const CartTotal = () => {
                                 <input
                                     type='text'
                                     value={couponInput}
-                                    onChange={(e) => { setCouponInput(e.target.value.toUpperCase()); setCouponError(''); }}
+                                    onChange={(e) => { setCouponInput(e.target.value.toUpperCase()); setCouponError(''); setInvalidatedMsg(''); }}
                                     onKeyDown={(e) => e.key === 'Enter' && handleApplyCoupon()}
                                     placeholder='Enter coupon code'
                                     className='flex-1 px-3 py-2.5 border border-gray-300 bg-white focus:outline-none focus:border-black transition-colors text-sm uppercase tracking-wide font-medium'
@@ -139,12 +136,16 @@ const CartTotal = () => {
                                     <X size={11} /> {couponError}
                                 </p>
                             )}
+                            {invalidatedMsg && (
+                                <p className='text-xs text-orange-600 font-light flex items-center gap-1'>
+                                    <X size={11} /> {invalidatedMsg}
+                                </p>
+                            )}
                         </div>
                     )}
                 </div>
             </div>
 
-            {/* Price Breakdown */}
             <div className='flex flex-col gap-2 text-sm'>
                 <div className='flex justify-between text-gray-700'>
                     <p className='font-light'>Subtotal</p>
